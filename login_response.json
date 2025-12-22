@@ -1,0 +1,14 @@
+{
+  "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjE2NjE2MCwianRpIjoiZjYzZjY1YTYtNjQxNS00NGRkLTkwYTItNGMyMjRmMjJhMjU2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzY2MTY2MTYwLCJjc3JmIjoiMGE1MDdkY2ItZTVjMS00NDU1LTk2YjMtZDc0MmQxMDI2MmYxIiwiZXhwIjoxNzY2MjUyNTYwfQ.wT34lTM4pcvtkbhi5GqPun5fYnWgGsLJ7hGmi40-tQ0",
+  "message": "Login successful",
+  "refresh_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjE2NjE2MCwianRpIjoiMjM5OGVkZWItNzc3Ni00ZDFkLThlYmEtZDEyZGI5MWNkOTEwIiwidHlwZSI6InJlZnJlc2giLCJzdWIiOjEsIm5iZiI6MTc2NjE2NjE2MCwiY3NyZiI6IjE2ODYwZjg3LWFjN2QtNGUyOC05YWZmLWE1MTE4YWViM2Q2YyIsImV4cCI6MTc2ODc1ODE2MH0.IIWj4ypIpeQF_-DRiUVMnMItaAkqUrDhwZLN9oS12So",
+  "user": {
+    "avatar": null,
+    "created_at": "2025-12-19T17:39:34.463716",
+    "email": "admin@tradesense.com",
+    "id": 1,
+    "preferred_language": "fr",
+    "role": "superadmin",
+    "username": "admin"
+  }
+}

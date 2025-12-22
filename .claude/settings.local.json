@@ -1,0 +1,36 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjE2NjA0NiwianRpIjoiNjJlNDdiZDktYjdjOS00OGYxLThkNGYtYjI2ODNiOTYzZTY1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6MSwibmJmIjoxNzY2MTY2MDQ2LCJjc3JmIjoiOGVkMGQyZGMtNmMzMS00MmNjLWI3NzEtYmFlMzBlYmI1ZDc0IiwiZXhwIjoxNzY2MjUyNDQ2fQ.0MqOguBo6e-QpNk1VU3oOxXtvHhgli27RYTNbl0ILEQ\")",
+      "Bash(python:*)",
+      "Bash(dir:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(npm install)",
+      "Bash(npm run dev:*)",
+      "Bash(pip install:*)",
+      "Bash(npm install:*)",
+      "Bash(timeout /t 5 /nobreak)",
+      "Bash(ping:*)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjE3Nzk2MywianRpIjoiNjM1ODNhMDAtMDlhYi00ODk1LWIzYTktNjE0NzM2MWU3M2I0IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjMiLCJuYmYiOjE3NjYxNzc5NjMsImNzcmYiOiI3YWFlMDkyMi0xY2Y5LTRmMTUtOTQ0ZC05ZjQxZTg5NTgyMzkiLCJleHAiOjE3NjYyNjQzNjN9.TiAUkx4evaV8yWg1La478M27tgY1yOd298fp2FpuSwg\")",
+      "Bash(node -e:*)",
+      "Bash(npx eslint:*)",
+      "WebFetch(domain:fundednext.com)",
+      "Bash(cat:*)",
+      "WebFetch(domain:ftmo.com)",
+      "Bash(findstr:*)",
+      "Bash(tasklist:*)",
+      "Bash(taskkill:*)",
+      "Bash(del /s /q \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\__pycache__\\\\*\")",
+      "Bash(del /s /q \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\routes\\\\__pycache__\\\\*\")",
+      "Bash(netstat:*)",
+      "Bash(wmic:*)",
+      "Bash(ren \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\frontend\\\\src\\\\pages\\\\Dashboard.jsx\" \"DashboardOld.jsx\")",
+      "Bash(mv:*)",
+      "Bash(git config:*)",
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}

@@ -1,0 +1,47 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mainGradient" x1="0" y1="200" x2="200" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#22c55e" /> <!-- Green -->
+      <stop offset="50%" stop-color="#10b981" /> <!-- Emerald -->
+      <stop offset="100%" stop-color="#3b82f6" /> <!-- Blue -->
+    </linearGradient>
+    
+    <filter id="softGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Modern Abstract "T" constructed from rising bars/circuits -->
+  <g transform="translate(100, 100)">
+    
+    <!-- The vertical pillar (Growth Foundation) -->
+    <!-- Centered and strong -->
+    <path 
+      d="M -20 -30 V 80 H 20 V -30" 
+      fill="url(#mainGradient)" 
+      opacity="0.9"
+    />
+    
+    <!-- The Top Bar (Horizon) -> Transforming into Arrow -->
+    <path 
+      d="M -70 -30 H -20 V 10 H -70 Z" 
+      fill="url(#mainGradient)" 
+    />
+    
+    <!-- The Rising Arrow (Breakout) -->
+    <path 
+      d="M 20 -30 L 70 -80 V -20 L 20 30 Z" 
+      fill="url(#mainGradient)" 
+    />
+    
+    <!-- Circuit Dot Accents to signify overlapping nodes -->
+    <circle cx="-45" cy="-10" r="5" fill="#fff" opacity="0.9"/>
+    <circle cx="0" cy="60" r="5" fill="#fff" opacity="0.9"/>
+    <circle cx="45" cy="-55" r="5" fill="#fff" opacity="0.9"/>
+
+    <!-- Connecting Lines (Circuitry) - White/Negative Space -->
+    <path d="M -45 -10 L 0 60 L 45 -55" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.6"/>
+
+  </g>
+</svg>

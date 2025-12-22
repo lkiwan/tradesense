@@ -1,0 +1,259 @@
+{
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "pricing": "Pricing",
+    "leaderboard": "Leaderboard",
+    "masterclass": "MasterClass",
+    "community": "Community",
+    "news": "News",
+    "login": "Login",
+    "register": "Register",
+    "logout": "Logout",
+    "admin": "Admin",
+    "superadmin": "Super Admin"
+  },
+  "landing": {
+    "hero": {
+      "title": "The First AI-Powered Prop Firm for Africa",
+      "subtitle": "TradeSense AI combines real-time AI analysis, smart trading tools and premium education",
+      "cta": "Start the Challenge",
+      "watchDemo": "Watch Demo"
+    },
+    "features": {
+      "title": "Why Choose TradeSense?",
+      "ai": {
+        "title": "AI Assistance",
+        "description": "Real-time Buy/Sell signals, personalized trade plans and risk alerts"
+      },
+      "news": {
+        "title": "News Hub",
+        "description": "Real-time financial news and AI-generated market summaries"
+      },
+      "community": {
+        "title": "Community",
+        "description": "Discuss, share strategies and learn from experts"
+      },
+      "education": {
+        "title": "MasterClass",
+        "description": "Beginner to advanced courses with webinars and quizzes"
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works?",
+      "step1": {
+        "title": "Choose Your Challenge",
+        "description": "Select a plan suited to your level"
+      },
+      "step2": {
+        "title": "Trade on Real Data",
+        "description": "Access US and Moroccan markets in real-time"
+      },
+      "step3": {
+        "title": "Reach the Target",
+        "description": "Gain 10% without exceeding loss limits"
+      },
+      "step4": {
+        "title": "Get Funded",
+        "description": "Pass the challenge and become a funded trader"
+      }
+    },
+    "testimonials": {
+      "roles": {
+        "professional": "Professional Trader",
+        "funded": "Funded Trader",
+        "beginner": "Beginner Trader"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Trading Dashboard",
+    "balance": "Balance",
+    "profit": "Profit",
+    "dailyLoss": "Daily Loss",
+    "totalDrawdown": "Total Drawdown",
+    "status": "Status",
+    "openTrade": "Open Trade",
+    "closeTrade": "Close",
+    "buy": "Buy",
+    "sell": "Sell",
+    "quantity": "Quantity",
+    "symbol": "Symbol",
+    "noActiveChallenge": "No active challenge",
+    "purchaseChallenge": "Purchase a challenge to start trading"
+  },
+  "signals": {
+    "title": "AI Signals",
+    "buy": "BUY",
+    "sell": "SELL",
+    "hold": "HOLD",
+    "confidence": "Confidence",
+    "reason": "Reason"
+  },
+  "pricing": {
+    "title": "Choose Your Challenge",
+    "subtitle": "Start your professional trader journey",
+    "promo": {
+      "banner": "1st Month After Registration Offer - Up to 50% Off!",
+      "subtitle": "Special prices for your 1st month after registration!",
+      "badge": "1st month after registration offer!",
+      "normalPrice": "Normal price",
+      "save": "Save",
+      "oneTimePayment": "One-time payment",
+      "selectCurrency": "Select currency"
+    },
+    "stats": {
+      "profitSplit": "Profit Split",
+      "noHiddenFees": "Hidden Fees",
+      "transparent": "Transparent",
+      "unlimited": "Unlimited",
+      "noTimeLimit": "No time limit"
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "Ideal for beginners"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "For intermediate traders"
+    },
+    "elite": {
+      "name": "Elite",
+      "description": "For advanced traders"
+    },
+    "features": {
+      "balance": "Initial Balance",
+      "dailyLoss": "Max Daily Loss",
+      "totalLoss": "Max Total Loss",
+      "target": "Profit Target",
+      "support": "Support",
+      "signals": "AI Signals",
+      "initialBalance": "initial balance",
+      "dailyLossPercent": "max daily loss",
+      "totalLossPercent": "max total loss",
+      "profitTarget": "profit target",
+      "emailSupport": "Email support",
+      "prioritySupport": "Priority support",
+      "vipSupport": "VIP 24/7 Support",
+      "basicSignals": "Basic AI signals",
+      "advancedSignals": "Advanced AI signals",
+      "premiumSignals": "Premium AI signals",
+      "masterclass": "MasterClass access",
+      "fullMasterclass": "Full MasterClass access",
+      "coaching": "Personal coaching"
+    },
+    "comparison": {
+      "title": "Comparison",
+      "subtitle": "Compare Plans",
+      "feature": "Feature",
+      "initialBalance": "Initial Balance",
+      "usMarkets": "US Markets (AAPL, TSLA...)",
+      "crypto": "Crypto (BTC, ETH...)",
+      "moroccanMarket": "Moroccan Market (BVC)",
+      "aiSignals": "AI Signals",
+      "support": "Support",
+      "masterclassAccess": "MasterClass Access",
+      "personalCoaching": "Personal Coaching",
+      "basic": "Basic",
+      "advanced": "Advanced",
+      "premium": "Premium",
+      "email": "Email",
+      "priority": "Priority",
+      "vip247": "VIP 24/7"
+    },
+    "faq": {
+      "title": "FAQ",
+      "subtitle": "Frequently Asked Questions",
+      "description": "Everything you need to know about our challenges",
+      "q1": "How does the challenge work?",
+      "a1": "You receive a virtual account with the initial balance. Your goal is to reach 10% profit without exceeding daily loss (5%) or total loss (10%) limits. Once passed, you receive a funded account!",
+      "q2": "Is the market data real?",
+      "a2": "Yes! We use real-time data from US markets (via Yahoo Finance), cryptocurrencies, and the Casablanca Stock Exchange. You trade in real conditions.",
+      "q3": "What happens if I pass the challenge?",
+      "a3": "Congratulations! You will be contacted by our team to discuss next steps. You will receive a funded account with the same capital and keep up to 80% of your profits.",
+      "q4": "Can I trade crypto 24/7?",
+      "a4": "Yes, cryptocurrencies are available 24/7. US markets follow NYSE/NASDAQ hours (9:30am-4pm EST).",
+      "q5": "Is there a time limit for the challenge?",
+      "a5": "No! There is no time limit. Take the time you need to reach your goals calmly and strategically.",
+      "q6": "How are AI signals generated?",
+      "a6": "Our Gemini AI analyzes market data, technical indicators, sentiment and news to generate buy/sell signals with a confidence level."
+    },
+    "trust": {
+      "secure": "Secure",
+      "secureDesc": "SSL encrypted payment",
+      "realData": "Real Data",
+      "realDataDesc": "US & Morocco Markets",
+      "powerfulAI": "Powerful AI",
+      "powerfulAIDesc": "Gemini AI Signals"
+    },
+    "finalCta": {
+      "badge": "Join +10,000 traders",
+      "title": "Ready to take the challenge?",
+      "subtitle": "Start your journey to funded trading. Support available 24/7 in French and Arabic.",
+      "startNow": "Start Now",
+      "contactUs": "Contact Us"
+    },
+    "cta": "Buy this Challenge",
+    "popular": "Popular"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "selectMethod": "Choose your payment method",
+    "paypal": "Pay with PayPal",
+    "cmi": "Bank Card (CMI)",
+    "crypto": "Crypto (BTC/USDT)",
+    "processing": "Processing...",
+    "success": "Payment successful!",
+    "error": "Payment error"
+  },
+  "leaderboard": {
+    "title": "Trader Leaderboard",
+    "rank": "Rank",
+    "trader": "Trader",
+    "profit": "Profit",
+    "plan": "Plan",
+    "period": {
+      "all": "All time",
+      "month": "This month",
+      "week": "This week"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Login",
+      "email": "Email",
+      "password": "Password",
+      "submit": "Sign in",
+      "noAccount": "No account?",
+      "register": "Register"
+    },
+    "register": {
+      "title": "Register",
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Sign up",
+      "hasAccount": "Already have an account?",
+      "login": "Login"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "view": "View",
+    "back": "Back",
+    "next": "Next",
+    "currency": "MAD"
+  },
+  "status": {
+    "active": "Active",
+    "passed": "Passed",
+    "failed": "Failed"
+  }
+}

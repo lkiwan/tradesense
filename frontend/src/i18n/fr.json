@@ -1,0 +1,259 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "dashboard": "Tableau de Bord",
+    "pricing": "Tarifs",
+    "leaderboard": "Classement",
+    "masterclass": "MasterClass",
+    "community": "Communaute",
+    "news": "Actualites",
+    "login": "Connexion",
+    "register": "Inscription",
+    "logout": "Deconnexion",
+    "admin": "Admin",
+    "superadmin": "Super Admin"
+  },
+  "landing": {
+    "hero": {
+      "title": "La Premiere Prop Firm Assistee par IA pour l'Afrique",
+      "subtitle": "TradeSense AI combine analyses IA en temps reel, outils de trading intelligents et education premium",
+      "cta": "Commencer le Challenge",
+      "watchDemo": "Voir la Demo"
+    },
+    "features": {
+      "title": "Pourquoi Choisir TradeSense?",
+      "ai": {
+        "title": "Assistance IA",
+        "description": "Signaux Achat/Vente en temps reel, plans de trade personnalises et alertes de risque"
+      },
+      "news": {
+        "title": "Hub d'Actualites",
+        "description": "Actualites financieres en temps reel et resumes de marche crees par l'IA"
+      },
+      "community": {
+        "title": "Communaute",
+        "description": "Discutez, partagez des strategies et apprenez des experts"
+      },
+      "education": {
+        "title": "MasterClass",
+        "description": "Cours du debutant a l'avance avec webinaires et quiz"
+      }
+    },
+    "howItWorks": {
+      "title": "Comment Ca Marche?",
+      "step1": {
+        "title": "Choisissez Votre Challenge",
+        "description": "Selectionnez un plan adapte a votre niveau"
+      },
+      "step2": {
+        "title": "Tradez sur Donnees Reelles",
+        "description": "Accedez aux marches US et marocains en temps reel"
+      },
+      "step3": {
+        "title": "Atteignez l'Objectif",
+        "description": "Gagnez 10% sans depasser les limites de perte"
+      },
+      "step4": {
+        "title": "Devenez Finance",
+        "description": "Reussissez le challenge et devenez trader finance"
+      }
+    },
+    "testimonials": {
+      "roles": {
+        "professional": "Trader Professionnel",
+        "funded": "Trader Finance",
+        "beginner": "Trader Debutant"
+      }
+    }
+  },
+  "dashboard": {
+    "title": "Tableau de Bord Trading",
+    "balance": "Solde",
+    "profit": "Profit",
+    "dailyLoss": "Perte Journaliere",
+    "totalDrawdown": "Drawdown Total",
+    "status": "Statut",
+    "openTrade": "Ouvrir un Trade",
+    "closeTrade": "Fermer",
+    "buy": "Acheter",
+    "sell": "Vendre",
+    "quantity": "Quantite",
+    "symbol": "Symbole",
+    "noActiveChallenge": "Pas de challenge actif",
+    "purchaseChallenge": "Achetez un challenge pour commencer"
+  },
+  "signals": {
+    "title": "Signaux IA",
+    "buy": "ACHAT",
+    "sell": "VENTE",
+    "hold": "ATTENDRE",
+    "confidence": "Confiance",
+    "reason": "Raison"
+  },
+  "pricing": {
+    "title": "Choisissez Votre Challenge",
+    "subtitle": "Commencez votre parcours de trader professionnel",
+    "promo": {
+      "banner": "Offre 1er Mois Après Inscription - Jusqu'à 50% de Réduction !",
+      "subtitle": "Prix spéciaux pour votre 1er mois après inscription !",
+      "badge": "Offre 1er mois après inscription !",
+      "normalPrice": "Prix normal",
+      "save": "Économisez",
+      "oneTimePayment": "Paiement unique",
+      "selectCurrency": "Choisir la devise"
+    },
+    "stats": {
+      "profitSplit": "Partage des Profits",
+      "noHiddenFees": "Frais Cachés",
+      "transparent": "Transparent",
+      "unlimited": "Illimité",
+      "noTimeLimit": "Pas de limite de temps"
+    },
+    "starter": {
+      "name": "Starter",
+      "description": "Idéal pour les débutants"
+    },
+    "pro": {
+      "name": "Pro",
+      "description": "Pour les traders intermédiaires"
+    },
+    "elite": {
+      "name": "Elite",
+      "description": "Pour les traders avancés"
+    },
+    "features": {
+      "balance": "Solde Initial",
+      "dailyLoss": "Perte Max Journalière",
+      "totalLoss": "Perte Max Totale",
+      "target": "Objectif de Profit",
+      "support": "Support",
+      "signals": "Signaux IA",
+      "initialBalance": "de solde initial",
+      "dailyLossPercent": "perte max journalière",
+      "totalLossPercent": "perte max totale",
+      "profitTarget": "objectif de profit",
+      "emailSupport": "Support email",
+      "prioritySupport": "Support prioritaire",
+      "vipSupport": "Support VIP 24/7",
+      "basicSignals": "Signaux IA basiques",
+      "advancedSignals": "Signaux IA avancés",
+      "premiumSignals": "Signaux IA premium",
+      "masterclass": "Accès MasterClass",
+      "fullMasterclass": "Accès MasterClass complet",
+      "coaching": "Coaching personnalisé"
+    },
+    "comparison": {
+      "title": "Comparaison",
+      "subtitle": "Comparez les Plans",
+      "feature": "Caractéristique",
+      "initialBalance": "Solde Initial",
+      "usMarkets": "Marchés US (AAPL, TSLA...)",
+      "crypto": "Crypto (BTC, ETH...)",
+      "moroccanMarket": "Marché Marocain (BVC)",
+      "aiSignals": "Signaux IA",
+      "support": "Support",
+      "masterclassAccess": "Accès MasterClass",
+      "personalCoaching": "Coaching Personnalisé",
+      "basic": "Basiques",
+      "advanced": "Avancés",
+      "premium": "Premium",
+      "email": "Email",
+      "priority": "Prioritaire",
+      "vip247": "VIP 24/7"
+    },
+    "faq": {
+      "title": "FAQ",
+      "subtitle": "Questions Fréquentes",
+      "description": "Tout ce que vous devez savoir sur nos challenges",
+      "q1": "Comment fonctionne le challenge ?",
+      "a1": "Vous recevez un compte virtuel avec le solde initial. Votre objectif est d'atteindre 10% de profit sans dépasser les limites de perte journalière (5%) ou totale (10%). Une fois réussi, vous recevez un compte financé !",
+      "q2": "Les données de marché sont-elles réelles ?",
+      "a2": "Oui ! Nous utilisons des données en temps réel des marchés US (via Yahoo Finance), des cryptomonnaies, et de la Bourse de Casablanca. Vous tradez dans des conditions réelles.",
+      "q3": "Que se passe-t-il si je réussis le challenge ?",
+      "a3": "Félicitations ! Vous serez contacté par notre équipe pour discuter des prochaines étapes. Vous recevrez un compte financé avec le même capital et garderez jusqu'à 80% de vos profits.",
+      "q4": "Puis-je trader les cryptos 24/7 ?",
+      "a4": "Oui, les cryptomonnaies sont disponibles 24h/24, 7j/7. Les marchés US suivent les horaires de NYSE/NASDAQ (9h30-16h EST).",
+      "q5": "Y a-t-il une limite de temps pour le challenge ?",
+      "a5": "Non ! Il n'y a pas de limite de temps. Prenez le temps nécessaire pour atteindre vos objectifs de manière sereine et stratégique.",
+      "q6": "Comment sont générés les signaux IA ?",
+      "a6": "Notre IA Gemini analyse les données de marché, les indicateurs techniques, le sentiment et les news pour générer des signaux d'achat/vente avec un niveau de confiance."
+    },
+    "trust": {
+      "secure": "Sécurisé",
+      "secureDesc": "Paiement crypté SSL",
+      "realData": "Données Réelles",
+      "realDataDesc": "Marchés US & Maroc",
+      "powerfulAI": "IA Puissante",
+      "powerfulAIDesc": "Signaux Gemini AI"
+    },
+    "finalCta": {
+      "badge": "Rejoignez +10,000 traders",
+      "title": "Prêt à relever le challenge ?",
+      "subtitle": "Commencez votre parcours vers le trading financé. Support disponible 24/7 en français et arabe.",
+      "startNow": "Commencer Maintenant",
+      "contactUs": "Contactez-nous"
+    },
+    "cta": "Acheter ce Challenge",
+    "popular": "Populaire"
+  },
+  "checkout": {
+    "title": "Paiement",
+    "selectMethod": "Choisissez votre methode de paiement",
+    "paypal": "Payer avec PayPal",
+    "cmi": "Carte Bancaire (CMI)",
+    "crypto": "Crypto (BTC/USDT)",
+    "processing": "Traitement en cours...",
+    "success": "Paiement reussi!",
+    "error": "Erreur de paiement"
+  },
+  "leaderboard": {
+    "title": "Classement des Traders",
+    "rank": "Rang",
+    "trader": "Trader",
+    "profit": "Profit",
+    "plan": "Plan",
+    "period": {
+      "all": "Tout le temps",
+      "month": "Ce mois",
+      "week": "Cette semaine"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "email": "Email",
+      "password": "Mot de passe",
+      "submit": "Se connecter",
+      "noAccount": "Pas de compte?",
+      "register": "Inscrivez-vous"
+    },
+    "register": {
+      "title": "Inscription",
+      "username": "Nom d'utilisateur",
+      "email": "Email",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "S'inscrire",
+      "hasAccount": "Deja un compte?",
+      "login": "Connectez-vous"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succes",
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "view": "Voir",
+    "back": "Retour",
+    "next": "Suivant",
+    "currency": "MAD"
+  },
+  "status": {
+    "active": "Actif",
+    "passed": "Reussi",
+    "failed": "Echoue"
+  }
+}
