@@ -7,7 +7,8 @@ import {
   Shield, Zap, Globe, ArrowRight, Star, Quote,
   ChevronDown, BarChart3, Target, Award, Clock,
   DollarSign, LineChart, Lock, Headphones,
-  Brain, Cpu, Crown, Rocket, Flame, Info
+  Brain, Cpu, Crown, Rocket, Flame, Info,
+  Volume2, VolumeX, Send, MessageCircle
 } from 'lucide-react'
 
 // Animated counter component
@@ -275,6 +276,79 @@ const LandingPage = () => {
   const [aiResponse, setAiResponse] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [hasGreeted, setHasGreeted] = useState(false)
+  const [voices, setVoices] = useState([])
+  const [isMuted, setIsMuted] = useState(false)
+  const [chatInput, setChatInput] = useState('')
+  const [showChatInput, setShowChatInput] = useState(false)
+
+  // Preload voices on mount (fixes voice glitch)
+  useEffect(() => {
+    const loadVoices = () => {
+      const availableVoices = window.speechSynthesis.getVoices()
+      if (availableVoices.length > 0) {
+        setVoices(availableVoices)
+      }
+    }
+
+    // Load immediately if available
+    loadVoices()
+
+    // Also listen for voiceschanged event (required for Chrome)
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = loadVoices
+    }
+
+    return () => {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = null
+      }
+    }
+  }, [])
+
+  // Get the current language from i18n
+  const { i18n } = useTranslation()
+  const currentLang = i18n.language || 'fr'
+
+  // Map language codes to speech synthesis language codes
+  const getLangCode = () => {
+    switch (currentLang) {
+      case 'ar': return 'ar-SA'
+      case 'en': return 'en-US'
+      case 'fr':
+      default: return 'fr-FR'
+    }
+  }
+
+  // Get the best voice for current language
+  const getBestVoice = (langOverride = null) => {
+    const lang = langOverride || getLangCode()
+    const langPrefix = lang.split('-')[0]
+
+    // Priority voices by language
+    const voicePreferences = {
+      'fr': ['Google français', 'Microsoft Denise', 'Amelie', 'Sophie', 'Virginie'],
+      'en': ['Google US English', 'Microsoft Zira', 'Samantha', 'Karen', 'Victoria'],
+      'ar': ['Google العربية', 'Microsoft Naayf', 'Maged', 'Tarik']
+    }
+
+    const preferred = voicePreferences[langPrefix] || voicePreferences['fr']
+    for (const name of preferred) {
+      const voice = voices.find(v => v.name.includes(name))
+      if (voice) return voice
+    }
+    // Fallback to any voice matching the language
+    return voices.find(v => v.lang.includes(langPrefix))
+  }
+
+  // Get greeting based on language
+  const getGreeting = () => {
+    switch (currentLang) {
+      case 'ar': return 'مرحبا، أنا تريد سينس. كيف يمكنني مساعدتك؟'
+      case 'en': return 'Hello, I am TradeSense AI. How can I help you?'
+      case 'fr':
+      default: return 'Bonjour, je suis TradeSense AI. Comment puis-je vous aider?'
+    }
+  }
 
   const toggleListening = () => {
     if (isListening) {
@@ -287,18 +361,23 @@ const LandingPage = () => {
       if (!hasGreeted) {
         // PLAY GREETING FIRST
         setIsListening(true)
-        const greeting = "Hi, my name is TradeSense. How can I help you today?"
+        const greeting = getGreeting()
         setAiResponse(greeting)
 
-        if ('speechSynthesis' in window) {
-          const utterance = new SpeechSynthesisUtterance(greeting)
-          utterance.lang = 'en-US'
-          utterance.rate = 1.0
+        if ('speechSynthesis' in window && !isMuted) {
+          // Cancel any ongoing speech first
+          window.speechSynthesis.cancel()
 
-          // Try to find a female English voice for the greeting
-          const voices = window.speechSynthesis.getVoices()
-          const femaleEnglish = voices.find(v => v.lang.includes('en') && (v.name.includes('Female') || v.name.includes('Google')))
-          if (femaleEnglish) utterance.voice = femaleEnglish
+          const utterance = new SpeechSynthesisUtterance(greeting)
+          utterance.lang = getLangCode()
+          utterance.rate = 1.25  // Comfortable fast speech
+          utterance.pitch = 1.1  // Slightly higher pitch for female voice
+          utterance.volume = 1.0
+
+          const selectedVoice = getBestVoice()
+          if (selectedVoice) {
+            utterance.voice = selectedVoice
+          }
 
           // Safety timeout in case onend is never fired
           const safetyTimeout = setTimeout(() => {
@@ -313,14 +392,26 @@ const LandingPage = () => {
             setHasGreeted(true)
             startRecognition() // Start listening AFTER greeting finishes
           }
-          window.speechSynthesis.speak(utterance)
+
+          utterance.onerror = (e) => {
+            console.error('Speech error:', e)
+            clearTimeout(safetyTimeout)
+            setHasGreeted(true)
+            startRecognition()
+          }
+
+          // Small delay to ensure voices are ready
+          setTimeout(() => {
+            window.speechSynthesis.speak(utterance)
+          }, 100)
         } else {
-          // No TTS support, just start listening
+          // No TTS support or muted, just start listening
           setHasGreeted(true)
           startRecognition()
         }
       } else {
         // ALREADY GREETED, JUST LISTEN
+        setIsListening(true)
         startRecognition()
       }
     }
@@ -334,7 +425,8 @@ const LandingPage = () => {
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
       const recognition = new SpeechRecognition()
-      recognition.lang = 'fr-FR'
+      // Support multiple languages - let browser auto-detect or use page language
+      recognition.lang = getLangCode()
       recognition.continuous = false
 
       recognition.onstart = () => {
@@ -386,24 +478,114 @@ const LandingPage = () => {
     }
   }
 
+  // Detect language from text (simple detection)
+  const detectLanguage = (text) => {
+    // Arabic characters (including Darija written in Arabic script)
+    if (/[\u0600-\u06FF]/.test(text)) return 'ar-SA'
+    // Darija in Latin script (common words)
+    if (/\b(wach|kifach|chhal|bghit|3endna|dyal|howa|kayn|merhba|n9der|l9it)\b/i.test(text)) return 'ar-MA'
+    // Check for common English words
+    if (/\b(the|is|are|you|how|what|can|help|hello|hi|yes|no|our|we|offer)\b/i.test(text)) return 'en-US'
+    // Default to French
+    return 'fr-FR'
+  }
+
+  // Check if text is Arabic (standard or Darija)
+  const isArabic = (text) => {
+    // Arabic script
+    if (/[\u0600-\u06FF]/.test(text)) return true
+    // Darija in Latin script
+    if (/\b(wach|kifach|chhal|bghit|3endna|dyal|howa|kayn|merhba|n9der|l9it|tal|ghir)\b/i.test(text)) return true
+    return false
+  }
+
   const speak = (text) => {
+    // Don't speak if muted
+    if (isMuted) return
+
+    // Don't speak Arabic - only show text
+    if (isArabic(text)) {
+      console.log('Arabic detected - text only mode')
+      return
+    }
+
     if ('speechSynthesis' in window) {
+      // Cancel any ongoing speech first to prevent overlap/glitches
+      window.speechSynthesis.cancel()
+
+      // Detect the language of the response (only FR or EN now)
+      const detectedLang = detectLanguage(text)
+
       const utterance = new SpeechSynthesisUtterance(text)
-      utterance.lang = 'fr-FR'
+      utterance.lang = detectedLang
+      utterance.rate = 1.25  // Comfortable fast speech
+      utterance.pitch = 1.1  // Slightly higher for female voice
+      utterance.volume = 1.0
 
-      const voices = window.speechSynthesis.getVoices()
-      // Prioritize female French voices
-      const femaleVoice = voices.find(v =>
-        (v.name.includes('Female') || v.name.includes('Google') || v.name.includes('Amelie') || v.name.includes('Sophie'))
-        && v.lang.includes('fr')
-      )
-
-      if (femaleVoice) {
-        utterance.voice = femaleVoice
+      const selectedVoice = getBestVoice(detectedLang)
+      if (selectedVoice) {
+        utterance.voice = selectedVoice
       }
 
-      window.speechSynthesis.speak(utterance)
+      utterance.onerror = (e) => {
+        console.error('Speech synthesis error:', e)
+      }
+
+      // Small delay to ensure speech synthesis is ready
+      setTimeout(() => {
+        window.speechSynthesis.speak(utterance)
+      }, 50)
     }
+  }
+
+  // Send text message to AI
+  const sendTextMessage = async () => {
+    if (!chatInput.trim()) return
+
+    const message = chatInput.trim()
+    setTranscript(message)
+    setChatInput('')
+    setIsProcessing(true)
+
+    try {
+      const response = await fetch('http://localhost:5000/api/ai/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message }),
+      })
+
+      const data = await response.json()
+      setIsProcessing(false)
+
+      if (data.response) {
+        setAiResponse(data.response)
+        speak(data.response)
+      } else {
+        setAiResponse("Désolé, je n'ai pas reçu de réponse.")
+      }
+    } catch (error) {
+      console.error('AI Error:', error)
+      setIsProcessing(false)
+      setAiResponse("Erreur de connexion. Veuillez réessayer.")
+    }
+  }
+
+  // Handle Enter key in chat input
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      sendTextMessage()
+    }
+  }
+
+  // Toggle mute and stop current speech
+  const toggleMute = () => {
+    if (!isMuted && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel()
+    }
+    setIsMuted(!isMuted)
   }
 
   return (
@@ -948,8 +1130,21 @@ const LandingPage = () => {
         </div>
 
         <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-          {/* Microphone Button Container */}
-          <div className="relative flex justify-center mb-8">
+          {/* Buttons Container */}
+          <div className="relative flex justify-center items-center gap-6 mb-8">
+            {/* Mute Button */}
+            <button
+              onClick={toggleMute}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${isMuted
+                ? 'bg-red-500/20 border border-red-500/50 text-red-400'
+                : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+                }`}
+              title={isMuted ? 'Activer le son' : 'Couper le son'}
+            >
+              {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+            </button>
+
+            {/* Microphone Button */}
             <div className="relative w-32 h-32 flex items-center justify-center">
               {/* Ripple Rings */}
               <div className={`absolute inset-0 border border-white/10 rounded-full ${isListening ? 'animate-ping' : ''}`} />
@@ -979,15 +1174,52 @@ const LandingPage = () => {
                 )}
               </button>
             </div>
+
+            {/* Chat Toggle Button */}
+            <button
+              onClick={() => setShowChatInput(!showChatInput)}
+              className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 ${showChatInput
+                ? 'bg-blue-500/20 border border-blue-500/50 text-blue-400'
+                : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
+                }`}
+              title="Écrire un message"
+            >
+              <MessageCircle size={20} />
+            </button>
           </div>
 
           <h2 className="text-2xl md:text-3xl font-medium text-white mb-4">
             Vous avez encore des questions ? Demandez à <span className="font-bold">TradeSense AI !</span>
           </h2>
 
-          <p className="text-gray-400 text-sm mb-8 flex items-center justify-center gap-2">
-            Microphone <div className="w-1 h-4 bg-white/20 rounded-full mx-1" /> pour obtenir des réponses instantanées en Français et 31 autres langues
+          <p className="text-gray-400 text-sm mb-6 flex items-center justify-center gap-2">
+            {isMuted && <span className="text-red-400">(Son coupé)</span>}
+            Parlez ou écrivez pour obtenir des réponses instantanées
           </p>
+
+          {/* Text Chat Input */}
+          {showChatInput && (
+            <div className="max-w-xl mx-auto mb-6">
+              <div className="flex gap-2 bg-[#1E293B]/80 backdrop-blur-md rounded-xl border border-white/10 p-2">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Tapez votre question ici..."
+                  className="flex-1 bg-transparent text-white placeholder-gray-500 px-4 py-2 outline-none"
+                  disabled={isProcessing}
+                />
+                <button
+                  onClick={sendTextMessage}
+                  disabled={isProcessing || !chatInput.trim()}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:bg-gray-600 disabled:cursor-not-allowed text-white rounded-lg transition-all flex items-center gap-2"
+                >
+                  <Send size={18} />
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* AI Response Card */}
           <div className={`transition-all duration-500 ease-out ${transcript || aiResponse ? 'opacity-100 max-h-96' : 'opacity-0 max-h-0 overflow-hidden'}`}>
