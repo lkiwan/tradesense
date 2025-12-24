@@ -1,41 +1,41 @@
 # Flask Core
-Flask==3.0.0
+Flask==3.1.2
 Flask-RESTful==0.3.10
 Flask-CORS==4.0.0
-Flask-JWT-Extended==4.6.0
+Flask-JWT-Extended==4.7.1
 Flask-SQLAlchemy==3.1.1
 
 # Database
-SQLAlchemy==2.0.23
-psycopg2-binary==2.9.10
+SQLAlchemy==2.0.45
+psycopg2-binary==2.9.11
 Flask-Migrate==4.1.0
 
 # Password Hashing
-Werkzeug==3.0.1
+Werkzeug==3.1.4
 bcrypt==4.1.2
 
 # Market Data
 yfinance==0.2.33
-beautifulsoup4==4.12.2
-requests==2.31.0
+beautifulsoup4==4.14.3
+requests==2.32.5
 lxml>=4.9.0
 
 # AI - Gemini
-google-generativeai==0.3.2
+google-generativeai==0.8.6
 
 # PayPal
-paypalrestsdk==1.13.1
+paypalrestsdk==1.13.3
 
 # Stripe
 stripe==7.10.0
 
 # Background Tasks
-APScheduler==3.10.4
-celery==5.3.6
+APScheduler==3.11.2
+celery==5.6.0
 
 # Caching & Rate Limiting
 redis==5.0.1
-Flask-Caching==2.1.0
+Flask-Caching==2.3.1
 Flask-Limiter==3.5.0
 
 # WebSocket
@@ -44,7 +44,7 @@ python-socketio==5.15.1
 eventlet==0.40.4
 
 # Email
-sendgrid==6.11.0
+sendgrid==6.12.5
 
 # Two-Factor Authentication
 pyotp==2.9.0
@@ -52,16 +52,16 @@ qrcode==8.2
 Pillow==11.1.0
 
 # Utils
-python-dotenv==1.0.0
+python-dotenv==1.2.1
 gunicorn==21.2.0
-python-slugify==8.0.1
+python-slugify==8.0.4
 
 # OAuth / SSO
-Authlib==1.3.0
-httpx==0.27.0
-PyJWT==2.8.0
+Authlib==1.6.6
+httpx==0.28.1
+PyJWT==2.10.1
 
 # Monitoring & Analytics
 sentry-sdk[flask]==1.39.1
 psutil==5.9.7
-prometheus-client==0.19.0
+prometheus-client==0.23.1
