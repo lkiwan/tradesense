@@ -219,8 +219,13 @@ def create_app(config_name=None):
     return app
 
 
-# Create app instance
-app = create_app()
+# Create app instance for WSGI servers (Gunicorn)
+# Don't create during pytest imports to allow test configuration
+import sys
+if 'pytest' not in sys.modules:
+    app = create_app()
+else:
+    app = None
 
 
 if __name__ == '__main__':

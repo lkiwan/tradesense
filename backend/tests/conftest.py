@@ -15,8 +15,9 @@ from models import db
 @pytest.fixture(scope='session')
 def app():
     """Create application for testing"""
-    os.environ['FLASK_ENV'] = 'development'
-    _app = create_app('development')
+    # Use testing config - respects DATABASE_URL from CI environment
+    config_name = os.getenv('FLASK_ENV', 'testing')
+    _app = create_app(config_name)
     _app.config['TESTING'] = True
     _app.config['WTF_CSRF_ENABLED'] = False
 

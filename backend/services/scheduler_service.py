@@ -107,8 +107,6 @@ def process_expired_trials():
        - On failure: Immediately expires trial (no retries per requirement)
     3. Sends appropriate email notifications
     """
-    global _app
-
     if not _app:
         print("Scheduler: No app context available")
         return

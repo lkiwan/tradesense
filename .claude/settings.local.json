@@ -103,7 +103,9 @@
       "Bash(if not exist \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\frontend\\\\src\\\\components\\\\events\" mkdir \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\frontend\\\\src\\\\components\\\\events\")",
       "Bash(\"C:\\\\Program Files\\\\PostgreSQL\\\\18\\\\bin\\\\psql.exe\" \"postgresql://postgres:123456@localhost:5432/tradesense\" -c \"SELECT COUNT\\(*\\) as user_count FROM users; SELECT COUNT\\(*\\) as challenge_count FROM user_challenges;\")",
       "Bash(if not exist \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\tests\" mkdir \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\tests\")",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)"
     ]
   }
 }

@@ -241,7 +241,17 @@ class TestingConfig(Config):
     """Testing configuration"""
     DEBUG = True
     TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///:memory:'  # In-memory for tests
+
+    # Use DATABASE_URL if provided (CI uses PostgreSQL), otherwise SQLite in-memory
+    SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL', 'sqlite:///:memory:')
+
+    # Adjust engine options based on database type
+    @property
+    def _is_sqlite(self):
+        return self.SQLALCHEMY_DATABASE_URI.startswith('sqlite')
+
+    # Override with database-appropriate settings
+    SQLALCHEMY_ENGINE_OPTIONS = get_engine_options()
 
 
 config = {
