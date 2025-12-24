@@ -53,7 +53,7 @@ Pillow==11.1.0
 
 # Utils
 python-dotenv==1.0.0
-gunicorn==21.2.0
+gunicorn==23.0.0
 python-slugify==8.0.1
 
 # OAuth / SSO
