@@ -119,7 +119,7 @@ jobs:
           # ssh -i key $SERVER_USER@$SERVER_HOST "docker-compose pull && docker-compose up -d"
 
       - name: Notify deployment
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v2.1.1
         if: always()
         with:
           payload: |
@@ -173,7 +173,7 @@ jobs:
           # curl -f https://tradesense.com/api/monitoring/health || exit 1
 
       - name: Notify deployment
-        uses: slackapi/slack-github-action@v1.24.0
+        uses: slackapi/slack-github-action@v2.1.1
         if: always()
         with:
           payload: |
