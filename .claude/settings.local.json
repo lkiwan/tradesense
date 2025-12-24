@@ -105,7 +105,8 @@
       "Bash(if not exist \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\tests\" mkdir \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\tests\")",
       "Bash(npm run build:*)",
       "Bash(gh run list:*)",
-      "Bash(gh run view:*)"
+      "Bash(gh run view:*)",
+      "Bash(timeout /t 30 /nobreak)"
     ]
   }
 }
