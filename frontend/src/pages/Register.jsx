@@ -5,6 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { useLanguage } from '../context/LanguageContext'
 import toast from 'react-hot-toast'
 import { User, Mail, Lock, Loader2, UserPlus } from 'lucide-react'
+import SocialLoginButtons from '../components/auth/SocialLoginButtons'
 
 const Register = () => {
   const { t } = useTranslation()
@@ -42,8 +43,8 @@ const Register = () => {
     setLoading(false)
 
     if (result.success) {
-      toast.success('Account created successfully!')
-      navigate('/pricing')
+      toast.success('Account created successfully! Please verify your email.')
+      navigate('/email-verification-sent')
     } else {
       toast.error(result.error)
     }
@@ -203,6 +204,19 @@ const Register = () => {
               )}
             </button>
           </form>
+
+          {/* Divider */}
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200 dark:border-dark-100" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white dark:bg-dark-100 text-gray-500">ou s'inscrire avec</span>
+            </div>
+          </div>
+
+          {/* Social Login Buttons */}
+          <SocialLoginButtons mode="register" disabled={loading} />
 
           {/* Login Link */}
           <p className="mt-6 text-center text-gray-600 dark:text-gray-400">

@@ -8,6 +8,7 @@ import { useChallenge } from './context/ChallengeContext'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import DashboardLayout from './components/DashboardLayout'
+import ErrorBoundary from './components/common/ErrorBoundary'
 
 // Pages
 import LandingPage from './pages/LandingPage'
@@ -33,24 +34,73 @@ import HallOfFame from './pages/HallOfFame'
 import About from './pages/About'
 import FAQ from './pages/FAQ'
 import Contact from './pages/Contact'
+import VerifyEmail from './pages/VerifyEmail'
+import EmailVerificationSent from './pages/EmailVerificationSent'
+import TwoFactorSetup from './pages/TwoFactorSetup'
+import TwoFactorVerify from './pages/TwoFactorVerify'
+import ForgotPassword from './pages/ForgotPassword'
+import ResetPassword from './pages/ResetPassword'
 
-// Dashboard Pages
+// Public Trader Profile
+import TraderProfile from './pages/public/TraderProfile'
+
+// Blog Pages
+import BlogPage from './pages/public/BlogPage'
+import BlogPostPage from './pages/public/BlogPostPage'
+
+// Webinar Pages
+import WebinarsPage from './pages/public/WebinarsPage'
+import WebinarDetailPage from './pages/public/WebinarDetailPage'
+
+// Admin Pages
+import BlogManagementPage from './pages/admin/BlogManagementPage'
+import WebinarManagementPage from './pages/admin/WebinarManagementPage'
+import EventsManagementPage from './pages/admin/EventsManagementPage'
+import AnalyticsDashboardPage from './pages/admin/AnalyticsDashboardPage'
+
+// Promo Page
+import PromoPage from './pages/public/PromoPage'
+
+// Dashboard Pages - Main App Pages
 import {
-  DashboardHome,
-  SignalsPage,
-  CalculatorPage,
-  TransactionsPage,
-  PayoutsPage,
-  OffersPage,
-  CompetitionsPage,
-  CertificatesPage,
-  PointsPage,
-  ResourcesPage,
-  TradingRulesPage,
+  AccountsPage,
+  MarginCalculatorPage,
+  BillingHistoryPage,
   NotificationsPage,
-  SupportPage,
+  SupportTicketsPage,
+  PlansPage,
   ProfilePage,
-  SettingsPage
+  SettingsPage,
+  SessionsPage,
+  KYCPage,
+  SubscriptionsPage,
+  // Rewards Hub
+  ReferralPage,
+  MyOffersPage,
+  CompetitionPage,
+  CertificatesPage,
+  PointsActivitiesPage,
+  PointsProfilePage,
+  PointsHistoryPage,
+  PointsRewardsPage,
+  // Trading Tools
+  AdvancedOrdersPage,
+  QuickTradingPage,
+  OrderTemplatesPage,
+  TradeJournalPage,
+  MTConnectionPage,
+  ChartsPage,
+  // Social Trading
+  MyProfilePage,
+  FollowersPage,
+  CopyTradingPage,
+  TradingIdeasPage,
+  IdeaDetailPage,
+  // Help & Support
+  UtilitiesPage,
+  CalendarPage,
+  // Legacy compatibility
+  SignalsPage
 } from './pages/dashboard'
 
 /**
@@ -89,17 +139,17 @@ const ProtectedRoute = ({
 
   // Check challenge requirement (must have active challenge to access dashboard)
   if (requiresChallenge && !hasActiveChallenge) {
-    return <Navigate to={redirectTo || '/pricing'} replace />
+    return <Navigate to={redirectTo || '/plans'} replace />
   }
 
   // Check superadmin role
   if (superAdminOnly && user?.role !== 'superadmin') {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/accounts" replace />
   }
 
   // Check admin role
   if (adminOnly && !['admin', 'superadmin'].includes(user?.role)) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/accounts" replace />
   }
 
   return children
@@ -168,13 +218,13 @@ const SmartHomeRoute = () => {
     return <LandingPage />
   }
 
-  // Authenticated with challenge - go to dashboard
+  // Authenticated with challenge - go to accounts (main dashboard)
   if (hasActiveChallenge) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/accounts" replace />
   }
 
-  // Authenticated without challenge - go to pricing to get a plan
-  return <Navigate to="/pricing" replace />
+  // Authenticated without challenge - go to plans to get a plan
+  return <Navigate to="/plans" replace />
 }
 
 /**
@@ -191,13 +241,13 @@ const SmartAuthHomeRedirect = () => {
     )
   }
 
-  // Has challenge - go to dashboard
+  // Has challenge - go to accounts
   if (hasActiveChallenge) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/accounts" replace />
   }
 
-  // No challenge - go to pricing
-  return <Navigate to="/pricing" replace />
+  // No challenge - go to plans
+  return <Navigate to="/plans" replace />
 }
 
 /**
@@ -215,29 +265,40 @@ const TrialBlockRoute = ({ children }) => {
     )
   }
 
-  // If authenticated and has active challenge, redirect to dashboard
+  // If authenticated and has active challenge, redirect to accounts
   if (isAuthenticated && hasActiveChallenge) {
-    return <Navigate to="/dashboard" replace />
+    return <Navigate to="/accounts" replace />
   }
 
   return children
 }
 
+// Helper function to check if current path is a dashboard route (requires DashboardLayout)
+const DASHBOARD_ROUTES = [
+  '/accounts', '/margin-calculator', '/billing', '/notifications', '/support-tickets',
+  '/plans', '/profile', '/refer-and-earn', '/my-offers', '/competition', '/certificates',
+  '/infinity-points', '/utilities', '/calendar', '/settings', '/sessions', '/dashboard', '/kyc',
+  '/subscriptions', '/infinity-points/rewards', '/advanced-orders', '/quick-trading', '/order-templates',
+  '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas',
+  '/admin/blog', '/admin/webinars', '/admin/events'
+]
+
 function App() {
   const { isDark } = useTheme()
   const location = useLocation()
 
-  // Check if we're on a dashboard route
-  const isDashboardRoute = location.pathname.startsWith('/dashboard')
+  // Check if we're on a dashboard route (requires DashboardLayout)
+  const isDashboardRoute = DASHBOARD_ROUTES.some(route => location.pathname.startsWith(route))
 
   return (
-    <div className={`${isDark ? 'dark' : ''}`}>
-      <div className="min-h-screen bg-gray-50 dark:bg-dark-200 text-gray-900 dark:text-white transition-colors duration-300">
-        {/* Only show Navbar on non-dashboard routes */}
-        {!isDashboardRoute && <Navbar />}
+    <ErrorBoundary>
+      <div className={`${isDark ? 'dark' : ''}`}>
+        <div className="min-h-screen bg-gray-50 dark:bg-dark-200 text-gray-900 dark:text-white transition-colors duration-300">
+          {/* Only show Navbar on non-dashboard routes */}
+          {!isDashboardRoute && <Navbar />}
 
-        <main className={isDashboardRoute ? '' : 'pt-[100px]'}>
-          <Routes>
+          <main className={isDashboardRoute ? '' : 'pt-[100px]'}>
+            <Routes>
             {/* ==================== SMART HOME ROUTE ==================== */}
             {/* Landing for guests, redirect for authenticated users */}
             <Route path="/" element={<SmartHomeRoute />} />
@@ -255,6 +316,17 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/faq" element={<FAQ />} />
             <Route path="/contact" element={<Contact />} />
+
+            {/* ==================== BLOG ROUTES ==================== */}
+            <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blog/:slug" element={<BlogPostPage />} />
+
+            {/* ==================== WEBINAR ROUTES ==================== */}
+            <Route path="/webinars" element={<WebinarsPage />} />
+            <Route path="/webinars/:slug" element={<WebinarDetailPage />} />
+
+            {/* ==================== PROMO ROUTES ==================== */}
+            <Route path="/promo/:slug" element={<PromoPage />} />
 
             {/* ==================== HOME ROUTE FOR AUTHENTICATED USERS ==================== */}
             {/* Smart redirect based on challenge status */}
@@ -275,6 +347,43 @@ function App() {
               <GuestRoute redirectTo="/pricing">
                 <Register />
               </GuestRoute>
+            } />
+
+            {/* ==================== EMAIL VERIFICATION ROUTES ==================== */}
+            {/* Verify email from link */}
+            <Route path="/verify-email" element={<VerifyEmail />} />
+
+            {/* Email verification sent confirmation */}
+            <Route path="/email-verification-sent" element={
+              <AuthRoute>
+                <EmailVerificationSent />
+              </AuthRoute>
+            } />
+
+            {/* ==================== PASSWORD RESET ROUTES ==================== */}
+            {/* Forgot password - request reset email */}
+            <Route path="/forgot-password" element={
+              <GuestRoute redirectTo="/home">
+                <ForgotPassword />
+              </GuestRoute>
+            } />
+
+            {/* Reset password - set new password */}
+            <Route path="/reset-password" element={
+              <GuestRoute redirectTo="/home">
+                <ResetPassword />
+              </GuestRoute>
+            } />
+
+            {/* ==================== TWO-FACTOR AUTH ROUTES ==================== */}
+            {/* 2FA verification during login (no auth required - user is mid-login) */}
+            <Route path="/verify-2fa" element={<TwoFactorVerify />} />
+
+            {/* 2FA setup (requires auth) */}
+            <Route path="/setup-2fa" element={
+              <AuthRoute>
+                <TwoFactorSetup />
+              </AuthRoute>
             } />
 
             {/* ==================== AUTH-REQUIRED ROUTES ==================== */}
@@ -298,110 +407,301 @@ function App() {
               </TrialBlockRoute>
             } />
 
-            {/* ==================== DASHBOARD ROUTES ==================== */}
-            {/* All dashboard routes wrapped with DashboardLayout */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+            {/* ==================== MAIN APP ROUTES (Dashboard) ==================== */}
+            {/* Accounts - Main Dashboard */}
+            <Route path="/accounts" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
-                  <DashboardHome />
+                  <AccountsPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/signals" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+            {/* Legacy redirect from /dashboard to /accounts */}
+            <Route path="/dashboard" element={<Navigate to="/accounts" replace />} />
+            <Route path="/dashboard/*" element={<Navigate to="/accounts" replace />} />
+
+            {/* Margin Calculator */}
+            <Route path="/margin-calculator" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
-                  <SignalsPage />
+                  <MarginCalculatorPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/calculator" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+
+            {/* Billing History / Transactions */}
+            <Route path="/billing/billing-history" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
-                  <CalculatorPage />
+                  <BillingHistoryPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/transactions" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <TransactionsPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/payouts" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <PayoutsPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/offers" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <OffersPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/competitions" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <CompetitionsPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/certificates" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <CertificatesPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/points" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <PointsPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/resources" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <ResourcesPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/rules" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
-                <DashboardLayout>
-                  <TradingRulesPage />
-                </DashboardLayout>
-              </ProtectedRoute>
-            } />
-            <Route path="/dashboard/notifications" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+            <Route path="/billing" element={<Navigate to="/billing/billing-history" replace />} />
+
+            {/* Notifications */}
+            <Route path="/notifications" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <NotificationsPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/support" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+
+            {/* Support Tickets */}
+            <Route path="/support-tickets" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
-                  <SupportPage />
+                  <SupportTicketsPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/profile" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+
+            {/* Plans - Purchase/View Challenges */}
+            <Route path="/plans" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <PlansPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Profile */}
+            <Route path="/profile/default" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <ProfilePage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
-            <Route path="/dashboard/settings" element={
-              <ProtectedRoute requiresChallenge redirectTo="/pricing">
+            <Route path="/profile" element={<Navigate to="/profile/default" replace />} />
+
+            {/* Settings */}
+            <Route path="/settings" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <SettingsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Active Sessions */}
+            <Route path="/sessions" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <SessionsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* KYC Verification */}
+            <Route path="/kyc" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <KYCPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Premium Subscriptions */}
+            <Route path="/subscriptions" element={
+              <ProtectedRoute>
+                <DashboardLayout>
+                  <SubscriptionsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* ==================== REWARDS HUB ROUTES ==================== */}
+            {/* Refer & Earn */}
+            <Route path="/refer-and-earn" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <ReferralPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* My Offers */}
+            <Route path="/my-offers" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <MyOffersPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Competitions */}
+            <Route path="/competition" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CompetitionPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Certificates */}
+            <Route path="/certificates" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CertificatesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Infinity Points - Activities */}
+            <Route path="/infinity-points" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PointsActivitiesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Infinity Points - Profile/Dashboard */}
+            <Route path="/infinity-points/profile" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PointsProfilePage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Infinity Points - History */}
+            <Route path="/infinity-points/history" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PointsHistoryPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Infinity Points - Rewards Store */}
+            <Route path="/infinity-points/rewards" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PointsRewardsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* ==================== TRADING TOOLS ROUTES ==================== */}
+            {/* Advanced Orders */}
+            <Route path="/advanced-orders" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <AdvancedOrdersPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Quick Trading / One-Click Trading */}
+            <Route path="/quick-trading" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <QuickTradingPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Order Templates */}
+            <Route path="/order-templates" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <OrderTemplatesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Trade Journal */}
+            <Route path="/trade-journal" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <TradeJournalPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* MT4/MT5 Connection */}
+            <Route path="/mt-connection" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <MTConnectionPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Advanced Charts */}
+            <Route path="/charts" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <ChartsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* ==================== SOCIAL TRADING ROUTES ==================== */}
+            {/* My Trader Profile */}
+            <Route path="/my-profile" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <MyProfilePage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Followers & Following */}
+            <Route path="/followers" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <FollowersPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Copy Trading */}
+            <Route path="/copy-trading" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CopyTradingPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Trading Ideas */}
+            <Route path="/trading-ideas" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <TradingIdeasPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+            <Route path="/trading-ideas/:id" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <IdeaDetailPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Public Trader Profile */}
+            <Route path="/trader/:id" element={<TraderProfile />} />
+
+            {/* ==================== HELP & SUPPORT ROUTES ==================== */}
+            {/* Utilities / Resources */}
+            <Route path="/utilities" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <UtilitiesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Dashboard Calendar */}
+            <Route path="/calendar" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CalendarPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />
@@ -438,6 +738,42 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* Blog Management - Admin Only */}
+            <Route path="/admin/blog" element={
+              <ProtectedRoute adminOnly>
+                <DashboardLayout>
+                  <BlogManagementPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Webinar Management - Admin Only */}
+            <Route path="/admin/webinars" element={
+              <ProtectedRoute adminOnly>
+                <DashboardLayout>
+                  <WebinarManagementPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Events Management - Admin Only */}
+            <Route path="/admin/events" element={
+              <ProtectedRoute adminOnly>
+                <DashboardLayout>
+                  <EventsManagementPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Analytics Dashboard - Admin Only */}
+            <Route path="/admin/analytics" element={
+              <ProtectedRoute adminOnly>
+                <DashboardLayout>
+                  <AnalyticsDashboardPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
             {/* ==================== 404 REDIRECT ==================== */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
@@ -470,8 +806,9 @@ function App() {
             }
           }}
         />
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   )
 }
 

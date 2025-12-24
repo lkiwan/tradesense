@@ -4,16 +4,20 @@ from . import db
 
 class Payment(db.Model):
     __tablename__ = 'payments'
+    __table_args__ = (
+        db.Index('idx_payments_user_status', 'user_id', 'status'),
+        db.Index('idx_payments_created_at', 'created_at'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id'), default=None)
-    subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id'), default=None)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id', ondelete='SET NULL'), default=None)
+    subscription_id = db.Column(db.Integer, db.ForeignKey('subscriptions.id', ondelete='SET NULL'), default=None)
     amount = db.Column(db.Numeric(10, 2), nullable=False)
     currency = db.Column(db.String(10), default='USD')
     payment_method = db.Column(db.String(50), nullable=False)  # paypal, cmi, crypto, free
-    status = db.Column(db.String(20), default='pending')  # pending, completed, failed
-    transaction_id = db.Column(db.String(100), default=None)
+    status = db.Column(db.String(20), default='pending', index=True)  # pending, completed, failed
+    transaction_id = db.Column(db.String(100), default=None, index=True)
     plan_type = db.Column(db.String(20), nullable=False)  # starter, pro, elite, trial
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     completed_at = db.Column(db.DateTime, default=None)

@@ -8,9 +8,12 @@ class Subscription(db.Model):
     Handles the trial-to-paid conversion flow with auto-charging.
     """
     __tablename__ = 'subscriptions'
+    __table_args__ = (
+        db.Index('idx_subscriptions_status', 'status'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False, unique=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False, unique=True)
 
     # Plan selection (what user will be charged after trial)
     selected_plan = db.Column(db.String(20), nullable=False)  # starter, pro, elite

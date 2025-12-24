@@ -5,16 +5,21 @@ from . import db
 
 class Trade(db.Model):
     __tablename__ = 'trades'
+    __table_args__ = (
+        db.Index('idx_trades_challenge_status', 'challenge_id', 'status'),
+        db.Index('idx_trades_symbol', 'symbol'),
+        db.Index('idx_trades_opened_at', 'opened_at'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id'), nullable=False)
-    symbol = db.Column(db.String(20), nullable=False)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id', ondelete='CASCADE'), nullable=False)
+    symbol = db.Column(db.String(20), nullable=False, index=True)
     trade_type = db.Column(db.String(10), nullable=False)  # buy, sell
     quantity = db.Column(db.Numeric(15, 8), nullable=False)
     entry_price = db.Column(db.Numeric(15, 4), nullable=False)
     exit_price = db.Column(db.Numeric(15, 4), default=None)
     pnl = db.Column(db.Numeric(15, 2), default=None)
-    status = db.Column(db.String(20), default='open')  # open, closed
+    status = db.Column(db.String(20), default='open', index=True)  # open, closed
     opened_at = db.Column(db.DateTime, default=datetime.utcnow)
     closed_at = db.Column(db.DateTime, default=None)
 

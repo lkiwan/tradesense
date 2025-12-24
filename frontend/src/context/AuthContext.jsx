@@ -40,13 +40,64 @@ export const AuthProvider = ({ children }) => {
     }
   }
 
-  const login = async (email, password) => {
+  const login = async (email, password, captchaToken = null) => {
     try {
-      const response = await api.post('/auth/login', { email, password })
+      const payload = { email, password }
+      if (captchaToken) {
+        payload.captcha_token = captchaToken
+      }
+
+      const response = await api.post('/auth/login', payload)
+      const { access_token, refresh_token, user: userData, requires_2fa, temp_token } = response.data
+
+      // Check if 2FA is required
+      if (requires_2fa) {
+        return {
+          success: false,
+          requires_2fa: true,
+          temp_token,
+          message: '2FA verification required'
+        }
+      }
+
+      localStorage.setItem('access_token', access_token)
+      localStorage.setItem('refresh_token', refresh_token)
+
+      // Store session token if provided
+      if (response.data.session_token) {
+        localStorage.setItem('session_token', response.data.session_token)
+      }
+
+      setUser(userData)
+      setIsAuthenticated(true)
+
+      return { success: true, user: userData, isNewDevice: response.data.is_new_device }
+    } catch (error) {
+      return {
+        success: false,
+        error: error.response?.data?.error || 'Login failed',
+        requires_captcha: error.response?.data?.requires_captcha,
+        failed_attempts: error.response?.data?.failed_attempts
+      }
+    }
+  }
+
+  const loginWith2FA = async (email, password, twoFaToken) => {
+    try {
+      const response = await api.post('/auth/login', {
+        email,
+        password,
+        two_fa_token: twoFaToken
+      })
       const { access_token, refresh_token, user: userData } = response.data
 
       localStorage.setItem('access_token', access_token)
       localStorage.setItem('refresh_token', refresh_token)
+
+      // Store session token if provided
+      if (response.data.session_token) {
+        localStorage.setItem('session_token', response.data.session_token)
+      }
 
       setUser(userData)
       setIsAuthenticated(true)
@@ -55,7 +106,8 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return {
         success: false,
-        error: error.response?.data?.error || 'Login failed'
+        error: error.response?.data?.error || 'Invalid 2FA code',
+        attemptsRemaining: error.response?.data?.attempts_remaining
       }
     }
   }
@@ -88,6 +140,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
+    localStorage.removeItem('session_token')
     setUser(null)
     setIsAuthenticated(false)
   }
@@ -110,6 +163,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     isAuthenticated,
     login,
+    loginWith2FA,
     register,
     logout,
     updateUser,

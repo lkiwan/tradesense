@@ -1,3 +1,4 @@
+import logging
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from decimal import Decimal
@@ -5,6 +6,10 @@ from . import trades_bp
 from models import db, Trade, UserChallenge, User
 from services.challenge_engine import ChallengeEngine
 from services.yfinance_service import get_current_price
+from middleware.rate_limiter import limiter
+from services.audit_service import AuditService
+
+logger = logging.getLogger(__name__)
 
 
 @trades_bp.route('', methods=['GET'])
@@ -40,6 +45,7 @@ def get_trades():
 
 @trades_bp.route('/open', methods=['POST'])
 @jwt_required()
+@limiter.limit("30 per minute")
 def open_trade():
     """Open a new trade"""
     current_user_id = int(get_jwt_identity())
@@ -91,6 +97,21 @@ def open_trade():
     db.session.add(trade)
     db.session.commit()
 
+    # Log trade open
+    try:
+        user = User.query.get(current_user_id)
+        AuditService.log_trade_open(
+            user_id=current_user_id,
+            username=user.username if user else None,
+            trade_id=trade.id,
+            symbol=symbol,
+            trade_type=data['trade_type'],
+            quantity=quantity,
+            price=current_price
+        )
+    except Exception as e:
+        logger.warning(f"Failed to log trade open audit: {e}")
+
     return jsonify({
         'message': 'Trade opened successfully',
         'trade': trade.to_dict(),
@@ -100,6 +121,7 @@ def open_trade():
 
 @trades_bp.route('/<int:trade_id>/close', methods=['POST'])
 @jwt_required()
+@limiter.limit("30 per minute")
 def close_trade(trade_id):
     """Close an open trade"""
     current_user_id = int(get_jwt_identity())
@@ -131,6 +153,19 @@ def close_trade(trade_id):
         challenge.highest_balance = challenge.current_balance
 
     db.session.commit()
+
+    # Log trade close
+    try:
+        user = User.query.get(current_user_id)
+        AuditService.log_trade_close(
+            user_id=current_user_id,
+            username=user.username if user else None,
+            trade_id=trade.id,
+            symbol=trade.symbol,
+            profit_loss=pnl
+        )
+    except Exception as e:
+        logger.warning(f"Failed to log trade close audit: {e}")
 
     # Evaluate challenge rules
     engine = ChallengeEngine()

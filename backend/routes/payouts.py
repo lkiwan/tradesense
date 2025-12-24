@@ -1,15 +1,81 @@
 """
 Payout routes for funded trader withdrawals
 """
-
+import logging
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from datetime import datetime
+from datetime import datetime, timedelta
 from decimal import Decimal
-from models import db, User, UserChallenge, Payout
+from models import db, User, UserChallenge, Payout, KYCData, KYC_TIER_LIMITS
 from flask import current_app
 
+logger = logging.getLogger(__name__)
 payouts_bp = Blueprint('payouts', __name__, url_prefix='/api/payouts')
+
+
+def get_monthly_payout_total(user_id: int) -> float:
+    """Get total payouts for current month"""
+    now = datetime.utcnow()
+    month_start = datetime(now.year, now.month, 1)
+
+    total = db.session.query(
+        db.func.coalesce(db.func.sum(Payout.net_payout), 0)
+    ).filter(
+        Payout.user_id == user_id,
+        Payout.status.in_(['pending', 'approved', 'paid']),
+        Payout.requested_at >= month_start
+    ).scalar()
+
+    return float(total or 0)
+
+
+def check_kyc_payout_limit(user_id: int, amount: float) -> tuple:
+    """
+    Check if user can request payout based on KYC tier
+
+    Returns:
+        (bool, str | None): (can_request, error_message)
+    """
+    kyc = KYCData.query.filter_by(user_id=user_id).first()
+
+    if not kyc:
+        # No KYC record - treat as tier 0
+        return False, 'KYC verification required before requesting payouts. Please complete identity verification.'
+
+    # Get tier limit
+    tier_limit = KYC_TIER_LIMITS.get(kyc.current_tier, 0)
+
+    if tier_limit == 0:
+        return False, 'KYC verification required before requesting payouts. Please complete identity verification.'
+
+    if tier_limit == float('inf'):
+        return True, None  # Unlimited
+
+    # Check monthly total
+    monthly_total = get_monthly_payout_total(user_id)
+    remaining = tier_limit - monthly_total
+
+    if amount > remaining:
+        return False, f'Payout exceeds monthly limit. Your KYC Tier {kyc.current_tier} allows ${tier_limit:,.0f}/month. Remaining this month: ${remaining:,.2f}. Upgrade your KYC tier for higher limits.'
+
+    return True, None
+
+
+def send_payout_email(user_id: int, payout_data: dict):
+    """Send payout status email to user (async or sync fallback)"""
+    try:
+        from tasks.email_tasks import send_payout_status_email
+        send_payout_status_email.delay(user_id, payout_data)
+        logger.info(f"Payout email queued for user {user_id}")
+    except Exception as e:
+        logger.warning(f"Celery not available, trying sync email: {e}")
+        try:
+            user = User.query.get(user_id)
+            if user:
+                from services.email_service import EmailService
+                EmailService.send_payout_status_email(user.email, payout_data)
+        except Exception as email_error:
+            logger.error(f"Failed to send payout email: {email_error}")
 
 
 @payouts_bp.route('', methods=['GET'])
@@ -31,7 +97,7 @@ def get_payouts():
 @jwt_required()
 def get_balance():
     """Get available balance for withdrawal"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
 
     # Get funded challenge
     funded_challenge = UserChallenge.query.filter_by(
@@ -57,13 +123,26 @@ def get_balance():
 
     available = float(funded_challenge.withdrawable_profit or 0) - float(pending_payouts or 0)
 
+    # Get KYC info
+    kyc = KYCData.query.filter_by(user_id=user_id).first()
+    kyc_tier = kyc.current_tier if kyc else 0
+    kyc_limit = KYC_TIER_LIMITS.get(kyc_tier, 0)
+    monthly_used = get_monthly_payout_total(user_id)
+
     return jsonify({
         'total_profit': float(funded_challenge.total_profit_earned or 0),
         'withdrawable_profit': float(funded_challenge.withdrawable_profit or 0),
         'pending_payouts': float(pending_payouts or 0),
         'available_balance': max(0, available),
         'platform_fee_percentage': 20,
-        'trader_percentage': 80
+        'trader_percentage': 80,
+        'kyc': {
+            'tier': kyc_tier,
+            'status': kyc.status if kyc else 'not_started',
+            'monthly_limit': None if kyc_limit == float('inf') else kyc_limit,
+            'monthly_used': monthly_used,
+            'monthly_remaining': None if kyc_limit == float('inf') else max(0, kyc_limit - monthly_used)
+        }
     }), 200
 
 
@@ -71,7 +150,7 @@ def get_balance():
 @jwt_required()
 def request_payout():
     """Request a withdrawal from funded account"""
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
     data = request.get_json()
 
     amount = data.get('amount')
@@ -80,6 +159,19 @@ def request_payout():
 
     if not amount or float(amount) <= 0:
         return jsonify({'error': 'Invalid amount'}), 400
+
+    # Check KYC tier limits
+    can_payout, kyc_error = check_kyc_payout_limit(user_id, float(amount))
+    if not can_payout:
+        # Get KYC info for response
+        kyc = KYCData.query.filter_by(user_id=user_id).first()
+        return jsonify({
+            'error': kyc_error,
+            'kyc_required': True,
+            'current_tier': kyc.current_tier if kyc else 0,
+            'monthly_limit': KYC_TIER_LIMITS.get(kyc.current_tier, 0) if kyc else 0,
+            'monthly_used': get_monthly_payout_total(user_id)
+        }), 400
 
     # Get funded challenge
     funded_challenge = UserChallenge.query.filter_by(
@@ -126,6 +218,13 @@ def request_payout():
 
     db.session.add(payout)
     db.session.commit()
+
+    # Send confirmation email
+    send_payout_email(user_id, {
+        'status': 'pending',
+        'amount': float(payout.net_payout),
+        'method': payment_method
+    })
 
     return jsonify({
         'message': 'Payout request submitted successfully',
@@ -181,6 +280,13 @@ def admin_approve_payout(payout_id):
     payout.processed_by = user_id
     db.session.commit()
 
+    # Send email notification
+    send_payout_email(payout.user_id, {
+        'status': 'approved',
+        'amount': float(payout.net_payout),
+        'method': payout.payment_method
+    })
+
     return jsonify({
         'message': 'Payout approved',
         'payout': payout.to_dict()
@@ -223,6 +329,14 @@ def admin_process_payout(payout_id):
 
     db.session.commit()
 
+    # Send email notification
+    send_payout_email(payout.user_id, {
+        'status': 'completed',
+        'amount': float(payout.net_payout),
+        'method': payout.payment_method,
+        'transaction_id': transaction_id
+    })
+
     return jsonify({
         'message': 'Payout processed successfully',
         'payout': payout.to_dict()
@@ -254,6 +368,14 @@ def admin_reject_payout(payout_id):
     payout.processed_at = datetime.utcnow()
     payout.processed_by = user_id
     db.session.commit()
+
+    # Send email notification
+    send_payout_email(payout.user_id, {
+        'status': 'rejected',
+        'amount': float(payout.net_payout),
+        'method': payout.payment_method,
+        'reason': reason
+    })
 
     return jsonify({
         'message': 'Payout rejected',

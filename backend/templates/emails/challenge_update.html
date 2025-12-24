@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Challenge {{ challenge.status|title }} - TradeSense{% endblock %}
+
+{% block header %}
+<tr>
+    <td class="header" style="background: {% if challenge.status == 'funded' %}linear-gradient(135deg, #8B5CF6, #7C3AED){% elif challenge.status == 'passed' %}linear-gradient(135deg, #10B981, #059669){% elif challenge.status == 'failed' %}linear-gradient(135deg, #EF4444, #DC2626){% else %}linear-gradient(135deg, #3B82F6, #2563EB){% endif %};">
+        {% if challenge.status == 'funded' %}
+        <div style="font-size: 50px; margin-bottom: 10px;">🎉</div>
+        <h1>Congratulations!</h1>
+        <p>You're Now a Funded Trader</p>
+        {% elif challenge.status == 'passed' %}
+        <div style="font-size: 50px; margin-bottom: 10px;">🏆</div>
+        <h1>Challenge Passed!</h1>
+        <p>{{ challenge.name|default('Challenge') }}</p>
+        {% elif challenge.status == 'failed' %}
+        <h1>Challenge Update</h1>
+        <p>{{ challenge.name|default('Challenge') }}</p>
+        {% else %}
+        <h1>Challenge Update</h1>
+        <p>{{ challenge.name|default('Challenge') }}</p>
+        {% endif %}
+    </td>
+</tr>
+{% endblock %}
+
+{% block content %}
+{% if challenge.status == 'funded' %}
+<p>This is it - you've made it! You are now a <strong>funded trader</strong> at TradeSense!</p>
+
+<p>You've proven your trading skills and discipline through our evaluation process. Now you can trade with real capital and earn real profits.</p>
+
+<div class="info-box" style="background: linear-gradient(135deg, #f5f3ff, #ede9fe);">
+    <h3 style="color: #7C3AED;">What's Next?</h3>
+    <ul style="color: #374151; line-height: 2;">
+        <li>Your funded account is now active</li>
+        <li>Trade with our capital and keep up to 80% of profits</li>
+        <li>Request payouts after your first trading period</li>
+        <li>Continue following risk management rules</li>
+    </ul>
+</div>
+
+{% elif challenge.status == 'passed' %}
+<p>Excellent work! You've successfully passed <strong>{{ challenge.name|default('this phase') }}</strong>.</p>
+
+{% if challenge.phase %}
+<div class="info-box">
+    <h3>Progress</h3>
+    <p>You've completed Phase {{ challenge.phase }}. {% if challenge.next_phase %}Phase {{ challenge.next_phase }} awaits!{% else %}You're moving to funded status!{% endif %}</p>
+</div>
+{% endif %}
+
+{% elif challenge.status == 'failed' %}
+<p>Unfortunately, your challenge has ended due to a rule violation.</p>
+
+{% if challenge.failure_reason %}
+<div class="alert alert-error">
+    <p><strong>Reason:</strong> {{ challenge.failure_reason }}</p>
+</div>
+{% endif %}
+
+<p>Don't let this discourage you. Many successful traders have faced setbacks. Learn from this experience and try again!</p>
+
+<div class="info-box">
+    <h3>Your Options</h3>
+    <ul style="color: #374151; line-height: 2;">
+        <li>Reset your challenge with a 10% discount</li>
+        <li>Start a new challenge</li>
+        <li>Review your trading journal for insights</li>
+    </ul>
+</div>
+
+{% else %}
+<p>Your challenge status has been updated to: <strong>{{ challenge.status|title }}</strong></p>
+{% endif %}
+
+<div class="info-box">
+    <h3>Challenge Details</h3>
+    <table class="info-table">
+        <tr>
+            <td>Challenge</td>
+            <td>{{ challenge.name|default('Trading Challenge') }}</td>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td style="color: {% if challenge.status == 'funded' or challenge.status == 'passed' %}#10B981{% elif challenge.status == 'failed' %}#EF4444{% else %}#3B82F6{% endif %};">
+                {{ challenge.status|title }}
+            </td>
+        </tr>
+        {% if challenge.balance %}
+        <tr>
+            <td>Balance</td>
+            <td>${{ "%.2f"|format(challenge.balance) }}</td>
+        </tr>
+        {% endif %}
+        {% if challenge.profit_loss %}
+        <tr>
+            <td>Total P/L</td>
+            <td style="color: {% if challenge.profit_loss >= 0 %}#10B981{% else %}#EF4444{% endif %};">
+                {% if challenge.profit_loss >= 0 %}+{% endif %}${{ "%.2f"|format(challenge.profit_loss) }}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+<p class="text-center mt-30">
+    <a href="{{ dashboard_url|default('https://tradesense.com/dashboard') }}" class="btn">View Dashboard</a>
+</p>
+{% endblock %}

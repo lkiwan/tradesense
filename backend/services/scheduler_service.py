@@ -1,5 +1,7 @@
 """
-APScheduler Service for Background Jobs
+Scheduler Service for Background Jobs
+
+Supports both Celery (production) and APScheduler (development fallback).
 
 Handles:
 - Trial expiration checking
@@ -12,40 +14,76 @@ from apscheduler.triggers.interval import IntervalTrigger
 from datetime import datetime
 from decimal import Decimal
 import logging
+import os
 
 # Configure logging
 logging.basicConfig()
 logging.getLogger('apscheduler').setLevel(logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Global scheduler instance
 scheduler = BackgroundScheduler()
 _app = None
+_use_celery = False
+
+
+def is_celery_available():
+    """Check if Celery worker is available"""
+    try:
+        from celery_app import celery_app
+        # Try to ping the celery worker
+        result = celery_app.control.ping(timeout=1)
+        return bool(result)
+    except Exception:
+        return False
 
 
 def init_scheduler(app):
     """
     Initialize and start the scheduler with Flask app context.
 
+    Uses Celery if available, otherwise falls back to APScheduler.
+
     Args:
         app: Flask application instance
     """
-    global _app
+    global _app, _use_celery
     _app = app
 
-    # Add job to process expired trials every hour
-    scheduler.add_job(
-        func=process_expired_trials,
-        trigger=IntervalTrigger(hours=1),
-        id='process_expired_trials',
-        name='Process expired trials and charge users',
-        replace_existing=True,
-        misfire_grace_time=3600  # 1 hour grace period
-    )
+    # Check if Celery should be used
+    use_celery_env = os.getenv('USE_CELERY', 'auto').lower()
 
-    # Start scheduler if not already running
-    if not scheduler.running:
-        scheduler.start()
-        print("APScheduler started - Trial auto-charge job running every hour")
+    if use_celery_env == 'true':
+        _use_celery = True
+        logger.info("Celery enabled via environment variable - APScheduler will run minimal jobs")
+    elif use_celery_env == 'false':
+        _use_celery = False
+        logger.info("Celery disabled via environment variable - using APScheduler")
+    else:
+        # Auto-detect: Check if Celery is available
+        _use_celery = is_celery_available()
+        if _use_celery:
+            logger.info("Celery worker detected - using Celery for scheduled tasks")
+        else:
+            logger.info("Celery not available - using APScheduler as fallback")
+
+    if not _use_celery:
+        # Add job to process expired trials every hour (APScheduler fallback)
+        scheduler.add_job(
+            func=process_expired_trials,
+            trigger=IntervalTrigger(hours=1),
+            id='process_expired_trials',
+            name='Process expired trials and charge users',
+            replace_existing=True,
+            misfire_grace_time=3600  # 1 hour grace period
+        )
+
+        # Start scheduler if not already running
+        if not scheduler.running:
+            scheduler.start()
+            print("APScheduler started - Trial auto-charge job running every hour")
+    else:
+        print("Celery Beat handles scheduled tasks - APScheduler not started")
 
     return scheduler
 

@@ -2,10 +2,13 @@
 Challenge Models API Routes
 Endpoints for retrieving and managing challenge configurations
 """
-
+import logging
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models import db, ChallengeModel, AccountSize, User
+from services.cache_service import CacheService
+
+logger = logging.getLogger(__name__)
 
 challenge_models_bp = Blueprint('challenge_models', __name__, url_prefix='/api/challenge-models')
 
@@ -13,15 +16,26 @@ challenge_models_bp = Blueprint('challenge_models', __name__, url_prefix='/api/c
 @challenge_models_bp.route('', methods=['GET'])
 def get_challenge_models():
     """
-    Get all active challenge models with their account sizes
+    Get all active challenge models with their account sizes (cached for 5 minutes)
     Public endpoint - no authentication required
     """
+    cache_key = CacheService.challenge_key(suffix='models:active')
+
+    # Try cache first
+    cached_data = CacheService.get(cache_key)
+    if cached_data:
+        logger.debug("Cache hit for challenge models")
+        return jsonify(cached_data), 200
+
     models = ChallengeModel.query.filter_by(is_active=True)\
         .order_by(ChallengeModel.display_order).all()
 
-    return jsonify({
+    result = {
         'models': [model.to_dict(include_sizes=True) for model in models]
-    }), 200
+    }
+
+    CacheService.set(cache_key, result, timeout=CacheService.TTL['challenge_models'])
+    return jsonify(result), 200
 
 
 @challenge_models_bp.route('/<int:model_id>', methods=['GET'])
@@ -63,9 +77,17 @@ def get_account_sizes(model_id):
 @challenge_models_bp.route('/compare', methods=['GET'])
 def compare_models():
     """
-    Get comparison data for all models
+    Get comparison data for all models (cached for 5 minutes)
     Returns a structured comparison for the pricing page
     """
+    cache_key = CacheService.challenge_key(suffix='models:compare')
+
+    # Try cache first
+    cached_data = CacheService.get(cache_key)
+    if cached_data:
+        logger.debug("Cache hit for challenge models comparison")
+        return jsonify(cached_data), 200
+
     models = ChallengeModel.query.filter_by(is_active=True)\
         .order_by(ChallengeModel.display_order).all()
 
@@ -95,6 +117,7 @@ def compare_models():
             model_data['starting_price'] = 0
         comparison['models'].append(model_data)
 
+    CacheService.set(cache_key, comparison, timeout=CacheService.TTL['challenge_models'])
     return jsonify(comparison), 200
 
 
@@ -169,6 +192,10 @@ def admin_create_model():
     db.session.add(model)
     db.session.commit()
 
+    # Invalidate cache
+    CacheService.delete(CacheService.challenge_key(suffix='models:active'))
+    CacheService.delete(CacheService.challenge_key(suffix='models:compare'))
+
     return jsonify({
         'message': 'Challenge model created successfully',
         'model': model.to_dict()
@@ -206,6 +233,10 @@ def admin_update_model(model_id):
             setattr(model, field, data[field])
 
     db.session.commit()
+
+    # Invalidate cache
+    CacheService.delete(CacheService.challenge_key(suffix='models:active'))
+    CacheService.delete(CacheService.challenge_key(suffix='models:compare'))
 
     return jsonify({
         'message': 'Challenge model updated successfully',

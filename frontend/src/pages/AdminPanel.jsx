@@ -5,8 +5,10 @@ import toast from 'react-hot-toast'
 import {
   Users, Activity, DollarSign, TrendingUp,
   Search, ChevronLeft, ChevronRight, Eye,
-  CheckCircle, XCircle, Clock, Filter
+  CheckCircle, XCircle, Clock, Filter, FileText, Shield
 } from 'lucide-react'
+import AuditLogsPage from './admin/AuditLogsPage'
+import KYCReviewPage from './admin/KYCReviewPage'
 
 const AdminPanel = () => {
   const { t } = useTranslation()
@@ -78,7 +80,9 @@ const AdminPanel = () => {
   const tabs = [
     { id: 'users', label: 'Utilisateurs', icon: Users },
     { id: 'challenges', label: 'Challenges', icon: Activity },
-    { id: 'payments', label: 'Paiements', icon: DollarSign }
+    { id: 'payments', label: 'Paiements', icon: DollarSign },
+    { id: 'kyc', label: 'KYC Review', icon: Shield },
+    { id: 'audit', label: 'Audit Logs', icon: FileText }
   ]
 
   const getStatusBadge = (status) => {
@@ -329,6 +333,20 @@ const AdminPanel = () => {
                     ))}
                   </tbody>
                 </table>
+              )}
+
+              {/* KYC Review Tab */}
+              {activeTab === 'kyc' && (
+                <div className="-m-px">
+                  <KYCReviewPage embedded={true} />
+                </div>
+              )}
+
+              {/* Audit Logs Tab */}
+              {activeTab === 'audit' && (
+                <div className="-m-px">
+                  <AuditLogsPage embedded={true} />
+                </div>
               )}
             </>
           )}

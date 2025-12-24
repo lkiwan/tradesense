@@ -5,10 +5,13 @@ from . import db
 class Payout(db.Model):
     """Payout model for funded trader withdrawals"""
     __tablename__ = 'payouts'
+    __table_args__ = (
+        db.Index('idx_payouts_user_status', 'user_id', 'status'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
+    challenge_id = db.Column(db.Integer, db.ForeignKey('user_challenges.id', ondelete='CASCADE'), nullable=False)
 
     # Payout amounts
     gross_profit = db.Column(db.Numeric(15, 2), nullable=False)  # Total profit requested

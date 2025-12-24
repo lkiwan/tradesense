@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Trade {{ trade.action|title }} - TradeSense{% endblock %}
+
+{% block header %}
+<tr>
+    <td class="header" style="background: {% if trade.profit_loss >= 0 %}linear-gradient(135deg, #10B981, #059669){% else %}linear-gradient(135deg, #EF4444, #DC2626){% endif %};">
+        <h1>Trade {{ trade.action|title }}</h1>
+        <p>{{ trade.symbol }}</p>
+    </td>
+</tr>
+{% endblock %}
+
+{% block content %}
+<p>Your trade has been {{ trade.action }}.</p>
+
+<div class="info-box">
+    <h3>Trade Details</h3>
+    <table class="info-table">
+        <tr>
+            <td>Symbol</td>
+            <td><strong>{{ trade.symbol }}</strong></td>
+        </tr>
+        <tr>
+            <td>Type</td>
+            <td>{{ trade.trade_type|upper }}</td>
+        </tr>
+        <tr>
+            <td>Lot Size</td>
+            <td>{{ trade.lot_size }}</td>
+        </tr>
+        <tr>
+            <td>Entry Price</td>
+            <td>${{ "%.2f"|format(trade.entry_price) }}</td>
+        </tr>
+        {% if trade.exit_price %}
+        <tr>
+            <td>Exit Price</td>
+            <td>${{ "%.2f"|format(trade.exit_price) }}</td>
+        </tr>
+        {% endif %}
+        {% if trade.stop_loss %}
+        <tr>
+            <td>Stop Loss</td>
+            <td>${{ "%.2f"|format(trade.stop_loss) }}</td>
+        </tr>
+        {% endif %}
+        {% if trade.take_profit %}
+        <tr>
+            <td>Take Profit</td>
+            <td>${{ "%.2f"|format(trade.take_profit) }}</td>
+        </tr>
+        {% endif %}
+        {% if trade.profit_loss is defined %}
+        <tr>
+            <td>Profit/Loss</td>
+            <td style="color: {% if trade.profit_loss >= 0 %}#10B981{% else %}#EF4444{% endif %}; font-size: 18px;">
+                {% if trade.profit_loss >= 0 %}+{% endif %}${{ "%.2f"|format(trade.profit_loss) }}
+            </td>
+        </tr>
+        {% endif %}
+    </table>
+</div>
+
+<p class="text-center mt-30">
+    <a href="{{ dashboard_url|default('https://tradesense.com/dashboard') }}" class="btn">View Dashboard</a>
+</p>
+{% endblock %}

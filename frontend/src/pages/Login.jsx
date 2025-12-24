@@ -1,18 +1,25 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, LogIn } from 'lucide-react'
+import { Mail, Lock, Loader2, LogIn, AlertTriangle, Clock } from 'lucide-react'
+import SimpleCaptcha from '../components/auth/SimpleCaptcha'
+import SocialLoginButtons from '../components/auth/SocialLoginButtons'
+import { useRateLimit } from '../hooks/useRateLimit'
 
 const Login = () => {
   const { t } = useTranslation()
   const { login } = useAuth()
   const navigate = useNavigate()
+  const { isLimited, formattedCountdown } = useRateLimit()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
+  const [requiresCaptcha, setRequiresCaptcha] = useState(false)
+  const [captchaToken, setCaptchaToken] = useState(null)
+  const [failedAttempts, setFailedAttempts] = useState(0)
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -22,16 +29,79 @@ const Login = () => {
       return
     }
 
-    setLoading(true)
-    const result = await login(email, password)
-    setLoading(false)
-
-    if (result.success) {
-      toast.success('Welcome back!')
-      navigate('/dashboard')
-    } else {
-      toast.error(result.error)
+    // Check if CAPTCHA is required but not verified
+    if (requiresCaptcha && !captchaToken) {
+      toast.error('Please complete the CAPTCHA verification')
+      return
     }
+
+    // Check if rate limited
+    if (isLimited) {
+      toast.error(`Please wait ${formattedCountdown} before trying again`)
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const result = await login(email, password, captchaToken)
+      setLoading(false)
+
+      if (result.success) {
+        // Reset state on success
+        setFailedAttempts(0)
+        setRequiresCaptcha(false)
+        setCaptchaToken(null)
+        toast.success('Welcome back!')
+        navigate('/dashboard')
+      } else if (result.requires_2fa) {
+        // Redirect to 2FA verification page with credentials
+        navigate('/verify-2fa', {
+          state: {
+            email,
+            password,
+            tempToken: result.temp_token
+          }
+        })
+      } else {
+        // Handle error
+        setFailedAttempts(prev => prev + 1)
+
+        // Check if CAPTCHA is now required
+        if (result.requires_captcha) {
+          setRequiresCaptcha(true)
+          setCaptchaToken(null)
+        }
+
+        toast.error(result.error)
+      }
+    } catch (error) {
+      setLoading(false)
+
+      // Handle rate limit error
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.data?.retry_after || 60
+        toast.error(`Too many attempts. Please wait ${retryAfter} seconds.`)
+        return
+      }
+
+      // Handle CAPTCHA required
+      if (error.response?.data?.requires_captcha) {
+        setRequiresCaptcha(true)
+        setCaptchaToken(null)
+        setFailedAttempts(error.response.data.failed_attempts || failedAttempts + 1)
+      }
+
+      toast.error(error.response?.data?.error || 'Login failed')
+    }
+  }
+
+  const handleCaptchaVerify = (token) => {
+    setCaptchaToken(token)
+  }
+
+  const handleCaptchaError = () => {
+    setCaptchaToken(null)
   }
 
   return (
@@ -97,21 +167,50 @@ const Login = () => {
 
             {/* Forgot Password */}
             <div className="flex items-center justify-end">
-              <a href="#" className="text-sm text-primary-500 hover:text-primary-600">
+              <Link to="/forgot-password" className="text-sm text-primary-500 hover:text-primary-600">
                 Mot de passe oublie?
-              </a>
+              </Link>
             </div>
+
+            {/* Rate Limit Warning */}
+            {isLimited && (
+              <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4">
+                <div className="flex items-center gap-3">
+                  <AlertTriangle className="text-yellow-400 flex-shrink-0" size={20} />
+                  <div>
+                    <p className="text-yellow-400 font-medium">Too many attempts</p>
+                    <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
+                      <Clock size={14} />
+                      Please wait {formattedCountdown} before trying again
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* CAPTCHA */}
+            {requiresCaptcha && !isLimited && (
+              <SimpleCaptcha
+                onVerify={handleCaptchaVerify}
+                onError={handleCaptchaError}
+              />
+            )}
 
             {/* Submit */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || isLimited || (requiresCaptcha && !captchaToken)}
               className="w-full flex items-center justify-center gap-2 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
                   {t('common.loading')}
+                </>
+              ) : isLimited ? (
+                <>
+                  <Clock size={20} />
+                  Wait {formattedCountdown}
                 </>
               ) : (
                 <>
@@ -128,7 +227,20 @@ const Login = () => {
               <div className="w-full border-t border-gray-200 dark:border-dark-100" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white dark:bg-dark-100 text-gray-500">ou</span>
+              <span className="px-4 bg-white dark:bg-dark-100 text-gray-500">ou continuer avec</span>
+            </div>
+          </div>
+
+          {/* Social Login Buttons */}
+          <SocialLoginButtons mode="login" disabled={loading || isLimited} />
+
+          {/* Demo Account Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200 dark:border-dark-100" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-4 bg-white dark:bg-dark-100 text-gray-500">demo</span>
             </div>
           </div>
 

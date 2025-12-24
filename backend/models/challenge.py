@@ -5,9 +5,14 @@ from . import db
 
 class UserChallenge(db.Model):
     __tablename__ = 'user_challenges'
+    __table_args__ = (
+        db.Index('idx_challenges_user_status', 'user_id', 'status'),
+        db.Index('idx_challenges_phase', 'phase'),
+        db.Index('idx_challenges_start_date', 'start_date'),
+    )
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id', ondelete='CASCADE'), nullable=False)
 
     # Challenge Model Reference (new multi-model system)
     model_id = db.Column(db.Integer, db.ForeignKey('challenge_models.id'), nullable=True)
@@ -51,9 +56,11 @@ class UserChallenge(db.Model):
     trading_days = db.Column(db.Integer, default=0)
     last_trading_day = db.Column(db.Date, nullable=True)
 
-    # Relationships
-    trades = db.relationship('Trade', backref='challenge', lazy=True)
-    payouts = db.relationship('Payout', backref='challenge', lazy=True)
+    # Relationships with cascade for PostgreSQL
+    trades = db.relationship('Trade', backref='challenge', lazy=True,
+                            cascade='all, delete-orphan', passive_deletes=True)
+    payouts = db.relationship('Payout', backref='challenge', lazy=True,
+                             cascade='all, delete-orphan')
     account_size = db.relationship('AccountSize', foreign_keys=[account_size_id])
 
     @property

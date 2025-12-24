@@ -11,12 +11,17 @@ const api = axios.create({
   }
 })
 
-// Request interceptor - add auth token
+// Request interceptor - add auth token and session token
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
+    }
+    // Add session token for session management
+    const sessionToken = localStorage.getItem('session_token')
+    if (sessionToken) {
+      config.headers['X-Session-Token'] = sessionToken
     }
     return config
   },
@@ -29,14 +34,68 @@ api.interceptors.request.use(
 let isRefreshing = false
 let isRedirecting = false
 
-// Response interceptor - handle token refresh and log errors
+// Rate limit state for UI components
+export const rateLimitState = {
+  isLimited: false,
+  retryAfter: 0,
+  resetTime: null,
+  endpoint: null
+}
+
+// Response interceptor - handle token refresh, rate limits, and log errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Extract rate limit headers for monitoring
+    const remaining = response.headers['x-ratelimit-remaining']
+    const limit = response.headers['x-ratelimit-limit']
+    const reset = response.headers['x-ratelimit-reset']
+
+    if (remaining !== undefined) {
+      // Store rate limit info for components that need it
+      response.rateLimitInfo = {
+        remaining: parseInt(remaining, 10),
+        limit: parseInt(limit, 10),
+        reset: reset ? new Date(parseInt(reset, 10) * 1000) : null
+      }
+    }
+
+    return response
+  },
   async (error) => {
     const originalRequest = error.config
 
     // Log error in development
     logError(error, `API ${originalRequest?.method?.toUpperCase()} ${originalRequest?.url}`)
+
+    // Handle rate limit errors (429)
+    if (error.response?.status === 429) {
+      const retryAfter = parseInt(error.response.headers['retry-after'] || error.response.data?.retry_after || 60, 10)
+
+      // Update rate limit state
+      rateLimitState.isLimited = true
+      rateLimitState.retryAfter = retryAfter
+      rateLimitState.resetTime = new Date(Date.now() + retryAfter * 1000)
+      rateLimitState.endpoint = originalRequest?.url
+
+      // Dispatch custom event for UI components
+      window.dispatchEvent(new CustomEvent('rateLimitExceeded', {
+        detail: {
+          retryAfter,
+          endpoint: originalRequest?.url,
+          message: error.response.data?.message || 'Too many requests. Please wait.'
+        }
+      }))
+
+      // Clear rate limit state after timeout
+      setTimeout(() => {
+        rateLimitState.isLimited = false
+        rateLimitState.retryAfter = 0
+        rateLimitState.resetTime = null
+        rateLimitState.endpoint = null
+      }, retryAfter * 1000)
+
+      return Promise.reject(error)
+    }
 
     // Skip redirect handling for auth endpoints to prevent loops
     const isAuthEndpoint = originalRequest?.url?.includes('/auth/')
@@ -243,6 +302,280 @@ export const subscriptionsAPI = {
   // Get current trial/subscription status
   getStatus: () =>
     api.get('/subscriptions/trial/status')
+}
+
+// Referrals API
+export const referralsAPI = {
+  // Generate referral code
+  generateCode: () => api.post('/referrals/generate-code'),
+
+  // Get user's referral code
+  getMyCode: () => api.get('/referrals/my-code'),
+
+  // Get referral statistics
+  getStats: () => api.get('/referrals/stats'),
+
+  // Get referral history
+  getHistory: (page = 1, perPage = 10) =>
+    api.get('/referrals/history', { params: { page, per_page: perPage } }),
+
+  // Apply referral code
+  applyCode: (referralCode, userId) =>
+    api.post('/referrals/apply', { referral_code: referralCode, user_id: userId }),
+
+  // Validate referral code
+  validateCode: (code) => api.get(`/referrals/validate/${code}`)
+}
+
+// Points API
+export const pointsAPI = {
+  // Get user's points balance
+  getBalance: () => api.get('/points/balance'),
+
+  // Get points transaction history
+  getHistory: (page = 1, perPage = 20, type = null) =>
+    api.get('/points/history', { params: { page, per_page: perPage, type } }),
+
+  // Get available point-earning activities
+  getActivities: () => api.get('/points/activities'),
+
+  // Get points leaderboard
+  getLeaderboard: (period = 'all') =>
+    api.get('/points/leaderboard', { params: { period } }),
+
+  // Award points for an activity
+  awardPoints: (transactionType, description = null, referenceId = null, referenceType = null) =>
+    api.post('/points/award', {
+      transaction_type: transactionType,
+      description,
+      reference_id: referenceId,
+      reference_type: referenceType
+    }),
+
+  // Claim daily login points
+  claimDailyLogin: () => api.post('/points/daily-login')
+}
+
+// Support Tickets API
+export const ticketsAPI = {
+  // Create a new ticket
+  create: (subject, message, category = 'general', priority = 'medium') =>
+    api.post('/tickets', { subject, message, category, priority }),
+
+  // Get user's tickets
+  getAll: (page = 1, perPage = 10, status = null, category = null) =>
+    api.get('/tickets', { params: { page, per_page: perPage, status, category } }),
+
+  // Get a specific ticket with messages
+  getById: (ticketId) => api.get(`/tickets/${ticketId}`),
+
+  // Add a message to a ticket
+  addMessage: (ticketId, message, isInternal = false) =>
+    api.post(`/tickets/${ticketId}/messages`, { message, is_internal: isInternal }),
+
+  // Close a ticket
+  close: (ticketId) => api.put(`/tickets/${ticketId}/close`),
+
+  // Reopen a ticket
+  reopen: (ticketId) => api.put(`/tickets/${ticketId}/reopen`),
+
+  // Admin: Assign ticket
+  assign: (ticketId, assigneeId = null) =>
+    api.put(`/tickets/${ticketId}/assign`, { assignee_id: assigneeId }),
+
+  // Admin: Update status
+  updateStatus: (ticketId, status) =>
+    api.put(`/tickets/${ticketId}/status`, { status }),
+
+  // Admin: Update priority
+  updatePriority: (ticketId, priority) =>
+    api.put(`/tickets/${ticketId}/priority`, { priority })
+}
+
+// Resources API
+export const resourcesAPI = {
+  // Get all resources
+  getAll: (category = null, search = null, featured = false) =>
+    api.get('/resources', { params: { category, search, featured } }),
+
+  // Get a specific resource
+  getById: (resourceId) => api.get(`/resources/${resourceId}`),
+
+  // Record a download
+  download: (resourceId) => api.post(`/resources/${resourceId}/download`),
+
+  // Get economic calendar events
+  getCalendarEvents: (date = null, impact = null, currency = null) =>
+    api.get('/resources/calendar', { params: { date, impact, currency } }),
+
+  // Get week's economic events
+  getWeekEvents: (impact = null) =>
+    api.get('/resources/calendar/week', { params: { impact } }),
+
+  // Admin: Create resource
+  create: (data) => api.post('/resources', data),
+
+  // Admin: Update resource
+  update: (resourceId, data) => api.put(`/resources/${resourceId}`, data),
+
+  // Admin: Delete resource
+  delete: (resourceId) => api.delete(`/resources/${resourceId}`),
+
+  // Admin: Create calendar event
+  createCalendarEvent: (data) => api.post('/resources/calendar', data),
+
+  // Admin: Update calendar event
+  updateCalendarEvent: (eventId, data) => api.put(`/resources/calendar/${eventId}`, data)
+}
+
+// Session Management API
+export const sessionsAPI = {
+  // Get all active sessions
+  getAll: () => api.get('/auth/sessions'),
+
+  // Get current session
+  getCurrent: () => api.get('/auth/sessions/current'),
+
+  // Revoke a specific session
+  revoke: (sessionId) => api.post(`/auth/sessions/${sessionId}/revoke`),
+
+  // Revoke all other sessions
+  revokeAll: () => api.post('/auth/sessions/revoke-all')
+}
+
+// Two-Factor Authentication API
+export const twoFactorAPI = {
+  // Get 2FA status
+  getStatus: () => api.get('/auth/2fa/status'),
+
+  // Initialize 2FA setup (returns QR code and backup codes)
+  setup: () => api.post('/auth/2fa/setup'),
+
+  // Confirm 2FA setup with initial token
+  confirm: (token) => api.post('/auth/2fa/confirm', { token }),
+
+  // Verify 2FA token during login
+  verify: (token) => api.post('/auth/2fa/verify', { token }),
+
+  // Disable 2FA
+  disable: (token) => api.post('/auth/2fa/disable', { token }),
+
+  // Get remaining backup codes count
+  getBackupCodesCount: () => api.get('/auth/2fa/backup-codes'),
+
+  // Regenerate backup codes
+  regenerateBackupCodes: (token) => api.post('/auth/2fa/backup-codes/regenerate', { token }),
+
+  // Check if 2FA is required
+  isRequired: () => api.get('/auth/2fa/required'),
+
+  // Login with 2FA token
+  loginWith2FA: (email, password, twoFaToken) =>
+    api.post('/auth/login', { email, password, two_fa_token: twoFaToken })
+}
+
+// Offers API
+export const offersAPI = {
+  // Get active offers
+  getActive: () => api.get('/offers/active'),
+
+  // Get featured offers
+  getFeatured: () => api.get('/offers/featured'),
+
+  // Validate an offer code
+  validateCode: (code, amount = 0) =>
+    api.get(`/offers/validate/${code}`, { params: { amount } }),
+
+  // Apply an offer
+  apply: (code, amount, paymentId = null) =>
+    api.post('/offers/apply', { code, amount, payment_id: paymentId }),
+
+  // Get user's offers (available and used)
+  getMyOffers: () => api.get('/offers/my-offers'),
+
+  // Admin: Get all offers
+  getAll: (includeInactive = false) =>
+    api.get('/offers', { params: { include_inactive: includeInactive } }),
+
+  // Admin: Create offer
+  create: (data) => api.post('/offers', data),
+
+  // Admin: Update offer
+  update: (offerId, data) => api.put(`/offers/${offerId}`, data),
+
+  // Admin: Delete offer
+  delete: (offerId) => api.delete(`/offers/${offerId}`),
+
+  // Admin: Get offer stats
+  getStats: (offerId) => api.get(`/offers/${offerId}/stats`)
+}
+
+// MT4/MT5 Connection API
+export const mtAPI = {
+  // Get all connections
+  getConnections: () => api.get('/mt/connections'),
+
+  // Connect new MT account
+  connect: (data) => api.post('/mt/connect', data),
+
+  // Disconnect account
+  disconnect: (connectionId) => api.post(`/mt/disconnect/${connectionId}`),
+
+  // Reconnect account
+  reconnect: (connectionId) => api.post(`/mt/reconnect/${connectionId}`),
+
+  // Sync account data
+  sync: (connectionId) => api.post(`/mt/sync/${connectionId}`),
+
+  // Get account info
+  getAccountInfo: (connectionId) => api.get(`/mt/account-info/${connectionId}`),
+
+  // Get positions
+  getPositions: (connectionId) => api.get(`/mt/positions/${connectionId}`),
+
+  // Get history
+  getHistory: (connectionId, days = 30) =>
+    api.get(`/mt/history/${connectionId}`, { params: { days } }),
+
+  // Execute trade
+  execute: (connectionId, data) => api.post(`/mt/execute/${connectionId}`, data),
+
+  // Close position
+  closePosition: (connectionId, positionId, volume = null) =>
+    api.post(`/mt/close-position/${connectionId}`, { position_id: positionId, volume }),
+
+  // Update settings
+  updateSettings: (connectionId, settings) =>
+    api.put(`/mt/settings/${connectionId}`, settings),
+
+  // Delete connection
+  delete: (connectionId) => api.delete(`/mt/delete/${connectionId}`),
+
+  // Get sync logs
+  getSyncLogs: (connectionId, page = 1, perPage = 20) =>
+    api.get(`/mt/sync-logs/${connectionId}`, { params: { page, per_page: perPage } })
+}
+
+// Charts API
+export const chartsAPI = {
+  // Layouts
+  getLayouts: () => api.get('/charts/layouts'),
+  createLayout: (data) => api.post('/charts/layouts', data),
+  updateLayout: (id, data) => api.put(`/charts/layouts/${id}`, data),
+  deleteLayout: (id) => api.delete(`/charts/layouts/${id}`),
+
+  // Templates
+  getTemplates: () => api.get('/charts/templates'),
+  createTemplate: (data) => api.post('/charts/templates', data),
+  updateTemplate: (id, data) => api.put(`/charts/templates/${id}`, data),
+  deleteTemplate: (id) => api.delete(`/charts/templates/${id}`),
+
+  // Drawings
+  getDrawings: (symbol, timeframe) => api.get('/charts/drawings', { params: { symbol, timeframe } }),
+  createDrawing: (data) => api.post('/charts/drawings', data),
+  updateDrawing: (id, data) => api.put(`/charts/drawings/${id}`, data),
+  deleteDrawing: (id) => api.delete(`/charts/drawings/${id}`),
+  bulkDeleteDrawings: (drawingIds) => api.post('/charts/drawings/bulk-delete', { drawing_ids: drawingIds })
 }
 
 export default api

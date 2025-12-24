@@ -4,13 +4,43 @@ Main Flask Application Entry Point
 """
 
 import os
+import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
+
+# Initialize Sentry for error tracking (before any other imports)
+import sentry_sdk
+from sentry_sdk.integrations.flask import FlaskIntegration
+from sentry_sdk.integrations.sqlalchemy import SqlalchemyIntegration
+
+sentry_dsn = os.getenv('SENTRY_DSN')
+if sentry_dsn:
+    sentry_sdk.init(
+        dsn=sentry_dsn,
+        integrations=[
+            FlaskIntegration(),
+            SqlalchemyIntegration(),
+        ],
+        traces_sample_rate=float(os.getenv('SENTRY_TRACES_SAMPLE_RATE', '0.1')),
+        profiles_sample_rate=float(os.getenv('SENTRY_PROFILES_SAMPLE_RATE', '0.1')),
+        environment=os.getenv('FLASK_ENV', 'development'),
+        send_default_pii=False,  # Don't send personally identifiable information
+    )
 
 from config import config
 from models import db, User
 from services.websocket_service import init_socketio, price_updater, socketio
+from services.cache_service import init_cache, cache
+from middleware.rate_limiter import limiter, init_rate_limiter, rate_limit_exceeded_handler
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize Flask-Migrate
+migrate = Migrate()
 
 
 def create_app(config_name=None):
@@ -23,10 +53,25 @@ def create_app(config_name=None):
 
     # Initialize extensions
     db.init_app(app)
+    migrate.init_app(app, db)  # Flask-Migrate for database migrations
     # Allow all origins for development to prevent CORS issues
     CORS(app, resources={r"/*": {"origins": "*"}})
 
     jwt = JWTManager(app)
+
+    # Initialize Cache (Redis with SimpleCache fallback)
+    init_cache(app)
+    logger.info(f"Cache backend: {app.config.get('CACHE_BACKEND', 'unknown')}")
+
+    # Initialize Rate Limiter with Redis backend
+    try:
+        init_rate_limiter(app)
+        logger.info("Rate limiter initialized successfully")
+    except Exception as e:
+        logger.warning(f"Rate limiter initialization warning: {e}")
+        # Fallback: initialize with in-memory storage
+        limiter.init_app(app)
+        app.register_error_handler(429, rate_limit_exceeded_handler)
 
     # Initialize SocketIO
     init_socketio(app)
@@ -57,7 +102,12 @@ def create_app(config_name=None):
     from routes import (
         auth_bp, challenges_bp, trades_bp,
         market_data_bp, payments_bp, leaderboard_bp, admin_bp, subscriptions_bp,
-        payouts_bp, challenge_models_bp
+        payouts_bp, challenge_models_bp, referrals_bp, points_bp, tickets_bp,
+        resources_bp, offers_bp, two_factor_bp, sessions_bp, audit_bp, kyc_bp,
+        subscriptions_v2_bp, challenge_addons_bp, affiliates_bp, advanced_orders_bp,
+        quick_trading_bp, order_templates_bp, journal_bp, mt_bp, charts_bp,
+        profiles_bp, followers_bp, copy_trading_bp, ideas_bp, push_bp, blog_bp,
+        webinars_bp, oauth_bp, events_bp, monitoring_bp
     )
 
     app.register_blueprint(auth_bp)
@@ -70,7 +120,40 @@ def create_app(config_name=None):
     app.register_blueprint(subscriptions_bp)
     app.register_blueprint(payouts_bp)
     app.register_blueprint(challenge_models_bp)
-    
+    app.register_blueprint(referrals_bp)
+    app.register_blueprint(points_bp)
+    app.register_blueprint(tickets_bp)
+    app.register_blueprint(resources_bp)
+    app.register_blueprint(offers_bp)
+    app.register_blueprint(two_factor_bp)
+    app.register_blueprint(sessions_bp)
+    app.register_blueprint(audit_bp)
+    app.register_blueprint(kyc_bp)
+    app.register_blueprint(subscriptions_v2_bp, url_prefix='/api/premium')
+    app.register_blueprint(challenge_addons_bp)
+    app.register_blueprint(affiliates_bp)
+    app.register_blueprint(advanced_orders_bp, url_prefix='/api/orders')
+    app.register_blueprint(quick_trading_bp, url_prefix='/api/quick-trading')
+    app.register_blueprint(order_templates_bp)
+    app.register_blueprint(journal_bp)
+    app.register_blueprint(mt_bp)
+    app.register_blueprint(charts_bp)
+    app.register_blueprint(profiles_bp)
+    app.register_blueprint(followers_bp)
+    app.register_blueprint(copy_trading_bp)
+    app.register_blueprint(ideas_bp)
+    app.register_blueprint(push_bp)
+    app.register_blueprint(blog_bp)
+    app.register_blueprint(webinars_bp)
+    app.register_blueprint(oauth_bp)
+    app.register_blueprint(events_bp)
+    app.register_blueprint(monitoring_bp)
+
+    # Setup request tracking for metrics
+    from services.metrics_service import setup_request_tracking
+    setup_request_tracking(app)
+    logger.info("Request tracking initialized")
+
     # AI Chat Blueprint
     from routes.ai_chat import ai_bp
     app.register_blueprint(ai_bp)
@@ -81,8 +164,10 @@ def create_app(config_name=None):
         return jsonify({
             'status': 'healthy',
             'message': 'TradeSense API is running',
-            'version': '1.0.0',
-            'websocket': 'enabled'
+            'version': '2.0.0',
+            'websocket': 'enabled',
+            'cache_backend': app.config.get('CACHE_BACKEND', 'none'),
+            'rate_limiting': 'enabled'
         }), 200
 
     # Root endpoint

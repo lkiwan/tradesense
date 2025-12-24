@@ -2,11 +2,15 @@ import { useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { useChallenge } from '../context/ChallengeContext'
+import EmailVerificationBanner from './EmailVerificationBanner'
+import { NotificationBell } from './notifications'
 import {
   LayoutDashboard, Calculator, Receipt, Wallet, Gift, Trophy,
   Award, Coins, BookOpen, FileText, Bell, HelpCircle, MessageSquare,
   ChevronDown, ChevronRight, LogOut, Settings, User, Menu, X,
-  Rocket, Brain, TrendingUp, BarChart3, Target, Zap
+  Rocket, Brain, TrendingUp, BarChart3, Target, Zap, Users,
+  CreditCard, FolderOpen, Calendar, ExternalLink, Sparkles, Crown,
+  Layers, MousePointer2, FileCode, Monitor, BarChart2, Copy, Lightbulb
 } from 'lucide-react'
 
 const DashboardLayout = ({ children }) => {
@@ -33,31 +37,93 @@ const DashboardLayout = ({ children }) => {
     navigate('/')
   }
 
+  // Main Navigation Items
   const mainNavItems = [
-    { path: '/dashboard', icon: LayoutDashboard, label: 'Mes Comptes' },
-    { path: '/dashboard/signals', icon: Brain, label: 'Signaux IA' },
-    { path: '/dashboard/calculator', icon: Calculator, label: 'Calculateur' },
-    { path: '/dashboard/transactions', icon: Receipt, label: 'Transactions' },
-    { path: '/dashboard/payouts', icon: Wallet, label: 'Retraits' },
+    { path: '/accounts', icon: LayoutDashboard, label: 'Accounts' },
+    { path: '/margin-calculator', icon: Calculator, label: 'Calculator' },
+    { path: '/billing/billing-history', icon: Receipt, label: 'Transactions' },
+    { path: '/notifications', icon: Bell, label: 'Notifications', badge: '3' },
+    { path: '/support-tickets', icon: MessageSquare, label: 'Support Tickets' },
+    { path: '/plans', icon: CreditCard, label: 'Plans' },
+    { path: '/subscriptions', icon: Crown, label: 'Premium', badge: 'NEW', badgeColor: 'bg-yellow-500' },
+    { path: '/profile/default', icon: User, label: 'Profile' },
   ]
 
+  // Rewards Hub Items with sub-menu for Infinity Points
   const rewardsItems = [
-    { path: '/dashboard/offers', icon: Gift, label: 'Mes Offres', badge: '2' },
-    { path: '/dashboard/competitions', icon: Trophy, label: 'Compétitions' },
-    { path: '/dashboard/certificates', icon: Award, label: 'Certificats' },
-    { path: '/dashboard/points', icon: Coins, label: 'Points Fidélité' },
+    { path: '/refer-and-earn', icon: Users, label: 'Refer & Earn', badge: 'NEW', badgeColor: 'bg-green-500' },
+    { path: '/my-offers', icon: Gift, label: 'My Offers', badge: '2' },
+    { path: '/competition', icon: Trophy, label: 'Competitions' },
+    { path: '/certificates', icon: Award, label: 'Certificates' },
   ]
 
-  const supportItems = [
-    { path: '/dashboard/resources', icon: BookOpen, label: 'Ressources' },
-    { path: '/dashboard/rules', icon: FileText, label: 'Règles de Trading' },
-    { path: '/dashboard/notifications', icon: Bell, label: 'Notifications', badge: '3' },
-    { path: '/faq', icon: HelpCircle, label: 'FAQ' },
-    { path: '/dashboard/support', icon: MessageSquare, label: 'Support' },
+  // Infinity Points Sub-items
+  const infinityPointsItems = [
+    { path: '/infinity-points', icon: Sparkles, label: 'Activities' },
+    { path: '/infinity-points/profile', icon: BarChart3, label: 'My Points' },
+    { path: '/infinity-points/history', icon: FileText, label: 'History' },
+    { path: '/infinity-points/rewards', icon: Gift, label: 'Rewards Store', badge: 'NEW', badgeColor: 'bg-yellow-500' },
   ]
+
+  // Trading Tools Items
+  const tradingToolsItems = [
+    { path: '/advanced-orders', icon: Layers, label: 'Advanced Orders', badge: 'NEW', badgeColor: 'bg-blue-500' },
+    { path: '/quick-trading', icon: MousePointer2, label: 'Quick Trading', badge: 'NEW', badgeColor: 'bg-green-500' },
+    { path: '/order-templates', icon: FileCode, label: 'Order Templates', badge: 'NEW', badgeColor: 'bg-purple-500' },
+    { path: '/trade-journal', icon: BookOpen, label: 'Trade Journal', badge: 'NEW', badgeColor: 'bg-orange-500' },
+    { path: '/mt-connection', icon: Monitor, label: 'MT4/MT5 Connect', badge: 'NEW', badgeColor: 'bg-cyan-500' },
+    { path: '/charts', icon: BarChart2, label: 'Advanced Charts', badge: 'NEW', badgeColor: 'bg-indigo-500' },
+  ]
+
+  // Social Trading Items
+  const socialTradingItems = [
+    { path: '/my-profile', icon: User, label: 'My Trader Profile', badge: 'NEW', badgeColor: 'bg-pink-500' },
+    { path: '/followers', icon: Users, label: 'Followers & Network', badge: 'NEW', badgeColor: 'bg-pink-500' },
+    { path: '/copy-trading', icon: Copy, label: 'Copy Trading', badge: 'NEW', badgeColor: 'bg-purple-500' },
+    { path: '/trading-ideas', icon: Lightbulb, label: 'Trading Ideas', badge: 'NEW', badgeColor: 'bg-yellow-500' },
+  ]
+
+  // Help & Support Items
+  const supportItems = [
+    { path: '/utilities', icon: FolderOpen, label: 'Files & Utilities' },
+    { path: '/calendar', icon: Calendar, label: 'Calendar' },
+    { path: 'https://fundednext.com/symbols', icon: ExternalLink, label: 'Symbols', external: true },
+  ]
+
+  // Trading Rules & FAQ (External Links)
+  const externalLinks = [
+    { path: 'https://help.fundednext.com/en/collections/11026230-trading-rules-guidelines', label: 'Trading Rules (CFDs)', external: true },
+    { path: 'https://helpfutures.fundednext.com/en/collections/12136956-trading-rules-guidelines', label: 'Trading Rules (Futures)', external: true },
+    { path: 'https://help.fundednext.com/en/', label: 'FAQ (CFDs)', external: true },
+    { path: 'https://helpfutures.fundednext.com/en/', label: 'FAQ (Futures)', external: true },
+  ]
+
+  // Expanded sections state - add infinity points
+  const [infinityExpanded, setInfinityExpanded] = useState(false)
 
   const NavItem = ({ item, collapsed = false }) => {
-    const isActive = location.pathname === item.path
+    const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+
+    // Handle external links
+    if (item.external) {
+      return (
+        <a
+          href={item.path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group text-gray-400 hover:text-white hover:bg-dark-200"
+        >
+          <item.icon size={20} className="text-gray-500 group-hover:text-primary-400" />
+          {!collapsed && (
+            <>
+              <span className="flex-1 font-medium">{item.label}</span>
+              <ExternalLink size={14} className="text-gray-500" />
+            </>
+          )}
+        </a>
+      )
+    }
+
     return (
       <Link
         to={item.path}
@@ -73,13 +139,48 @@ const DashboardLayout = ({ children }) => {
           <>
             <span className="flex-1 font-medium">{item.label}</span>
             {item.badge && (
-              <span className="px-2 py-0.5 bg-primary-500/20 text-primary-400 text-xs font-bold rounded-full">
+              <span className={`px-2 py-0.5 ${item.badgeColor || 'bg-primary-500/20'} ${item.badgeColor ? 'text-white' : 'text-primary-400'} text-xs font-bold rounded-full`}>
                 {item.badge}
               </span>
             )}
           </>
         )}
       </Link>
+    )
+  }
+
+  // Infinity Points expandable section
+  const InfinityPointsSection = ({ collapsed }) => {
+    const isAnyActive = infinityPointsItems.some(item =>
+      location.pathname === item.path || location.pathname.startsWith(item.path + '/')
+    )
+
+    return (
+      <div>
+        <button
+          onClick={() => setInfinityExpanded(!infinityExpanded)}
+          className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 group ${
+            isAnyActive
+              ? 'bg-primary-500/10 text-primary-400'
+              : 'text-gray-400 hover:text-white hover:bg-dark-200'
+          }`}
+        >
+          <Coins size={20} className={isAnyActive ? 'text-primary-400' : 'text-gray-500 group-hover:text-primary-400'} />
+          {!collapsed && (
+            <>
+              <span className="flex-1 font-medium text-left">Infinity Points</span>
+              <ChevronDown size={16} className={`transition-transform ${infinityExpanded ? 'rotate-180' : ''}`} />
+            </>
+          )}
+        </button>
+        {infinityExpanded && !collapsed && (
+          <div className="ml-4 mt-1 space-y-1 border-l-2 border-dark-200 pl-3">
+            {infinityPointsItems.map(item => (
+              <NavItem key={item.path} item={item} collapsed={collapsed} />
+            ))}
+          </div>
+        )}
+      </div>
     )
   }
 
@@ -106,7 +207,7 @@ const DashboardLayout = ({ children }) => {
       >
         {/* Logo */}
         <div className="p-4 border-b border-dark-200">
-          <Link to="/dashboard" className="flex items-center gap-3">
+          <Link to="/accounts" className="flex items-center gap-3">
             <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center flex-shrink-0">
               <span className="text-white font-bold text-xl">T</span>
             </div>
@@ -141,14 +242,44 @@ const DashboardLayout = ({ children }) => {
                 {rewardsItems.map(item => (
                   <NavItem key={item.path} item={item} collapsed={!sidebarOpen} />
                 ))}
+                {/* Infinity Points Sub-section */}
+                <InfinityPointsSection collapsed={!sidebarOpen} />
               </div>
             )}
+          </div>
+
+          {/* Trading Tools */}
+          <div className="mt-6">
+            {!sidebarOpen ? null : (
+              <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Trading Tools
+              </div>
+            )}
+            <div className="space-y-1 mt-2">
+              {tradingToolsItems.map(item => (
+                <NavItem key={item.path} item={item} collapsed={!sidebarOpen} />
+              ))}
+            </div>
+          </div>
+
+          {/* Social Trading */}
+          <div className="mt-6">
+            {!sidebarOpen ? null : (
+              <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                Social Trading
+              </div>
+            )}
+            <div className="space-y-1 mt-2">
+              {socialTradingItems.map(item => (
+                <NavItem key={item.path} item={item} collapsed={!sidebarOpen} />
+              ))}
+            </div>
           </div>
 
           {/* Help & Support */}
           <div className="mt-6">
             <SectionHeader
-              title="Aide & Support"
+              title="Help & Support"
               section="support"
               expanded={expandedSections.support}
               onToggle={() => toggleSection('support')}
@@ -159,6 +290,21 @@ const DashboardLayout = ({ children }) => {
                 {supportItems.map(item => (
                   <NavItem key={item.path} item={item} collapsed={!sidebarOpen} />
                 ))}
+                {/* External Links */}
+                <div className="pt-2 mt-2 border-t border-dark-200">
+                  {externalLinks.map(link => (
+                    <a
+                      key={link.path}
+                      href={link.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-300 text-sm transition-colors"
+                    >
+                      <ExternalLink size={14} />
+                      {!(!sidebarOpen) && <span>{link.label}</span>}
+                    </a>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -167,13 +313,13 @@ const DashboardLayout = ({ children }) => {
         {/* Start Challenge Button */}
         <div className="p-4 border-t border-dark-200">
           <Link
-            to="/pricing"
+            to="/plans"
             className={`flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all ${
               sidebarOpen ? '' : 'px-0'
             }`}
           >
             <Rocket size={18} />
-            {sidebarOpen && <span>Nouveau Challenge</span>}
+            {sidebarOpen && <span>Start Challenge</span>}
           </Link>
         </div>
 
@@ -188,7 +334,7 @@ const DashboardLayout = ({ children }) => {
 
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-dark-100 border-b border-dark-200 flex items-center justify-between px-4 z-40">
-        <Link to="/dashboard" className="flex items-center gap-2">
+        <Link to="/accounts" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center">
             <span className="text-white font-bold">T</span>
           </div>
@@ -232,13 +378,39 @@ const DashboardLayout = ({ children }) => {
                 {rewardsItems.map(item => (
                   <NavItem key={item.path} item={item} />
                 ))}
+                {/* Infinity Points Sub-section */}
+                <InfinityPointsSection collapsed={false} />
               </div>
             )}
           </div>
 
+          {/* Trading Tools - Mobile */}
+          <div className="mt-6">
+            <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Trading Tools
+            </div>
+            <div className="space-y-1 mt-2">
+              {tradingToolsItems.map(item => (
+                <NavItem key={item.path} item={item} />
+              ))}
+            </div>
+          </div>
+
+          {/* Social Trading - Mobile */}
+          <div className="mt-6">
+            <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              Social Trading
+            </div>
+            <div className="space-y-1 mt-2">
+              {socialTradingItems.map(item => (
+                <NavItem key={item.path} item={item} />
+              ))}
+            </div>
+          </div>
+
           <div className="mt-6">
             <SectionHeader
-              title="Aide & Support"
+              title="Help & Support"
               section="support"
               expanded={expandedSections.support}
               onToggle={() => toggleSection('support')}
@@ -248,6 +420,21 @@ const DashboardLayout = ({ children }) => {
                 {supportItems.map(item => (
                   <NavItem key={item.path} item={item} />
                 ))}
+                {/* External Links */}
+                <div className="pt-2 mt-2 border-t border-dark-200">
+                  {externalLinks.map(link => (
+                    <a
+                      key={link.path}
+                      href={link.path}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-3 px-4 py-2 text-gray-500 hover:text-gray-300 text-sm transition-colors"
+                    >
+                      <ExternalLink size={14} />
+                      <span>{link.label}</span>
+                    </a>
+                  ))}
+                </div>
               </div>
             )}
           </div>
@@ -255,12 +442,12 @@ const DashboardLayout = ({ children }) => {
 
         <div className="p-4 border-t border-dark-200">
           <Link
-            to="/pricing"
+            to="/plans"
             className="flex items-center justify-center gap-2 w-full py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold"
             onClick={() => setMobileMenuOpen(false)}
           >
             <Rocket size={18} />
-            <span>Nouveau Challenge</span>
+            <span>Start Challenge</span>
           </Link>
         </div>
       </aside>
@@ -290,10 +477,7 @@ const DashboardLayout = ({ children }) => {
             {/* Right - User Menu */}
             <div className="flex items-center gap-4">
               {/* Notifications */}
-              <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
-                <Bell size={20} />
-                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full" />
-              </button>
+              <NotificationBell />
 
               {/* User Dropdown */}
               <div className="relative group">
@@ -314,18 +498,18 @@ const DashboardLayout = ({ children }) => {
                 <div className="absolute right-0 top-full mt-2 w-48 bg-dark-100 rounded-xl border border-dark-200 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                   <div className="py-2">
                     <Link
-                      to="/dashboard/profile"
+                      to="/profile/default"
                       className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors"
                     >
                       <User size={16} />
-                      <span>Mon Profil</span>
+                      <span>My Profile</span>
                     </Link>
                     <Link
-                      to="/dashboard/settings"
+                      to="/settings"
                       className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors"
                     >
                       <Settings size={16} />
-                      <span>Paramètres</span>
+                      <span>Settings</span>
                     </Link>
                     <hr className="my-2 border-dark-200" />
                     <button
@@ -333,7 +517,7 @@ const DashboardLayout = ({ children }) => {
                       className="flex items-center gap-3 w-full px-4 py-2 text-red-400 hover:text-red-300 hover:bg-dark-200 transition-colors"
                     >
                       <LogOut size={16} />
-                      <span>Déconnexion</span>
+                      <span>Logout</span>
                     </button>
                   </div>
                 </div>
@@ -341,6 +525,9 @@ const DashboardLayout = ({ children }) => {
             </div>
           </div>
         </header>
+
+        {/* Email Verification Banner */}
+        <EmailVerificationBanner />
 
         {/* Page Content */}
         <div className="p-4 lg:p-8">

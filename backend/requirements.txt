@@ -7,6 +7,8 @@ Flask-SQLAlchemy==3.1.1
 
 # Database
 SQLAlchemy==2.0.23
+psycopg2-binary==2.9.10
+Flask-Migrate==4.1.0
 
 # Password Hashing
 Werkzeug==3.0.1
@@ -24,15 +26,42 @@ google-generativeai==0.3.2
 # PayPal
 paypalrestsdk==1.13.1
 
+# Stripe
+stripe==7.10.0
+
 # Background Tasks
 APScheduler==3.10.4
+celery==5.3.6
+
+# Caching & Rate Limiting
+redis==5.0.1
+Flask-Caching==2.1.0
+Flask-Limiter==3.5.0
 
 # WebSocket
 flask-socketio==5.5.1
 python-socketio==5.15.1
 eventlet==0.40.4
 
+# Email
+sendgrid==6.11.0
+
+# Two-Factor Authentication
+pyotp==2.9.0
+qrcode==8.2
+Pillow==11.1.0
+
 # Utils
 python-dotenv==1.0.0
 gunicorn==21.2.0
-# psycopg2-binary==2.9.9  # Uncomment for PostgreSQL in production
+python-slugify==8.0.1
+
+# OAuth / SSO
+Authlib==1.3.0
+httpx==0.27.0
+PyJWT==2.8.0
+
+# Monitoring & Analytics
+sentry-sdk[flask]==1.39.1
+psutil==5.9.7
+prometheus-client==0.19.0

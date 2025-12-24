@@ -2,6 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 import pytz
+import logging
 from . import market_data_bp
 from services.yfinance_service import (
     get_current_price,
@@ -11,6 +12,9 @@ from services.yfinance_service import (
 )
 from services.market_scraper import get_moroccan_stocks
 from services.gemini_signals import get_ai_signal
+from services.cache_service import CacheService, cache
+
+logger = logging.getLogger(__name__)
 
 
 def get_market_status():
@@ -116,20 +120,29 @@ SUPPORTED_MOROCCAN = [
 
 @market_data_bp.route('/price/<symbol>', methods=['GET'])
 def get_price(symbol):
-    """Get current price for a symbol"""
+    """Get current price for a symbol (cached for 5 seconds)"""
     symbol = symbol.upper()
+    cache_key = CacheService.market_key(symbol)
+
+    # Try cache first
+    cached_data = CacheService.get(cache_key)
+    if cached_data:
+        logger.debug(f"Cache hit for price: {symbol}")
+        return jsonify(cached_data), 200
 
     # Check if Moroccan stock
     if symbol in SUPPORTED_MOROCCAN:
         moroccan_data = get_moroccan_stocks()
         if symbol in moroccan_data:
-            return jsonify({
+            result = {
                 'symbol': symbol,
                 'price': moroccan_data[symbol]['price'],
                 'change': moroccan_data[symbol].get('change', 0),
                 'change_percent': moroccan_data[symbol].get('change_percent', 0),
                 'market': 'MOROCCO'
-            }), 200
+            }
+            CacheService.set(cache_key, result, timeout=CacheService.TTL['market_prices'])
+            return jsonify(result), 200
         return jsonify({'error': f'Moroccan stock {symbol} not found'}), 404
 
     # International stock
@@ -139,13 +152,15 @@ def get_price(symbol):
 
     info = get_stock_info(symbol)
 
-    return jsonify({
+    result = {
         'symbol': symbol,
         'price': price,
         'change': info.get('change', 0),
         'change_percent': info.get('change_percent', 0),
         'market': 'US' if not symbol.endswith('-USD') else 'CRYPTO'
-    }), 200
+    }
+    CacheService.set(cache_key, result, timeout=CacheService.TTL['market_prices'])
+    return jsonify(result), 200
 
 
 @market_data_bp.route('/prices', methods=['GET'])
@@ -242,19 +257,28 @@ def get_signal(symbol):
 
 @market_data_bp.route('/signals', methods=['GET'])
 def get_all_signals():
-    """Get AI signals for multiple symbols"""
+    """Get AI signals for multiple symbols (cached for 30 seconds)"""
     symbols = request.args.get('symbols', '')
 
     if not symbols:
         # Default to top symbols
-        symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW']
+        symbols_list = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW']
     else:
-        symbols = [s.strip().upper() for s in symbols.split(',')]
+        symbols_list = [s.strip().upper() for s in symbols.split(',')]
+
+    # Create cache key from sorted symbols
+    cache_key = f"signals:{','.join(sorted(symbols_list))}"
+
+    # Try cache first
+    cached_data = CacheService.get(cache_key)
+    if cached_data:
+        logger.debug(f"Cache hit for signals: {cache_key}")
+        return jsonify(cached_data), 200
 
     signals = []
     moroccan_data = get_moroccan_stocks()
 
-    for symbol in symbols:
+    for symbol in symbols_list:
         try:
             if symbol in SUPPORTED_MOROCCAN:
                 if symbol in moroccan_data:
@@ -277,7 +301,9 @@ def get_all_signals():
                 'signal': signal
             })
         except Exception as e:
-            print(f"Error getting signal for {symbol}: {e}")
+            logger.warning(f"Error getting signal for {symbol}: {e}")
             continue
 
-    return jsonify({'signals': signals}), 200
+    result = {'signals': signals}
+    CacheService.set(cache_key, result, timeout=CacheService.TTL['market_signals'])
+    return jsonify(result), 200

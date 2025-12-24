@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Welcome to TradeSense{% endblock %}
+
+{% block header_title %}Welcome to TradeSense!{% endblock %}
+{% block header_subtitle %}<p>Your trading journey starts now</p>{% endblock %}
+
+{% block content %}
+<p>Hi <strong>{{ username }}</strong>,</p>
+
+<p>Welcome to TradeSense - your AI-powered prop trading platform! We're excited to have you on board.</p>
+
+<div class="info-box">
+    <h3>What You Can Do</h3>
+    <ul style="color: #374151; line-height: 2;">
+        <li>Start a trading challenge and prove your skills</li>
+        <li>Get AI-powered market signals and analysis</li>
+        <li>Track your performance with detailed analytics</li>
+        <li>Earn real profits when you become a funded trader</li>
+    </ul>
+</div>
+
+<p>Ready to start your trading journey?</p>
+
+<p class="text-center mt-30 mb-30">
+    <a href="{{ login_url }}" class="btn">Start Trading</a>
+</p>
+
+<p>If you have any questions, our support team is here to help.</p>
+
+<p>Happy Trading!</p>
+<p><strong>The TradeSense Team</strong></p>
+{% endblock %}
