@@ -29,6 +29,30 @@ export const adminUsersAPI = {
   // Unban user
   unbanUser: (userId) => api.post(`/admin/users/${userId}/unban`),
 
+  // Freeze user (temporary restriction)
+  freezeUser: (userId, hours, reason) => api.post(`/admin/users/${userId}/freeze`, { hours, reason }),
+
+  // Unfreeze user
+  unfreezeUser: (userId) => api.post(`/admin/users/${userId}/unfreeze`),
+
+  // Verify user email (admin manually verifies)
+  verifyEmail: (userId) => api.post(`/admin/users/${userId}/verify-email`),
+
+  // Reset user's 2FA
+  reset2FA: (userId) => api.post(`/admin/users/${userId}/reset-2fa`),
+
+  // Unlock user account (reset failed login attempts)
+  unlockAccount: (userId) => api.post(`/admin/users/${userId}/unlock`),
+
+  // Change user password (superadmin only)
+  changePassword: (userId, newPassword) => api.put(`/admin/users/${userId}/password`, { new_password: newPassword }),
+
+  // Block user trading (superadmin only)
+  blockTrading: (userId, reason) => api.post(`/admin/users/${userId}/trade-block`, { reason }),
+
+  // Unblock user trading (superadmin only)
+  unblockTrading: (userId) => api.post(`/admin/users/${userId}/trade-unblock`),
+
   // Get user activity log
   getUserActivity: (userId, params = {}) => api.get(`/admin/users/${userId}/activity`, { params }),
 
@@ -48,6 +72,22 @@ export const adminChallengesAPI = {
 
   // Get single challenge details
   getChallenge: (challengeId) => api.get(`/admin/challenges/${challengeId}`),
+
+  // Get challenge statistics
+  getChallengeStats: () => api.get('/admin/challenges/stats'),
+
+  // Get all challenge models (for grant challenge dropdown)
+  getChallengeModels: () => api.get('/admin/challenges/models'),
+
+  // Grant challenge to user (create challenge for user)
+  grantChallenge: (data) => api.post('/admin/challenges/grant', data),
+
+  // Edit challenge (superadmin only - edit any field)
+  editChallenge: (challengeId, data) => api.put(`/admin/challenges/${challengeId}/edit`, data),
+
+  // Adjust challenge balance
+  adjustBalance: (challengeId, amount, type, reason) =>
+    api.post(`/admin/challenges/${challengeId}/adjust-balance`, { amount, type, reason }),
 
   // Update challenge status
   updateChallengeStatus: (challengeId, status, reason = null) =>

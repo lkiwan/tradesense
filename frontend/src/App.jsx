@@ -68,6 +68,7 @@ import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard'
 // Admin User Management Pages
 import UsersListPage from './pages/admin/users/UsersListPage'
 import UserDetailPage from './pages/admin/users/UserDetailPage'
+import GrantChallengePage from './pages/admin/users/GrantChallengePage'
 
 // Admin Challenge Management Pages
 import ChallengesListPage from './pages/admin/challenges/ChallengesListPage'
@@ -952,6 +953,11 @@ function App() {
             <Route path="/admin/users/:id" element={
               <ProtectedRoute adminOnly>
                 <UserDetailPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users/:id/grant-challenge" element={
+              <ProtectedRoute adminOnly>
+                <GrantChallengePage />
               </ProtectedRoute>
             } />
 

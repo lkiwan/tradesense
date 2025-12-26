@@ -8,7 +8,8 @@ import FreezeUserModal from '../../../components/admin/modals/FreezeUserModal'
 import {
   ArrowLeft, User, Mail, Calendar, Shield, Edit, Ban, UserCheck,
   Snowflake, Key, Trophy, CreditCard, Activity, Clock, MapPin,
-  Smartphone, AlertTriangle, CheckCircle, XCircle, RefreshCw
+  Smartphone, AlertTriangle, CheckCircle, XCircle, RefreshCw,
+  ShieldCheck, KeyRound, Gift, Unlock
 } from 'lucide-react'
 import { adminUsersAPI } from '../../../services/adminApi'
 import { userControlAPI } from '../../../services/superAdminApi'
@@ -155,6 +156,61 @@ const UserDetailPage = () => {
       loadUser()
     } catch (error) {
       toast.error('Failed to update user')
+    }
+  }
+
+  const handleVerifyEmail = async () => {
+    try {
+      await adminUsersAPI.verifyEmail(user.id)
+      toast.success('Email verified successfully')
+      loadUser()
+    } catch (error) {
+      toast.error('Failed to verify email')
+    }
+  }
+
+  const handleReset2FA = async () => {
+    if (!confirm('Are you sure you want to reset 2FA for this user? They will need to set it up again.')) {
+      return
+    }
+    try {
+      await adminUsersAPI.reset2FA(user.id)
+      toast.success('2FA reset successfully')
+      loadUser()
+    } catch (error) {
+      toast.error('Failed to reset 2FA')
+    }
+  }
+
+  const handleUnlockAccount = async () => {
+    try {
+      await adminUsersAPI.unlockAccount(user.id)
+      toast.success('Account unlocked successfully')
+      loadUser()
+    } catch (error) {
+      toast.error('Failed to unlock account')
+    }
+  }
+
+  const handleBlockTrading = async () => {
+    const reason = prompt('Enter reason for blocking trading:')
+    if (!reason) return
+    try {
+      await adminUsersAPI.blockTrading(user.id, reason)
+      toast.success('Trading blocked successfully')
+      loadUser()
+    } catch (error) {
+      toast.error('Failed to block trading')
+    }
+  }
+
+  const handleUnblockTrading = async () => {
+    try {
+      await adminUsersAPI.unblockTrading(user.id)
+      toast.success('Trading unblocked successfully')
+      loadUser()
+    } catch (error) {
+      toast.error('Failed to unblock trading')
     }
   }
 
@@ -319,6 +375,70 @@ const UserDetailPage = () => {
                   )}
                 </>
               )}
+            </div>
+
+            {/* Additional Actions Row */}
+            <div className="flex items-center gap-2 mt-4 pt-4 border-t border-dark-200">
+              {/* Verify Email - show if not verified */}
+              {!user.email_verified && (
+                <button
+                  onClick={handleVerifyEmail}
+                  className="px-3 py-1.5 bg-green-500/10 text-green-500 rounded-lg hover:bg-green-500/20 transition-colors flex items-center gap-2 text-sm"
+                >
+                  <ShieldCheck size={14} />
+                  Verify Email
+                </button>
+              )}
+
+              {/* Reset 2FA */}
+              <button
+                onClick={handleReset2FA}
+                className="px-3 py-1.5 bg-orange-500/10 text-orange-500 rounded-lg hover:bg-orange-500/20 transition-colors flex items-center gap-2 text-sm"
+              >
+                <KeyRound size={14} />
+                Reset 2FA
+              </button>
+
+              {/* Unlock Account */}
+              <button
+                onClick={handleUnlockAccount}
+                className="px-3 py-1.5 bg-purple-500/10 text-purple-500 rounded-lg hover:bg-purple-500/20 transition-colors flex items-center gap-2 text-sm"
+              >
+                <Unlock size={14} />
+                Unlock
+              </button>
+
+              {/* Trading Block/Unblock - SuperAdmin only */}
+              {isSuperAdmin && user.role !== 'superadmin' && (
+                <>
+                  {user.status?.can_trade === false ? (
+                    <button
+                      onClick={handleUnblockTrading}
+                      className="px-3 py-1.5 bg-emerald-500/10 text-emerald-500 rounded-lg hover:bg-emerald-500/20 transition-colors flex items-center gap-2 text-sm"
+                    >
+                      <Trophy size={14} />
+                      Unblock Trading
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleBlockTrading}
+                      className="px-3 py-1.5 bg-amber-500/10 text-amber-500 rounded-lg hover:bg-amber-500/20 transition-colors flex items-center gap-2 text-sm"
+                    >
+                      <Trophy size={14} />
+                      Block Trading
+                    </button>
+                  )}
+                </>
+              )}
+
+              {/* Grant Challenge */}
+              <button
+                onClick={() => navigate(`/admin/users/${user.id}/grant-challenge`)}
+                className="px-3 py-1.5 bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-colors flex items-center gap-2 text-sm"
+              >
+                <Gift size={14} />
+                Grant Challenge
+              </button>
             </div>
           </div>
 

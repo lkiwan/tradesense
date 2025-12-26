@@ -8,8 +8,12 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, timedelta
 from sqlalchemy import func, or_, and_
 
-from models import db, User, UserChallenge, Trade, ChallengeModel
-from utils.decorators import permission_required, any_permission_required
+from models import db, User, UserChallenge, Trade, ChallengeModel, AccountSize
+from utils.decorators import permission_required, any_permission_required, superadmin_required
+from services.audit_service import AuditService
+import logging
+
+logger = logging.getLogger(__name__)
 
 admin_challenges_bp = Blueprint('admin_challenges', __name__, url_prefix='/api/admin/challenges')
 
@@ -289,4 +293,348 @@ def reset_challenge(challenge_id):
 
     except Exception as e:
         db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_challenges_bp.route('/models', methods=['GET'])
+@permission_required('view_challenges')
+def get_challenge_models():
+    """Get all challenge models with account sizes for dropdown selection"""
+    try:
+        models = ChallengeModel.query.filter_by(is_active=True).order_by(ChallengeModel.display_order).all()
+
+        return jsonify({
+            'models': [model.to_dict(include_sizes=True) for model in models]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_challenges_bp.route('/grant', methods=['POST'])
+@permission_required('edit_challenges')
+def grant_challenge():
+    """Grant a challenge to a user (admin creates challenge for user)"""
+    try:
+        data = request.get_json()
+        admin_id = int(get_jwt_identity())
+
+        # Required fields
+        user_id = data.get('user_id')
+        model_id = data.get('model_id')
+        account_size_id = data.get('account_size_id')
+
+        if not user_id:
+            return jsonify({'error': 'user_id is required'}), 400
+        if not model_id:
+            return jsonify({'error': 'model_id is required'}), 400
+        if not account_size_id:
+            return jsonify({'error': 'account_size_id is required'}), 400
+
+        # Verify user exists
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Verify challenge model exists
+        challenge_model = ChallengeModel.query.get(model_id)
+        if not challenge_model:
+            return jsonify({'error': 'Challenge model not found'}), 404
+
+        # Verify account size exists and belongs to model
+        account_size = AccountSize.query.get(account_size_id)
+        if not account_size or account_size.model_id != model_id:
+            return jsonify({'error': 'Invalid account size for this model'}), 400
+
+        # Optional parameters
+        skip_trial = data.get('skip_trial', False)
+        start_funded = data.get('start_funded', False)
+        custom_profit_target = data.get('custom_profit_target')
+        custom_max_drawdown = data.get('custom_max_drawdown')
+        notes = data.get('notes', 'Granted by admin')
+
+        # Determine initial phase
+        if start_funded:
+            phase = 'funded'
+            is_funded = True
+        elif skip_trial:
+            phase = 'evaluation'
+            is_funded = False
+        else:
+            phase = 'trial' if challenge_model.phases > 0 else 'evaluation'
+            is_funded = False
+
+        # Create the challenge
+        initial_balance = float(account_size.balance)
+        profit_target = custom_profit_target if custom_profit_target else float(challenge_model.phase1_profit_target) / 100
+
+        new_challenge = UserChallenge(
+            user_id=user_id,
+            model_id=model_id,
+            account_size_id=account_size_id,
+            initial_balance=initial_balance,
+            current_balance=initial_balance,
+            highest_balance=initial_balance,
+            status='active',
+            phase=phase,
+            current_phase_number=1,
+            profit_target=profit_target,
+            is_funded=is_funded,
+            profit_split=float(challenge_model.default_profit_split),
+            start_date=datetime.utcnow(),
+            trading_days=0
+        )
+
+        db.session.add(new_challenge)
+        db.session.commit()
+
+        # Audit log
+        try:
+            AuditService.log_action(
+                user_id=admin_id,
+                action_type='ADMIN',
+                action='challenge_grant',
+                target_type='challenge',
+                target_id=new_challenge.id,
+                description=f'Granted {challenge_model.display_name} challenge to user {user.username}',
+                extra_data={
+                    'notes': notes,
+                    'skip_trial': skip_trial,
+                    'start_funded': start_funded,
+                    'initial_balance': initial_balance
+                }
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log audit: {e}")
+
+        return jsonify({
+            'message': 'Challenge granted successfully',
+            'challenge': {
+                'id': new_challenge.id,
+                'user_id': user_id,
+                'model': challenge_model.display_name,
+                'initial_balance': initial_balance,
+                'phase': phase,
+                'is_funded': is_funded
+            }
+        }), 201
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error granting challenge: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_challenges_bp.route('/<int:challenge_id>/edit', methods=['PUT'])
+@superadmin_required
+def edit_challenge(challenge_id):
+    """Edit challenge fields (SuperAdmin only)"""
+    try:
+        data = request.get_json()
+        admin_id = int(get_jwt_identity())
+
+        challenge = UserChallenge.query.get(challenge_id)
+        if not challenge:
+            return jsonify({'error': 'Challenge not found'}), 404
+
+        # Store old values for audit
+        old_values = {
+            'current_balance': float(challenge.current_balance) if challenge.current_balance else 0,
+            'initial_balance': float(challenge.initial_balance) if challenge.initial_balance else 0,
+            'status': challenge.status,
+            'phase': challenge.phase,
+            'is_funded': challenge.is_funded,
+            'profit_target': challenge.profit_target,
+            'trading_days': challenge.trading_days,
+            'profit_split': float(challenge.profit_split) if challenge.profit_split else 80
+        }
+
+        # Update allowed fields
+        updated_fields = []
+
+        if 'current_balance' in data:
+            challenge.current_balance = data['current_balance']
+            if data['current_balance'] > float(challenge.highest_balance or 0):
+                challenge.highest_balance = data['current_balance']
+            updated_fields.append('current_balance')
+
+        if 'initial_balance' in data:
+            challenge.initial_balance = data['initial_balance']
+            updated_fields.append('initial_balance')
+
+        if 'status' in data:
+            if data['status'] not in ['active', 'passed', 'failed', 'funded', 'expired']:
+                return jsonify({'error': 'Invalid status'}), 400
+            challenge.status = data['status']
+            updated_fields.append('status')
+
+        if 'phase' in data:
+            if data['phase'] not in ['trial', 'evaluation', 'verification', 'funded']:
+                return jsonify({'error': 'Invalid phase'}), 400
+            challenge.phase = data['phase']
+            updated_fields.append('phase')
+
+        if 'current_phase_number' in data:
+            challenge.current_phase_number = data['current_phase_number']
+            updated_fields.append('current_phase_number')
+
+        if 'is_funded' in data:
+            challenge.is_funded = data['is_funded']
+            if data['is_funded']:
+                challenge.phase = 'funded'
+                challenge.status = 'funded'
+            updated_fields.append('is_funded')
+
+        if 'profit_target' in data:
+            challenge.profit_target = data['profit_target']
+            updated_fields.append('profit_target')
+
+        if 'profit_split' in data:
+            challenge.profit_split = data['profit_split']
+            updated_fields.append('profit_split')
+
+        if 'trading_days' in data:
+            challenge.trading_days = data['trading_days']
+            updated_fields.append('trading_days')
+
+        if 'start_date' in data:
+            challenge.start_date = datetime.fromisoformat(data['start_date'].replace('Z', '+00:00'))
+            updated_fields.append('start_date')
+
+        if 'end_date' in data:
+            if data['end_date']:
+                challenge.end_date = datetime.fromisoformat(data['end_date'].replace('Z', '+00:00'))
+            else:
+                challenge.end_date = None
+            updated_fields.append('end_date')
+
+        if 'failure_reason' in data:
+            challenge.failure_reason = data['failure_reason']
+            updated_fields.append('failure_reason')
+
+        # Trading account fields
+        if 'trading_login' in data:
+            challenge.trading_login = data['trading_login']
+            updated_fields.append('trading_login')
+
+        if 'trading_server' in data:
+            challenge.trading_server = data['trading_server']
+            updated_fields.append('trading_server')
+
+        db.session.commit()
+
+        # Store new values for audit
+        new_values = {
+            'current_balance': float(challenge.current_balance) if challenge.current_balance else 0,
+            'initial_balance': float(challenge.initial_balance) if challenge.initial_balance else 0,
+            'status': challenge.status,
+            'phase': challenge.phase,
+            'is_funded': challenge.is_funded,
+            'profit_target': challenge.profit_target,
+            'trading_days': challenge.trading_days,
+            'profit_split': float(challenge.profit_split) if challenge.profit_split else 80
+        }
+
+        # Audit log
+        try:
+            AuditService.log_action(
+                user_id=admin_id,
+                action_type='ADMIN',
+                action='challenge_edit',
+                target_type='challenge',
+                target_id=challenge_id,
+                description=f'Edited challenge {challenge_id}: {", ".join(updated_fields)}',
+                old_value=old_values,
+                new_value=new_values
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log audit: {e}")
+
+        return jsonify({
+            'message': 'Challenge updated successfully',
+            'updated_fields': updated_fields,
+            'challenge_id': challenge_id
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error editing challenge: {e}")
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_challenges_bp.route('/<int:challenge_id>/adjust-balance', methods=['POST'])
+@permission_required('edit_challenges')
+def adjust_challenge_balance(challenge_id):
+    """Adjust challenge balance with audit trail"""
+    try:
+        data = request.get_json()
+        admin_id = int(get_jwt_identity())
+
+        challenge = UserChallenge.query.get(challenge_id)
+        if not challenge:
+            return jsonify({'error': 'Challenge not found'}), 404
+
+        amount = data.get('amount')
+        adjustment_type = data.get('type', 'credit')  # credit, debit, reset
+        reason = data.get('reason', 'Admin adjustment')
+
+        if amount is None:
+            return jsonify({'error': 'amount is required'}), 400
+
+        amount = float(amount)
+        old_balance = float(challenge.current_balance)
+
+        if adjustment_type == 'credit':
+            new_balance = old_balance + amount
+        elif adjustment_type == 'debit':
+            new_balance = old_balance - amount
+            if new_balance < 0:
+                return jsonify({'error': 'Cannot debit more than current balance'}), 400
+        elif adjustment_type == 'reset':
+            new_balance = float(challenge.initial_balance)
+        else:
+            return jsonify({'error': 'Invalid adjustment type. Use: credit, debit, or reset'}), 400
+
+        # Update balance
+        challenge.current_balance = new_balance
+
+        # Update highest balance if needed
+        if new_balance > float(challenge.highest_balance or 0):
+            challenge.highest_balance = new_balance
+
+        db.session.commit()
+
+        # Audit log
+        try:
+            AuditService.log_action(
+                user_id=admin_id,
+                action_type='ADMIN',
+                action='balance_adjustment',
+                target_type='challenge',
+                target_id=challenge_id,
+                description=f'Balance {adjustment_type}: {amount} ({reason})',
+                old_value={'balance': old_balance},
+                new_value={'balance': new_balance},
+                extra_data={
+                    'adjustment_type': adjustment_type,
+                    'amount': amount,
+                    'reason': reason
+                }
+            )
+        except Exception as e:
+            logger.warning(f"Failed to log audit: {e}")
+
+        return jsonify({
+            'message': 'Balance adjusted successfully',
+            'old_balance': old_balance,
+            'new_balance': new_balance,
+            'adjustment': {
+                'type': adjustment_type,
+                'amount': amount,
+                'reason': reason
+            }
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error adjusting balance: {e}")
         return jsonify({'error': str(e)}), 500

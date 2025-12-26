@@ -1,24 +1,51 @@
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 import {
   ArrowLeft, User, TrendingUp, TrendingDown, Clock, CheckCircle,
   XCircle, Target, DollarSign, Calendar, Activity, BarChart3,
-  AlertTriangle, Edit, Ban, Play, Pause, RefreshCw, Download
+  AlertTriangle, Edit, Ban, Play, Pause, RefreshCw, Download,
+  Plus, Minus, Save, X
 } from 'lucide-react'
 import Chart from 'react-apexcharts'
 import { AdminLayout, StatusBadge, ConfirmationModal } from '../../../components/admin'
-import adminApi from '../../../services/adminApi'
+import adminApi, { adminChallengesAPI } from '../../../services/adminApi'
+import { useAuth } from '../../../contexts/AuthContext'
 
 const ChallengeDetailPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { user: currentUser } = useAuth()
+  const isSuperAdmin = currentUser?.role === 'superadmin'
+
   const [challenge, setChallenge] = useState(null)
   const [trades, setTrades] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
   const [showPassModal, setShowPassModal] = useState(false)
   const [showFailModal, setShowFailModal] = useState(false)
+  const [showResetModal, setShowResetModal] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [showBalanceModal, setShowBalanceModal] = useState(false)
   const [actionLoading, setActionLoading] = useState(false)
+
+  // Edit form state
+  const [editForm, setEditForm] = useState({
+    current_balance: '',
+    status: '',
+    phase: '',
+    profit_target: '',
+    max_daily_drawdown: '',
+    max_overall_loss: '',
+    trading_days: ''
+  })
+
+  // Balance adjustment state
+  const [balanceAdjustment, setBalanceAdjustment] = useState({
+    amount: '',
+    type: 'credit',
+    reason: ''
+  })
 
   useEffect(() => {
     fetchChallengeDetails()
@@ -95,8 +122,90 @@ const ChallengeDetailPage = () => {
       await adminApi.updateChallengeStatus(id, { status: 'failed', reason: 'Manual admin action' })
       setChallenge(prev => ({ ...prev, status: 'failed' }))
       setShowFailModal(false)
+      toast.success('Challenge marked as failed')
     } catch (error) {
       console.error('Error failing challenge:', error)
+      toast.error('Failed to update challenge status')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleResetChallenge = async () => {
+    setActionLoading(true)
+    try {
+      await adminChallengesAPI.resetChallenge(id)
+      await fetchChallengeDetails()
+      setShowResetModal(false)
+      toast.success('Challenge reset successfully')
+    } catch (error) {
+      console.error('Error resetting challenge:', error)
+      toast.error(error.response?.data?.error || 'Failed to reset challenge')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const openEditModal = () => {
+    setEditForm({
+      current_balance: challenge.current_balance?.toString() || '',
+      status: challenge.status || '',
+      phase: challenge.phase?.toString() || '',
+      profit_target: challenge.model?.profit_target?.toString() || '',
+      max_daily_drawdown: challenge.model?.max_daily_drawdown?.toString() || '',
+      max_overall_loss: challenge.model?.max_total_drawdown?.toString() || '',
+      trading_days: challenge.trading_days?.toString() || ''
+    })
+    setShowEditModal(true)
+  }
+
+  const handleEditChallenge = async (e) => {
+    e.preventDefault()
+    setActionLoading(true)
+    try {
+      const updateData = {}
+      if (editForm.current_balance) updateData.current_balance = parseFloat(editForm.current_balance)
+      if (editForm.status) updateData.status = editForm.status
+      if (editForm.phase) updateData.phase = parseInt(editForm.phase)
+      if (editForm.profit_target) updateData.profit_target = parseFloat(editForm.profit_target)
+      if (editForm.max_daily_drawdown) updateData.max_daily_drawdown = parseFloat(editForm.max_daily_drawdown)
+      if (editForm.max_overall_loss) updateData.max_overall_loss = parseFloat(editForm.max_overall_loss)
+      if (editForm.trading_days) updateData.trading_days = parseInt(editForm.trading_days)
+
+      await adminChallengesAPI.editChallenge(id, updateData)
+      await fetchChallengeDetails()
+      setShowEditModal(false)
+      toast.success('Challenge updated successfully')
+    } catch (error) {
+      console.error('Error updating challenge:', error)
+      toast.error(error.response?.data?.error || 'Failed to update challenge')
+    } finally {
+      setActionLoading(false)
+    }
+  }
+
+  const handleBalanceAdjustment = async (e) => {
+    e.preventDefault()
+    if (!balanceAdjustment.amount || !balanceAdjustment.reason) {
+      toast.error('Please fill in all required fields')
+      return
+    }
+
+    setActionLoading(true)
+    try {
+      await adminChallengesAPI.adjustBalance(
+        id,
+        parseFloat(balanceAdjustment.amount),
+        balanceAdjustment.type,
+        balanceAdjustment.reason
+      )
+      await fetchChallengeDetails()
+      setShowBalanceModal(false)
+      setBalanceAdjustment({ amount: '', type: 'credit', reason: '' })
+      toast.success('Balance adjusted successfully')
+    } catch (error) {
+      console.error('Error adjusting balance:', error)
+      toast.error(error.response?.data?.error || 'Failed to adjust balance')
     } finally {
       setActionLoading(false)
     }
@@ -205,6 +314,26 @@ const ChallengeDetailPage = () => {
         </button>
 
         <div className="flex items-center gap-3">
+          {/* Edit Button - SuperAdmin Only */}
+          {isSuperAdmin && (
+            <button
+              onClick={openEditModal}
+              className="flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            >
+              <Edit size={18} />
+              Edit
+            </button>
+          )}
+
+          {/* Adjust Balance Button */}
+          <button
+            onClick={() => setShowBalanceModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors"
+          >
+            <DollarSign size={18} />
+            Adjust Balance
+          </button>
+
           {challenge.status === 'active' && (
             <>
               <button
@@ -212,20 +341,31 @@ const ChallengeDetailPage = () => {
                 className="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
               >
                 <CheckCircle size={18} />
-                Pass Challenge
+                Pass
               </button>
               <button
                 onClick={() => setShowFailModal(true)}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
               >
                 <XCircle size={18} />
-                Fail Challenge
+                Fail
               </button>
             </>
           )}
+
+          {/* Reset Button */}
+          <button
+            onClick={() => setShowResetModal(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-black rounded-lg hover:bg-yellow-600 transition-colors"
+          >
+            <RefreshCw size={18} />
+            Reset
+          </button>
+
           <button
             onClick={fetchChallengeDetails}
             className="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white hover:bg-dark-300 transition-colors"
+            title="Refresh"
           >
             <RefreshCw size={18} />
           </button>
@@ -514,6 +654,265 @@ const ChallengeDetailPage = () => {
           variant="danger"
           loading={actionLoading}
         />
+      )}
+
+      {/* Reset Modal */}
+      {showResetModal && (
+        <ConfirmationModal
+          isOpen={showResetModal}
+          onClose={() => setShowResetModal(false)}
+          onConfirm={handleResetChallenge}
+          title="Reset Challenge"
+          message={`Are you sure you want to reset this challenge for ${challenge.user?.username}? This will reset balance to initial value and clear all progress.`}
+          confirmText="Reset Challenge"
+          variant="warning"
+          loading={actionLoading}
+        />
+      )}
+
+      {/* Edit Challenge Modal - SuperAdmin Only */}
+      {showEditModal && isSuperAdmin && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-dark-100 rounded-xl border border-dark-200 w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between p-6 border-b border-dark-200">
+              <h2 className="text-xl font-bold text-white">Edit Challenge</h2>
+              <button
+                onClick={() => setShowEditModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleEditChallenge} className="p-6 space-y-4">
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Current Balance ($)</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={editForm.current_balance}
+                  onChange={(e) => setEditForm({ ...editForm, current_balance: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Status</label>
+                <select
+                  value={editForm.status}
+                  onChange={(e) => setEditForm({ ...editForm, status: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                >
+                  <option value="active">Active</option>
+                  <option value="passed">Passed</option>
+                  <option value="failed">Failed</option>
+                  <option value="funded">Funded</option>
+                  <option value="pending">Pending</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Phase</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="5"
+                  value={editForm.phase}
+                  onChange={(e) => setEditForm({ ...editForm, phase: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Profit Target (%)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  value={editForm.profit_target}
+                  onChange={(e) => setEditForm({ ...editForm, profit_target: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-gray-400 text-sm mb-1">Max Daily DD (%)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={editForm.max_daily_drawdown}
+                    onChange={(e) => setEditForm({ ...editForm, max_daily_drawdown: e.target.value })}
+                    className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-400 text-sm mb-1">Max Overall DD (%)</label>
+                  <input
+                    type="number"
+                    step="0.1"
+                    value={editForm.max_overall_loss}
+                    onChange={(e) => setEditForm({ ...editForm, max_overall_loss: e.target.value })}
+                    className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Trading Days</label>
+                <input
+                  type="number"
+                  min="0"
+                  value={editForm.trading_days}
+                  onChange={(e) => setEditForm({ ...editForm, trading_days: e.target.value })}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                />
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowEditModal(false)}
+                  className="flex-1 px-4 py-2 bg-dark-200 text-gray-400 rounded-lg hover:bg-dark-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
+                  ) : (
+                    <>
+                      <Save size={18} />
+                      Save Changes
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Balance Adjustment Modal */}
+      {showBalanceModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
+          <div className="bg-dark-100 rounded-xl border border-dark-200 w-full max-w-md">
+            <div className="flex items-center justify-between p-6 border-b border-dark-200">
+              <h2 className="text-xl font-bold text-white">Adjust Balance</h2>
+              <button
+                onClick={() => setShowBalanceModal(false)}
+                className="text-gray-400 hover:text-white"
+              >
+                <X size={24} />
+              </button>
+            </div>
+            <form onSubmit={handleBalanceAdjustment} className="p-6 space-y-4">
+              <div className="bg-dark-200 rounded-lg p-4">
+                <p className="text-gray-400 text-sm">Current Balance</p>
+                <p className="text-2xl font-bold text-white">${challenge.current_balance?.toLocaleString()}</p>
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Adjustment Type</label>
+                <div className="grid grid-cols-3 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setBalanceAdjustment({ ...balanceAdjustment, type: 'credit' })}
+                    className={`py-2 px-4 rounded-lg font-medium transition-colors ${
+                      balanceAdjustment.type === 'credit'
+                        ? 'bg-green-500 text-white'
+                        : 'bg-dark-200 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Plus size={16} className="inline mr-1" />
+                    Credit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBalanceAdjustment({ ...balanceAdjustment, type: 'debit' })}
+                    className={`py-2 px-4 rounded-lg font-medium transition-colors ${
+                      balanceAdjustment.type === 'debit'
+                        ? 'bg-red-500 text-white'
+                        : 'bg-dark-200 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <Minus size={16} className="inline mr-1" />
+                    Debit
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setBalanceAdjustment({ ...balanceAdjustment, type: 'reset' })}
+                    className={`py-2 px-4 rounded-lg font-medium transition-colors ${
+                      balanceAdjustment.type === 'reset'
+                        ? 'bg-yellow-500 text-black'
+                        : 'bg-dark-200 text-gray-400 hover:text-white'
+                    }`}
+                  >
+                    <RefreshCw size={16} className="inline mr-1" />
+                    Reset
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">
+                  {balanceAdjustment.type === 'reset' ? 'Reset To ($)' : 'Amount ($)'}
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={balanceAdjustment.amount}
+                  onChange={(e) => setBalanceAdjustment({ ...balanceAdjustment, amount: e.target.value })}
+                  placeholder={balanceAdjustment.type === 'reset' ? challenge.initial_balance?.toString() : '0.00'}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-gray-400 text-sm mb-1">Reason *</label>
+                <textarea
+                  value={balanceAdjustment.reason}
+                  onChange={(e) => setBalanceAdjustment({ ...balanceAdjustment, reason: e.target.value })}
+                  placeholder="Enter reason for this adjustment..."
+                  rows={3}
+                  className="w-full px-4 py-2 bg-dark-200 border border-dark-100 rounded-lg text-white focus:outline-none focus:border-primary resize-none"
+                  required
+                />
+              </div>
+              {balanceAdjustment.amount && (
+                <div className="bg-dark-200 rounded-lg p-4">
+                  <p className="text-gray-400 text-sm">New Balance</p>
+                  <p className="text-2xl font-bold text-white">
+                    ${(
+                      balanceAdjustment.type === 'reset'
+                        ? parseFloat(balanceAdjustment.amount)
+                        : balanceAdjustment.type === 'credit'
+                        ? challenge.current_balance + parseFloat(balanceAdjustment.amount)
+                        : challenge.current_balance - parseFloat(balanceAdjustment.amount)
+                    ).toLocaleString()}
+                  </p>
+                </div>
+              )}
+              <div className="flex gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowBalanceModal(false)
+                    setBalanceAdjustment({ amount: '', type: 'credit', reason: '' })
+                  }}
+                  className="flex-1 px-4 py-2 bg-dark-200 text-gray-400 rounded-lg hover:bg-dark-300 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={actionLoading || !balanceAdjustment.amount || !balanceAdjustment.reason}
+                  className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-primary text-black font-semibold rounded-lg hover:bg-primary/90 transition-colors disabled:opacity-50"
+                >
+                  {actionLoading ? (
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-black"></div>
+                  ) : (
+                    'Apply Adjustment'
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       )}
     </AdminLayout>
   )

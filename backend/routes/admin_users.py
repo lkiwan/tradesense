@@ -597,3 +597,142 @@ def change_user_password(user_id):
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
+
+
+@admin_users_bp.route('/<int:user_id>/verify-email', methods=['POST'])
+@permission_required('edit_users')
+def verify_user_email(user_id):
+    """Manually verify user's email (Admin can verify any user's email)"""
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        if user.email_verified:
+            return jsonify({'message': 'Email is already verified'}), 200
+
+        # Verify the email
+        user.email_verified = True
+        user.email_verified_at = datetime.utcnow()
+        user.verification_token = None
+        user.verification_token_expires = None
+
+        db.session.commit()
+
+        # Log the action
+        AuditService.log_action(
+            user_id=current_user_id,
+            action_type='ADMIN',
+            action='email_verify',
+            target_type='user',
+            target_id=user_id,
+            target_name=user.username,
+            description=f'Manually verified email for user {user.username}'
+        )
+
+        return jsonify({
+            'message': 'Email verified successfully',
+            'user': {
+                'id': user.id,
+                'email': user.email,
+                'email_verified': True,
+                'email_verified_at': user.email_verified_at.isoformat()
+            }
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_users_bp.route('/<int:user_id>/reset-2fa', methods=['POST'])
+@permission_required('edit_users')
+def reset_user_2fa(user_id):
+    """Reset user's 2FA settings (Admin can disable 2FA for any user)"""
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Import TwoFactorAuth model
+        from models import TwoFactorAuth
+
+        # Find and delete 2FA record
+        two_fa = TwoFactorAuth.query.filter_by(user_id=user_id).first()
+
+        if not two_fa:
+            return jsonify({'message': '2FA is not enabled for this user'}), 200
+
+        # Delete 2FA record
+        db.session.delete(two_fa)
+        db.session.commit()
+
+        # Log the action
+        AuditService.log_action(
+            user_id=current_user_id,
+            action_type='SECURITY',
+            action='2fa_reset',
+            target_type='user',
+            target_id=user_id,
+            target_name=user.username,
+            description=f'Reset 2FA for user {user.username}'
+        )
+
+        return jsonify({
+            'message': '2FA has been reset successfully',
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                '2fa_enabled': False
+            }
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+
+@admin_users_bp.route('/<int:user_id>/unlock', methods=['POST'])
+@permission_required('ban_users')
+def unlock_user_account(user_id):
+    """Unlock user account and reset failed login attempts"""
+    try:
+        current_user_id = int(get_jwt_identity())
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        # Get or create user status
+        status = get_or_create_user_status(user_id)
+
+        # Reset failed login attempts
+        status.failed_login_attempts = 0
+        status.last_failed_login_at = None
+
+        db.session.commit()
+
+        # Log the action
+        AuditService.log_action(
+            user_id=current_user_id,
+            action_type='SECURITY',
+            action='account_unlock',
+            target_type='user',
+            target_id=user_id,
+            target_name=user.username,
+            description=f'Unlocked account for user {user.username}'
+        )
+
+        return jsonify({
+            'message': 'Account unlocked successfully',
+            'user': {
+                'id': user.id,
+                'username': user.username,
+                'failed_login_attempts': 0
+            }
+        })
+
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
