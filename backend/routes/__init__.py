@@ -100,5 +100,32 @@ from .events import events_bp
 # Import monitoring blueprint (uses its own bp definition)
 from .monitoring import monitoring_bp
 
+# Import admin_users blueprint (uses its own bp definition)
+from .admin_users import admin_users_bp
+
+# Import admin_challenges blueprint (uses its own bp definition)
+from .admin_challenges import admin_challenges_bp
+
+# Import admin_financial blueprint (uses its own bp definition)
+from .admin_financial import admin_financial_bp
+
+# Import admin_tickets blueprint (uses its own bp definition)
+from .admin_tickets import admin_tickets_bp
+
+# Import superadmin_config blueprint (uses its own bp definition)
+from .superadmin_config import superadmin_config_bp
+
+# Import superadmin_security blueprint (uses its own bp definition)
+from .superadmin_security import superadmin_security_bp
+
+# Import superadmin_advanced blueprint (uses its own bp definition)
+from .superadmin_advanced import superadmin_advanced_bp
+
+# Import superadmin_analytics blueprint (uses its own bp definition)
+from .superadmin_analytics import superadmin_analytics_bp
+
+# Import admin_permissions blueprint (uses its own bp definition)
+from .admin_permissions import admin_permissions_bp
+
 # Import routes to register them
 from . import auth, challenges, trades, market_data, payments, leaderboard, admin, subscriptions, mt

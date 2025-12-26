@@ -107,7 +107,10 @@ def create_app(config_name=None):
         subscriptions_v2_bp, challenge_addons_bp, affiliates_bp, advanced_orders_bp,
         quick_trading_bp, order_templates_bp, journal_bp, mt_bp, charts_bp,
         profiles_bp, followers_bp, copy_trading_bp, ideas_bp, push_bp, blog_bp,
-        webinars_bp, oauth_bp, events_bp, monitoring_bp
+        webinars_bp, oauth_bp, events_bp, monitoring_bp, admin_users_bp,
+        admin_challenges_bp, admin_financial_bp, admin_tickets_bp, superadmin_config_bp,
+        superadmin_security_bp, superadmin_advanced_bp, superadmin_analytics_bp,
+        admin_permissions_bp
     )
 
     app.register_blueprint(auth_bp)
@@ -148,6 +151,15 @@ def create_app(config_name=None):
     app.register_blueprint(oauth_bp)
     app.register_blueprint(events_bp)
     app.register_blueprint(monitoring_bp)
+    app.register_blueprint(admin_users_bp, url_prefix='/api/admin/users')
+    app.register_blueprint(admin_challenges_bp)
+    app.register_blueprint(admin_financial_bp)
+    app.register_blueprint(admin_tickets_bp)
+    app.register_blueprint(superadmin_config_bp)
+    app.register_blueprint(superadmin_security_bp)
+    app.register_blueprint(superadmin_advanced_bp)
+    app.register_blueprint(superadmin_analytics_bp)
+    app.register_blueprint(admin_permissions_bp)
 
     # Setup request tracking for metrics
     from services.metrics_service import setup_request_tracking
@@ -211,6 +223,13 @@ def create_app(config_name=None):
             print("Seeding challenge models...")
             from scripts.seed_challenge_models import seed_challenge_models
             seed_challenge_models()
+
+        # Seed default admin roles if not exists
+        from models import AdminRole, create_default_roles
+        if not AdminRole.query.first():
+            print("Seeding default admin roles...")
+            created_roles = create_default_roles()
+            print(f"Created {len(created_roles)} default admin roles: {[r.name for r in created_roles]}")
 
     # Initialize APScheduler for trial auto-charging
     from services.scheduler_service import init_scheduler

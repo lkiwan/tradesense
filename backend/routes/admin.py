@@ -1,40 +1,18 @@
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from functools import wraps
+from datetime import datetime, timedelta
 from . import admin_bp
 from models import db, User, UserChallenge, Trade, Payment, Settings
-
-
-def admin_required(fn):
-    """Decorator to require admin or superadmin role"""
-    @wraps(fn)
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        current_user_id = int(get_jwt_identity())
-        user = User.query.get(current_user_id)
-        if not user or user.role not in ['admin', 'superadmin']:
-            return jsonify({'error': 'Admin access required'}), 403
-        return fn(*args, **kwargs)
-    return wrapper
-
-
-def superadmin_required(fn):
-    """Decorator to require superadmin role"""
-    @wraps(fn)
-    @jwt_required()
-    def wrapper(*args, **kwargs):
-        current_user_id = int(get_jwt_identity())
-        user = User.query.get(current_user_id)
-        if not user or user.role != 'superadmin':
-            return jsonify({'error': 'SuperAdmin access required'}), 403
-        return fn(*args, **kwargs)
-    return wrapper
+from utils.decorators import (
+    admin_required, superadmin_required,
+    permission_required, any_permission_required
+)
 
 
 # ==================== ADMIN ROUTES ====================
 
 @admin_bp.route('/users', methods=['GET'])
-@admin_required
+@permission_required('view_users')
 def get_all_users():
     """Get all users (admin)"""
     page = request.args.get('page', 1, type=int)
@@ -61,7 +39,7 @@ def get_all_users():
 
 
 @admin_bp.route('/users/<int:user_id>', methods=['GET'])
-@admin_required
+@permission_required('view_users')
 def get_user_details(user_id):
     """Get user details with challenges (admin)"""
     user = User.query.get(user_id)
@@ -79,7 +57,7 @@ def get_user_details(user_id):
 
 
 @admin_bp.route('/challenges', methods=['GET'])
-@admin_required
+@permission_required('view_challenges')
 def get_all_challenges():
     """Get all challenges (admin)"""
     page = request.args.get('page', 1, type=int)
@@ -109,7 +87,7 @@ def get_all_challenges():
 
 
 @admin_bp.route('/challenges/<int:challenge_id>/status', methods=['PUT'])
-@admin_required
+@permission_required('edit_challenges')
 def update_challenge_status(challenge_id):
     """Manually update challenge status (admin)"""
     data = request.get_json()
@@ -138,7 +116,7 @@ def update_challenge_status(challenge_id):
 
 
 @admin_bp.route('/trades', methods=['GET'])
-@admin_required
+@permission_required('view_challenges')
 def get_all_trades():
     """Get all trades (admin)"""
     page = request.args.get('page', 1, type=int)
@@ -162,7 +140,7 @@ def get_all_trades():
 
 
 @admin_bp.route('/payments', methods=['GET'])
-@admin_required
+@permission_required('view_payments')
 def get_all_payments():
     """Get all payments (admin)"""
     page = request.args.get('page', 1, type=int)
@@ -305,17 +283,19 @@ def get_superadmin_stats():
         func.sum(Payment.amount)
     ).filter_by(status='completed').scalar() or 0
 
+    thirty_days_ago = datetime.utcnow() - timedelta(days=30)
+
     monthly_revenue = db.session.query(
         func.sum(Payment.amount)
     ).filter(
         Payment.status == 'completed',
-        Payment.created_at >= func.date('now', '-30 days')
+        Payment.created_at >= thirty_days_ago
     ).scalar() or 0
 
     # User stats
     total_users = User.query.count()
     new_users_month = User.query.filter(
-        User.created_at >= func.date('now', '-30 days')
+        User.created_at >= thirty_days_ago
     ).count()
 
     # Challenge stats

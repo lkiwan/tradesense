@@ -84,3 +84,31 @@ from .promotional_event import (
     get_active_events, get_active_banners, get_upcoming_events,
     get_event_by_slug, validate_promo_code, apply_best_offer
 )
+
+# Admin dashboard models
+from .user_activity import (
+    UserActivity, ActivityType, log_user_activity,
+    get_user_activities, get_recent_activities, get_activity_stats
+)
+from .user_status import (
+    UserStatus, get_or_create_user_status, ban_user, unban_user,
+    freeze_user, unfreeze_user, block_user_trading, unblock_user_trading
+)
+from .platform_config import (
+    PlatformConfig, get_platform_config, toggle_maintenance_mode,
+    toggle_trading, update_spread_settings, is_maintenance_active, is_trading_enabled
+)
+from .admin_notification import (
+    AdminNotification, NotificationTemplate, NotificationType, NotificationChannel,
+    create_admin_notification, get_notification_history
+)
+from .blocked_ip import (
+    BlockedIP, is_ip_blocked, block_ip, unblock_ip, get_blocked_ips,
+    increment_blocked_request, cleanup_expired_blocks
+)
+from .admin_permission import (
+    AdminPermission, AdminRole, UserAdminRole,
+    PERMISSION_CATEGORIES, ALL_PERMISSIONS, DEFAULT_ROLE_PERMISSIONS,
+    has_permission, get_user_permissions, grant_permission, revoke_permission,
+    grant_default_permissions, create_default_roles
+)
