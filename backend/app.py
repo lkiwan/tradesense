@@ -54,8 +54,13 @@ def create_app(config_name=None):
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)  # Flask-Migrate for database migrations
-    # Allow all origins for development to prevent CORS issues
-    CORS(app, resources={r"/*": {"origins": "*"}})
+    # Allow all origins with full CORS support
+    CORS(app,
+         resources={r"/*": {"origins": "*"}},
+         supports_credentials=True,
+         allow_headers=["Content-Type", "Authorization", "X-Requested-With", "X-Session-Token"],
+         methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+         expose_headers=["Content-Type", "Authorization", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"])
 
     jwt = JWTManager(app)
 
