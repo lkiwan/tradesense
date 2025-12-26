@@ -93,13 +93,20 @@ def register():
 @limiter.limit("10 per 15 minutes", key_func=get_ip_key)
 def login():
     """Login user"""
-    data = request.get_json()
+    try:
+        logger.info("Login attempt started")
+        data = request.get_json()
+        logger.info(f"Got JSON data: {bool(data)}")
 
-    if not data or 'email' not in data or 'password' not in data:
-        return jsonify({'error': 'Email and password required'}), 400
+        if not data or 'email' not in data or 'password' not in data:
+            return jsonify({'error': 'Email and password required'}), 400
 
-    email = data['email'].lower()
-    ip_address = get_ip_key()
+        email = data['email'].lower()
+        ip_address = get_ip_key()
+        logger.info(f"Login attempt for email: {email}")
+    except Exception as e:
+        logger.error(f"Error in login initial processing: {e}")
+        return jsonify({'error': 'Server error during login'}), 500
 
     # Check if CAPTCHA is required due to failed attempts
     failed_attempts = RateLimitTracker.get_failed_attempts(ip_address)
