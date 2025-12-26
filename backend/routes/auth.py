@@ -90,8 +90,7 @@ def register():
 
 
 @auth_bp.route('/login', methods=['POST'])
-@limiter.limit("5 per 15 minutes", key_func=get_ip_key)
-@limiter.limit("10 per 15 minutes", key_func=lambda: f"email:{request.get_json(silent=True).get('email', '').lower()}" if request.get_json(silent=True) else get_ip_key())
+@limiter.limit("10 per 15 minutes", key_func=get_ip_key)
 def login():
     """Login user"""
     data = request.get_json()
