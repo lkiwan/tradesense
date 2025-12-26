@@ -10,7 +10,7 @@ import {
 import Chart from 'react-apexcharts'
 import { AdminLayout, StatusBadge, ConfirmationModal } from '../../../components/admin'
 import adminApi, { adminChallengesAPI } from '../../../services/adminApi'
-import { useAuth } from '../../../contexts/AuthContext'
+import { useAuth } from '../../../context/AuthContext'
 
 const ChallengeDetailPage = () => {
   const { id } = useParams()
