@@ -3,6 +3,10 @@ TradeSense - Prop Trading Platform
 Main Flask Application Entry Point
 """
 
+# CRITICAL: Eventlet monkey patching must happen BEFORE any other imports
+import eventlet
+eventlet.monkey_patch()
+
 import os
 import logging
 from flask import Flask, jsonify
