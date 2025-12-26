@@ -208,19 +208,32 @@ def create_app(config_name=None):
 
     # Create database tables
     with app.app_context():
-        db.create_all()
+        try:
+            logger.info("Creating database tables...")
+            db.create_all()
+            logger.info("Database tables created successfully")
+        except Exception as e:
+            logger.error(f"Failed to create database tables: {e}")
+            raise
 
         # Create default superadmin if not exists
-        if not User.query.filter_by(role='superadmin').first():
-            superadmin = User(
-                username='admin',
-                email='admin@tradesense.com',
-                role='superadmin'
-            )
-            superadmin.set_password('admin123')  # Change in production!
-            db.session.add(superadmin)
-            db.session.commit()
-            print("Default superadmin created: admin@tradesense.com / admin123")
+        try:
+            if not User.query.filter_by(role='superadmin').first():
+                superadmin = User(
+                    username='admin',
+                    email='admin@tradesense.com',
+                    role='superadmin',
+                    is_verified=True
+                )
+                superadmin.set_password('admin123')  # Change in production!
+                db.session.add(superadmin)
+                db.session.commit()
+                logger.info("Default superadmin created: admin@tradesense.com / admin123")
+            else:
+                logger.info("Superadmin already exists")
+        except Exception as e:
+            logger.error(f"Failed to create superadmin: {e}")
+            db.session.rollback()
 
         # Seed challenge models if not exists
         from models import ChallengeModel
