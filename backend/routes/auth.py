@@ -9,7 +9,7 @@ from flask_jwt_extended import (
     get_jwt_identity
 )
 from . import auth_bp
-from models import db, User
+from models import db, User, UserStatus
 from middleware.rate_limiter import (
     limiter,
     RateLimitTracker,
@@ -138,6 +138,16 @@ def login():
             response_data['failed_attempts'] = attempts
 
         return jsonify(response_data), 401
+
+    # Check if user is banned
+    user_status = UserStatus.query.filter_by(user_id=user.id).first()
+    if user_status and user_status.is_banned:
+        ban_reason = user_status.ban_reason or 'No reason provided'
+        return jsonify({
+            'error': 'This account has been banned',
+            'banned': True,
+            'reason': ban_reason
+        }), 403
 
     # Check if 2FA is enabled
     from services.totp_service import TOTPService

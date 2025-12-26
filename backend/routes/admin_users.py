@@ -256,11 +256,13 @@ def update_user(user_id):
         db.session.commit()
 
         # Log the action
+        admin = User.query.get(current_user_id)
         AuditService.log_user_update(
-            admin_id=current_user_id,
+            admin_user_id=current_user_id,
+            admin_username=admin.username if admin else 'Unknown',
             target_user_id=user_id,
-            old_values=old_values,
-            new_values=data
+            target_username=user.username,
+            changes=data
         )
 
         return jsonify({'message': 'User updated successfully', 'user': user.to_dict()})
@@ -429,11 +431,11 @@ def revoke_user_sessions(user_id):
         return jsonify({'error': str(e)}), 500
 
 
-# SuperAdmin-only routes for advanced user control
+# Freeze/Unfreeze routes - available to admins with ban_users permission
 @admin_users_bp.route('/<int:user_id>/freeze', methods=['POST'])
-@superadmin_required
+@permission_required('ban_users')
 def freeze_user_route(user_id):
-    """Freeze a user temporarily (SuperAdmin only)"""
+    """Freeze a user temporarily"""
     try:
         current_user_id = int(get_jwt_identity())
         user = User.query.get(user_id)
@@ -468,9 +470,9 @@ def freeze_user_route(user_id):
 
 
 @admin_users_bp.route('/<int:user_id>/unfreeze', methods=['POST'])
-@superadmin_required
+@permission_required('ban_users')
 def unfreeze_user_route(user_id):
-    """Unfreeze a user (SuperAdmin only)"""
+    """Unfreeze a user"""
     try:
         current_user_id = int(get_jwt_identity())
         user = User.query.get(user_id)

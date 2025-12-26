@@ -58,6 +58,54 @@ import WebinarManagementPage from './pages/admin/WebinarManagementPage'
 import EventsManagementPage from './pages/admin/EventsManagementPage'
 import AnalyticsDashboardPage from './pages/admin/AnalyticsDashboardPage'
 
+// Admin Layout
+import AdminLayout from './components/admin/common/AdminLayout'
+
+// New Admin Dashboard Pages
+import AdminDashboard from './pages/admin/AdminDashboard'
+import SuperAdminDashboard from './pages/superadmin/SuperAdminDashboard'
+
+// Admin User Management Pages
+import UsersListPage from './pages/admin/users/UsersListPage'
+import UserDetailPage from './pages/admin/users/UserDetailPage'
+
+// Admin Challenge Management Pages
+import ChallengesListPage from './pages/admin/challenges/ChallengesListPage'
+import ChallengeDetailPage from './pages/admin/challenges/ChallengeDetailPage'
+
+// Admin Financial Pages
+import FinancialOverviewPage from './pages/admin/financial/FinancialOverviewPage'
+import PaymentsListPage from './pages/admin/financial/PaymentsListPage'
+import PayoutsManagementPage from './pages/admin/financial/PayoutsManagementPage'
+
+// Admin Support & Activity Pages
+import TicketsListPage from './pages/admin/support/TicketsListPage'
+import TicketDetailPage from './pages/admin/support/TicketDetailPage'
+import UserActivityPage from './pages/admin/support/UserActivityPage'
+
+// SuperAdmin Configuration Pages
+import SystemConfigPage from './pages/superadmin/config/SystemConfigPage'
+import TradingConfigPage from './pages/superadmin/config/TradingConfigPage'
+import PlatformControlPage from './pages/superadmin/config/PlatformControlPage'
+
+// SuperAdmin Security Pages
+import AdminManagementPage from './pages/superadmin/security/AdminManagementPage'
+import AuditSecurityPage from './pages/superadmin/security/AuditSecurityPage'
+import LoginMonitoringPage from './pages/superadmin/security/LoginMonitoringPage'
+import BlockedIPsPage from './pages/superadmin/security/BlockedIPsPage'
+
+// SuperAdmin Advanced Features Pages
+import BulkActionsPage from './pages/superadmin/advanced/BulkActionsPage'
+import UserControlPage from './pages/superadmin/advanced/UserControlPage'
+import NotificationCenterPage from './pages/superadmin/advanced/NotificationCenterPage'
+
+// SuperAdmin Analytics Pages
+import AdvancedAnalyticsPage from './pages/superadmin/analytics/AdvancedAnalyticsPage'
+import UserCohortsPage from './pages/superadmin/analytics/UserCohortsPage'
+
+// Admin Permissions Management
+import PermissionsManagementPage from './pages/admin/permissions/PermissionsManagementPage'
+
 // Promo Page
 import PromoPage from './pages/public/PromoPage'
 
@@ -107,7 +155,7 @@ import {
  * Enhanced Protected Route Component
  * Supports multiple access control conditions:
  * - requiresAuth: Must be logged in
- * - requiresChallenge: Must have an active challenge/funded account
+ * - requiresChallenge: Must have an active challenge/funded account (user-only routes)
  * - adminOnly: Must be admin or superadmin
  * - superAdminOnly: Must be superadmin
  * - redirectTo: Custom redirect path when conditions fail
@@ -137,19 +185,34 @@ const ProtectedRoute = ({
     return <Navigate to="/login" replace />
   }
 
-  // Check challenge requirement (must have active challenge to access dashboard)
+  // Redirect admin/superadmin away from user-only routes (routes that requiresChallenge)
+  // These users should use their admin dashboards instead
+  if (requiresChallenge && !adminOnly && !superAdminOnly) {
+    if (user?.role === 'superadmin') {
+      return <Navigate to="/superadmin/dashboard" replace />
+    }
+    if (user?.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />
+    }
+  }
+
+  // Check challenge requirement for normal users
   if (requiresChallenge && !hasActiveChallenge) {
     return <Navigate to={redirectTo || '/plans'} replace />
   }
 
   // Check superadmin role
   if (superAdminOnly && user?.role !== 'superadmin') {
-    return <Navigate to="/accounts" replace />
+    // Redirect to appropriate dashboard based on role
+    if (user?.role === 'admin') {
+      return <Navigate to="/admin/dashboard" replace />
+    }
+    return <Navigate to="/home" replace />
   }
 
   // Check admin role
   if (adminOnly && !['admin', 'superadmin'].includes(user?.role)) {
-    return <Navigate to="/accounts" replace />
+    return <Navigate to="/home" replace />
   }
 
   return children
@@ -178,10 +241,25 @@ const AuthRoute = ({ children }) => {
 }
 
 /**
- * Guest-only Route - Redirect authenticated users away from login/register
+ * Get home route based on user role
  */
-const GuestRoute = ({ children, redirectTo = '/home' }) => {
-  const { isAuthenticated, loading } = useAuth()
+const getHomeRouteByRole = (role) => {
+  switch (role) {
+    case 'superadmin':
+      return '/superadmin/dashboard'
+    case 'admin':
+      return '/admin/dashboard'
+    default:
+      return '/home'
+  }
+}
+
+/**
+ * Guest-only Route - Redirect authenticated users away from login/register
+ * Redirects based on user role
+ */
+const GuestRoute = ({ children }) => {
+  const { user, isAuthenticated, loading } = useAuth()
 
   if (loading) {
     return (
@@ -192,20 +270,22 @@ const GuestRoute = ({ children, redirectTo = '/home' }) => {
   }
 
   if (isAuthenticated) {
-    return <Navigate to={redirectTo} replace />
+    // Redirect based on role
+    const redirectPath = getHomeRouteByRole(user?.role)
+    return <Navigate to={redirectPath} replace />
   }
 
   return children
 }
 
 /**
- * Smart Home Route - Redirects authenticated users based on their challenge status
+ * Smart Home Route - Redirects authenticated users based on role and challenge status
  */
 const SmartHomeRoute = () => {
-  const { isAuthenticated, loading: authLoading } = useAuth()
+  const { user, isAuthenticated, loading: authLoading } = useAuth()
   const { hasActiveChallenge, loading: challengeLoading } = useChallenge()
 
-  if (authLoading || challengeLoading) {
+  if (authLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-dark-200">
         <div className="spinner"></div>
@@ -218,6 +298,23 @@ const SmartHomeRoute = () => {
     return <LandingPage />
   }
 
+  // Admin/SuperAdmin - redirect to their dashboard (no need to check challenge)
+  if (user?.role === 'superadmin') {
+    return <Navigate to="/superadmin/dashboard" replace />
+  }
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin/dashboard" replace />
+  }
+
+  // Normal user - check challenge status
+  if (challengeLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-dark-200">
+        <div className="spinner"></div>
+      </div>
+    )
+  }
+
   // Authenticated with challenge - go to accounts (main dashboard)
   if (hasActiveChallenge) {
     return <Navigate to="/accounts" replace />
@@ -228,10 +325,19 @@ const SmartHomeRoute = () => {
 }
 
 /**
- * Smart Auth Home Redirect - Redirects authenticated users based on challenge status
+ * Smart Auth Home Redirect - Redirects authenticated users based on role and challenge status
  */
 const SmartAuthHomeRedirect = () => {
+  const { user } = useAuth()
   const { hasActiveChallenge, loading } = useChallenge()
+
+  // Admin/SuperAdmin - redirect to their dashboard
+  if (user?.role === 'superadmin') {
+    return <Navigate to="/superadmin/dashboard" replace />
+  }
+  if (user?.role === 'admin') {
+    return <Navigate to="/admin/dashboard" replace />
+  }
 
   if (loading) {
     return (
@@ -273,31 +379,40 @@ const TrialBlockRoute = ({ children }) => {
   return children
 }
 
-// Helper function to check if current path is a dashboard route (requires DashboardLayout)
-const DASHBOARD_ROUTES = [
+// Routes that use user DashboardLayout (hide main Navbar/Footer)
+const USER_DASHBOARD_ROUTES = [
   '/accounts', '/margin-calculator', '/billing', '/notifications', '/support-tickets',
   '/plans', '/profile', '/refer-and-earn', '/my-offers', '/competition', '/certificates',
   '/infinity-points', '/utilities', '/calendar', '/settings', '/sessions', '/dashboard', '/kyc',
   '/subscriptions', '/infinity-points/rewards', '/advanced-orders', '/quick-trading', '/order-templates',
-  '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas',
-  '/admin/blog', '/admin/webinars', '/admin/events'
+  '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas'
 ]
+
+// Admin routes - use AdminLayout (hide main Navbar/Footer completely)
+const ADMIN_ROUTE_PREFIXES = ['/admin', '/superadmin']
 
 function App() {
   const { isDark } = useTheme()
   const location = useLocation()
 
-  // Check if we're on a dashboard route (requires DashboardLayout)
-  const isDashboardRoute = DASHBOARD_ROUTES.some(route => location.pathname.startsWith(route))
+  // Check if we're on an admin/superadmin route
+  const isAdminRoute = ADMIN_ROUTE_PREFIXES.some(prefix => location.pathname.startsWith(prefix))
+
+  // Check if we're on a user dashboard route
+  const isUserDashboardRoute = USER_DASHBOARD_ROUTES.some(route => location.pathname.startsWith(route))
+
+  // Hide Navbar and Footer on both admin routes and user dashboard routes
+  const shouldHideNavbar = isAdminRoute || isUserDashboardRoute
+  const shouldHideFooter = isAdminRoute || isUserDashboardRoute
 
   return (
     <ErrorBoundary>
       <div className={`${isDark ? 'dark' : ''}`}>
         <div className="min-h-screen bg-gray-50 dark:bg-dark-200 text-gray-900 dark:text-white transition-colors duration-300">
-          {/* Only show Navbar on non-dashboard routes */}
-          {!isDashboardRoute && <Navbar />}
+          {/* Only show Navbar on public pages (not admin or user dashboard) */}
+          {!shouldHideNavbar && <Navbar />}
 
-          <main className={isDashboardRoute ? '' : 'pt-[100px]'}>
+          <main className={shouldHideNavbar ? '' : 'pt-[100px]'}>
             <Routes>
             {/* ==================== SMART HOME ROUTE ==================== */}
             {/* Landing for guests, redirect for authenticated users */}
@@ -727,50 +842,200 @@ function App() {
             } />
 
             {/* ==================== ADMIN ROUTES ==================== */}
-            <Route path="/admin" element={
+            {/* New Admin Dashboard */}
+            <Route path="/admin/dashboard" element={
               <ProtectedRoute adminOnly>
-                <AdminPanel />
+                <AdminDashboard />
               </ProtectedRoute>
             } />
+
+            {/* Legacy Admin Panel - redirect to new dashboard */}
+            <Route path="/admin" element={
+              <ProtectedRoute adminOnly>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Dashboard */}
+            <Route path="/superadmin/dashboard" element={
+              <ProtectedRoute superAdminOnly>
+                <SuperAdminDashboard />
+              </ProtectedRoute>
+            } />
+
+            {/* Legacy SuperAdmin - redirect to new dashboard */}
             <Route path="/superadmin" element={
               <ProtectedRoute superAdminOnly>
-                <SuperAdmin />
+                <SuperAdminDashboard />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Configuration Pages */}
+            <Route path="/superadmin/config" element={
+              <ProtectedRoute superAdminOnly>
+                <SystemConfigPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/trading" element={
+              <ProtectedRoute superAdminOnly>
+                <TradingConfigPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/platform" element={
+              <ProtectedRoute superAdminOnly>
+                <PlatformControlPage />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Security Pages */}
+            <Route path="/superadmin/admins" element={
+              <ProtectedRoute superAdminOnly>
+                <AdminManagementPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/permissions" element={
+              <ProtectedRoute superAdminOnly>
+                <PermissionsManagementPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/audit-logs" element={
+              <ProtectedRoute superAdminOnly>
+                <AuditSecurityPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/login-monitoring" element={
+              <ProtectedRoute superAdminOnly>
+                <LoginMonitoringPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/blocked-ips" element={
+              <ProtectedRoute superAdminOnly>
+                <BlockedIPsPage />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Advanced Features */}
+            <Route path="/superadmin/bulk-actions" element={
+              <ProtectedRoute superAdminOnly>
+                <BulkActionsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/user-control" element={
+              <ProtectedRoute superAdminOnly>
+                <UserControlPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/notifications" element={
+              <ProtectedRoute superAdminOnly>
+                <NotificationCenterPage />
+              </ProtectedRoute>
+            } />
+
+            {/* SuperAdmin Analytics */}
+            <Route path="/superadmin/analytics" element={
+              <ProtectedRoute superAdminOnly>
+                <AdvancedAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/superadmin/cohorts" element={
+              <ProtectedRoute superAdminOnly>
+                <UserCohortsPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin User Management */}
+            <Route path="/admin/users" element={
+              <ProtectedRoute adminOnly>
+                <UsersListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users/:id" element={
+              <ProtectedRoute adminOnly>
+                <UserDetailPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin Challenge Management */}
+            <Route path="/admin/challenges" element={
+              <ProtectedRoute adminOnly>
+                <ChallengesListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/challenges/:id" element={
+              <ProtectedRoute adminOnly>
+                <ChallengeDetailPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin Financial Pages */}
+            <Route path="/admin/financial" element={
+              <ProtectedRoute adminOnly>
+                <FinancialOverviewPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/payments" element={
+              <ProtectedRoute adminOnly>
+                <PaymentsListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/payouts" element={
+              <ProtectedRoute adminOnly>
+                <PayoutsManagementPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin Support Tickets */}
+            <Route path="/admin/tickets" element={
+              <ProtectedRoute adminOnly>
+                <TicketsListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/tickets/:id" element={
+              <ProtectedRoute adminOnly>
+                <TicketDetailPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Admin User Activity */}
+            <Route path="/admin/activity" element={
+              <ProtectedRoute adminOnly>
+                <UserActivityPage />
               </ProtectedRoute>
             } />
 
             {/* Blog Management - Admin Only */}
             <Route path="/admin/blog" element={
               <ProtectedRoute adminOnly>
-                <DashboardLayout>
+                <AdminLayout>
                   <BlogManagementPage />
-                </DashboardLayout>
+                </AdminLayout>
               </ProtectedRoute>
             } />
 
             {/* Webinar Management - Admin Only */}
             <Route path="/admin/webinars" element={
               <ProtectedRoute adminOnly>
-                <DashboardLayout>
+                <AdminLayout>
                   <WebinarManagementPage />
-                </DashboardLayout>
+                </AdminLayout>
               </ProtectedRoute>
             } />
 
             {/* Events Management - Admin Only */}
             <Route path="/admin/events" element={
               <ProtectedRoute adminOnly>
-                <DashboardLayout>
+                <AdminLayout>
                   <EventsManagementPage />
-                </DashboardLayout>
+                </AdminLayout>
               </ProtectedRoute>
             } />
 
             {/* Analytics Dashboard - Admin Only */}
             <Route path="/admin/analytics" element={
               <ProtectedRoute adminOnly>
-                <DashboardLayout>
+                <AdminLayout>
                   <AnalyticsDashboardPage />
-                </DashboardLayout>
+                </AdminLayout>
               </ProtectedRoute>
             } />
 
@@ -779,8 +1044,8 @@ function App() {
           </Routes>
         </main>
 
-        {/* Only show Footer on non-dashboard routes */}
-        {!isDashboardRoute && <Footer />}
+        {/* Only show Footer on public pages (not admin or user dashboard) */}
+        {!shouldHideFooter && <Footer />}
 
         {/* Toast notifications */}
         <Toaster

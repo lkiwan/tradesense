@@ -28,7 +28,7 @@ Tasks are organized by priority (P1 = Critical, P2 = High, P3 = Medium) and phas
 
 # PHASE 1: FOUNDATION & SECURITY (Priority: P1)
 
-## 1.1 Database Migration (SQLite → PostgreSQL) ✅ COMPLETED
+## 1.1 Database Migration (SQLite → PostgreSQL)
 
 ### Backend Tasks
 - [x] **1.1.1** Install PostgreSQL and create production database
@@ -38,9 +38,9 @@ Tasks are organized by priority (P1 = Critical, P2 = High, P3 = Medium) and phas
 - [x] **1.1.5** Migrate existing data from SQLite to PostgreSQL
 - [x] **1.1.6** Update all model relationships for PostgreSQL compatibility
 - [x] **1.1.7** Test all CRUD operations with PostgreSQL
-- [x] **1.1.8** Flask-Migrate configured for schema changes
+- [x] **1.1.8** Setup PostgreSQL read replicas for scaling
 
-### Files Modified
+### Files to Modify
 ```
 backend/config.py
 backend/requirements.txt
@@ -49,47 +49,47 @@ backend/models/__init__.py
 
 ---
 
-## 1.2 Redis Cache Setup ✅ COMPLETED
+## 1.2 Redis Cache Setup
 
 ### Backend Tasks
-- [x] **1.2.1** Install Redis server (Memurai on Windows)
-- [x] **1.2.2** Install `redis` and `flask-caching` packages
-- [x] **1.2.3** Create `backend/services/cache_service.py` with Redis/SimpleCache fallback
-- [x] **1.2.4** Configure Redis connection in `config.py`
-- [x] **1.2.5** Implement session storage in Redis
-- [x] **1.2.6** Cache market prices (TTL: 5 seconds)
-- [x] **1.2.7** Cache user challenge data (TTL: 30 seconds)
-- [x] **1.2.8** Implement rate limiting with Redis
+- [ ] **1.2.1** Install Redis server
+- [ ] **1.2.2** Install `redis` and `flask-caching` packages
+- [ ] **1.2.3** Create `backend/services/cache_service.py`
+- [ ] **1.2.4** Configure Redis connection in `config.py`
+- [ ] **1.2.5** Implement session storage in Redis
+- [ ] **1.2.6** Cache market prices (TTL: 5 seconds)
+- [ ] **1.2.7** Cache user challenge data (TTL: 30 seconds)
+- [ ] **1.2.8** Implement rate limiting with Redis
 
-### Files Created
+### Files to Create
 ```
 backend/services/cache_service.py
-backend/middleware/rate_limiter.py
+backend/services/rate_limiter.py
 ```
 
-### Features Implemented
-- Redis with SimpleCache fallback for development
-- CacheService class with JSON serialization
-- Predefined TTL values for different data types
-- Cache decorators: @cache_market_data, @cache_signals, @cache_user_data, @cache_challenge_data
-- Cache invalidation helpers
+### Files to Modify
+```
+backend/config.py
+backend/requirements.txt
+backend/app.py
+```
 
 ---
 
-## 1.3 Celery Task Queue ✅ COMPLETED
+## 1.3 Celery Task Queue
 
 ### Backend Tasks
-- [x] **1.3.1** Install `celery` and `redis` packages
-- [x] **1.3.2** Create `backend/celery_app.py` configuration
-- [x] **1.3.3** Create `backend/tasks/` directory structure
-- [x] **1.3.4** Create `backend/tasks/email_tasks.py`
-- [x] **1.3.5** Create `backend/tasks/payout_tasks.py`
-- [x] **1.3.6** Create `backend/tasks/notification_tasks.py`
-- [x] **1.3.7** Create `backend/tasks/sync_tasks.py`
-- [x] **1.3.8** Setup Celery worker and beat scheduler
-- [x] **1.3.9** Migrate existing scheduler jobs to Celery
+- [ ] **1.3.1** Install `celery` and `redis` packages
+- [ ] **1.3.2** Create `backend/celery_app.py` configuration
+- [ ] **1.3.3** Create `backend/tasks/` directory structure
+- [ ] **1.3.4** Create `backend/tasks/email_tasks.py`
+- [ ] **1.3.5** Create `backend/tasks/payout_tasks.py`
+- [ ] **1.3.6** Create `backend/tasks/notification_tasks.py`
+- [ ] **1.3.7** Create `backend/tasks/sync_tasks.py`
+- [ ] **1.3.8** Setup Celery worker and beat scheduler
+- [ ] **1.3.9** Migrate existing scheduler jobs to Celery
 
-### Files Created
+### Files to Create
 ```
 backend/celery_app.py
 backend/tasks/__init__.py
@@ -101,419 +101,417 @@ backend/tasks/sync_tasks.py
 
 ---
 
-## 1.4 Email System (SendGrid Integration) ✅ COMPLETED
+## 1.4 Email System (SendGrid Integration)
 
 ### Backend Tasks
-- [x] **1.4.1** Create SendGrid account and get API key
-- [x] **1.4.2** Install `sendgrid` package
-- [x] **1.4.3** Create `backend/services/email_service.py` with SendGrid + SMTP fallback
-- [x] **1.4.4** Create `backend/templates/emails/` directory
-- [x] **1.4.5** Create email template: `welcome.html` (inline fallback included)
-- [x] **1.4.6** Create email template: `verify_email.html` (inline fallback included)
-- [x] **1.4.7** Create email template: `password_reset.html` (inline fallback included)
-- [x] **1.4.8** Create email template: `trade_notification.html` (inline fallback included)
-- [x] **1.4.9** Create email template: `payout_status.html` (inline fallback included)
-- [x] **1.4.10** Create email template: `challenge_update.html` (inline fallback included)
-- [x] **1.4.11** Create `backend/models/email_queue.py` model
-- [x] **1.4.12** Create email queue processing task
-- [x] **1.4.13** Add email sending to registration flow
-- [x] **1.4.14** Add email sending to payout flow
+- [ ] **1.4.1** Create SendGrid account and get API key
+- [ ] **1.4.2** Install `sendgrid` package
+- [ ] **1.4.3** Create `backend/services/email_service.py`
+- [ ] **1.4.4** Create `backend/templates/emails/` directory
+- [ ] **1.4.5** Create email template: `welcome.html`
+- [ ] **1.4.6** Create email template: `verify_email.html`
+- [ ] **1.4.7** Create email template: `password_reset.html`
+- [ ] **1.4.8** Create email template: `trade_notification.html`
+- [ ] **1.4.9** Create email template: `payout_status.html`
+- [ ] **1.4.10** Create email template: `challenge_update.html`
+- [ ] **1.4.11** Create `backend/models/email_queue.py` model
+- [ ] **1.4.12** Create email queue processing task
+- [ ] **1.4.13** Add email sending to registration flow
+- [ ] **1.4.14** Add email sending to payout flow
 
-### Files Created
+### Files to Create
 ```
 backend/services/email_service.py
 backend/models/email_queue.py
-backend/tasks/email_tasks.py
+backend/templates/emails/welcome.html
+backend/templates/emails/verify_email.html
+backend/templates/emails/password_reset.html
+backend/templates/emails/trade_notification.html
+backend/templates/emails/payout_status.html
+backend/templates/emails/challenge_update.html
 ```
 
-### Features Implemented
-- EmailService class with SendGrid (primary) and SMTP (fallback)
-- Template rendering with Jinja2
-- Inline HTML fallbacks for all email types
-- Convenience methods: send_welcome_email, send_verification_email, send_password_reset_email, etc.
-- Security alert emails for new device login
-- Daily summary emails
-- Email queue with async processing
+### Files to Modify
+```
+backend/routes/auth.py
+backend/routes/payouts.py
+backend/models/__init__.py
+```
 
 ---
 
-## 1.5 Email Verification Flow ✅ COMPLETED
+## 1.5 Email Verification Flow
 
 ### Backend Tasks
-- [x] **1.5.1** Add `email_verified` and `email_verified_at` columns to User model
-- [x] **1.5.2** Create verification token columns in User model
-- [x] **1.5.3** Create `/api/auth/send-verification` endpoint
-- [x] **1.5.4** Create `/api/auth/verify-email` endpoint
-- [x] **1.5.5** Generate secure verification tokens
-- [x] **1.5.6** Add email verification check middleware (`@email_verified_required` decorator)
-- [x] **1.5.7** Auto-send verification email on registration
+- [ ] **1.5.1** Add `email_verified` and `email_verified_at` columns to User model
+- [ ] **1.5.2** Create `backend/models/email_verification.py` model
+- [ ] **1.5.3** Create `/api/auth/send-verification` endpoint
+- [ ] **1.5.4** Create `/api/auth/verify-email` endpoint
+- [ ] **1.5.5** Generate secure verification tokens
+- [ ] **1.5.6** Add email verification check middleware
+- [ ] **1.5.7** Auto-send verification email on registration
 
-### Files Created
+### Frontend Tasks
+- [ ] **1.5.8** Create `frontend/src/pages/auth/VerifyEmail.jsx` page
+- [ ] **1.5.9** Create `frontend/src/pages/auth/EmailVerificationSent.jsx` page
+- [ ] **1.5.10** Update `Register.jsx` to show verification message
+- [ ] **1.5.11** Add email verification banner in dashboard
+- [ ] **1.5.12** Add resend verification email button
+
+### Files to Create
 ```
-backend/middleware/email_verification.py
+backend/models/email_verification.py
+backend/routes/email_verification.py
+frontend/src/pages/auth/VerifyEmail.jsx
+frontend/src/pages/auth/EmailVerificationSent.jsx
 ```
 
-### Features Implemented
-- `@email_verified_required` decorator for protected routes
-- `@email_verification_optional` decorator for conditional behavior
-- Token-based verification with expiry
-- Resend verification email functionality
+### Files to Modify
+```
+backend/models/user.py
+backend/routes/auth.py
+frontend/src/App.jsx
+frontend/src/pages/public/Register.jsx
+frontend/src/services/api.js
+```
 
 ---
 
-## 1.6 Two-Factor Authentication (2FA) ✅ COMPLETED
+## 1.6 Two-Factor Authentication (2FA)
 
 ### Backend Tasks
-- [x] **1.6.1** Install `pyotp` and `qrcode` packages
-- [x] **1.6.2** Create `backend/models/two_factor_auth.py` model
-- [x] **1.6.3** Create `backend/services/totp_service.py`
-- [x] **1.6.4** Create `/api/auth/2fa/setup` endpoint (generate QR code)
-- [x] **1.6.5** Create `/api/auth/2fa/verify` endpoint (verify TOTP code)
-- [x] **1.6.6** Create `/api/auth/2fa/disable` endpoint
-- [x] **1.6.7** Create `/api/auth/2fa/backup-codes` endpoint
-- [x] **1.6.8** Generate and store backup codes
-- [x] **1.6.9** Update login flow to check 2FA status
-- [x] **1.6.10** Add 2FA verification step in login
+- [ ] **1.6.1** Install `pyotp` and `qrcode` packages
+- [ ] **1.6.2** Create `backend/models/two_factor_auth.py` model
+- [ ] **1.6.3** Create `backend/services/totp_service.py`
+- [ ] **1.6.4** Create `/api/auth/2fa/setup` endpoint (generate QR code)
+- [ ] **1.6.5** Create `/api/auth/2fa/verify` endpoint (verify TOTP code)
+- [ ] **1.6.6** Create `/api/auth/2fa/disable` endpoint
+- [ ] **1.6.7** Create `/api/auth/2fa/backup-codes` endpoint
+- [ ] **1.6.8** Generate and store backup codes
+- [ ] **1.6.9** Update login flow to check 2FA status
+- [ ] **1.6.10** Add 2FA verification step in login
 
-### Files Created
+### Frontend Tasks
+- [ ] **1.6.11** Create `frontend/src/pages/auth/TwoFactorSetup.jsx` page
+- [ ] **1.6.12** Create `frontend/src/pages/auth/TwoFactorVerify.jsx` page
+- [ ] **1.6.13** Create `frontend/src/components/auth/QRCodeDisplay.jsx`
+- [ ] **1.6.14** Create `frontend/src/components/auth/BackupCodesDisplay.jsx`
+- [ ] **1.6.15** Update `Login.jsx` to handle 2FA flow
+- [ ] **1.6.16** Add 2FA settings in `SettingsPage.jsx`
+- [ ] **1.6.17** Add 2FA toggle with setup modal
+
+### Files to Create
 ```
 backend/models/two_factor_auth.py
 backend/services/totp_service.py
 backend/routes/two_factor.py
+frontend/src/pages/auth/TwoFactorSetup.jsx
+frontend/src/pages/auth/TwoFactorVerify.jsx
+frontend/src/components/auth/QRCodeDisplay.jsx
+frontend/src/components/auth/BackupCodesDisplay.jsx
 ```
 
-### Features Implemented
-- TOTP-based 2FA with QR code setup
-- Backup codes generation and regeneration
-- 2FA status endpoint
-- Confirm 2FA during setup
-- Disable 2FA with token verification
-- 2FA required check for login
+### Files to Modify
+```
+backend/routes/auth.py
+backend/models/__init__.py
+frontend/src/pages/public/Login.jsx
+frontend/src/pages/dashboard/SettingsPage.jsx
+frontend/src/services/api.js
+frontend/src/App.jsx
+```
 
 ---
 
-## 1.7 Session Management ✅ COMPLETED
+## 1.7 Session Management
 
 ### Backend Tasks
-- [x] **1.7.1** Create `backend/models/user_session.py` model
-- [x] **1.7.2** Track device info on login (user agent, IP, location)
-- [x] **1.7.3** Create `/api/auth/sessions` endpoint (list sessions)
-- [x] **1.7.4** Create `/api/auth/sessions/:id/revoke` endpoint
-- [x] **1.7.5** Create `/api/auth/sessions/revoke-all` endpoint
-- [x] **1.7.6** Implement device fingerprinting
-- [x] **1.7.7** Add suspicious login detection
-- [x] **1.7.8** Send email alert on new device login
+- [ ] **1.7.1** Create `backend/models/user_session.py` model
+- [ ] **1.7.2** Track device info on login (user agent, IP, location)
+- [ ] **1.7.3** Create `/api/auth/sessions` endpoint (list sessions)
+- [ ] **1.7.4** Create `/api/auth/sessions/:id/revoke` endpoint
+- [ ] **1.7.5** Create `/api/auth/sessions/revoke-all` endpoint
+- [ ] **1.7.6** Implement device fingerprinting
+- [ ] **1.7.7** Add suspicious login detection
+- [ ] **1.7.8** Send email alert on new device login
 
-### Files Created
+### Frontend Tasks
+- [ ] **1.7.9** Create `frontend/src/pages/dashboard/SessionsPage.jsx`
+- [ ] **1.7.10** Display active sessions with device info
+- [ ] **1.7.11** Add "Revoke" button for each session
+- [ ] **1.7.12** Add "Revoke All Other Sessions" button
+- [ ] **1.7.13** Add current session indicator
+
+### Files to Create
 ```
 backend/models/user_session.py
 backend/routes/sessions.py
+frontend/src/pages/dashboard/SessionsPage.jsx
 ```
 
-### Features Implemented
-- Session tracking with device fingerprint
-- Current session indicator
-- Revoke individual or all sessions
-- Suspicious login detection with email alerts
-- Browser and OS parsing from user agent
+### Files to Modify
+```
+backend/routes/auth.py
+backend/models/__init__.py
+frontend/src/App.jsx
+frontend/src/services/api.js
+```
 
 ---
 
-## 1.8 Rate Limiting ✅ COMPLETED
+## 1.8 Rate Limiting
 
 ### Backend Tasks
-- [x] **1.8.1** Install `flask-limiter` package
-- [x] **1.8.2** Configure rate limiter with Redis backend
-- [x] **1.8.3** Add rate limit: Login (5 attempts/15 min)
-- [x] **1.8.4** Add rate limit: Registration (3 attempts/hour)
-- [x] **1.8.5** Add rate limit: Password reset (3 attempts/hour)
-- [x] **1.8.6** Add rate limit: API calls (500/minute per user)
-- [x] **1.8.7** Add rate limit: Trade execution (30/minute)
-- [x] **1.8.8** Return proper rate limit headers
-- [x] **1.8.9** Implement IP-based and user-based limits
+- [ ] **1.8.1** Install `flask-limiter` package
+- [ ] **1.8.2** Configure rate limiter with Redis backend
+- [ ] **1.8.3** Add rate limit: Login (5 attempts/15 min)
+- [ ] **1.8.4** Add rate limit: Registration (3 attempts/hour)
+- [ ] **1.8.5** Add rate limit: Password reset (3 attempts/hour)
+- [ ] **1.8.6** Add rate limit: API calls (100/minute per user)
+- [ ] **1.8.7** Add rate limit: Trade execution (30/minute)
+- [ ] **1.8.8** Return proper rate limit headers
+- [ ] **1.8.9** Implement IP-based and user-based limits
 
-### Files Created
+### Frontend Tasks
+- [ ] **1.8.10** Handle 429 (Too Many Requests) errors
+- [ ] **1.8.11** Display rate limit countdown in UI
+- [ ] **1.8.12** Add CAPTCHA after failed attempts
+
+### Files to Create
 ```
 backend/middleware/rate_limiter.py
 ```
 
-### Features Implemented
-- Flask-Limiter with Redis/memory backends
-- Rate limit decorators: @rate_limit_login, @rate_limit_register, @rate_limit_trade
-- RateLimitTracker for CAPTCHA triggering
-- Proper X-RateLimit headers in responses
-- 429 error handler with retry-after
+### Files to Modify
+```
+backend/app.py
+backend/routes/auth.py
+frontend/src/services/api.js
+```
 
 ---
 
-## 1.9 Audit Logging ✅ COMPLETED
+## 1.9 Audit Logging
 
 ### Backend Tasks
-- [x] **1.9.1** Create `backend/models/audit_log.py` model
-- [x] **1.9.2** Create `backend/services/audit_service.py`
-- [x] **1.9.3** Log all authentication events
-- [x] **1.9.4** Log all trade executions
-- [x] **1.9.5** Log all payout requests
-- [x] **1.9.6** Log all admin actions
-- [x] **1.9.7** Log all settings changes
-- [x] **1.9.8** Store IP address and user agent
-- [x] **1.9.9** Create admin endpoint to view audit logs
+- [ ] **1.9.1** Create `backend/models/audit_log.py` model
+- [ ] **1.9.2** Create `backend/services/audit_service.py`
+- [ ] **1.9.3** Log all authentication events
+- [ ] **1.9.4** Log all trade executions
+- [ ] **1.9.5** Log all payout requests
+- [ ] **1.9.6** Log all admin actions
+- [ ] **1.9.7** Log all settings changes
+- [ ] **1.9.8** Store IP address and user agent
+- [ ] **1.9.9** Create admin endpoint to view audit logs
 
-### Files Created
+### Frontend Tasks (Admin)
+- [ ] **1.9.10** Create `frontend/src/pages/admin/AuditLogsPage.jsx`
+- [ ] **1.9.11** Add filtering by user, action type, date
+- [ ] **1.9.12** Add export to CSV functionality
+
+### Files to Create
 ```
 backend/models/audit_log.py
 backend/services/audit_service.py
-backend/routes/audit.py
+frontend/src/pages/admin/AuditLogsPage.jsx
 ```
-
-### Features Implemented
-- Comprehensive audit log model with action types
-- AuditService class for easy logging
-- Admin endpoints for viewing, filtering, exporting logs
-- Audit statistics endpoint
-- Cleanup old logs functionality
-- CSV export
 
 ---
 
-## 1.10 KYC Verification System ✅ COMPLETED
+## 1.10 KYC Verification System
 
 ### Backend Tasks
-- [x] **1.10.1** Create `backend/models/kyc_data.py` model
-- [x] **1.10.2** Define KYC tiers (0-4) with limits
-- [x] **1.10.3** Create `/api/kyc/status` endpoint
-- [x] **1.10.4** Create `/api/kyc/submit` endpoint
-- [x] **1.10.5** Create `/api/kyc/upload-document` endpoint
-- [x] **1.10.6** Integrate file upload (local storage with S3 ready)
-- [x] **1.10.7** Create admin KYC review queue
-- [x] **1.10.8** Create `/api/admin/kyc/pending` endpoint
-- [x] **1.10.9** Create `/api/admin/kyc/:id/approve` endpoint
-- [x] **1.10.10** Create `/api/admin/kyc/:id/reject` endpoint
-- [x] **1.10.11** Add KYC tier check to payout requests
+- [ ] **1.10.1** Create `backend/models/kyc_data.py` model
+- [ ] **1.10.2** Define KYC tiers (0-4) with limits
+- [ ] **1.10.3** Create `/api/kyc/status` endpoint
+- [ ] **1.10.4** Create `/api/kyc/submit` endpoint
+- [ ] **1.10.5** Create `/api/kyc/upload-document` endpoint
+- [ ] **1.10.6** Integrate file upload (S3/CloudStorage)
+- [ ] **1.10.7** Create admin KYC review queue
+- [ ] **1.10.8** Create `/api/admin/kyc/pending` endpoint
+- [ ] **1.10.9** Create `/api/admin/kyc/:id/approve` endpoint
+- [ ] **1.10.10** Create `/api/admin/kyc/:id/reject` endpoint
+- [ ] **1.10.11** Add KYC tier check to payout requests
 
-### Files Created
+### Frontend Tasks
+- [ ] **1.10.12** Create `frontend/src/pages/dashboard/KYCPage.jsx`
+- [ ] **1.10.13** Create `frontend/src/components/kyc/DocumentUpload.jsx`
+- [ ] **1.10.14** Create `frontend/src/components/kyc/KYCStatus.jsx`
+- [ ] **1.10.15** Create `frontend/src/components/kyc/TierInfo.jsx`
+- [ ] **1.10.16** Add KYC banner for unverified users
+- [ ] **1.10.17** Create admin KYC review page
+- [ ] **1.10.18** Add document viewer for admin
+
+### Files to Create
 ```
 backend/models/kyc_data.py
 backend/routes/kyc.py
 backend/services/storage_service.py
+frontend/src/pages/dashboard/KYCPage.jsx
+frontend/src/components/kyc/DocumentUpload.jsx
+frontend/src/components/kyc/KYCStatus.jsx
+frontend/src/components/kyc/TierInfo.jsx
+frontend/src/pages/admin/KYCReviewPage.jsx
 ```
 
-### Features Implemented
-- KYC tiers 0-4 with withdrawal limits
-- Personal information and address capture
-- ID document upload with front/back support
-- Admin review queue with filtering
-- Approve/reject with notes
-- KYC history tracking
-- Tier-based payout limits
+### Files to Modify
+```
+backend/routes/payouts.py
+backend/models/__init__.py
+frontend/src/App.jsx
+frontend/src/services/api.js
+```
 
 ---
 
 # PHASE 2: REVENUE EXPANSION (Priority: P2)
 
-## 2.1 Subscription System ✅ COMPLETED
+## 2.1 Subscription System
 
 ### Backend Tasks
-- [x] **2.1.1** Create `backend/models/subscription_plan.py` model (complete with tiers, pricing, Stripe IDs)
-- [x] **2.1.2** Create `backend/models/user_subscription.py` model (with status, trial, billing tracking)
-- [x] **2.1.3** Define subscription plans (Signals Basic, Pro, Trading Room, Mentorship with seeder)
-- [x] **2.1.4** Integrate Stripe recurring billing (complete stripe_service.py)
-- [x] **2.1.5** Create `/api/premium/plans` endpoint
-- [x] **2.1.6** Create `/api/premium/subscribe` endpoint (with Stripe Checkout)
-- [x] **2.1.7** Create `/api/premium/my-subscription` endpoint
-- [x] **2.1.8** Create `/api/premium/cancel` endpoint (with period-end cancellation)
-- [x] **2.1.9** Create `/api/premium/change-plan` endpoint (with proration)
-- [x] **2.1.10** Handle webhook for all subscription events
-- [x] **2.1.11** Implement subscription feature gates (@require_active_subscription decorator)
+- [ ] **2.1.1** Create `backend/models/subscription_plan.py` model
+- [ ] **2.1.2** Create `backend/models/user_subscription.py` model
+- [ ] **2.1.3** Define subscription plans (Signal Basic, Pro, Trading Room, Mentorship)
+- [ ] **2.1.4** Integrate Stripe recurring billing
+- [ ] **2.1.5** Create `/api/subscriptions/plans` endpoint
+- [ ] **2.1.6** Create `/api/subscriptions/subscribe` endpoint
+- [ ] **2.1.7** Create `/api/subscriptions/my-subscription` endpoint
+- [ ] **2.1.8** Create `/api/subscriptions/cancel` endpoint
+- [ ] **2.1.9** Create `/api/subscriptions/change-plan` endpoint
+- [ ] **2.1.10** Handle webhook for subscription events
+- [ ] **2.1.11** Implement subscription feature gates
 
 ### Frontend Tasks
-- [x] **2.1.12** Create `frontend/src/pages/dashboard/SubscriptionsPage.jsx`
-- [x] **2.1.13** Plans grid with billing interval toggle (monthly/quarterly/yearly)
-- [x] **2.1.14** Current subscription display with status
-- [x] **2.1.15** Stripe Checkout integration for payment
-- [x] **2.1.16** Subscription status in user profile
-- [x] **2.1.17** Billing history/invoices view with tabs
+- [ ] **2.1.12** Create `frontend/src/pages/dashboard/SubscriptionsPage.jsx`
+- [ ] **2.1.13** Create `frontend/src/components/subscription/PlanCard.jsx`
+- [ ] **2.1.14** Create `frontend/src/components/subscription/CurrentPlan.jsx`
+- [ ] **2.1.15** Create `frontend/src/pages/checkout/SubscriptionCheckout.jsx`
+- [ ] **2.1.16** Add subscription status in user profile
+- [ ] **2.1.17** Create billing history view
 
-### Files Created
+### Files to Create
 ```
 backend/models/subscription_plan.py
 backend/models/user_subscription.py
 backend/routes/subscriptions_v2.py
 backend/services/stripe_service.py
 frontend/src/pages/dashboard/SubscriptionsPage.jsx
+frontend/src/components/subscription/PlanCard.jsx
+frontend/src/components/subscription/CurrentPlan.jsx
+frontend/src/pages/checkout/SubscriptionCheckout.jsx
 ```
-
-### Features Implemented
-- SubscriptionPlan model with:
-  - Multiple billing intervals (monthly/quarterly/yearly)
-  - Feature gates (signals, trading room, mentorship, etc.)
-  - Stripe product/price IDs
-  - Default plans seeder (4 tiers)
-- UserSubscription model with:
-  - Trial period management
-  - Subscription status tracking (trialing, active, past_due, canceled)
-  - Stripe integration
-- SubscriptionInvoice model for billing history
-- Full Stripe integration:
-  - Customer management
-  - Checkout sessions
-  - Subscription lifecycle (create, update, cancel, pause, resume)
-  - Payment methods
-  - Invoices
-  - Webhook handlers for all events
-- Admin endpoints for plan management and Stripe sync
-- Frontend with:
-  - Plans display with pricing comparison
-  - Subscribe/change plan/cancel/resume
-  - Billing portal integration
-  - Invoice history
 
 ---
 
-## 2.2 Challenge Add-ons (Reset, Extend, Upgrade) ✅ COMPLETED
+## 2.2 Challenge Add-ons (Reset, Extend, Upgrade)
 
 ### Backend Tasks
-- [x] **2.2.1** Create `backend/models/challenge_addon.py` model with AddonType, AddonStatus enums
-- [x] **2.2.2** Create `/api/challenges/:id/reset` endpoint with pricing endpoint
-- [x] **2.2.3** Create `/api/challenges/:id/extend` endpoint (15/30/60/90 days)
-- [x] **2.2.4** Create `/api/challenges/:id/upgrade` endpoint
-- [x] **2.2.5** Implement reset logic (10% discount, clears trades, resets phase)
-- [x] **2.2.6** Implement extension logic ($25/15 days, $49/30 days, etc.)
-- [x] **2.2.7** Implement upgrade logic (preserve profit percentage, price diff + fee)
-- [x] **2.2.8** Add payment flow for add-ons with auto-complete for dev
+- [ ] **2.2.1** Create `backend/models/challenge_addon.py` model
+- [ ] **2.2.2** Create `/api/challenges/:id/reset` endpoint
+- [ ] **2.2.3** Create `/api/challenges/:id/extend` endpoint
+- [ ] **2.2.4** Create `/api/challenges/:id/upgrade` endpoint
+- [ ] **2.2.5** Implement reset logic (10% discount, balance reset)
+- [ ] **2.2.6** Implement extension logic ($49/30 days)
+- [ ] **2.2.7** Implement upgrade logic (pay difference + 10%)
+- [ ] **2.2.8** Add payment flow for add-ons
 
 ### Frontend Tasks
-- [x] **2.2.9** Challenge add-on modals integrated in AccountsPage
-- [x] **2.2.10** Add-on pricing display before purchase
-- [x] **2.2.11** Add-on history endpoint `/api/challenges/:id/addons`
+- [ ] **2.2.9** Create `frontend/src/components/challenge/ResetModal.jsx`
+- [ ] **2.2.10** Create `frontend/src/components/challenge/ExtendModal.jsx`
+- [ ] **2.2.11** Create `frontend/src/components/challenge/UpgradeModal.jsx`
+- [ ] **2.2.12** Add add-on buttons in AccountsPage
+- [ ] **2.2.13** Show add-on history in challenge details
 
-### Files Created
+### Files to Create
 ```
 backend/models/challenge_addon.py
 backend/routes/challenge_addons.py
+frontend/src/components/challenge/ResetModal.jsx
+frontend/src/components/challenge/ExtendModal.jsx
+frontend/src/components/challenge/UpgradeModal.jsx
 ```
 
-### Features Implemented
-- ChallengeAddon model with:
-  - Reset, Extend, Upgrade types
-  - Status tracking (pending, completed, refunded)
-  - Transaction ID linking
-- Pricing endpoints for each add-on type
-- Reset: 10% discount, clears all trades, resets balance and phase
-- Extend: Multiple duration options (15/30/60/90 days)
-- Upgrade: Preserve profit %, charge price difference + fee
-- Add-on history and my-addons endpoints
-- Admin endpoints for managing add-ons
+### Files to Modify
+```
+backend/models/__init__.py
+frontend/src/pages/dashboard/AccountsPage.jsx
+frontend/src/services/api.js
+```
 
 ---
 
-## 2.3 Multi-Tier Affiliate Program ✅ COMPLETED
+## 2.3 Multi-Tier Affiliate Program
 
 ### Backend Tasks
-- [x] **2.3.1** Update Referral model for multi-tier (Tier 1: 15%, Tier 2: 5%)
-- [x] **2.3.2** Track sub-referrals (referral chain) with AffiliateCommission model
-- [x] **2.3.3** Create `/api/affiliates/dashboard` endpoint
-- [x] **2.3.4** Create `/api/affiliates/sub-affiliates` endpoint
-- [x] **2.3.5** Create `/api/affiliates/commissions` endpoint with filtering
-- [x] **2.3.6** Create `/api/affiliates/payout-request` endpoint
-- [x] **2.3.7** Implement payout schedule (min $50) with approval workflow
-- [x] **2.3.8** Create affiliate performance bonuses logic (bronze/silver/gold/platinum)
+- [ ] **2.3.1** Update Referral model for multi-tier (Tier 1: 15%, Tier 2: 5%)
+- [ ] **2.3.2** Track sub-referrals (referral chain)
+- [ ] **2.3.3** Create `/api/affiliates/dashboard` endpoint
+- [ ] **2.3.4** Create `/api/affiliates/sub-affiliates` endpoint
+- [ ] **2.3.5** Create `/api/affiliates/commissions` endpoint
+- [ ] **2.3.6** Create `/api/affiliates/payout-request` endpoint
+- [ ] **2.3.7** Implement weekly payout schedule (min $100)
+- [ ] **2.3.8** Create affiliate performance bonuses logic
 
 ### Frontend Tasks
-- [x] **2.3.9** Affiliate Dashboard with comprehensive stats
-- [x] **2.3.10** Monthly earnings chart data endpoint
-- [x] **2.3.11** Sub-affiliate tree display
-- [x] **2.3.12** Payout history with filtering
-- [x] **2.3.13** Marketing materials download section
+- [ ] **2.3.9** Redesign `ReferralPage.jsx` as Affiliate Dashboard
+- [ ] **2.3.10** Create `frontend/src/components/affiliate/CommissionChart.jsx`
+- [ ] **2.3.11** Create `frontend/src/components/affiliate/SubAffiliateTree.jsx`
+- [ ] **2.3.12** Create `frontend/src/components/affiliate/PayoutHistory.jsx`
+- [ ] **2.3.13** Add marketing materials download section
 
-### Files Created
+### Files to Modify
 ```
-backend/routes/affiliates.py
-backend/models/affiliate.py (AffiliateCommission, AffiliateStats, AffiliatePayoutRequest)
+backend/models/referral.py
+backend/routes/referrals.py
+frontend/src/pages/dashboard/ReferralPage.jsx
+frontend/src/services/api.js
 ```
-
-### Features Implemented
-- Multi-tier commissions (Tier 1: 15%, Tier 2: 5%)
-- AffiliateStats tracking per user
-- Performance tiers with bonus rates
-- Comprehensive dashboard with:
-  - Referral code and link
-  - Monthly earnings chart data
-  - Commission rates and minimum payout info
-  - Performance tier progress
-- Sub-affiliates tracking
-- Commission history with filtering (tier, status, date range)
-- Payout request workflow (pending, processing, completed, rejected)
-- Marketing materials endpoint
-- Admin endpoints for:
-  - Pending payouts
-  - Process/complete/reject payouts
-  - Approve commissions
 
 ---
 
-## 2.4 Points Redemption System ✅ COMPLETED
+## 2.4 Points Redemption System
 
 ### Backend Tasks
-- [x] **2.4.1** Add redemption options to points system
-- [x] **2.4.2** Create `/api/points/redeem` endpoint
-- [x] **2.4.3** Define redemption catalog (discounts, subscriptions, merchandise)
-- [x] **2.4.4** Create PointsRedemption model
-- [x] **2.4.5** Implement redemption validation and processing
+- [ ] **2.4.1** Add redemption options to points system
+- [ ] **2.4.2** Create `/api/points/redeem` endpoint
+- [ ] **2.4.3** Define redemption catalog (discounts, free months, merch)
+- [ ] **2.4.4** Create `backend/models/points_redemption.py`
+- [ ] **2.4.5** Implement redemption validation and processing
 
 ### Frontend Tasks
-- [x] **2.4.6** Rewards catalog endpoint with filtering
-- [x] **2.4.7** Redemption history endpoint
-- [x] **2.4.8** Discount code validation/usage endpoints
-- [x] **2.4.9** Admin redemption management
+- [ ] **2.4.6** Create `frontend/src/pages/dashboard/PointsRewardsPage.jsx`
+- [ ] **2.4.7** Create reward catalog display
+- [ ] **2.4.8** Add redemption confirmation modal
+- [ ] **2.4.9** Show redemption history
 
-### Files Created
+### Files to Create
 ```
-backend/routes/points.py (extended with rewards & redemption)
-backend/models/points.py (PointsRedemption, REWARDS_CATALOG)
+backend/models/points_redemption.py
+frontend/src/pages/dashboard/PointsRewardsPage.jsx
 ```
-
-### Features Implemented
-- REWARDS_CATALOG with:
-  - Discounts (5%, 10%, 15%, 20%)
-  - Subscription rewards (free months)
-  - Merchandise (branded items)
-  - Exclusive items (limited stock)
-- Level-based reward requirements
-- Stock tracking for limited items
-- Redemption workflow:
-  - Check points and level requirements
-  - Deduct points
-  - Generate redemption codes (for discounts)
-  - Track shipping for merchandise
-- Code validation and usage
-- Admin endpoints for:
-  - View all redemptions
-  - Process/complete/cancel redemptions
-  - Refund points on cancellation
 
 ---
 
 # PHASE 3: TRADING ENHANCEMENTS (Priority: P2)
 
-## 3.1 Advanced Order Types ✅ COMPLETED
+## 3.1 Advanced Order Types
 
 ### Backend Tasks
-- [x] **3.1.1** Create `backend/models/advanced_order.py` model
-- [x] **3.1.2** Implement trailing stop loss logic
-- [x] **3.1.3** Implement OCO (One-Cancels-Other) orders
-- [x] **3.1.4** Implement bracket orders (entry + SL + TP)
-- [x] **3.1.5** Create `/api/orders/trailing-stop` endpoint
-- [x] **3.1.6** Create `/api/orders/oco` endpoint
-- [x] **3.1.7** Create `/api/orders/bracket` endpoint
-- [x] **3.1.8** Add order update websocket events
+- [ ] **3.1.1** Create `backend/models/advanced_order.py` model
+- [ ] **3.1.2** Implement trailing stop loss logic
+- [ ] **3.1.3** Implement OCO (One-Cancels-Other) orders
+- [ ] **3.1.4** Implement bracket orders (entry + SL + TP)
+- [ ] **3.1.5** Create `/api/orders/trailing-stop` endpoint
+- [ ] **3.1.6** Create `/api/orders/oco` endpoint
+- [ ] **3.1.7** Create `/api/orders/bracket` endpoint
+- [ ] **3.1.8** Add order update websocket events
 
 ### Frontend Tasks
-- [x] **3.1.9** Create `frontend/src/components/trading/TrailingStopForm.jsx`
-- [x] **3.1.10** Create `frontend/src/components/trading/OCOOrderForm.jsx`
-- [x] **3.1.11** Create `frontend/src/components/trading/BracketOrderForm.jsx`
-- [x] **3.1.12** Update TradeForm with advanced order tabs
-- [x] **3.1.13** Add order type indicator in positions table
+- [ ] **3.1.9** Create `frontend/src/components/trading/TrailingStopForm.jsx`
+- [ ] **3.1.10** Create `frontend/src/components/trading/OCOOrderForm.jsx`
+- [ ] **3.1.11** Create `frontend/src/components/trading/BracketOrderForm.jsx`
+- [ ] **3.1.12** Update TradeForm with advanced order tabs
+- [ ] **3.1.13** Add order type indicator in positions table
 
 ### Files to Create
 ```
@@ -526,43 +524,40 @@ frontend/src/components/trading/BracketOrderForm.jsx
 
 ---
 
-## 3.2 One-Click Trading ✅ COMPLETED
+## 3.2 One-Click Trading
 
 ### Backend Tasks
-- [x] **3.2.1** Create quick order execution endpoint
-- [x] **3.2.2** Implement pre-configured lot size settings
-- [x] **3.2.3** Add default SL/TP settings per user
+- [ ] **3.2.1** Create quick order execution endpoint
+- [ ] **3.2.2** Implement pre-configured lot size settings
+- [ ] **3.2.3** Add default SL/TP settings per user
 
 ### Frontend Tasks
-- [x] **3.2.4** Create `frontend/src/components/trading/OneClickPanel.jsx`
-- [x] **3.2.5** Add buy/sell buttons with instant execution
-- [x] **3.2.6** Add one-click settings configuration
-- [x] **3.2.7** Implement hotkey support (B=Buy, S=Sell, X=Close All)
+- [ ] **3.2.4** Create `frontend/src/components/trading/OneClickPanel.jsx`
+- [ ] **3.2.5** Add buy/sell buttons with instant execution
+- [ ] **3.2.6** Add one-click settings configuration
+- [ ] **3.2.7** Implement hotkey support (B=Buy, S=Sell)
 
-### Files Created
+### Files to Create
 ```
-backend/models/trading_settings.py
-backend/routes/quick_trading.py
 frontend/src/components/trading/OneClickPanel.jsx
 frontend/src/hooks/useHotkeys.js
-frontend/src/pages/dashboard/QuickTradingPage.jsx
 ```
 
 ---
 
-## 3.3 Order Templates ✅ COMPLETED
+## 3.3 Order Templates
 
 ### Backend Tasks
-- [x] **3.3.1** Create `backend/models/order_template.py` model
-- [x] **3.3.2** Create `/api/templates` CRUD endpoints
-- [x] **3.3.3** Allow saving favorite order configurations
+- [ ] **3.3.1** Create `backend/models/order_template.py` model
+- [ ] **3.3.2** Create `/api/templates` CRUD endpoints
+- [ ] **3.3.3** Allow saving favorite order configurations
 
 ### Frontend Tasks
-- [x] **3.3.4** Create `frontend/src/pages/dashboard/OrderTemplatesPage.jsx`
-- [x] **3.3.5** Create template save/edit modal
-- [x] **3.3.6** Add "Use Template" button and favorites system
+- [ ] **3.3.4** Create `frontend/src/pages/dashboard/OrderTemplatesPage.jsx`
+- [ ] **3.3.5** Create template save modal
+- [ ] **3.3.6** Add "Use Template" dropdown in TradeForm
 
-### Files Created
+### Files to Create
 ```
 backend/models/order_template.py
 backend/routes/order_templates.py
@@ -571,28 +566,31 @@ frontend/src/pages/dashboard/OrderTemplatesPage.jsx
 
 ---
 
-## 3.4 Trade Journal ✅ COMPLETED
+## 3.4 Trade Journal
 
 ### Backend Tasks
-- [x] **3.4.1** Create `backend/models/trade_journal.py` model
-- [x] **3.4.2** Create `/api/journal` CRUD endpoints
-- [x] **3.4.3** Create `/api/journal/analytics` endpoint
-- [x] **3.4.4** Create `/api/journal/export` endpoint (PDF/CSV)
-- [x] **3.4.5** Add screenshot upload support
+- [ ] **3.4.1** Create `backend/models/trade_journal.py` model
+- [ ] **3.4.2** Create `/api/journal` CRUD endpoints
+- [ ] **3.4.3** Create `/api/journal/analytics` endpoint
+- [ ] **3.4.4** Create `/api/journal/export` endpoint (PDF/CSV)
+- [ ] **3.4.5** Add screenshot upload support
 
 ### Frontend Tasks
-- [x] **3.4.6** Create `frontend/src/pages/dashboard/TradeJournalPage.jsx`
-- [x] **3.4.7** Create `frontend/src/components/journal/JournalEntry.jsx`
-- [x] **3.4.8** Create `frontend/src/components/journal/JournalAnalytics.jsx`
-- [x] **3.4.9** Create `frontend/src/components/journal/JournalFilters.jsx`
-- [x] **3.4.10** Add quick journal button on trade close
-- [x] **3.4.11** Implement tags and emotions tracking
+- [ ] **3.4.6** Create `frontend/src/pages/dashboard/TradeJournalPage.jsx`
+- [ ] **3.4.7** Create `frontend/src/components/journal/JournalEntry.jsx`
+- [ ] **3.4.8** Create `frontend/src/components/journal/JournalAnalytics.jsx`
+- [ ] **3.4.9** Create `frontend/src/components/journal/JournalFilters.jsx`
+- [ ] **3.4.10** Add quick journal button on trade close
+- [ ] **3.4.11** Implement tags and emotions tracking
 
-### Files Created
+### Files to Create
 ```
 backend/models/trade_journal.py
 backend/routes/journal.py
 frontend/src/pages/dashboard/TradeJournalPage.jsx
+frontend/src/components/journal/JournalEntry.jsx
+frontend/src/components/journal/JournalAnalytics.jsx
+frontend/src/components/journal/JournalFilters.jsx
 ```
 
 ---
@@ -651,25 +649,25 @@ frontend/src/components/charts/IndicatorsPanel.jsx
 
 # PHASE 4: SOCIAL TRADING (Priority: P2)
 
-## 4.1 Trader Profiles ✅ COMPLETED
+## 4.1 Trader Profiles
 
 ### Backend Tasks
-- [x] **4.1.1** Create `backend/models/trader_profile.py` model
-- [x] **4.1.2** Calculate trader statistics (win rate, profit %, drawdown, Sharpe)
-- [x] **4.1.3** Create `/api/profiles/me` endpoint
-- [x] **4.1.4** Create `/api/profiles/:id` public endpoint
-- [x] **4.1.5** Create `/api/profiles/:id/trades` endpoint
-- [x] **4.1.6** Create `/api/profiles/:id/equity-curve` endpoint
-- [x] **4.1.7** Implement verification badge system
+- [ ] **4.1.1** Create `backend/models/trader_profile.py` model
+- [ ] **4.1.2** Calculate trader statistics (win rate, profit %, drawdown, Sharpe)
+- [ ] **4.1.3** Create `/api/profiles/me` endpoint
+- [ ] **4.1.4** Create `/api/profiles/:id` public endpoint
+- [ ] **4.1.5** Create `/api/profiles/:id/trades` endpoint
+- [ ] **4.1.6** Create `/api/profiles/:id/equity-curve` endpoint
+- [ ] **4.1.7** Implement verification badge system
 
 ### Frontend Tasks
-- [x] **4.1.8** Create `frontend/src/pages/dashboard/MyProfilePage.jsx`
-- [x] **4.1.9** Create `frontend/src/pages/public/TraderProfile.jsx`
-- [x] **4.1.10** Create `frontend/src/components/profile/ProfileHeader.jsx`
-- [x] **4.1.11** Create `frontend/src/components/profile/StatisticsGrid.jsx`
-- [x] **4.1.12** Create `frontend/src/components/profile/EquityCurve.jsx`
-- [x] **4.1.13** Create `frontend/src/components/profile/BadgesDisplay.jsx`
-- [x] **4.1.14** Create `frontend/src/components/profile/TradeHistory.jsx`
+- [ ] **4.1.8** Create `frontend/src/pages/dashboard/MyProfilePage.jsx`
+- [ ] **4.1.9** Create `frontend/src/pages/public/TraderProfile.jsx`
+- [ ] **4.1.10** Create `frontend/src/components/profile/ProfileHeader.jsx`
+- [ ] **4.1.11** Create `frontend/src/components/profile/StatisticsGrid.jsx`
+- [ ] **4.1.12** Create `frontend/src/components/profile/EquityCurve.jsx`
+- [ ] **4.1.13** Create `frontend/src/components/profile/BadgesDisplay.jsx`
+- [ ] **4.1.14** Create `frontend/src/components/profile/TradeHistory.jsx`
 
 ### Files to Create
 ```
@@ -686,21 +684,21 @@ frontend/src/components/profile/TradeHistory.jsx
 
 ---
 
-## 4.2 Follow System ✅ COMPLETED
+## 4.2 Follow System
 
 ### Backend Tasks
-- [x] **4.2.1** Create `backend/models/trader_follower.py` model
-- [x] **4.2.2** Create `/api/follow/:id` endpoint
-- [x] **4.2.3** Create `/api/unfollow/:id` endpoint
-- [x] **4.2.4** Create `/api/followers` endpoint
-- [x] **4.2.5** Create `/api/following` endpoint
-- [x] **4.2.6** Add follower count to profiles
+- [ ] **4.2.1** Create `backend/models/trader_follower.py` model
+- [ ] **4.2.2** Create `/api/follow/:id` endpoint
+- [ ] **4.2.3** Create `/api/unfollow/:id` endpoint
+- [ ] **4.2.4** Create `/api/followers` endpoint
+- [ ] **4.2.5** Create `/api/following` endpoint
+- [ ] **4.2.6** Add follower count to profiles
 
 ### Frontend Tasks
-- [x] **4.2.7** Create follow/unfollow button component
-- [x] **4.2.8** Create followers list page
-- [x] **4.2.9** Create following list page
-- [x] **4.2.10** Add follow suggestions based on performance
+- [ ] **4.2.7** Create follow/unfollow button component
+- [ ] **4.2.8** Create followers list page
+- [ ] **4.2.9** Create following list page
+- [ ] **4.2.10** Add follow suggestions based on performance
 
 ### Files to Create
 ```
@@ -713,28 +711,28 @@ frontend/src/pages/dashboard/FollowingPage.jsx
 
 ---
 
-## 4.3 Copy Trading ✅ COMPLETED
+## 4.3 Copy Trading
 
 ### Backend Tasks
-- [x] **4.3.1** Create `backend/models/copy_trade.py` model
-- [x] **4.3.2** Create `backend/services/copy_trading_service.py`
-- [x] **4.3.3** Create `/api/copy-trading/traders` endpoint
-- [x] **4.3.4** Create `/api/copy-trading/follow/:id` endpoint
-- [x] **4.3.5** Create `/api/copy-trading/settings/:id` endpoint
-- [x] **4.3.6** Implement copy ratio calculation
-- [x] **4.3.7** Implement risk limits for copy trading
-- [x] **4.3.8** Create signal broadcast system
-- [x] **4.3.9** Handle master trade → copy trade execution
-- [x] **4.3.10** Calculate and distribute performance fees
+- [ ] **4.3.1** Create `backend/models/copy_trade.py` model
+- [ ] **4.3.2** Create `backend/services/copy_trading_service.py`
+- [ ] **4.3.3** Create `/api/copy-trading/traders` endpoint
+- [ ] **4.3.4** Create `/api/copy-trading/follow/:id` endpoint
+- [ ] **4.3.5** Create `/api/copy-trading/settings/:id` endpoint
+- [ ] **4.3.6** Implement copy ratio calculation
+- [ ] **4.3.7** Implement risk limits for copy trading
+- [ ] **4.3.8** Create signal broadcast system
+- [ ] **4.3.9** Handle master trade → copy trade execution
+- [ ] **4.3.10** Calculate and distribute performance fees
 
 ### Frontend Tasks
-- [x] **4.3.11** Create `frontend/src/pages/dashboard/CopyTradingPage.jsx`
-- [x] **4.3.12** Create `frontend/src/components/copy/TraderCard.jsx`
-- [x] **4.3.13** Create `frontend/src/components/copy/CopySettingsModal.jsx`
-- [x] **4.3.14** Create `frontend/src/components/copy/CopyPerformance.jsx`
-- [x] **4.3.15** Add copy trading toggle in trader profiles
+- [ ] **4.3.11** Create `frontend/src/pages/dashboard/CopyTradingPage.jsx`
+- [ ] **4.3.12** Create `frontend/src/components/copy/TraderCard.jsx`
+- [ ] **4.3.13** Create `frontend/src/components/copy/CopySettingsModal.jsx`
+- [ ] **4.3.14** Create `frontend/src/components/copy/CopyPerformance.jsx`
+- [ ] **4.3.15** Add copy trading toggle in trader profiles
 
-### Files Created
+### Files to Create
 ```
 backend/models/copy_trade.py
 backend/services/copy_trading_service.py
@@ -747,32 +745,34 @@ frontend/src/components/copy/CopyPerformance.jsx
 
 ---
 
-## 4.4 Trading Ideas ✅ COMPLETED
+## 4.4 Trading Ideas
 
 ### Backend Tasks
-- [x] **4.4.1** Create `backend/models/trading_idea.py` model (includes TradingIdea, IdeaComment, IdeaLike, CommentLike, IdeaBookmark)
-- [x] **4.4.2** Create `backend/models/idea_comment.py` model (integrated in trading_idea.py)
-- [x] **4.4.3** Create `backend/models/idea_like.py` model (integrated in trading_idea.py)
-- [x] **4.4.4** Create `/api/ideas` CRUD endpoints
-- [x] **4.4.5** Create `/api/ideas/:id/like` endpoint
-- [x] **4.4.6** Create `/api/ideas/:id/comments` endpoint
-- [x] **4.4.7** Implement chart screenshot upload (via URL)
+- [ ] **4.4.1** Create `backend/models/trading_idea.py` model
+- [ ] **4.4.2** Create `backend/models/idea_comment.py` model
+- [ ] **4.4.3** Create `backend/models/idea_like.py` model
+- [ ] **4.4.4** Create `/api/ideas` CRUD endpoints
+- [ ] **4.4.5** Create `/api/ideas/:id/like` endpoint
+- [ ] **4.4.6** Create `/api/ideas/:id/comments` endpoint
+- [ ] **4.4.7** Implement chart screenshot upload
 
 ### Frontend Tasks
-- [x] **4.4.8** Create `frontend/src/pages/dashboard/TradingIdeasPage.jsx`
-- [x] **4.4.9** Create `frontend/src/components/ideas/IdeaCard.jsx`
-- [x] **4.4.10** Create `frontend/src/components/ideas/CreateIdeaModal.jsx`
-- [x] **4.4.11** Create `frontend/src/pages/dashboard/IdeaDetailPage.jsx`
-- [x] **4.4.12** Create `frontend/src/components/ideas/CommentSection.jsx`
+- [ ] **4.4.8** Create `frontend/src/pages/dashboard/TradingIdeasPage.jsx`
+- [ ] **4.4.9** Create `frontend/src/components/ideas/IdeaCard.jsx`
+- [ ] **4.4.10** Create `frontend/src/components/ideas/CreateIdeaModal.jsx`
+- [ ] **4.4.11** Create `frontend/src/components/ideas/IdeaDetail.jsx`
+- [ ] **4.4.12** Create `frontend/src/components/ideas/CommentSection.jsx`
 
-### Files Created
+### Files to Create
 ```
 backend/models/trading_idea.py
+backend/models/idea_comment.py
+backend/models/idea_like.py
 backend/routes/trading_ideas.py
 frontend/src/pages/dashboard/TradingIdeasPage.jsx
-frontend/src/pages/dashboard/IdeaDetailPage.jsx
 frontend/src/components/ideas/IdeaCard.jsx
 frontend/src/components/ideas/CreateIdeaModal.jsx
+frontend/src/components/ideas/IdeaDetail.jsx
 frontend/src/components/ideas/CommentSection.jsx
 ```
 
@@ -780,60 +780,47 @@ frontend/src/components/ideas/CommentSection.jsx
 
 # PHASE 5: MOBILE & NOTIFICATIONS (Priority: P2)
 
-## 5.1 Push Notifications ✅ COMPLETED
+## 5.1 Push Notifications
 
 ### Backend Tasks
-- [x] **5.1.1** Create `backend/models/push_device.py` model (PushDevice, NotificationPreference, NotificationLog)
-- [x] **5.1.2** Integrate Firebase Cloud Messaging and Web Push API
-- [x] **5.1.3** Create `/api/notifications/register-device` endpoint
-- [x] **5.1.4** Send push on trade execution
-- [x] **5.1.5** Send push on challenge updates
-- [x] **5.1.6** Send push on payout status
+- [ ] **5.1.1** Create `backend/models/push_device.py` model
+- [ ] **5.1.2** Integrate Firebase Cloud Messaging
+- [ ] **5.1.3** Create `/api/notifications/register-device` endpoint
+- [ ] **5.1.4** Send push on trade execution
+- [ ] **5.1.5** Send push on challenge updates
+- [ ] **5.1.6** Send push on payout status
 
 ### Frontend Tasks
-- [x] **5.1.7** Implement service worker for web push
-- [x] **5.1.8** Add notification permission request
-- [x] **5.1.9** Create notification settings page (with preferences, devices, history tabs)
+- [ ] **5.1.7** Implement service worker for web push
+- [ ] **5.1.8** Add notification permission request
+- [ ] **5.1.9** Create notification settings page
 
-### Files Created
+### Files to Create
 ```
 backend/models/push_device.py
 backend/services/push_notification_service.py
-backend/routes/push_notifications.py
-frontend/public/sw.js
+frontend/public/firebase-messaging-sw.js
 frontend/src/services/pushNotifications.js
-frontend/src/pages/dashboard/NotificationsPage.jsx (enhanced)
 ```
 
 ---
 
-## 5.2 Enhanced Notification Settings ✅ COMPLETED
+## 5.2 Enhanced Notification Settings
 
 ### Backend Tasks
-- [x] **5.2.1** Create `backend/models/notification_settings.py` model (integrated in push_device.py as NotificationPreference)
-- [x] **5.2.2** Create `/api/notifications/settings` endpoint (using /api/notifications/preferences)
-- [x] **5.2.3** Add granular notification controls (email digest, sound settings, quiet hours, timezone)
+- [ ] **5.2.1** Create `backend/models/notification_settings.py` model
+- [ ] **5.2.2** Create `/api/notifications/settings` endpoint
+- [ ] **5.2.3** Add granular notification controls
 
 ### Frontend Tasks
-- [x] **5.2.4** Enhance `NotificationsPage.jsx` with settings tab
-- [x] **5.2.5** Create notification preference toggles (with descriptions and categories)
-- [x] **5.2.6** Add notification categories (Trading, Challenges, Payouts, Social, System)
-- [x] **5.2.7** Create NotificationBell dropdown component for header
-- [x] **5.2.8** Add email digest frequency settings (realtime, hourly, daily, weekly, never)
-- [x] **5.2.9** Add sound notification settings (enabled/disabled, volume control)
+- [ ] **5.2.4** Enhance `NotificationsPage.jsx` with settings tab
+- [ ] **5.2.5** Create notification preference toggles
+- [ ] **5.2.6** Add notification categories (Trade, Account, Marketing)
 
-### Files Created
+### Files to Create
 ```
+backend/models/notification_settings.py
 frontend/src/components/notifications/NotificationSettings.jsx
-frontend/src/components/notifications/NotificationBell.jsx
-frontend/src/components/notifications/index.js
-```
-
-### Files Modified
-```
-backend/models/push_device.py - Added email_digest_frequency, sound_enabled, sound_volume
-backend/routes/push_notifications.py - Added new updatable fields
-frontend/src/components/DashboardLayout.jsx - Integrated NotificationBell
 ```
 
 ---
@@ -871,254 +858,77 @@ mobile/
 
 # PHASE 6: ADVANCED FEATURES (Priority: P3)
 
-## 6.1 Blog System ✅ COMPLETED
+## 6.1 Blog System
 
 ### Backend Tasks
-- [x] **6.1.1** Create `backend/models/blog_post.py` model (BlogPost, BlogCategory, BlogTag, BlogComment, BlogPostLike)
-- [x] **6.1.2** Create `/api/blog` CRUD endpoints (public and admin endpoints)
-- [x] **6.1.3** Add categories and tags (with many-to-many relationships)
-- [x] **6.1.4** Implement SEO metadata (meta_title, meta_description, og_image, canonical_url)
+- [ ] **6.1.1** Create `backend/models/blog_post.py` model
+- [ ] **6.1.2** Create `/api/blog` CRUD endpoints
+- [ ] **6.1.3** Add categories and tags
+- [ ] **6.1.4** Implement SEO metadata
 
 ### Frontend Tasks
-- [x] **6.1.5** Create `frontend/src/pages/public/BlogPage.jsx` (blog listing with filtering, pagination, sidebar)
-- [x] **6.1.6** Create `frontend/src/pages/public/BlogPostPage.jsx` (single post view with comments, related posts)
-- [x] **6.1.7** Create admin blog management page (`frontend/src/pages/admin/BlogManagementPage.jsx`)
-
-### Files Created
-```
-backend/models/blog_post.py
-backend/routes/blog.py
-frontend/src/pages/public/BlogPage.jsx
-frontend/src/pages/public/BlogPostPage.jsx
-frontend/src/pages/admin/BlogManagementPage.jsx
-```
-
-### Files Modified
-```
-backend/models/__init__.py - Added blog model imports
-backend/routes/__init__.py - Added blog_bp import
-backend/app.py - Registered blog_bp blueprint
-backend/requirements.txt - Added python-slugify
-frontend/src/App.jsx - Added blog routes (/blog, /blog/:slug, /admin/blog)
-```
+- [ ] **6.1.5** Create `frontend/src/pages/public/BlogPage.jsx`
+- [ ] **6.1.6** Create `frontend/src/pages/public/BlogPost.jsx`
+- [ ] **6.1.7** Create admin blog management page
 
 ---
 
-## 6.2 Webinars System ✅ COMPLETED
+## 6.2 Webinars System
 
 ### Backend Tasks
-- [x] **6.2.1** Create `backend/models/webinar.py` model (Webinar, WebinarRegistration, WebinarResource, WebinarQuestion)
-- [x] **6.2.2** Integrate with Zoom/Google Meet API (platform-agnostic with join_url support)
-- [x] **6.2.3** Create webinar registration system (with status tracking, reminders, replay access)
+- [ ] **6.2.1** Create `backend/models/webinar.py` model
+- [ ] **6.2.2** Integrate with Zoom/Google Meet API
+- [ ] **6.2.3** Create webinar registration system
 
 ### Frontend Tasks
-- [x] **6.2.4** Create `frontend/src/pages/public/WebinarsPage.jsx` (listing with filters, categories, live banner)
-- [x] **6.2.5** Create webinar registration form (integrated in WebinarDetailPage)
-- [x] **6.2.6** Create webinar replay page (recording playback in WebinarDetailPage)
-- [x] **6.2.7** Create admin `WebinarManagementPage.jsx` (CRUD, start/end live, registrations)
-
-### Files Created
-```
-backend/models/webinar.py
-backend/routes/webinars.py
-frontend/src/pages/public/WebinarsPage.jsx
-frontend/src/pages/public/WebinarDetailPage.jsx
-frontend/src/pages/admin/WebinarManagementPage.jsx
-```
-
-### Files Modified
-```
-backend/models/__init__.py - Added webinar model imports
-backend/routes/__init__.py - Added webinars_bp import
-backend/app.py - Registered webinars_bp blueprint
-frontend/src/App.jsx - Added webinar routes (/webinars, /webinars/:slug, /admin/webinars)
-```
-
-### Features Implemented
-- Live webinar status with real-time banner
-- Countdown timer for upcoming webinars
-- User registration with attendance tracking
-- Q&A system with featured questions
-- Recording playback for past webinars
-- Downloadable resources per webinar
-- Category-based filtering
-- Admin start/end webinar controls
-- Registration export to CSV
+- [ ] **6.2.4** Create `frontend/src/pages/public/WebinarsPage.jsx`
+- [ ] **6.2.5** Create webinar registration form
+- [ ] **6.2.6** Create webinar replay page
 
 ---
 
-## 6.3 SSO Integration (Google/Apple) ✅ COMPLETED
+## 6.3 SSO Integration (Google/Apple)
 
 ### Backend Tasks
-- [x] **6.3.1** Install OAuth libraries (Authlib, httpx, PyJWT)
-- [x] **6.3.2** Configure Google OAuth (GoogleOAuth class with authorization, token exchange, user info)
-- [x] **6.3.3** Configure Apple Sign-In (AppleOAuth class with ID token verification, client secret generation)
-- [x] **6.3.4** Handle account linking (link/unlink endpoints, safety checks)
+- [ ] **6.3.1** Install `flask-dance` or OAuth libraries
+- [ ] **6.3.2** Configure Google OAuth
+- [ ] **6.3.3** Configure Apple Sign-In
+- [ ] **6.3.4** Handle account linking
 
 ### Frontend Tasks
-- [x] **6.3.5** Add Google Sign-In button (SocialLoginButtons component)
-- [x] **6.3.6** Add Apple Sign-In button (SocialLoginButtons component)
-- [x] **6.3.7** Handle OAuth callback (in SocialLoginButtons with state verification)
-- [x] **6.3.8** Add linked accounts management in Settings page (LinkedAccounts component)
-
-### Files Created
-```
-backend/models/oauth_account.py
-backend/services/oauth_service.py
-backend/routes/oauth.py
-frontend/src/components/auth/SocialLoginButtons.jsx
-frontend/src/components/profile/LinkedAccounts.jsx
-```
-
-### Files Modified
-```
-backend/models/__init__.py - Added oauth_account model imports
-backend/routes/__init__.py - Added oauth_bp import
-backend/app.py - Registered oauth_bp blueprint
-backend/requirements.txt - Added Authlib, httpx, PyJWT
-frontend/src/pages/Login.jsx - Added SocialLoginButtons
-frontend/src/pages/Register.jsx - Added SocialLoginButtons
-frontend/src/pages/dashboard/SettingsPage.jsx - Added LinkedAccounts component
-```
-
-### Features Implemented
-- Google OAuth 2.0 with OpenID Connect
-- Apple Sign In with ID token verification
-- Account linking/unlinking for existing users
-- Auto-create user on first OAuth login
-- State and nonce verification for CSRF protection
-- Provider status endpoint to check enabled providers
-- Linked accounts management in settings
-
-### Environment Variables Required
-```
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_REDIRECT_URI=http://localhost:5173/auth/google/callback
-
-APPLE_CLIENT_ID=your_apple_service_id
-APPLE_TEAM_ID=your_apple_team_id
-APPLE_KEY_ID=your_apple_key_id
-APPLE_PRIVATE_KEY=your_apple_private_key_contents
-APPLE_REDIRECT_URI=http://localhost:5173/auth/apple/callback
-```
+- [ ] **6.3.5** Add Google Sign-In button
+- [ ] **6.3.6** Add Apple Sign-In button
+- [ ] **6.3.7** Handle OAuth callback
 
 ---
 
-## 6.4 Seasonal Events & Promotions ✅ COMPLETED
+## 6.4 Seasonal Events & Promotions
 
 ### Backend Tasks
-- [x] **6.4.1** Create event scheduling system (PromotionalEvent, EventOffer, EventRedemption models)
-- [x] **6.4.2** Implement flash sales logic (discount types, promo codes, redemption limits)
-- [x] **6.4.3** Create holiday bonus system (HolidayBonus model with eligibility criteria)
+- [ ] **6.4.1** Create event scheduling system
+- [ ] **6.4.2** Implement flash sales logic
+- [ ] **6.4.3** Create holiday bonus system
 
 ### Frontend Tasks
-- [x] **6.4.4** Create event banner components (EventBanner with auto-rotation)
-- [x] **6.4.5** Create countdown timers (CountdownTimer with multiple variants)
-- [x] **6.4.6** Create promotional landing pages (PromoPage with offers, countdown, promo code validation)
-- [x] **6.4.7** Create admin events management (EventsManagementPage with full CRUD)
-
-### Files Created
-```
-backend/models/promotional_event.py
-backend/routes/events.py
-frontend/src/components/events/CountdownTimer.jsx
-frontend/src/components/events/EventBanner.jsx
-frontend/src/components/events/index.js
-frontend/src/pages/public/PromoPage.jsx
-frontend/src/pages/admin/EventsManagementPage.jsx
-```
-
-### Files Modified
-```
-backend/models/__init__.py - Added promotional event model imports
-backend/routes/__init__.py - Added events_bp import
-backend/app.py - Registered events_bp blueprint
-frontend/src/App.jsx - Added promo and admin/events routes
-```
-
-### Features Implemented
-- Event types: Flash Sales, Seasonal, Holiday, Anniversary, Launch, Bonus, Custom
-- Event statuses: Draft, Scheduled, Active, Paused, Ended, Cancelled
-- Discount types: Percentage, Fixed Amount, Free Add-on, Bonus Points, Extra Time
-- Promo code validation and redemption tracking
-- Countdown timer with multiple display variants
-- Auto-rotating event banners
-- Landing pages with custom colors and content
-- Event analytics (views, clicks, redemptions, conversion rate)
-- Seasonal event templates (New Year, Valentine's, Easter, Summer, Black Friday, etc.)
-- Holiday bonuses with eligibility criteria
-- Best offer auto-apply for purchases
-
-### Database Tables Created
-- `promotional_events` - Main event storage
-- `event_offers` - Offers within events
-- `event_redemptions` - User redemption tracking
-- `holiday_bonuses` - Holiday bonus definitions
+- [ ] **6.4.4** Create event banner components
+- [ ] **6.4.5** Create countdown timers
+- [ ] **6.4.6** Create promotional landing pages
 
 ---
 
-## 6.5 Monitoring & Analytics ✅ COMPLETED
+## 6.5 Monitoring & Analytics
 
 ### Backend Tasks
-- [x] **6.5.1** Integrate Sentry for error tracking (Flask and SQLAlchemy integrations)
-- [x] **6.5.2** Create system metrics service (MetricsCollector with CPU, memory, disk, request tracking)
-- [x] **6.5.3** Create health monitoring endpoints (/api/monitoring/health, /health/detailed, /ready, /live)
-- [x] **6.5.4** Create analytics API endpoints (/api/monitoring/analytics/overview, users/growth, revenue/daily)
-- [x] **6.5.5** Add Prometheus metrics endpoint (/api/monitoring/prometheus)
+- [ ] **6.5.1** Integrate Sentry for error tracking
+- [ ] **6.5.2** Setup Datadog for APM
+- [ ] **6.5.3** Configure ELK stack for logs
+- [ ] **6.5.4** Create Grafana dashboards
+- [ ] **6.5.5** Setup PagerDuty alerts
 
 ### Frontend Tasks
-- [x] **6.5.6** Add ErrorBoundary component (with Sentry integration)
-- [x] **6.5.7** Create admin analytics dashboard (AnalyticsDashboardPage)
-- [x] **6.5.8** Add system health monitoring (CPU, memory, disk visualizations)
-
-### Files Created
-```
-backend/services/metrics_service.py
-backend/routes/monitoring.py
-frontend/src/pages/admin/AnalyticsDashboardPage.jsx
-frontend/src/components/common/ErrorBoundary.jsx
-```
-
-### Files Modified
-```
-backend/app.py - Added Sentry initialization, monitoring_bp, request tracking
-backend/routes/__init__.py - Added monitoring_bp import
-backend/requirements.txt - Added sentry-sdk, psutil, prometheus-client
-frontend/src/App.jsx - Added ErrorBoundary wrapper and /admin/analytics route
-```
-
-### Features Implemented
-- Sentry error tracking with Flask and SQLAlchemy integrations
-- System metrics collection (CPU, memory, disk, process info)
-- Request performance tracking (timing, error rates, endpoints)
-- Health check endpoints (for Kubernetes probes)
-- Analytics API for admin dashboard:
-  - User growth over time
-  - Revenue tracking
-  - Challenge distribution
-  - Active users monitoring
-  - Error summary
-- Admin analytics dashboard with:
-  - Real-time system health cards
-  - Request performance metrics
-  - User growth charts
-  - Revenue visualization
-  - Popular endpoints table
-  - Recent errors display
-  - Uptime monitoring
-- React ErrorBoundary with:
-  - Graceful error recovery
-  - Sentry error reporting
-  - User-friendly error UI
-  - Dev mode error details
-
-### Environment Variables
-```
-SENTRY_DSN=your_sentry_dsn
-SENTRY_TRACES_SAMPLE_RATE=0.1
-SENTRY_PROFILES_SAMPLE_RATE=0.1
-```
+- [ ] **6.5.6** Add Sentry browser SDK
+- [ ] **6.5.7** Add performance monitoring
+- [ ] **6.5.8** Create admin analytics dashboard
 
 ---
 
@@ -1178,48 +988,48 @@ Add the following new navigation items:
 # CHECKLIST SUMMARY
 
 ## Phase 1 Completion Checklist
-- [x] PostgreSQL migration complete
-- [x] Redis cache operational
-- [x] Celery task queue running
-- [x] Email system working
-- [x] Email verification flow complete
-- [x] 2FA implementation done
-- [x] Session management active
-- [x] Rate limiting enabled
-- [x] Audit logging operational
-- [x] KYC system functional
+- [ ] PostgreSQL migration complete
+- [ ] Redis cache operational
+- [ ] Celery task queue running
+- [ ] Email system working
+- [ ] Email verification flow complete
+- [ ] 2FA implementation done
+- [ ] Session management active
+- [ ] Rate limiting enabled
+- [ ] Audit logging operational
+- [ ] KYC system functional
 
 ## Phase 2 Completion Checklist
-- [x] Subscription plans live
-- [x] Challenge add-ons working
-- [x] Multi-tier affiliate program active
-- [x] Points redemption available
+- [ ] Subscription plans live
+- [ ] Challenge add-ons working
+- [ ] Multi-tier affiliate program active
+- [ ] Points redemption available
 
 ## Phase 3 Completion Checklist
-- [x] Advanced orders implemented
-- [x] One-click trading functional
-- [x] Order templates available
-- [x] Trade journal complete
-- [x] MT4/MT5 integration working
-- [x] Enhanced charts operational
+- [ ] Advanced orders implemented
+- [ ] One-click trading functional
+- [ ] Order templates available
+- [ ] Trade journal complete
+- [ ] MT4/MT5 integration working
+- [ ] Enhanced charts operational
 
 ## Phase 4 Completion Checklist
-- [x] Trader profiles public
-- [x] Follow system active
-- [x] Copy trading operational
-- [x] Trading ideas platform live
+- [ ] Trader profiles public
+- [ ] Follow system active
+- [ ] Copy trading operational
+- [ ] Trading ideas platform live
 
 ## Phase 5 Completion Checklist
-- [x] Push notifications working
-- [x] Notification settings complete
+- [ ] Push notifications working
+- [ ] Notification settings complete
 - [ ] Mobile app published
 
 ## Phase 6 Completion Checklist
-- [x] Blog system live
-- [x] Webinars functional
-- [x] SSO integration complete
-- [x] Seasonal events system ready
-- [x] Monitoring stack operational
+- [ ] Blog system live
+- [ ] Webinars functional
+- [ ] SSO integration complete
+- [ ] Seasonal events system ready
+- [ ] Monitoring stack operational
 
 ---
 

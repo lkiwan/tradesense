@@ -71,7 +71,22 @@ def rate_limit_exceeded_handler(e):
     logger.warning(f"Rate limit exceeded: {get_ip_key()} - {request.path}")
 
     # Get retry after from the exception
-    retry_after = getattr(e, 'retry_after', 60)
+    # Flask-Limiter provides retry_after as a property
+    retry_after = 60  # Default
+    try:
+        if hasattr(e, 'retry_after'):
+            retry_after = int(e.retry_after)
+        elif hasattr(e, 'description') and 'minute' in str(e.description).lower():
+            # Parse from description like "5 per 15 minutes"
+            import re
+            match = re.search(r'(\d+)\s*minute', str(e.description).lower())
+            if match:
+                retry_after = int(match.group(1)) * 60
+    except (ValueError, TypeError, AttributeError):
+        retry_after = 60
+
+    # Ensure retry_after is reasonable (max 15 minutes for login)
+    retry_after = min(max(retry_after, 1), 900)
 
     response = jsonify({
         'error': 'Too many requests',
@@ -307,9 +322,12 @@ def init_rate_limiter(app):
         try:
             if hasattr(g, 'view_rate_limit'):
                 limit = g.view_rate_limit
-                response.headers['X-RateLimit-Limit'] = str(limit.limit.amount)
-                response.headers['X-RateLimit-Remaining'] = str(limit.remaining)
-                response.headers['X-RateLimit-Reset'] = str(limit.reset_at)
+                if limit.limit and limit.limit.amount is not None:
+                    response.headers['X-RateLimit-Limit'] = str(limit.limit.amount)
+                if limit.remaining is not None:
+                    response.headers['X-RateLimit-Remaining'] = str(limit.remaining)
+                if limit.reset_at is not None:
+                    response.headers['X-RateLimit-Reset'] = str(int(limit.reset_at))
         except Exception:
             pass
         return response

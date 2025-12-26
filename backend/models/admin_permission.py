@@ -62,7 +62,7 @@ for category, perms in PERMISSION_CATEGORIES.items():
 # Default permission sets for roles
 DEFAULT_ROLE_PERMISSIONS = {
     'admin': [
-        'view_users', 'edit_users',
+        'view_users', 'edit_users', 'ban_users',
         'view_challenges', 'edit_challenges',
         'view_payments', 'view_payouts',
         'view_tickets', 'respond_tickets', 'close_tickets',

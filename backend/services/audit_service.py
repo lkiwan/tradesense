@@ -410,6 +410,42 @@ class AuditService:
             description=f"Demoted {target_username} from admin"
         )
 
+    # ==================== Generic Action Logging ====================
+
+    @classmethod
+    def log_action(cls, user_id, action_type, action, target_type=None, target_id=None,
+                   target_name=None, description=None, extra_data=None, status='success'):
+        """Generic action logging for various admin and system actions"""
+        ip_address, user_agent = cls.get_request_info()
+        user_id_int, username = cls.get_user_info(user_id)
+
+        # Map action_type string to AuditLog constant
+        action_type_map = {
+            'ADMIN': AuditLog.ACTION_TYPE_ADMIN,
+            'SECURITY': AuditLog.ACTION_TYPE_SECURITY,
+            'AUTH': AuditLog.ACTION_TYPE_AUTH,
+            'TRADE': AuditLog.ACTION_TYPE_TRADE,
+            'PAYOUT': AuditLog.ACTION_TYPE_PAYOUT,
+            'PAYMENT': AuditLog.ACTION_TYPE_PAYMENT,
+            'CHALLENGE': AuditLog.ACTION_TYPE_CHALLENGE,
+        }
+        mapped_action_type = action_type_map.get(action_type, action_type)
+
+        return AuditLog.log(
+            action_type=mapped_action_type,
+            action=action,
+            user_id=user_id_int,
+            username=username,
+            target_type=target_type,
+            target_id=target_id,
+            target_name=target_name,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            description=description,
+            extra_data=extra_data,
+            status=status
+        )
+
     # ==================== Security Events ====================
 
     @classmethod

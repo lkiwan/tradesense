@@ -48,7 +48,16 @@ const TwoFactorVerify = () => {
 
       if (result.success) {
         toast.success('Welcome back!')
-        navigate('/dashboard')
+
+        // Redirect based on user role
+        const userRole = result.user?.role
+        if (userRole === 'superadmin') {
+          navigate('/superadmin/dashboard')
+        } else if (userRole === 'admin') {
+          navigate('/admin/dashboard')
+        } else {
+          navigate('/home')
+        }
       } else {
         if (result.attemptsRemaining !== undefined) {
           setAttemptsRemaining(result.attemptsRemaining)

@@ -77,7 +77,9 @@ export const AuthProvider = ({ children }) => {
         success: false,
         error: error.response?.data?.error || 'Login failed',
         requires_captcha: error.response?.data?.requires_captcha,
-        failed_attempts: error.response?.data?.failed_attempts
+        failed_attempts: error.response?.data?.failed_attempts,
+        banned: error.response?.data?.banned,
+        ban_reason: error.response?.data?.reason
       }
     }
   }

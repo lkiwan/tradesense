@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, LogIn, AlertTriangle, Clock } from 'lucide-react'
+import { Mail, Lock, Loader2, LogIn, AlertTriangle, Clock, Ban } from 'lucide-react'
 import SimpleCaptcha from '../components/auth/SimpleCaptcha'
 import SocialLoginButtons from '../components/auth/SocialLoginButtons'
 import { useRateLimit } from '../hooks/useRateLimit'
@@ -20,6 +20,8 @@ const Login = () => {
   const [requiresCaptcha, setRequiresCaptcha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
   const [failedAttempts, setFailedAttempts] = useState(0)
+  const [isBanned, setIsBanned] = useState(false)
+  const [banReason, setBanReason] = useState('')
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -53,7 +55,17 @@ const Login = () => {
         setRequiresCaptcha(false)
         setCaptchaToken(null)
         toast.success('Welcome back!')
-        navigate('/dashboard')
+
+        // Redirect based on user role
+        const userRole = result.user?.role
+        if (userRole === 'superadmin') {
+          navigate('/superadmin/dashboard')
+        } else if (userRole === 'admin') {
+          navigate('/admin/dashboard')
+        } else {
+          // Normal user - redirect to home (SmartHomeRoute will handle challenge check)
+          navigate('/home')
+        }
       } else if (result.requires_2fa) {
         // Redirect to 2FA verification page with credentials
         navigate('/verify-2fa', {
@@ -66,6 +78,13 @@ const Login = () => {
       } else {
         // Handle error
         setFailedAttempts(prev => prev + 1)
+
+        // Check if user is banned
+        if (result.banned) {
+          setIsBanned(true)
+          setBanReason(result.ban_reason || '')
+          return // Don't show toast, we show a banner instead
+        }
 
         // Check if CAPTCHA is now required
         if (result.requires_captcha) {
@@ -128,6 +147,26 @@ const Login = () => {
             Connectez-vous pour acceder a votre dashboard
           </p>
 
+          {/* Banned User Warning */}
+          {isBanned && (
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 mb-6">
+              <div className="flex items-start gap-3">
+                <Ban className="text-red-500 flex-shrink-0 mt-0.5" size={24} />
+                <div>
+                  <p className="text-red-500 font-semibold text-lg">This account has been banned</p>
+                  {banReason && (
+                    <p className="text-red-400 text-sm mt-1">
+                      Reason: {banReason}
+                    </p>
+                  )}
+                  <p className="text-gray-400 text-sm mt-2">
+                    If you believe this is a mistake, please contact support.
+                  </p>
+                </div>
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Email */}
             <div>
@@ -139,7 +178,10 @@ const Login = () => {
                 <input
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value)
+                    setIsBanned(false) // Reset banned state on email change
+                  }}
                   className="input input-icon"
                   placeholder="you@example.com"
                   required

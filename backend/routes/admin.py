@@ -2,7 +2,7 @@ from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, timedelta
 from . import admin_bp
-from models import db, User, UserChallenge, Trade, Payment, Settings
+from models import db, User, UserChallenge, Trade, Payment, Settings, UserStatus
 from utils.decorators import (
     admin_required, superadmin_required,
     permission_required, any_permission_required
@@ -30,8 +30,26 @@ def get_all_users():
         page=page, per_page=per_page, error_out=False
     )
 
+    # Build users list with status info
+    users = []
+    for user in pagination.items:
+        user_dict = user.to_dict()
+        # Add status info
+        status_record = UserStatus.query.filter_by(user_id=user.id).first()
+        if status_record:
+            user_dict['status'] = status_record.to_dict()
+        else:
+            user_dict['status'] = {
+                'is_banned': False,
+                'is_frozen': False,
+                'can_trade': True
+            }
+        # Add challenge count
+        user_dict['challenges_count'] = len(user.challenges) if user.challenges else 0
+        users.append(user_dict)
+
     return jsonify({
-        'users': [u.to_dict() for u in pagination.items],
+        'users': users,
         'total': pagination.total,
         'pages': pagination.pages,
         'current_page': page
