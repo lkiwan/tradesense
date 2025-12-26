@@ -28,7 +28,7 @@ export const AuthProvider = ({ children }) => {
 
   const fetchUser = async () => {
     try {
-      const response = await api.get('/auth/me')
+      const response = await api.get('/api/auth/me')
       setUser(response.data.user)
       setIsAuthenticated(true)
     } catch (error) {
@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
         payload.captcha_token = captchaToken
       }
 
-      const response = await api.post('/auth/login', payload)
+      const response = await api.post('/api/auth/login', payload)
       const { access_token, refresh_token, user: userData, requires_2fa, temp_token } = response.data
 
       // Check if 2FA is required
@@ -86,7 +86,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginWith2FA = async (email, password, twoFaToken) => {
     try {
-      const response = await api.post('/auth/login', {
+      const response = await api.post('/api/auth/login', {
         email,
         password,
         two_fa_token: twoFaToken

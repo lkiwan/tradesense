@@ -11,9 +11,18 @@ const api = axios.create({
   }
 })
 
-// Request interceptor - add auth token and session token
+// Request interceptor - add auth token, session token, and fix API paths
 api.interceptors.request.use(
   (config) => {
+    // Ensure all paths start with /api (fix inconsistent paths)
+    if (config.url && !config.url.startsWith('/api') && !config.url.startsWith('http')) {
+      config.url = '/api' + config.url
+    }
+    // Remove double /api/api if present
+    if (config.url && config.url.startsWith('/api/api')) {
+      config.url = config.url.replace('/api/api', '/api')
+    }
+
     const token = localStorage.getItem('access_token')
     if (token) {
       config.headers.Authorization = `Bearer ${token}`
@@ -148,39 +157,39 @@ api.interceptors.response.use(
 
 // API helper functions
 export const authAPI = {
-  login: (email, password) => api.post('/auth/login', { email, password }),
-  register: (data) => api.post('/auth/register', data),
-  getMe: () => api.get('/auth/me'),
-  updateMe: (data) => api.put('/auth/me', data)
+  login: (email, password) => api.post('/api/auth/login', { email, password }),
+  register: (data) => api.post('/api/auth/register', data),
+  getMe: () => api.get('/api/auth/me'),
+  updateMe: (data) => api.put('/api/auth/me', data)
 }
 
 export const challengesAPI = {
-  getAll: () => api.get('/challenges'),
-  getActive: () => api.get('/challenges/active'),
-  getById: (id) => api.get(`/challenges/${id}`),
-  getStats: (id) => api.get(`/challenges/${id}/stats`),
+  getAll: () => api.get('/api/challenges'),
+  getActive: () => api.get('/api/challenges/active'),
+  getById: (id) => api.get(`/api/challenges/${id}`),
+  getStats: (id) => api.get(`/api/challenges/${id}/stats`),
   // Trial endpoints
-  activateTrial: () => api.post('/challenges/activate-trial'),
-  checkTrial: () => api.get('/challenges/check-trial')
+  activateTrial: () => api.post('/api/challenges/activate-trial'),
+  checkTrial: () => api.get('/api/challenges/check-trial')
 }
 
 export const tradesAPI = {
-  getAll: (challengeId) => api.get('/trades', { params: { challenge_id: challengeId } }),
-  open: (data) => api.post('/trades/open', data),
-  close: (tradeId) => api.post(`/trades/${tradeId}/close`),
-  getById: (id) => api.get(`/trades/${id}`),
-  getOpenPnL: () => api.get('/trades/open/pnl')
+  getAll: (challengeId) => api.get('/api/trades', { params: { challenge_id: challengeId } }),
+  open: (data) => api.post('/api/trades/open', data),
+  close: (tradeId) => api.post(`/api/trades/${tradeId}/close`),
+  getById: (id) => api.get(`/api/trades/${id}`),
+  getOpenPnL: () => api.get('/api/trades/open/pnl')
 }
 
 export const marketAPI = {
-  getPrice: (symbol) => api.get(`/market/price/${symbol}`),
-  getAllPrices: (category) => api.get('/market/prices', { params: { category } }),
+  getPrice: (symbol) => api.get(`/api/market/price/${symbol}`),
+  getAllPrices: (category) => api.get('/api/market/prices', { params: { category } }),
   getHistory: (symbol, period, interval) =>
-    api.get(`/market/history/${symbol}`, { params: { period, interval } }),
-  getSignal: (symbol) => api.get(`/market/signal/${symbol}`),
+    api.get(`/api/market/history/${symbol}`, { params: { period, interval } }),
+  getSignal: (symbol) => api.get(`/api/market/signal/${symbol}`),
   getAllSignals: (symbols) =>
-    api.get('/market/signals', { params: { symbols: symbols.join(',') } }),
-  getMarketStatus: () => api.get('/market/status')
+    api.get('/api/market/signals', { params: { symbols: symbols.join(',') } }),
+  getMarketStatus: () => api.get('/api/market/status')
 }
 
 export const paymentsAPI = {
