@@ -134,6 +134,20 @@ def get_challenge_stats():
         return jsonify({'error': str(e)}), 500
 
 
+@admin_challenges_bp.route('/models', methods=['GET'])
+@permission_required('view_challenges')
+def get_challenge_models():
+    """Get all challenge models with account sizes for dropdown selection"""
+    try:
+        models = ChallengeModel.query.filter_by(is_active=True).order_by(ChallengeModel.display_order).all()
+
+        return jsonify({
+            'models': [model.to_dict(include_sizes=True) for model in models]
+        })
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
 @admin_challenges_bp.route('/<int:challenge_id>', methods=['GET'])
 @permission_required('view_challenges')
 def get_challenge_details(challenge_id):
@@ -293,20 +307,6 @@ def reset_challenge(challenge_id):
 
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
-
-
-@admin_challenges_bp.route('/models', methods=['GET'])
-@permission_required('view_challenges')
-def get_challenge_models():
-    """Get all challenge models with account sizes for dropdown selection"""
-    try:
-        models = ChallengeModel.query.filter_by(is_active=True).order_by(ChallengeModel.display_order).all()
-
-        return jsonify({
-            'models': [model.to_dict(include_sizes=True) for model in models]
-        })
-    except Exception as e:
         return jsonify({'error': str(e)}), 500
 
 

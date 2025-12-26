@@ -125,10 +125,12 @@ class Config:
     CACHE_KEY_PREFIX = 'tradesense_'
 
     # Rate Limiting Configuration
-    RATELIMIT_STORAGE_URL = os.getenv('REDIS_URL', 'redis://localhost:6379/0')
+    RATELIMIT_STORAGE_URL = os.getenv('REDIS_URL', 'memory://')
     RATELIMIT_STRATEGY = 'fixed-window'
     RATELIMIT_DEFAULT = '100/minute'
     RATELIMIT_HEADERS_ENABLED = True
+    RATELIMIT_IN_MEMORY_FALLBACK_ENABLED = True
+    RATELIMIT_SWALLOW_ERRORS = True
 
     # CORS
     CORS_HEADERS = 'Content-Type'
