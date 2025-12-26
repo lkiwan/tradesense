@@ -146,61 +146,74 @@ def login():
         return jsonify(response_data), 401
 
     # Check if user is banned
-    user_status = UserStatus.query.filter_by(user_id=user.id).first()
-    if user_status and user_status.is_banned:
-        ban_reason = user_status.ban_reason or 'No reason provided'
-        return jsonify({
-            'error': 'This account has been banned',
-            'banned': True,
-            'reason': ban_reason
-        }), 403
+    try:
+        user_status = UserStatus.query.filter_by(user_id=user.id).first()
+        if user_status and user_status.is_banned:
+            ban_reason = user_status.ban_reason or 'No reason provided'
+            return jsonify({
+                'error': 'This account has been banned',
+                'banned': True,
+                'reason': ban_reason
+            }), 403
+    except Exception as e:
+        logger.warning(f"Error checking user status: {e}")
 
     # Check if 2FA is enabled
-    from services.totp_service import TOTPService
-    if TOTPService.is_2fa_required(user.id):
-        # 2FA token provided in login request
-        two_fa_token = data.get('two_fa_token')
+    try:
+        from services.totp_service import TOTPService
+        if TOTPService.is_2fa_required(user.id):
+            # 2FA token provided in login request
+            two_fa_token = data.get('two_fa_token')
 
-        if not two_fa_token:
-            # Return partial auth - need 2FA verification
-            # Create a temporary token for 2FA verification step
-            temp_token = create_access_token(
-                identity=str(user.id),
-                additional_claims={'requires_2fa': True}
-            )
-            return jsonify({
-                'message': '2FA verification required',
-                'requires_2fa': True,
-                'temp_token': temp_token,
-                'user_id': user.id
-            }), 200
+            if not two_fa_token:
+                # Return partial auth - need 2FA verification
+                # Create a temporary token for 2FA verification step
+                temp_token = create_access_token(
+                    identity=str(user.id),
+                    additional_claims={'requires_2fa': True}
+                )
+                return jsonify({
+                    'message': '2FA verification required',
+                    'requires_2fa': True,
+                    'temp_token': temp_token,
+                    'user_id': user.id
+                }), 200
 
-        # Verify 2FA token
-        result = TOTPService.verify_2fa(user.id, two_fa_token)
-        if not result['success']:
-            return jsonify({
-                'error': result.get('message', 'Invalid 2FA code'),
-                'requires_2fa': True,
-                'attempts_remaining': result.get('attempts_remaining')
-            }), 401
+            # Verify 2FA token
+            result = TOTPService.verify_2fa(user.id, two_fa_token)
+            if not result['success']:
+                return jsonify({
+                    'error': result.get('message', 'Invalid 2FA code'),
+                    'requires_2fa': True,
+                    'attempts_remaining': result.get('attempts_remaining')
+                }), 401
+    except Exception as e:
+        logger.warning(f"Error checking 2FA: {e}")
 
     # Create user session for device tracking
-    from routes.sessions import create_session_for_user, send_new_device_alert
-    session, is_suspicious, suspicious_reason = create_session_for_user(user.id, request)
+    session = None
+    is_suspicious = False
+    session_token = None
+    try:
+        from routes.sessions import create_session_for_user, send_new_device_alert
+        session, is_suspicious, suspicious_reason = create_session_for_user(user.id, request)
+        session_token = session.session_token if session else None
 
-    # Send email alert for suspicious login (new device)
-    if is_suspicious and suspicious_reason:
-        send_new_device_alert(user, session, suspicious_reason)
-        # Log suspicious login
-        try:
-            AuditService.log_suspicious_login(
-                user_id=user.id,
-                username=user.username,
-                reason=suspicious_reason,
-                metadata={'session_id': session.id, 'ip': session.ip_address}
-            )
-        except Exception as e:
-            logger.warning(f"Failed to log suspicious login audit: {e}")
+        # Send email alert for suspicious login (new device)
+        if is_suspicious and suspicious_reason:
+            send_new_device_alert(user, session, suspicious_reason)
+            # Log suspicious login
+            try:
+                AuditService.log_suspicious_login(
+                    user_id=user.id,
+                    username=user.username,
+                    reason=suspicious_reason,
+                    metadata={'session_id': session.id, 'ip': session.ip_address}
+                )
+            except Exception as e:
+                logger.warning(f"Failed to log suspicious login audit: {e}")
+    except Exception as e:
+        logger.warning(f"Error creating user session: {e}")
 
     # Clear failed login attempts on successful login
     RateLimitTracker.clear_failed_attempts(ip_address)
@@ -212,7 +225,7 @@ def login():
             user_id=user.id,
             username=user.username,
             success=True,
-            metadata={'session_id': session.id, 'is_new_device': is_suspicious}
+            metadata={'session_id': session.id if session else None, 'is_new_device': is_suspicious}
         )
     except Exception as e:
         logger.warning(f"Failed to log login audit: {e}")
@@ -226,7 +239,7 @@ def login():
         'user': user.to_dict(),
         'access_token': access_token,
         'refresh_token': refresh_token,
-        'session_token': session.session_token,
+        'session_token': session_token,
         'is_new_device': is_suspicious
     }), 200
 
