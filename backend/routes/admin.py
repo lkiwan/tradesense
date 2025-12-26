@@ -60,6 +60,8 @@ def get_all_users():
 @permission_required('view_users')
 def get_user_details(user_id):
     """Get user details with challenges (admin)"""
+    from models.user_status import UserStatus, get_or_create_user_status
+
     user = User.query.get(user_id)
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -67,8 +69,18 @@ def get_user_details(user_id):
     challenges = UserChallenge.query.filter_by(user_id=user_id).all()
     payments = Payment.query.filter_by(user_id=user_id).all()
 
+    # Get user status
+    status = get_or_create_user_status(user_id)
+
     return jsonify({
         'user': user.to_dict(),
+        'status': status.to_dict() if status else {
+            'is_banned': False,
+            'is_frozen': False,
+            'can_trade': True,
+            'last_activity_at': None,
+            'total_logins': 0
+        },
         'challenges': [c.to_dict() for c in challenges],
         'payments': [p.to_dict() for p in payments]
     }), 200
