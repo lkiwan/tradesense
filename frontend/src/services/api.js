@@ -416,13 +416,25 @@ export const resourcesAPI = {
   // Record a download
   download: (resourceId) => api.post(`/resources/${resourceId}/download`),
 
-  // Get economic calendar events
+  // Get economic calendar events (multi-source: Investing.com, ForexFactory, Moroccan, DB)
   getCalendarEvents: (date = null, impact = null, currency = null) =>
     api.get('/resources/calendar', { params: { date, impact, currency } }),
 
   // Get week's economic events
   getWeekEvents: (impact = null) =>
     api.get('/resources/calendar/week', { params: { impact } }),
+
+  // Get upcoming high-impact events
+  getUpcomingEvents: (hours = 24) =>
+    api.get('/resources/calendar/upcoming', { params: { hours } }),
+
+  // Get available currencies for filtering
+  getCalendarCurrencies: () =>
+    api.get('/resources/calendar/currencies'),
+
+  // Admin: Sync calendar from external sources
+  syncCalendar: () =>
+    api.post('/resources/calendar/sync'),
 
   // Admin: Create resource
   create: (data) => api.post('/resources', data),

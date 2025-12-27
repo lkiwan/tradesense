@@ -2,8 +2,12 @@ from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, date, timedelta
 from models import db, User, Resource, EconomicEvent
+from services.calendar import get_calendar_service
 
 resources_bp = Blueprint('resources', __name__, url_prefix='/api/resources')
+
+# Initialize calendar service
+calendar_service = get_calendar_service(db=db)
 
 
 # ============ Resources Endpoints ============
@@ -193,7 +197,10 @@ def delete_resource(resource_id):
 @resources_bp.route('/calendar', methods=['GET'])
 @jwt_required()
 def get_calendar_events():
-    """Get economic calendar events"""
+    """
+    Get economic calendar events from multiple sources.
+    Sources: Investing.com, ForexFactory, Moroccan events, Database
+    """
     # Date range
     date_str = request.args.get('date')
     if date_str:
@@ -204,60 +211,95 @@ def get_calendar_events():
     else:
         event_date = date.today()
 
-    # Impact filter
+    # Filters
     impact = request.args.get('impact')
     currency = request.args.get('currency')
 
-    query = EconomicEvent.query.filter_by(event_date=event_date)
-
-    if impact and impact != 'all':
-        query = query.filter_by(impact=impact)
-    if currency:
-        query = query.filter_by(currency=currency)
-
-    events = query.order_by(EconomicEvent.event_time).all()
+    # Get events from calendar service (multi-source)
+    events = calendar_service.get_events(event_date, impact, currency)
 
     return jsonify({
-        'events': [e.to_dict() for e in events],
+        'events': events,
         'date': event_date.isoformat(),
-        'total': len(events)
+        'total': len(events),
+        'sources': ['investing', 'forexfactory', 'moroccan', 'database']
     }), 200
 
 
 @resources_bp.route('/calendar/week', methods=['GET'])
 @jwt_required()
 def get_week_events():
-    """Get economic events for the current week"""
+    """Get economic events for the current week from multiple sources"""
     today = date.today()
     start_of_week = today - timedelta(days=today.weekday())
     end_of_week = start_of_week + timedelta(days=6)
 
     impact = request.args.get('impact')
 
-    query = EconomicEvent.query.filter(
-        EconomicEvent.event_date >= start_of_week,
-        EconomicEvent.event_date <= end_of_week
-    )
+    # Get week events from calendar service
+    events_by_date = calendar_service.get_week_events(impact)
 
-    if impact and impact != 'all':
-        query = query.filter_by(impact=impact)
-
-    events = query.order_by(EconomicEvent.event_date, EconomicEvent.event_time).all()
-
-    # Group by date
-    events_by_date = {}
-    for event in events:
-        date_key = event.event_date.isoformat()
-        if date_key not in events_by_date:
-            events_by_date[date_key] = []
-        events_by_date[date_key].append(event.to_dict())
+    # Count total events
+    total = sum(len(events) for events in events_by_date.values())
 
     return jsonify({
         'events_by_date': events_by_date,
         'start_date': start_of_week.isoformat(),
         'end_date': end_of_week.isoformat(),
+        'total': total,
+        'sources': ['investing', 'forexfactory', 'moroccan', 'database']
+    }), 200
+
+
+@resources_bp.route('/calendar/upcoming', methods=['GET'])
+@jwt_required()
+def get_upcoming_events():
+    """Get upcoming high-impact events within specified hours"""
+    hours = request.args.get('hours', 24, type=int)
+    events = calendar_service.get_upcoming_high_impact(hours)
+
+    return jsonify({
+        'events': events,
+        'hours': hours,
         'total': len(events)
     }), 200
+
+
+@resources_bp.route('/calendar/sync', methods=['POST'])
+@jwt_required()
+def sync_calendar():
+    """Sync calendar events to database (admin only)"""
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
+
+    if user.role not in ['admin', 'superadmin']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    # Sync next 7 days
+    calendar_service.sync_to_database()
+
+    return jsonify({
+        'message': 'Calendar sync completed',
+        'days_synced': 7
+    }), 200
+
+
+@resources_bp.route('/calendar/currencies', methods=['GET'])
+def get_calendar_currencies():
+    """Get available currencies/countries for calendar filtering"""
+    currencies = [
+        {"code": "USD", "name": "United States Dollar", "flag": "🇺🇸"},
+        {"code": "EUR", "name": "Euro", "flag": "🇪🇺"},
+        {"code": "GBP", "name": "British Pound", "flag": "🇬🇧"},
+        {"code": "JPY", "name": "Japanese Yen", "flag": "🇯🇵"},
+        {"code": "AUD", "name": "Australian Dollar", "flag": "🇦🇺"},
+        {"code": "CAD", "name": "Canadian Dollar", "flag": "🇨🇦"},
+        {"code": "CHF", "name": "Swiss Franc", "flag": "🇨🇭"},
+        {"code": "CNY", "name": "Chinese Yuan", "flag": "🇨🇳"},
+        {"code": "NZD", "name": "New Zealand Dollar", "flag": "🇳🇿"},
+        {"code": "MAD", "name": "Moroccan Dirham", "flag": "🇲🇦"},
+    ]
+    return jsonify({'currencies': currencies}), 200
 
 
 # Admin calendar endpoints

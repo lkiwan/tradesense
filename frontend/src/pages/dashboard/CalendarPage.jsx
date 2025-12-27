@@ -1,23 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Calendar, Clock, AlertTriangle, TrendingUp, TrendingDown, Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
+import { Calendar, Clock, AlertTriangle, ChevronLeft, ChevronRight, ArrowLeft, RefreshCw, Globe, Loader2 } from 'lucide-react'
+import { resourcesAPI } from '../../services/api'
 
 const CalendarPage = () => {
   const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState(new Date())
-  const [filter, setFilter] = useState('all')
-
-  // Sample economic events data
-  const events = [
-    { id: 1, time: '08:30', currency: 'USD', event: 'Non-Farm Payrolls', impact: 'high', forecast: '180K', previous: '199K', actual: null },
-    { id: 2, time: '08:30', currency: 'USD', event: 'Unemployment Rate', impact: 'high', forecast: '3.8%', previous: '3.7%', actual: null },
-    { id: 3, time: '10:00', currency: 'USD', event: 'ISM Manufacturing PMI', impact: 'high', forecast: '48.5', previous: '47.4', actual: null },
-    { id: 4, time: '14:00', currency: 'EUR', event: 'ECB Interest Rate Decision', impact: 'high', forecast: '4.50%', previous: '4.50%', actual: null },
-    { id: 5, time: '15:30', currency: 'GBP', event: 'BOE Gov Bailey Speaks', impact: 'medium', forecast: '-', previous: '-', actual: null },
-    { id: 6, time: '21:30', currency: 'AUD', event: 'Retail Sales m/m', impact: 'medium', forecast: '0.2%', previous: '0.1%', actual: null },
-    { id: 7, time: '02:00', currency: 'CNY', event: 'Manufacturing PMI', impact: 'medium', forecast: '50.2', previous: '49.5', actual: null },
-    { id: 8, time: '08:00', currency: 'EUR', event: 'German CPI m/m', impact: 'high', forecast: '0.3%', previous: '0.2%', actual: null }
-  ]
+  const [impactFilter, setImpactFilter] = useState('all')
+  const [currencyFilter, setCurrencyFilter] = useState('all')
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
 
   const impactColors = {
     high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/30' },
@@ -26,19 +19,47 @@ const CalendarPage = () => {
   }
 
   const currencyFlags = {
-    USD: '🇺🇸',
-    EUR: '🇪🇺',
-    GBP: '🇬🇧',
-    JPY: '🇯🇵',
-    AUD: '🇦🇺',
-    CAD: '🇨🇦',
-    CHF: '🇨🇭',
-    CNY: '🇨🇳'
+    USD: '🇺🇸', EUR: '🇪🇺', GBP: '🇬🇧', JPY: '🇯🇵',
+    AUD: '🇦🇺', CAD: '🇨🇦', CHF: '🇨🇭', CNY: '🇨🇳',
+    NZD: '🇳🇿', MAD: '🇲🇦', ZAR: '🇿🇦', MXN: '🇲🇽'
   }
 
-  const filteredEvents = filter === 'all'
-    ? events
-    : events.filter(e => e.impact === filter)
+  const currencies = [
+    { code: 'all', name: 'All Currencies' },
+    { code: 'USD', name: 'USD' },
+    { code: 'EUR', name: 'EUR' },
+    { code: 'GBP', name: 'GBP' },
+    { code: 'JPY', name: 'JPY' },
+    { code: 'MAD', name: 'MAD' },
+    { code: 'AUD', name: 'AUD' },
+    { code: 'CAD', name: 'CAD' },
+    { code: 'CHF', name: 'CHF' },
+    { code: 'CNY', name: 'CNY' },
+  ]
+
+  // Fetch events when date or filters change
+  useEffect(() => {
+    fetchEvents()
+  }, [selectedDate, impactFilter, currencyFilter])
+
+  const fetchEvents = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const dateStr = selectedDate.toISOString().split('T')[0]
+      const impact = impactFilter !== 'all' ? impactFilter : null
+      const currency = currencyFilter !== 'all' ? currencyFilter : null
+
+      const response = await resourcesAPI.getCalendarEvents(dateStr, impact, currency)
+      setEvents(response.data.events || [])
+    } catch (err) {
+      console.error('Failed to fetch calendar events:', err)
+      setError('Failed to load economic events. Please try again.')
+      setEvents([])
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const navigateDate = (days) => {
     const newDate = new Date(selectedDate)
@@ -73,9 +94,19 @@ const CalendarPage = () => {
               </div>
               Economic Calendar
             </h1>
-            <p className="text-gray-400 mt-1 text-sm sm:text-base">Track important economic events</p>
+            <p className="text-gray-400 mt-1 text-sm sm:text-base">
+              Live economic events from multiple sources
+            </p>
           </div>
         </div>
+        <button
+          onClick={fetchEvents}
+          disabled={loading}
+          className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
+        >
+          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
+          Refresh
+        </button>
       </div>
 
       {/* Date Navigation */}
@@ -104,26 +135,40 @@ const CalendarPage = () => {
           </button>
         </div>
 
-        {/* Impact Filter */}
-        <div className="flex gap-2 bg-dark-200/30 rounded-xl p-1.5 border border-white/5">
-          {[
-            { key: 'all', label: 'All' },
-            { key: 'high', label: 'High', color: 'text-red-500' },
-            { key: 'medium', label: 'Medium', color: 'text-yellow-500' },
-            { key: 'low', label: 'Low', color: 'text-green-500' }
-          ].map(f => (
-            <button
-              key={f.key}
-              onClick={() => setFilter(f.key)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                filter === f.key
-                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
-                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
-              }`}
-            >
-              {f.label}
-            </button>
-          ))}
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          {/* Currency Filter */}
+          <select
+            value={currencyFilter}
+            onChange={(e) => setCurrencyFilter(e.target.value)}
+            className="px-3 py-2 bg-dark-200/50 border border-white/5 rounded-xl text-white text-sm focus:outline-none focus:border-primary-500/50"
+          >
+            {currencies.map(c => (
+              <option key={c.code} value={c.code}>{c.name}</option>
+            ))}
+          </select>
+
+          {/* Impact Filter */}
+          <div className="flex gap-2 bg-dark-200/30 rounded-xl p-1.5 border border-white/5">
+            {[
+              { key: 'all', label: 'All' },
+              { key: 'high', label: 'High' },
+              { key: 'medium', label: 'Med' },
+              { key: 'low', label: 'Low' }
+            ].map(f => (
+              <button
+                key={f.key}
+                onClick={() => setImpactFilter(f.key)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  impactFilter === f.key
+                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                    : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
+                }`}
+              >
+                {f.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -141,72 +186,118 @@ const CalendarPage = () => {
           <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
           <span className="text-green-400 font-medium">Low Impact</span>
         </div>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-500/10 rounded-lg border border-primary-500/20">
+          <Globe className="w-3.5 h-3.5 text-primary-400" />
+          <span className="text-primary-400 font-medium">Morocco</span>
+        </div>
       </div>
 
       {/* Events Table */}
       <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-dark-200/30 border-b border-white/5">
-              <tr className="text-xs text-gray-400 uppercase tracking-wider">
-                <th className="px-4 py-3 text-left font-medium">Time</th>
-                <th className="px-4 py-3 text-left font-medium">Currency</th>
-                <th className="px-4 py-3 text-left font-medium">Event</th>
-                <th className="px-4 py-3 text-center font-medium">Impact</th>
-                <th className="px-4 py-3 text-right font-medium">Forecast</th>
-                <th className="px-4 py-3 text-right font-medium">Previous</th>
-                <th className="px-4 py-3 text-right font-medium">Actual</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {filteredEvents.map(event => (
-                <tr key={event.id} className={`hover:bg-dark-200/50 transition-all duration-300 ${impactColors[event.impact].bg}`}>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-2">
-                      <Clock className="text-gray-500" size={14} />
-                      <span className="text-white font-medium">{event.time}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xl">{currencyFlags[event.currency]}</span>
-                      <span className="text-white font-medium">{event.currency}</span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-4 text-white">{event.event}</td>
-                  <td className="px-4 py-4 text-center">
-                    <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium capitalize ${impactColors[event.impact].bg} ${impactColors[event.impact].text}`}>
-                      {event.impact === 'high' && <AlertTriangle size={12} />}
-                      {event.impact}
-                    </span>
-                  </td>
-                  <td className="px-4 py-4 text-right text-white font-medium">{event.forecast}</td>
-                  <td className="px-4 py-4 text-right text-gray-400">{event.previous}</td>
-                  <td className="px-4 py-4 text-right">
-                    {event.actual ? (
-                      <span className={`font-bold ${
-                        parseFloat(event.actual) > parseFloat(event.forecast) ? 'text-green-500' : 'text-red-500'
-                      }`}>
-                        {event.actual}
-                      </span>
-                    ) : (
-                      <span className="text-gray-500">-</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {filteredEvents.length === 0 && (
+        {loading ? (
           <div className="p-12 text-center">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
-              <Calendar className="text-gray-500" size={32} />
-            </div>
-            <p className="text-gray-400 font-medium">No events scheduled for this date</p>
-            <p className="text-gray-500 text-sm mt-1">Try selecting a different date</p>
+            <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto mb-4" />
+            <p className="text-gray-400">Loading economic events...</p>
           </div>
+        ) : error ? (
+          <div className="p-12 text-center">
+            <AlertTriangle className="w-8 h-8 text-red-400 mx-auto mb-4" />
+            <p className="text-red-400 font-medium">{error}</p>
+            <button
+              onClick={fetchEvents}
+              className="mt-4 px-4 py-2 bg-primary-500 text-white rounded-xl hover:bg-primary-600 transition-colors"
+            >
+              Try Again
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead className="bg-dark-200/30 border-b border-white/5">
+                  <tr className="text-xs text-gray-400 uppercase tracking-wider">
+                    <th className="px-4 py-3 text-left font-medium">Time</th>
+                    <th className="px-4 py-3 text-left font-medium">Currency</th>
+                    <th className="px-4 py-3 text-left font-medium">Event</th>
+                    <th className="px-4 py-3 text-center font-medium">Impact</th>
+                    <th className="px-4 py-3 text-right font-medium">Forecast</th>
+                    <th className="px-4 py-3 text-right font-medium">Previous</th>
+                    <th className="px-4 py-3 text-right font-medium">Actual</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {events.map((event, index) => (
+                    <tr
+                      key={event.id || index}
+                      className={`hover:bg-dark-200/50 transition-all duration-300 ${
+                        impactColors[event.impact]?.bg || 'bg-transparent'
+                      }`}
+                    >
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <Clock className="text-gray-500" size={14} />
+                          <span className="text-white font-medium">{event.time || '—'}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <div className="flex items-center gap-2">
+                          <span className="text-xl">
+                            {event.flag || currencyFlags[event.currency] || '🏳️'}
+                          </span>
+                          <span className="text-white font-medium">{event.currency}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-4">
+                        <span className="text-white">{event.event}</span>
+                        {event.source === 'moroccan' && (
+                          <span className="ml-2 text-xs px-1.5 py-0.5 bg-primary-500/20 text-primary-400 rounded">
+                            Morocco
+                          </span>
+                        )}
+                      </td>
+                      <td className="px-4 py-4 text-center">
+                        <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium capitalize ${
+                          impactColors[event.impact]?.bg || ''
+                        } ${impactColors[event.impact]?.text || 'text-gray-400'}`}>
+                          {event.impact === 'high' && <AlertTriangle size={12} />}
+                          {event.impact}
+                        </span>
+                      </td>
+                      <td className="px-4 py-4 text-right text-white font-medium">
+                        {event.forecast || '—'}
+                      </td>
+                      <td className="px-4 py-4 text-right text-gray-400">
+                        {event.previous || '—'}
+                      </td>
+                      <td className="px-4 py-4 text-right">
+                        {event.actual ? (
+                          <span className={`font-bold ${
+                            event.forecast && parseFloat(event.actual) > parseFloat(event.forecast)
+                              ? 'text-green-500'
+                              : 'text-red-500'
+                          }`}>
+                            {event.actual}
+                          </span>
+                        ) : (
+                          <span className="text-gray-500">—</span>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {events.length === 0 && (
+              <div className="p-12 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                  <Calendar className="text-gray-500" size={32} />
+                </div>
+                <p className="text-gray-400 font-medium">No events scheduled for this date</p>
+                <p className="text-gray-500 text-sm mt-1">Try selecting a different date or adjusting filters</p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -220,10 +311,16 @@ const CalendarPage = () => {
             <h4 className="font-medium text-white mb-1">Trading Tip</h4>
             <p className="text-sm text-gray-400">
               High-impact events can cause significant market volatility. Consider reducing position sizes or avoiding trades during these times,
-              especially around NFP, FOMC, and ECB announcements.
+              especially around NFP, FOMC, ECB announcements, and Bank Al-Maghrib rate decisions.
             </p>
           </div>
         </div>
+      </div>
+
+      {/* Data Sources */}
+      <div className="flex items-center gap-2 text-xs text-gray-500">
+        <Globe className="w-3 h-3" />
+        <span>Data sources: Investing.com, ForexFactory, Bank Al-Maghrib</span>
       </div>
     </div>
   )
