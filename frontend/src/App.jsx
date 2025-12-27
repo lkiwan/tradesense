@@ -9,6 +9,7 @@ import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import DashboardLayout from './components/DashboardLayout'
 import ErrorBoundary from './components/common/ErrorBoundary'
+import ScrollToTop from './components/ScrollToTop'
 
 // Pages
 import LandingPage from './pages/LandingPage'
@@ -411,6 +412,7 @@ function App() {
   return (
     <ErrorBoundary>
       <div className={`${isDark ? 'dark' : ''}`}>
+        <ScrollToTop />
         <div className="min-h-screen bg-gray-50 dark:bg-dark-200 text-gray-900 dark:text-white transition-colors duration-300">
           {/* Only show Navbar on public pages (not admin or user dashboard) */}
           {!shouldHideNavbar && <Navbar />}
