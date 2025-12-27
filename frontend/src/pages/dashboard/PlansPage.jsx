@@ -297,17 +297,29 @@ const PlansPage = () => {
               </label>
             </div>
 
-            {/* Mobile Swipeable Cards */}
+            {/* Mobile Swipeable Slides */}
             <div className="sm:hidden">
+              {/* Slide indicators */}
+              <div className="flex items-center justify-center gap-2 mb-4">
+                {sortedSizes.map((size, idx) => (
+                  <div
+                    key={size.id}
+                    className={`w-2 h-2 rounded-full transition-all ${
+                      size.balance === 100000 ? 'bg-orange-500 w-4' : 'bg-gray-600'
+                    }`}
+                  />
+                ))}
+              </div>
+
               {/* Swipe hint */}
               <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 text-xs">
                 <span>←</span>
-                <span>Glissez pour voir les plans</span>
+                <span>Glissez pour changer</span>
                 <span>→</span>
               </div>
 
-              {/* Horizontal scroll container */}
-              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-3 px-3 scrollbar-hide">
+              {/* Full-width slides container */}
+              <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                 {sortedSizes.map((size) => {
                   const aiTierKey = getAiTierForBalance(size.balance)
                   const aiTier = AI_TIERS[aiTierKey]
@@ -323,12 +335,14 @@ const PlansPage = () => {
                   return (
                     <div
                       key={size.id}
-                      className={`flex-shrink-0 w-[85vw] max-w-[320px] snap-center rounded-2xl overflow-hidden ${
+                      className="flex-shrink-0 w-full snap-center px-2"
+                      style={{ minWidth: '100%' }}
+                    >
+                      <div className={`rounded-2xl overflow-hidden mx-auto max-w-sm ${
                         isBestValue
                           ? 'ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)]'
                           : 'ring-1 ring-white/10'
-                      }`}
-                    >
+                      }`}>
                       {/* Best Value Badge */}
                       {isBestValue && (
                         <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold py-2 text-center">
@@ -464,6 +478,7 @@ const PlansPage = () => {
                             <span className="text-gray-400 text-sm">récompense moy.</span>
                           </div>
                         </div>
+                      </div>
                       </div>
                     </div>
                   )
