@@ -1,179 +1,545 @@
-import { useState } from 'react'
-import { Brain, Zap, TrendingUp, TrendingDown, Clock, Target, AlertCircle, CheckCircle, XCircle, Filter } from 'lucide-react'
-import SignalsPanel from '../../components/SignalsPanel'
+import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import {
+  Brain, Zap, TrendingUp, TrendingDown, Clock, Target, AlertCircle,
+  CheckCircle, XCircle, Filter, RefreshCw, BarChart3, Activity,
+  ArrowLeft, Loader2, ChevronRight, Award, Percent, DollarSign
+} from 'lucide-react'
+import { signalsAPI } from '../../services/api'
 
 const SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'MSFT', 'AMZN', 'META', 'BTC-USD', 'ETH-USD', 'SOL-USD', 'IAM', 'ATW']
 
 const SignalsPage = () => {
+  const navigate = useNavigate()
   const [filter, setFilter] = useState('all')
-  const [timeframe, setTimeframe] = useState('1h')
+  const [timeframe, setTimeframe] = useState('30')
+  const [signals, setSignals] = useState([])
+  const [stats, setStats] = useState(null)
+  const [leaderboard, setLeaderboard] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [refreshing, setRefreshing] = useState(false)
+  const [selectedSymbol, setSelectedSymbol] = useState(null)
+  const [symbolAnalysis, setSymbolAnalysis] = useState(null)
+  const [loadingAnalysis, setLoadingAnalysis] = useState(false)
 
-  const mockSignals = [
-    { id: 1, symbol: 'AAPL', type: 'buy', confidence: 89, price: 178.50, target: 185.00, stopLoss: 175.00, time: '10 min ago', status: 'active' },
-    { id: 2, symbol: 'BTC-USD', type: 'sell', confidence: 76, price: 43250, target: 41500, stopLoss: 44000, time: '25 min ago', status: 'active' },
-    { id: 3, symbol: 'TSLA', type: 'buy', confidence: 92, price: 248.30, target: 265.00, stopLoss: 240.00, time: '45 min ago', status: 'hit_target' },
-    { id: 4, symbol: 'ETH-USD', type: 'buy', confidence: 81, price: 2280, target: 2450, stopLoss: 2200, time: '1h ago', status: 'active' },
-    { id: 5, symbol: 'NVDA', type: 'sell', confidence: 67, price: 485.20, target: 460.00, stopLoss: 500.00, time: '2h ago', status: 'stopped' },
-  ]
+  useEffect(() => {
+    fetchData()
+  }, [timeframe])
 
-  const filteredSignals = mockSignals.filter(signal => {
+  const fetchData = async () => {
+    setLoading(true)
+    try {
+      const [historyRes, statsRes, leaderboardRes] = await Promise.all([
+        signalsAPI.getHistory(50),
+        signalsAPI.getStats(parseInt(timeframe)),
+        signalsAPI.getLeaderboard(parseInt(timeframe), 5)
+      ])
+
+      setSignals(historyRes.data.signals || [])
+      setStats(statsRes.data)
+      setLeaderboard(leaderboardRes.data.leaderboard || [])
+    } catch (error) {
+      console.error('Failed to fetch signals data:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const refreshData = async () => {
+    setRefreshing(true)
+    await fetchData()
+    setRefreshing(false)
+  }
+
+  const fetchSymbolAnalysis = async (symbol) => {
+    setSelectedSymbol(symbol)
+    setLoadingAnalysis(true)
+    try {
+      const [technicalRes, sentimentRes] = await Promise.all([
+        signalsAPI.getTechnical(symbol),
+        signalsAPI.getSentiment(symbol)
+      ])
+
+      setSymbolAnalysis({
+        technical: technicalRes.data,
+        sentiment: sentimentRes.data
+      })
+    } catch (error) {
+      console.error('Failed to fetch symbol analysis:', error)
+      setSymbolAnalysis(null)
+    } finally {
+      setLoadingAnalysis(false)
+    }
+  }
+
+  const filteredSignals = signals.filter(signal => {
     if (filter === 'all') return true
-    if (filter === 'buy') return signal.type === 'buy'
-    if (filter === 'sell') return signal.type === 'sell'
+    if (filter === 'buy') return signal.signal_type === 'BUY'
+    if (filter === 'sell') return signal.signal_type === 'SELL'
     if (filter === 'active') return signal.status === 'active'
+    if (filter === 'wins') return signal.status === 'hit_tp'
+    if (filter === 'losses') return signal.status === 'hit_sl'
     return true
   })
 
   const getStatusIcon = (status) => {
     switch (status) {
       case 'active': return <Clock size={14} className="text-blue-400" />
-      case 'hit_target': return <CheckCircle size={14} className="text-green-400" />
-      case 'stopped': return <XCircle size={14} className="text-red-400" />
+      case 'hit_tp': return <CheckCircle size={14} className="text-green-400" />
+      case 'hit_sl': return <XCircle size={14} className="text-red-400" />
+      case 'expired': return <AlertCircle size={14} className="text-yellow-400" />
       default: return null
     }
+  }
+
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case 'active': return 'Active'
+      case 'hit_tp': return 'Target Hit'
+      case 'hit_sl': return 'Stopped'
+      case 'expired': return 'Expired'
+      case 'closed': return 'Closed'
+      default: return status
+    }
+  }
+
+  const formatTimeAgo = (dateString) => {
+    if (!dateString) return 'Recently'
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffMs = now - date
+    const diffMins = Math.floor(diffMs / 60000)
+    const diffHours = Math.floor(diffMins / 60)
+    const diffDays = Math.floor(diffHours / 24)
+
+    if (diffMins < 1) return 'Just now'
+    if (diffMins < 60) return `${diffMins}m ago`
+    if (diffHours < 24) return `${diffHours}h ago`
+    if (diffDays < 7) return `${diffDays}d ago`
+    return date.toLocaleDateString()
+  }
+
+  const getSignalColor = (signal) => {
+    if (signal === 'strong_buy' || signal === 'buy') return 'text-green-400'
+    if (signal === 'strong_sell' || signal === 'sell') return 'text-red-400'
+    return 'text-gray-400'
+  }
+
+  const getScoreColor = (score) => {
+    if (score >= 40) return 'text-green-400'
+    if (score >= 20) return 'text-green-300'
+    if (score <= -40) return 'text-red-400'
+    if (score <= -20) return 'text-red-300'
+    return 'text-gray-400'
   }
 
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-              <Brain className="text-primary-400" size={24} />
-            </div>
-            Signaux IA
-          </h1>
-          <p className="text-gray-400 mt-1">Signaux de trading generes par notre intelligence artificielle</p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+          </button>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+                <Brain className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+              AI Trading Signals
+            </h1>
+            <p className="text-gray-400 mt-1 text-sm sm:text-base">
+              Technical analysis + sentiment-powered signals
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2.5 bg-green-500/10 rounded-xl border border-green-500/30">
             <Zap size={16} className="text-green-400" />
-            <span className="text-sm text-green-400 font-medium">IA Active</span>
+            <span className="text-sm text-green-400 font-medium">AI Active</span>
           </div>
-        </div>
-      </div>
-
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Signaux Aujourd'hui</p>
-          <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">24</p>
-          <p className="text-xs text-green-400 mt-1">+8 depuis hier</p>
-        </div>
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Taux de Reussite</p>
-          <p className="text-2xl font-bold text-green-400">78%</p>
-          <p className="text-xs text-gray-500 mt-1">Sur les 30 derniers jours</p>
-        </div>
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Meilleur Signal</p>
-          <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">+12.5%</p>
-          <p className="text-xs text-gray-500 mt-1">TSLA il y a 3 jours</p>
-        </div>
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Confiance Moyenne</p>
-          <p className="text-2xl font-bold text-primary-400">82%</p>
-          <p className="text-xs text-gray-500 mt-1">Score IA moyen</p>
-        </div>
-      </div>
-
-      {/* Filters */}
-      <div className="flex items-center gap-4 flex-wrap">
-        <div className="flex items-center gap-2">
-          <Filter size={16} className="text-gray-400" />
-          <span className="text-sm text-gray-400">Filtrer:</span>
-        </div>
-        {['all', 'buy', 'sell', 'active'].map(f => (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-              filter === f
-                ? 'bg-primary-500 text-white'
-                : 'bg-dark-100 text-gray-400 hover:text-white border border-dark-200'
-            }`}
+            onClick={refreshData}
+            disabled={refreshing}
+            className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
           >
-            {f === 'all' ? 'Tous' : f === 'buy' ? 'Achat' : f === 'sell' ? 'Vente' : 'Actifs'}
+            <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
           </button>
-        ))}
-        <div className="ml-auto flex items-center gap-2">
-          <span className="text-sm text-gray-400">Timeframe:</span>
-          {['15m', '1h', '4h', '1d'].map(tf => (
-            <button
-              key={tf}
-              onClick={() => setTimeframe(tf)}
-              className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
-                timeframe === tf
-                  ? 'bg-dark-200 text-white'
-                  : 'text-gray-500 hover:text-white'
-              }`}
-            >
-              {tf}
-            </button>
-          ))}
         </div>
       </div>
 
-      {/* Signals List */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
-        <div className="p-4 border-b border-white/5">
-          <h3 className="font-semibold text-white">Signaux Recents</h3>
+      {loading ? (
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-12 text-center">
+          <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto mb-4" />
+          <p className="text-gray-400">Loading signals data...</p>
         </div>
-        <div className="divide-y divide-dark-200">
-          {filteredSignals.map(signal => (
-            <div key={signal.id} className="p-4 hover:bg-dark-200/30 transition-colors">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                    signal.type === 'buy' ? 'bg-green-500/10' : 'bg-red-500/10'
-                  }`}>
-                    {signal.type === 'buy' ? (
-                      <TrendingUp className="text-green-400" size={24} />
-                    ) : (
-                      <TrendingDown className="text-red-400" size={24} />
-                    )}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-white">{signal.symbol}</span>
-                      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                        signal.type === 'buy' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
-                      }`}>
-                        {signal.type === 'buy' ? 'ACHAT' : 'VENTE'}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        {getStatusIcon(signal.status)}
-                        <span className="text-xs text-gray-500">{signal.status === 'active' ? 'Actif' : signal.status === 'hit_target' ? 'Objectif atteint' : 'Stoppe'}</span>
-                      </div>
-                    </div>
-                    <p className="text-sm text-gray-400 mt-1">
-                      Entree: ${signal.price.toLocaleString()} | Objectif: ${signal.target.toLocaleString()} | Stop: ${signal.stopLoss.toLocaleString()}
-                    </p>
-                  </div>
+      ) : (
+        <>
+          {/* Stats Cards */}
+          {stats && (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
+                <div className="flex items-center gap-2 mb-2">
+                  <Activity className="w-4 h-4 text-primary-400" />
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Signals</p>
                 </div>
-                <div className="text-right">
-                  <div className="flex items-center gap-2 justify-end">
-                    <Brain size={14} className="text-primary-400" />
-                    <span className={`font-bold ${
-                      signal.confidence >= 80 ? 'text-green-400' : signal.confidence >= 60 ? 'text-yellow-400' : 'text-gray-400'
-                    }`}>
-                      {signal.confidence}%
-                    </span>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-1">{signal.time}</p>
+                <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">
+                  {stats.total_signals}
+                </p>
+                <p className="text-xs text-gray-500 mt-1">{stats.active_signals} active</p>
+              </div>
+              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
+                <div className="flex items-center gap-2 mb-2">
+                  <Percent className="w-4 h-4 text-green-400" />
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">Win Rate</p>
                 </div>
+                <p className="text-2xl font-bold text-green-400">{stats.win_rate}%</p>
+                <p className="text-xs text-gray-500 mt-1">{stats.wins}W / {stats.losses}L</p>
+              </div>
+              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
+                <div className="flex items-center gap-2 mb-2">
+                  <DollarSign className="w-4 h-4 text-primary-400" />
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Return</p>
+                </div>
+                <p className={`text-2xl font-bold ${stats.total_pnl_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {stats.total_pnl_percent >= 0 ? '+' : ''}{stats.total_pnl_percent}%
+                </p>
+                <p className="text-xs text-gray-500 mt-1">Last {timeframe} days</p>
+              </div>
+              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
+                <div className="flex items-center gap-2 mb-2">
+                  <Award className="w-4 h-4 text-yellow-400" />
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">Profit Factor</p>
+                </div>
+                <p className="text-2xl font-bold text-primary-400">{stats.profit_factor}x</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Avg +{stats.avg_win_percent}% / -{stats.avg_loss_percent}%
+                </p>
               </div>
             </div>
-          ))}
-        </div>
-      </div>
+          )}
 
-      {/* Real-time Signals Panel */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <SignalsPanel symbols={SYMBOLS.slice(0, 6)} />
-        <SignalsPanel symbols={SYMBOLS.slice(6)} />
-      </div>
+          {/* Quick Symbol Analysis */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
+            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+              <BarChart3 className="w-4 h-4 text-primary-400" />
+              Quick Analysis
+            </h3>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {SYMBOLS.map(symbol => (
+                <button
+                  key={symbol}
+                  onClick={() => fetchSymbolAnalysis(symbol)}
+                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    selectedSymbol === symbol
+                      ? 'bg-primary-500 text-white'
+                      : 'bg-dark-200/50 text-gray-400 hover:text-white hover:bg-dark-200'
+                  }`}
+                >
+                  {symbol}
+                </button>
+              ))}
+            </div>
+
+            {loadingAnalysis && (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
+              </div>
+            )}
+
+            {symbolAnalysis && !loadingAnalysis && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Technical Analysis */}
+                <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
+                  <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
+                    <Activity className="w-4 h-4" />
+                    Technical Analysis
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Signal</span>
+                      <span className={`font-bold ${getSignalColor(symbolAnalysis.technical.signal)}`}>
+                        {symbolAnalysis.technical.signal?.toUpperCase().replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Score</span>
+                      <span className={`font-bold ${getScoreColor(symbolAnalysis.technical.score)}`}>
+                        {symbolAnalysis.technical.score > 0 ? '+' : ''}{symbolAnalysis.technical.score}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Confidence</span>
+                      <span className="text-white font-medium">{symbolAnalysis.technical.confidence}%</span>
+                    </div>
+                    {symbolAnalysis.technical.entry_price && (
+                      <>
+                        <div className="border-t border-white/5 pt-3 mt-3">
+                          <div className="flex items-center justify-between text-sm">
+                            <span className="text-gray-400">Entry</span>
+                            <span className="text-white">${symbolAnalysis.technical.entry_price?.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm mt-1">
+                            <span className="text-gray-400">Stop Loss</span>
+                            <span className="text-red-400">${symbolAnalysis.technical.stop_loss?.toLocaleString()}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-sm mt-1">
+                            <span className="text-gray-400">Take Profit</span>
+                            <span className="text-green-400">${symbolAnalysis.technical.take_profit?.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                    {symbolAnalysis.technical.reasons && (
+                      <div className="mt-3 pt-3 border-t border-white/5">
+                        <p className="text-xs text-gray-500 mb-2">Reasons:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {symbolAnalysis.technical.reasons.slice(0, 3).map((reason, i) => (
+                            <span key={i} className="text-xs px-2 py-0.5 bg-dark-200/50 rounded text-gray-400">
+                              {reason}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Sentiment Analysis */}
+                <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
+                  <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
+                    <Brain className="w-4 h-4" />
+                    Sentiment Analysis
+                  </h4>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Sentiment</span>
+                      <span className={`font-bold ${getSignalColor(symbolAnalysis.sentiment.sentiment)}`}>
+                        {symbolAnalysis.sentiment.sentiment?.toUpperCase().replace('_', ' ')}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Score</span>
+                      <span className={`font-bold ${getScoreColor(symbolAnalysis.sentiment.score)}`}>
+                        {symbolAnalysis.sentiment.score > 0 ? '+' : ''}{symbolAnalysis.sentiment.score}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-400">Articles</span>
+                      <span className="text-white font-medium">{symbolAnalysis.sentiment.article_count}</span>
+                    </div>
+                    {symbolAnalysis.sentiment.breakdown && (
+                      <div className="mt-3 pt-3 border-t border-white/5">
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 h-2 bg-dark-200/50 rounded-full overflow-hidden flex">
+                            <div
+                              className="h-full bg-green-500"
+                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.positive / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
+                            />
+                            <div
+                              className="h-full bg-blue-500"
+                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.neutral / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
+                            />
+                            <div
+                              className="h-full bg-red-500"
+                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.negative / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
+                            />
+                          </div>
+                        </div>
+                        <div className="flex justify-between text-xs mt-2">
+                          <span className="text-green-400">+{symbolAnalysis.sentiment.breakdown.positive}</span>
+                          <span className="text-blue-400">{symbolAnalysis.sentiment.breakdown.neutral}</span>
+                          <span className="text-red-400">-{symbolAnalysis.sentiment.breakdown.negative}</span>
+                        </div>
+                      </div>
+                    )}
+                    {symbolAnalysis.sentiment.keywords?.length > 0 && (
+                      <div className="mt-3 pt-3 border-t border-white/5">
+                        <p className="text-xs text-gray-500 mb-2">Keywords:</p>
+                        <div className="flex flex-wrap gap-1">
+                          {symbolAnalysis.sentiment.keywords.slice(0, 5).map((kw, i) => (
+                            <span
+                              key={i}
+                              className={`text-xs px-2 py-0.5 rounded ${
+                                kw.startsWith('+') ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                              }`}
+                            >
+                              {kw}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Filters and Period */}
+          <div className="flex items-center gap-4 flex-wrap">
+            <div className="flex items-center gap-2">
+              <Filter size={16} className="text-gray-400" />
+              <span className="text-sm text-gray-400">Filter:</span>
+            </div>
+            {['all', 'buy', 'sell', 'active', 'wins', 'losses'].map(f => (
+              <button
+                key={f}
+                onClick={() => setFilter(f)}
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                  filter === f
+                    ? 'bg-primary-500 text-white'
+                    : 'bg-dark-100 text-gray-400 hover:text-white border border-dark-200'
+                }`}
+              >
+                {f === 'all' ? 'All' : f === 'buy' ? 'Buy' : f === 'sell' ? 'Sell' : f === 'active' ? 'Active' : f === 'wins' ? 'Wins' : 'Losses'}
+              </button>
+            ))}
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-sm text-gray-400">Period:</span>
+              {['7', '30', '90'].map(days => (
+                <button
+                  key={days}
+                  onClick={() => setTimeframe(days)}
+                  className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
+                    timeframe === days
+                      ? 'bg-dark-200 text-white'
+                      : 'text-gray-500 hover:text-white'
+                  }`}
+                >
+                  {days}d
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Leaderboard */}
+          {leaderboard.length > 0 && (
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
+              <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                <Award className="w-4 h-4 text-yellow-400" />
+                Top Signals (Last {timeframe} Days)
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                {leaderboard.map((signal, index) => (
+                  <div
+                    key={index}
+                    className="bg-dark-200/30 rounded-xl p-3 border border-white/5 hover:border-yellow-500/30 transition-all"
+                  >
+                    <div className="flex items-center gap-2 mb-2">
+                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                        index === 0 ? 'bg-yellow-500 text-black' :
+                        index === 1 ? 'bg-gray-400 text-black' :
+                        index === 2 ? 'bg-orange-600 text-white' :
+                        'bg-dark-200 text-gray-400'
+                      }`}>
+                        {index + 1}
+                      </span>
+                      <span className="font-bold text-white">{signal.symbol}</span>
+                      <span className={`text-xs px-1.5 py-0.5 rounded ${
+                        signal.signal_type === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                      }`}>
+                        {signal.signal_type}
+                      </span>
+                    </div>
+                    <p className="text-lg font-bold text-green-400">+{signal.pnl_percent}%</p>
+                    <p className="text-xs text-gray-500">{signal.date}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Signals List */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+            <div className="p-4 border-b border-white/5 flex items-center justify-between">
+              <h3 className="font-semibold text-white">Signal History</h3>
+              <span className="text-sm text-gray-400">{filteredSignals.length} signals</span>
+            </div>
+            <div className="divide-y divide-dark-200">
+              {filteredSignals.length === 0 ? (
+                <div className="p-8 text-center">
+                  <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+                  <p className="text-gray-400">No signals found</p>
+                </div>
+              ) : (
+                filteredSignals.map((signal, index) => (
+                  <div key={signal.id || index} className="p-4 hover:bg-dark-200/30 transition-colors">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4">
+                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                          signal.signal_type === 'BUY' ? 'bg-green-500/10' : 'bg-red-500/10'
+                        }`}>
+                          {signal.signal_type === 'BUY' ? (
+                            <TrendingUp className="text-green-400" size={24} />
+                          ) : (
+                            <TrendingDown className="text-red-400" size={24} />
+                          )}
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <span className="font-bold text-white">{signal.symbol}</span>
+                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                              signal.signal_type === 'BUY' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+                            }`}>
+                              {signal.signal_type}
+                            </span>
+                            <div className="flex items-center gap-1">
+                              {getStatusIcon(signal.status)}
+                              <span className="text-xs text-gray-500">{getStatusLabel(signal.status)}</span>
+                            </div>
+                            <span className={`text-xs px-1.5 py-0.5 rounded ${
+                              signal.source === 'technical' ? 'bg-blue-500/20 text-blue-400' :
+                              signal.source === 'sentiment' ? 'bg-purple-500/20 text-purple-400' :
+                              'bg-primary-500/20 text-primary-400'
+                            }`}>
+                              {signal.source}
+                            </span>
+                          </div>
+                          <p className="text-sm text-gray-400 mt-1">
+                            Entry: ${parseFloat(signal.entry_price).toLocaleString()}
+                            {signal.take_profit && ` | TP: $${parseFloat(signal.take_profit).toLocaleString()}`}
+                            {signal.stop_loss && ` | SL: $${parseFloat(signal.stop_loss).toLocaleString()}`}
+                          </p>
+                          {signal.reasons?.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {signal.reasons.slice(0, 2).map((reason, i) => (
+                                <span key={i} className="text-xs px-2 py-0.5 bg-dark-200/50 rounded text-gray-500">
+                                  {reason}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="flex items-center gap-2 justify-end">
+                          <Brain size={14} className="text-primary-400" />
+                          <span className={`font-bold ${
+                            signal.confidence >= 80 ? 'text-green-400' : signal.confidence >= 60 ? 'text-yellow-400' : 'text-gray-400'
+                          }`}>
+                            {signal.confidence}%
+                          </span>
+                        </div>
+                        {signal.pnl_percent !== null && (
+                          <p className={`font-bold mt-1 ${signal.pnl_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {signal.pnl_percent >= 0 ? '+' : ''}{signal.pnl_percent}%
+                          </p>
+                        )}
+                        <p className="text-xs text-gray-500 mt-1">{formatTimeAgo(signal.created_at)}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </div>
   )
 }

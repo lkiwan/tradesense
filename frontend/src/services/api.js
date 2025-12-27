@@ -452,6 +452,64 @@ export const resourcesAPI = {
   updateCalendarEvent: (eventId, data) => api.put(`/resources/calendar/${eventId}`, data)
 }
 
+// Enhanced Signals API (technical + sentiment)
+export const signalsAPI = {
+  // Get technical signal for a symbol
+  getTechnical: (symbol) =>
+    api.get(`/signals/technical/${symbol}`),
+
+  // Get sentiment signal for a symbol
+  getSentiment: (symbol) =>
+    api.get(`/signals/sentiment/${symbol}`),
+
+  // Get combined technical + sentiment signal
+  getCombined: (symbol) =>
+    api.get(`/signals/combined/${symbol}`),
+
+  // Get all indicators for a symbol
+  getIndicators: (symbol) =>
+    api.get(`/signals/indicators/${symbol}`),
+
+  // Get overall market sentiment
+  getMarketSentiment: (market = 'all') =>
+    api.get('/signals/market-sentiment', { params: { market } }),
+
+  // Get batch signals for multiple symbols
+  getBatch: (symbols) =>
+    api.post('/signals/batch', { symbols }),
+
+  // Get signal history
+  getHistory: (limit = 20, status = null, symbol = null) =>
+    api.get('/signals/history', { params: { limit, status, symbol } }),
+
+  // Get active signals
+  getActive: () =>
+    api.get('/signals/active'),
+
+  // Get performance stats
+  getStats: (days = 30) =>
+    api.get('/signals/stats', { params: { days } }),
+
+  // Get signal leaderboard
+  getLeaderboard: (days = 30, limit = 10) =>
+    api.get('/signals/leaderboard', { params: { days, limit } }),
+
+  // Record a new signal
+  record: (data) =>
+    api.post('/signals/record', data),
+
+  // Update signal outcome
+  update: (signalId, currentPrice, status = null) =>
+    api.put(`/signals/${signalId}/update`, { current_price: currentPrice, status }),
+
+  // Demo endpoints (no auth)
+  demoTechnical: (symbol) =>
+    api.get(`/signals/demo/technical/${symbol}`),
+
+  demoIndicators: (symbol) =>
+    api.get(`/signals/demo/indicators/${symbol}`)
+}
+
 // News API (multi-source news aggregation)
 export const newsAPI = {
   // Get aggregated news from all sources

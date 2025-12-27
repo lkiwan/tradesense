@@ -112,3 +112,6 @@ from .admin_permission import (
     has_permission, get_user_permissions, grant_permission, revoke_permission,
     grant_default_permissions, create_default_roles
 )
+
+# Signal tracking
+from .signal_history import SignalHistory

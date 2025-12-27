@@ -91,6 +91,9 @@ from .blog import blog_bp
 # Import news blueprint (uses its own bp definition)
 from .news import news_bp
 
+# Import signals blueprint (uses its own bp definition)
+from .signals import signals_bp
+
 # Import webinars blueprint (uses its own bp definition)
 from .webinars import webinars_bp
 
