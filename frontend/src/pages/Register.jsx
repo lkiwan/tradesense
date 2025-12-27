@@ -118,12 +118,12 @@ const Register = () => {
         </div>
 
         {/* Form Card with entrance animation */}
-        <div className="glass-card rounded-3xl p-8 md:p-10 auth-card-enter animate-glow-pulse">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white mb-2">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10 auth-card-enter animate-glow-pulse">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               {t('auth.register.title')}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Créez votre compte et commencez à trader
             </p>
           </div>
@@ -268,14 +268,14 @@ const Register = () => {
             </div>
 
             {/* Terms */}
-            <div className="flex items-start gap-3 p-4 bg-dark-300/30 rounded-xl border border-white/5">
+            <div className="flex items-start gap-3 p-3 sm:p-4 bg-dark-300/30 rounded-xl border border-white/5">
               <input
                 type="checkbox"
                 checked={agreedToTerms}
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="mt-1 w-5 h-5 rounded border-gray-600 bg-dark-300 text-primary-500 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
+                className="mt-0.5 w-5 h-5 min-w-[20px] rounded border-gray-600 bg-dark-300 text-primary-500 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
               />
-              <span className="text-sm text-gray-400 leading-relaxed">
+              <span className="text-xs sm:text-sm text-gray-400 leading-relaxed">
                 J'accepte les{' '}
                 <a href="#" className="text-primary-400 hover:text-primary-300 transition-colors">
                   conditions d'utilisation
@@ -331,11 +331,11 @@ const Register = () => {
         </div>
 
         {/* Footer Badge */}
-        <div className="mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full text-gray-400 text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
-            <Sparkles size={14} className="text-primary-400 animate-pulse" />
+        <div className="mt-6 sm:mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
+          <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full text-gray-400 text-xs sm:text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
+            <Sparkles size={14} className="text-primary-400 animate-pulse flex-shrink-0" />
             <span>Join 10,000+ traders worldwide</span>
-            <div className="flex gap-1">
+            <div className="flex gap-1 flex-shrink-0">
               <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
               <div className="w-2 h-2 bg-primary-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
               <div className="w-2 h-2 bg-primary-300 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />

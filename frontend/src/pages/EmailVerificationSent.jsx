@@ -52,44 +52,44 @@ const EmailVerificationSent = () => {
         </div>
 
         {/* Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10">
           <div className="text-center">
             {/* Icon */}
-            <div className="w-20 h-20 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary-500/30">
-              <Mail className="text-primary-400" size={40} />
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-primary-500/30">
+              <Mail className="text-primary-400" size={32} />
             </div>
 
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               Check Your Email
             </h2>
 
-            <p className="text-gray-400 mb-6">
+            <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               We've sent a verification link to{' '}
-              <span className="font-semibold text-primary-400">
+              <span className="font-semibold text-primary-400 break-all">
                 {user?.email || 'your email address'}
               </span>
             </p>
 
             {/* Instructions */}
-            <div className="bg-dark-300/50 rounded-xl p-5 mb-6 text-left border border-white/5">
-              <h3 className="font-semibold text-white mb-3">
+            <div className="bg-dark-300/50 rounded-xl p-4 sm:p-5 mb-4 sm:mb-6 text-left border border-white/5">
+              <h3 className="font-semibold text-white mb-2 sm:mb-3 text-sm sm:text-base">
                 Next Steps:
               </h3>
-              <ol className="text-sm text-gray-400 space-y-3">
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
+              <ol className="text-xs sm:text-sm text-gray-400 space-y-2 sm:space-y-3">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
                     <span className="text-xs font-bold text-primary-400">1</span>
                   </span>
                   <span>Open the email we just sent you</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
                     <span className="text-xs font-bold text-primary-400">2</span>
                   </span>
                   <span>Click the "Verify Email" button</span>
                 </li>
-                <li className="flex items-start gap-3">
-                  <span className="w-6 h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
+                <li className="flex items-start gap-2 sm:gap-3">
+                  <span className="w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-lg flex items-center justify-center flex-shrink-0 border border-primary-500/30">
                     <span className="text-xs font-bold text-primary-400">3</span>
                   </span>
                   <span>Start trading with TradeSense!</span>
@@ -99,24 +99,24 @@ const EmailVerificationSent = () => {
 
             {/* Resend Button */}
             {resent ? (
-              <div className="flex items-center justify-center gap-2 text-green-400 mb-6 p-3 bg-green-500/10 rounded-xl border border-green-500/30">
-                <CheckCircle size={20} />
+              <div className="flex items-center justify-center gap-2 text-green-400 mb-4 sm:mb-6 p-3 bg-green-500/10 rounded-xl border border-green-500/30 text-sm">
+                <CheckCircle size={18} className="flex-shrink-0" />
                 <span>Email sent! Check your inbox.</span>
               </div>
             ) : (
               <button
                 onClick={handleResend}
                 disabled={resending}
-                className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium mb-6 transition-colors"
+                className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium mb-4 sm:mb-6 transition-colors text-sm sm:text-base min-h-[44px]"
               >
                 {resending ? (
                   <>
-                    <RefreshCw className="animate-spin" size={18} />
+                    <RefreshCw className="animate-spin flex-shrink-0" size={18} />
                     Sending...
                   </>
                 ) : (
                   <>
-                    <RefreshCw size={18} />
+                    <RefreshCw size={18} className="flex-shrink-0" />
                     Didn't receive it? Resend email
                   </>
                 )}
@@ -124,15 +124,15 @@ const EmailVerificationSent = () => {
             )}
 
             {/* Continue Button */}
-            <div className="pt-5 border-t border-white/5">
+            <div className="pt-4 sm:pt-5 border-t border-white/5">
               <Link
                 to="/dashboard"
-                className="group inline-flex items-center justify-center gap-2 w-full px-6 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
+                className="group inline-flex items-center justify-center gap-2 w-full px-6 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98] text-sm sm:text-base"
               >
                 Continue to Dashboard
                 <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
               </Link>
-              <p className="text-sm text-gray-500 mt-3">
+              <p className="text-xs sm:text-sm text-gray-500 mt-3">
                 You can verify your email later from your dashboard
               </p>
             </div>
@@ -140,15 +140,15 @@ const EmailVerificationSent = () => {
         </div>
 
         {/* Footer Badge */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
-            <Sparkles size={14} className="text-primary-400" />
+        <div className="mt-6 sm:mt-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-xs sm:text-sm">
+            <Sparkles size={14} className="text-primary-400 flex-shrink-0" />
             Secure email verification
           </div>
         </div>
 
         {/* Help */}
-        <p className="text-center text-sm text-gray-500 mt-4">
+        <p className="text-center text-xs sm:text-sm text-gray-500 mt-4 px-4">
           Having trouble?{' '}
           <Link to="/contact" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
             Contact Support

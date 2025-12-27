@@ -151,12 +151,12 @@ const Login = () => {
         </div>
 
         {/* Form Card with entrance animation */}
-        <div className="glass-card rounded-3xl p-8 md:p-10 auth-card-enter animate-glow-pulse">
-          <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-white mb-2">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10 auth-card-enter animate-glow-pulse">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               {t('auth.login.title')}
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Connectez-vous pour accéder à votre dashboard
             </p>
           </div>
@@ -231,8 +231,8 @@ const Login = () => {
             </div>
 
             {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-3 cursor-pointer group">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-0">
+              <label className="flex items-center gap-3 cursor-pointer group min-h-[44px]">
                 <div className="relative">
                   <input
                     type="checkbox"
@@ -252,7 +252,7 @@ const Login = () => {
                   Se souvenir de moi
                 </span>
               </label>
-              <Link to="/forgot-password" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
+              <Link to="/forgot-password" className="text-sm text-primary-400 hover:text-primary-300 transition-colors min-h-[44px] flex items-center">
                 Mot de passe oublié?
               </Link>
             </div>
@@ -353,11 +353,11 @@ const Login = () => {
         </div>
 
         {/* Footer Badge */}
-        <div className="mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full text-gray-400 text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
-            <Sparkles size={14} className="text-primary-400 animate-pulse" />
+        <div className="mt-6 sm:mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
+          <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full text-gray-400 text-xs sm:text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
+            <Sparkles size={14} className="text-primary-400 animate-pulse flex-shrink-0" />
             <span>Secure login with 2FA support</span>
-            <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+            <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse flex-shrink-0" />
           </div>
         </div>
       </div>

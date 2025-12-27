@@ -76,16 +76,16 @@ const VerifyEmail = () => {
         </div>
 
         {/* Status Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10">
           {status === 'loading' && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-primary-500/30">
-                <Loader2 className="animate-spin text-primary-400" size={40} />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-primary-500/30">
+                <Loader2 className="animate-spin text-primary-400" size={32} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Verifying Email
               </h2>
-              <p className="text-gray-400">
+              <p className="text-sm sm:text-base text-gray-400">
                 Please wait while we verify your email address...
               </p>
             </div>
@@ -93,17 +93,17 @@ const VerifyEmail = () => {
 
           {status === 'success' && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/30">
-                <CheckCircle className="text-green-500" size={40} />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-green-500/30">
+                <CheckCircle className="text-green-500" size={32} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Email Verified!
               </h2>
-              <p className="text-gray-400 mb-6">
+              <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
                 {message}
               </p>
-              <p className="text-sm text-gray-500 mb-6 flex items-center justify-center gap-2">
-                <Clock size={14} className="text-primary-400" />
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6 flex items-center justify-center gap-2">
+                <Clock size={14} className="text-primary-400 flex-shrink-0" />
                 Redirecting you in a moment...
               </p>
               <Link
@@ -118,13 +118,13 @@ const VerifyEmail = () => {
 
           {status === 'error' && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-500/30">
-                <XCircle className="text-red-500" size={40} />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-red-500/30">
+                <XCircle className="text-red-500" size={32} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Verification Failed
               </h2>
-              <p className="text-gray-400 mb-6">
+              <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
                 {message}
               </p>
               <div className="flex flex-col gap-3">
@@ -137,7 +137,7 @@ const VerifyEmail = () => {
                 </Link>
                 <Link
                   to="/"
-                  className="text-primary-400 hover:text-primary-300 font-medium transition-colors"
+                  className="text-primary-400 hover:text-primary-300 font-medium transition-colors min-h-[44px] flex items-center justify-center"
                 >
                   Back to Home
                 </Link>
@@ -147,16 +147,16 @@ const VerifyEmail = () => {
 
           {status === 'expired' && (
             <div className="text-center">
-              <div className="w-20 h-20 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-yellow-500/30">
-                <Mail className="text-yellow-500" size={40} />
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-yellow-500/20 to-yellow-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-yellow-500/30">
+                <Mail className="text-yellow-500" size={32} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
                 Link Expired
               </h2>
-              <p className="text-gray-400 mb-4">
+              <p className="text-sm sm:text-base text-gray-400 mb-3 sm:mb-4">
                 {message}
               </p>
-              <p className="text-sm text-gray-500 mb-6">
+              <p className="text-xs sm:text-sm text-gray-500 mb-4 sm:mb-6">
                 Please login and request a new verification email.
               </p>
               <div className="flex flex-col gap-3">
@@ -169,7 +169,7 @@ const VerifyEmail = () => {
                 </Link>
                 <Link
                   to="/"
-                  className="text-primary-400 hover:text-primary-300 font-medium transition-colors"
+                  className="text-primary-400 hover:text-primary-300 font-medium transition-colors min-h-[44px] flex items-center justify-center"
                 >
                   Back to Home
                 </Link>

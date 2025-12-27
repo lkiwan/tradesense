@@ -112,14 +112,14 @@ const Contact = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-8 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <Mail className="text-primary-400" size={18} />
             <span className="text-primary-300 text-sm font-medium">Contact Us</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
             Get in <span className="gradient-text-animated">Touch</span>
           </h1>
           <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
@@ -131,7 +131,7 @@ const Contact = () => {
       {/* Contact Methods */}
       <section className="relative py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {contactMethods.map((method, index) => {
               const Icon = method.icon
               return (
@@ -162,7 +162,7 @@ const Contact = () => {
       {/* Main Content */}
       <section className="relative py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-5 gap-12">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
             {/* Contact Form */}
             <div className="lg:col-span-3">
               <div className="glass-card rounded-3xl p-8 md:p-10">
@@ -177,7 +177,7 @@ const Contact = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Your Name *
@@ -208,7 +208,7 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <div className="grid md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
                         Category
@@ -260,7 +260,7 @@ const Contact = () => {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="group w-full flex items-center justify-center gap-3 px-8 py-5 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
+                    className="group w-full flex items-center justify-center gap-3 px-6 md:px-8 py-4 md:py-5 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
                   >
                     {isSubmitting ? (
                       <>
@@ -408,7 +408,7 @@ const Contact = () => {
               <MapPin size={16} />
               Locations
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white">
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
               Find Us <span className="gradient-text-animated">Worldwide</span>
             </h2>
           </div>

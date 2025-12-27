@@ -230,20 +230,20 @@ const AccountsPage = () => {
   return (
     <div className="space-y-6">
       {/* Hero Banner */}
-      <div className={`bg-gradient-to-r ${phaseColor.gradient} rounded-2xl p-6 md:p-8 relative overflow-hidden`}>
+      <div className={`bg-gradient-to-r ${phaseColor.gradient} rounded-2xl p-4 md:p-6 lg:p-8 relative overflow-hidden`}>
         <div className="absolute inset-0 bg-black/10" />
         <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl" />
         <div className="relative z-10">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <p className="text-white/80 text-sm mb-1">Welcome back,</p>
-              <h1 className="text-2xl md:text-3xl font-bold text-white">{user?.username || 'Trader'}</h1>
-              <p className="text-white/80 mt-2">Unlock your trading potential with TradeSense. Start trading now!</p>
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-white break-words">{user?.username || 'Trader'}</h1>
+              <p className="text-white/80 mt-2 text-sm md:text-base">Unlock your trading potential with TradeSense. Start trading now!</p>
             </div>
             <div className="flex gap-3">
               <Link
                 to="/plans"
-                className="inline-flex items-center gap-2 px-5 py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium transition-all backdrop-blur-sm"
+                className="inline-flex items-center justify-center gap-2 px-4 md:px-5 py-3 md:py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium transition-all backdrop-blur-sm min-h-[44px] w-full md:w-auto"
               >
                 <Rocket size={18} />
                 Start Challenge
@@ -272,7 +272,7 @@ const AccountsPage = () => {
             </span>
           </div>
 
-          <div className="p-5 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="p-4 md:p-5 grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             {/* Balance */}
             <div className="bg-dark-200/50 rounded-lg p-4">
               <p className="text-xs text-gray-400 mb-1">Balance</p>
@@ -315,44 +315,44 @@ const AccountsPage = () => {
           </div>
 
           {/* Trading Credentials */}
-          <div className="p-5 border-t border-dark-200">
+          <div className="p-4 md:p-5 border-t border-dark-200">
             <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
               <Monitor size={16} />
               Trading Credentials (MT5)
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-4 py-3">
-                <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-3 md:px-4 py-3 min-h-[60px]">
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-400">Login</p>
-                  <p className="font-mono text-white">{challenge.trading_login || '00000'}</p>
+                  <p className="font-mono text-white text-sm md:text-base truncate">{challenge.trading_login || '00000'}</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(challenge.trading_login || '00000', 'login')}
-                  className="p-1.5 hover:bg-dark-300 rounded transition-colors"
+                  className="p-2 md:p-1.5 hover:bg-dark-300 rounded transition-colors ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   {copiedField === 'login' ? <Check size={16} className="text-green-500" /> : <Copy size={16} className="text-gray-400" />}
                 </button>
               </div>
-              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-4 py-3">
-                <div>
+              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-3 md:px-4 py-3 min-h-[60px]">
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-400">Password</p>
-                  <p className="font-mono text-white">••••••••</p>
+                  <p className="font-mono text-white text-sm md:text-base">••••••••</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(challenge.trading_password || 'password', 'password')}
-                  className="p-1.5 hover:bg-dark-300 rounded transition-colors"
+                  className="p-2 md:p-1.5 hover:bg-dark-300 rounded transition-colors ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   {copiedField === 'password' ? <Check size={16} className="text-green-500" /> : <Copy size={16} className="text-gray-400" />}
                 </button>
               </div>
-              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-4 py-3">
-                <div>
+              <div className="flex items-center justify-between bg-dark-200/50 rounded-lg px-3 md:px-4 py-3 min-h-[60px] sm:col-span-2 md:col-span-1">
+                <div className="min-w-0 flex-1">
                   <p className="text-xs text-gray-400">Server</p>
-                  <p className="font-mono text-white">{challenge.trading_server || 'TradeSense-Demo'}</p>
+                  <p className="font-mono text-white text-sm md:text-base truncate">{challenge.trading_server || 'TradeSense-Demo'}</p>
                 </div>
                 <button
                   onClick={() => copyToClipboard(challenge.trading_server || 'TradeSense-Demo', 'server')}
-                  className="p-1.5 hover:bg-dark-300 rounded transition-colors"
+                  className="p-2 md:p-1.5 hover:bg-dark-300 rounded transition-colors ml-2 min-w-[44px] min-h-[44px] flex items-center justify-center"
                 >
                   {copiedField === 'server' ? <Check size={16} className="text-green-500" /> : <Copy size={16} className="text-gray-400" />}
                 </button>
@@ -467,31 +467,31 @@ const AccountsPage = () => {
       <PhaseProgress />
 
       {/* Trading Stats Row */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 p-4">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-4 md:gap-6">
-          <div className="text-center md:text-left">
+      <div className="bg-dark-100 rounded-xl border border-dark-200 p-3 md:p-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 md:gap-4 lg:gap-6">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Win Rate</p>
-            <p className="text-lg font-bold text-white">{stats.winRate.toFixed(1)}%</p>
+            <p className="text-base md:text-lg font-bold text-white">{stats.winRate.toFixed(1)}%</p>
           </div>
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Total Trades</p>
-            <p className="text-lg font-bold text-white">{stats.totalTrades}</p>
+            <p className="text-base md:text-lg font-bold text-white">{stats.totalTrades}</p>
           </div>
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Best Trade</p>
-            <p className="text-lg font-bold text-green-500">+${stats.bestTrade.toFixed(2)}</p>
+            <p className="text-base md:text-lg font-bold text-green-500 truncate">+${stats.bestTrade.toFixed(2)}</p>
           </div>
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Worst Trade</p>
-            <p className="text-lg font-bold text-red-500">${stats.worstTrade.toFixed(2)}</p>
+            <p className="text-base md:text-lg font-bold text-red-500 truncate">${stats.worstTrade.toFixed(2)}</p>
           </div>
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Avg Win</p>
-            <p className="text-lg font-bold text-green-500">+${stats.avgWin.toFixed(2)}</p>
+            <p className="text-base md:text-lg font-bold text-green-500 truncate">+${stats.avgWin.toFixed(2)}</p>
           </div>
-          <div className="text-center md:text-left">
+          <div className="text-center md:text-left p-2 md:p-0">
             <p className="text-xs text-gray-400 mb-1">Profit Factor</p>
-            <p className="text-lg font-bold text-white">
+            <p className="text-base md:text-lg font-bold text-white">
               {stats.profitFactor === Infinity ? '∞' : stats.profitFactor.toFixed(2)}
             </p>
           </div>
@@ -503,13 +503,13 @@ const AccountsPage = () => {
         <div className="lg:col-span-2 space-y-6">
           {/* Chart */}
           <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
-            <div className="p-4 border-b border-dark-200">
-              <div className="flex items-center justify-between mb-3">
+            <div className="p-3 md:p-4 border-b border-dark-200">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-3">
                 <div className="flex items-center gap-2">
                   <CircleDot size={16} className="text-green-500" />
                   <span className="font-semibold text-white">{selectedSymbol}</span>
                 </div>
-                <div className="flex gap-1 bg-dark-200 p-1 rounded-lg">
+                <div className="flex gap-1 bg-dark-200 p-1 rounded-lg overflow-x-auto">
                   {Object.keys(SYMBOL_CATEGORIES).map(category => (
                     <button
                       key={category}
@@ -517,7 +517,7 @@ const AccountsPage = () => {
                         setSelectedCategory(category)
                         setSelectedSymbol(SYMBOL_CATEGORIES[category][0])
                       }}
-                      className={`px-3 py-1 text-xs font-medium rounded transition-all capitalize ${
+                      className={`px-3 py-1.5 text-xs font-medium rounded transition-all capitalize whitespace-nowrap min-h-[36px] ${
                         selectedCategory === category
                           ? 'bg-dark-100 text-white shadow-sm'
                           : 'text-gray-400 hover:text-gray-300'
@@ -533,7 +533,7 @@ const AccountsPage = () => {
                   <button
                     key={symbol}
                     onClick={() => setSelectedSymbol(symbol)}
-                    className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-all ${
+                    className={`px-3 py-2 text-xs font-medium rounded-lg transition-all min-h-[36px] ${
                       selectedSymbol === symbol
                         ? 'bg-primary-500 text-white'
                         : 'bg-dark-200 text-gray-400 hover:bg-dark-300'

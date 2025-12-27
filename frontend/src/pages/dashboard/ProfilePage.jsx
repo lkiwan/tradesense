@@ -7,20 +7,20 @@ const ProfilePage = () => {
   const [isEditing, setIsEditing] = useState(false)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6 px-0">
       <div>
-        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-            <User className="text-primary-400" size={24} />
+        <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 md:gap-3">
+          <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+            <User className="text-primary-400" size={20} />
           </div>
           Mon Profil
         </h1>
-        <p className="text-gray-400 mt-1">Gerez vos informations personnelles</p>
+        <p className="text-gray-400 mt-1 text-sm md:text-base">Gerez vos informations personnelles</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
         {/* Profile Card */}
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6 text-center relative overflow-hidden">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 md:p-6 text-center relative overflow-hidden">
           {/* Background glow */}
           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-primary-500/20 rounded-full blur-[60px]" />
 
@@ -61,12 +61,12 @@ const ProfilePage = () => {
         </div>
 
         {/* Info Form */}
-        <div className="lg:col-span-2 bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
-          <div className="flex items-center justify-between mb-6">
+        <div className="lg:col-span-2 bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 md:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 md:mb-6">
             <h3 className="font-semibold text-white">Informations Personnelles</h3>
             <button
               onClick={() => setIsEditing(!isEditing)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+              className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 min-h-[44px] w-full sm:w-auto ${
                 isEditing
                   ? 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/30'
                   : 'bg-dark-200 hover:bg-dark-300 text-gray-400 hover:text-white'
@@ -77,59 +77,59 @@ const ProfilePage = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             <div>
               <label className="block text-sm text-gray-400 mb-2">Nom d'utilisateur</label>
               <div className="relative group">
-                <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
                   type="text"
                   value={user?.username || ''}
                   disabled={!isEditing}
-                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-12 py-3.5 text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
                 />
               </div>
             </div>
             <div>
               <label className="block text-sm text-gray-400 mb-2">Email</label>
               <div className="relative group">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
                   type="email"
                   value={user?.email || ''}
                   disabled={!isEditing}
-                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-12 py-3.5 text-white disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
                 />
               </div>
             </div>
             <div>
               <label className="block text-sm text-gray-400 mb-2">Telephone</label>
               <div className="relative group">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
                   type="tel"
                   placeholder="+33 6 12 34 56 78"
                   disabled={!isEditing}
-                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-12 py-3.5 text-white placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
                 />
               </div>
             </div>
             <div>
               <label className="block text-sm text-gray-400 mb-2">Pays</label>
               <div className="relative group">
-                <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <MapPin className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
                   type="text"
                   placeholder="France"
                   disabled={!isEditing}
-                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-12 py-3.5 text-white placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
                 />
               </div>
             </div>
           </div>
 
           {isEditing && (
-            <button className="mt-6 px-6 py-3.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02]">
+            <button className="mt-4 md:mt-6 px-6 py-3 md:py-3.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] min-h-[48px] w-full sm:w-auto">
               Sauvegarder
             </button>
           )}
@@ -137,18 +137,18 @@ const ProfilePage = () => {
       </div>
 
       {/* Achievements */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
-        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 md:p-6">
+        <h3 className="font-semibold text-white mb-3 md:mb-4 flex items-center gap-2">
           <div className="p-1.5 rounded-lg bg-yellow-500/10">
             <Award size={18} className="text-yellow-400" />
           </div>
           Accomplissements
         </h3>
-        <div className="flex flex-wrap gap-3">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 md:gap-3">
           {['Premier Trade', 'Profit Positif', '10 Trades', 'Phase 1 Reussie'].map((badge, i) => (
-            <div key={i} className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 group cursor-pointer">
-              <Award size={16} className="text-yellow-400 group-hover:scale-110 transition-transform" />
-              <span className="text-sm text-white font-medium">{badge}</span>
+            <div key={i} className="flex items-center justify-center sm:justify-start gap-2 px-3 md:px-4 py-2.5 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 group cursor-pointer min-h-[44px]">
+              <Award size={16} className="text-yellow-400 group-hover:scale-110 transition-transform flex-shrink-0" />
+              <span className="text-xs sm:text-sm text-white font-medium truncate">{badge}</span>
             </div>
           ))}
         </div>

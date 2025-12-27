@@ -113,15 +113,15 @@ const TwoFactorVerify = () => {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary-500/30">
-              <Shield className="text-primary-400" size={28} />
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-primary-500/30">
+              <Shield className="text-primary-400" size={24} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               Two-Factor Authentication
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               {useBackupCode
                 ? 'Enter one of your backup codes'
                 : 'Enter the 6-digit code from your authenticator app'}
@@ -135,8 +135,8 @@ const TwoFactorVerify = () => {
                 type="text"
                 value={code}
                 onChange={handleCodeChange}
-                className={`w-full text-center font-mono py-4 bg-dark-300/50 rounded-xl text-white border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 ${
-                  useBackupCode ? 'text-xl tracking-wider' : 'text-3xl tracking-[0.5em]'
+                className={`w-full text-center font-mono py-4 min-h-[56px] bg-dark-300/50 rounded-xl text-white border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 ${
+                  useBackupCode ? 'text-lg sm:text-xl tracking-wider' : 'text-2xl sm:text-3xl tracking-[0.3em] sm:tracking-[0.5em]'
                 }`}
                 placeholder={useBackupCode ? 'XXXX-XXXX' : '000000'}
                 autoFocus
@@ -209,7 +209,7 @@ const TwoFactorVerify = () => {
         </div>
 
         {/* Help text */}
-        <p className="mt-4 text-center text-sm text-gray-500">
+        <p className="mt-4 text-center text-xs sm:text-sm text-gray-500 px-4">
           Lost your device?{' '}
           <Link to="/contact" className="text-primary-400 hover:text-primary-300 transition-colors">
             Contact support

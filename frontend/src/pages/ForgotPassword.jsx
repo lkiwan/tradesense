@@ -52,20 +52,20 @@ const ForgotPassword = () => {
           </div>
 
           {/* Success Card */}
-          <div className="glass-card rounded-3xl p-8 md:p-10 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/30">
-              <CheckCircle className="text-green-500" size={40} />
+          <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-green-500/30">
+              <CheckCircle className="text-green-500" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
               Check Your Email
             </h2>
-            <p className="text-gray-400 mb-6">
-              If an account exists with the email <span className="text-primary-400 font-medium">{email}</span>,
+            <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
+              If an account exists with the email <span className="text-primary-400 font-medium break-all">{email}</span>,
               you will receive a password reset link shortly.
             </p>
 
-            <div className="bg-dark-300/50 rounded-xl p-4 mb-6 text-left border border-white/5">
-              <p className="text-sm text-gray-400">
+            <div className="bg-dark-300/50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 text-left border border-white/5">
+              <p className="text-xs sm:text-sm text-gray-400">
                 <strong className="text-gray-300">Note:</strong> The link will expire in 1 hour. If you don't see the email,
                 check your spam folder.
               </p>
@@ -111,15 +111,15 @@ const ForgotPassword = () => {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary-500/30">
-              <KeyRound className="text-primary-400" size={28} />
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-primary-500/30">
+              <KeyRound className="text-primary-400" size={24} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               Forgot Password?
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Enter your email and we'll send you a link to reset your password
             </p>
           </div>

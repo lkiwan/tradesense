@@ -156,7 +156,7 @@ const HowItWorks = () => {
               <span className="text-sm font-medium text-primary-400">How It Works</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               Your Path to Becoming a{' '}
               <span className="gradient-text-animated">
                 Funded Trader
@@ -167,10 +167,10 @@ const HowItWorks = () => {
               No hidden fees, no tricks - just pure trading.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <Link
                 to="/pricing"
-                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring"
               >
                 <Zap size={20} />
                 Start Your Challenge
@@ -178,7 +178,7 @@ const HowItWorks = () => {
               </Link>
               <Link
                 to="/free-trial"
-                className="inline-flex items-center justify-center gap-2 px-8 py-4 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300 spotlight"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300 spotlight"
               >
                 Try Free Trial
               </Link>
@@ -205,7 +205,7 @@ const HowItWorks = () => {
               <Sparkles size={14} />
               The Process
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               4 Simple Steps to <span className="gradient-text-animated">Success</span>
             </h2>
           </div>
@@ -219,24 +219,24 @@ const HowItWorks = () => {
               return (
                 <div
                   key={step.number}
-                  className={`step-item flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-12 lg:gap-20 items-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+                  className={`step-item flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-20 items-center transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
                 >
                   {/* Content */}
-                  <div className="flex-1 space-y-6">
-                    <div className={`inline-flex items-center gap-3 px-5 py-2.5 rounded-full border ${getColorClasses(step.color)}`}>
-                      <span className="text-2xl font-bold">{step.number}</span>
+                  <div className="flex-1 space-y-4 md:space-y-6 text-center lg:text-left">
+                    <div className={`inline-flex items-center gap-3 px-4 md:px-5 py-2 md:py-2.5 rounded-full border ${getColorClasses(step.color)}`}>
+                      <span className="text-xl md:text-2xl font-bold">{step.number}</span>
                       <ChevronRight size={20} />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-white">
+                    <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
                       {step.title}
                     </h2>
                     <p className="text-lg text-gray-400 leading-relaxed">
                       {step.description}
                     </p>
-                    <ul className="space-y-3">
+                    <ul className="space-y-3 text-left">
                       {step.details.map((detail, i) => (
                         <li key={i} className="flex items-center gap-3 text-gray-300">
-                          <CheckCircle2 size={20} className={step.color === 'green' ? 'text-green-500' : step.color === 'blue' ? 'text-blue-500' : step.color === 'purple' ? 'text-purple-500' : 'text-yellow-500'} />
+                          <CheckCircle2 size={20} className={`flex-shrink-0 ${step.color === 'green' ? 'text-green-500' : step.color === 'blue' ? 'text-blue-500' : step.color === 'purple' ? 'text-purple-500' : 'text-yellow-500'}`} />
                           {detail}
                         </li>
                       ))}
@@ -297,7 +297,7 @@ const HowItWorks = () => {
               <Star size={14} />
               Why Choose Us
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               Why Traders Choose <span className="gradient-text-animated">TradeSense</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -305,7 +305,7 @@ const HowItWorks = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
@@ -347,7 +347,7 @@ const HowItWorks = () => {
                 <span className="text-sm font-semibold text-primary-400">Start Today</span>
               </div>
 
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
                 Ready to Start Your <span className="gradient-text-animated">Journey?</span>
               </h2>
               <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
@@ -355,17 +355,17 @@ const HowItWorks = () => {
                 Your trading career starts here.
               </p>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
                 <Link
                   to="/pricing"
-                  className="group inline-flex items-center justify-center gap-2 px-10 py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
                 >
                   View Pricing
                   <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
                   to="/free-trial"
-                  className="inline-flex items-center justify-center gap-2 px-10 py-5 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300"
                 >
                   <Play size={20} />
                   Start Free Trial

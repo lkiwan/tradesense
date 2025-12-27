@@ -135,7 +135,7 @@ const About = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <div className="text-center max-w-3xl mx-auto">
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
@@ -143,7 +143,7 @@ const About = () => {
               <span className="text-sm font-medium text-primary-400">About TradeSense</span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               Empowering Traders to{' '}
               <span className="gradient-text-animated">
                 Achieve Their Dreams
@@ -163,7 +163,7 @@ const About = () => {
         <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon
@@ -190,14 +190,14 @@ const About = () => {
       <section className="py-24 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-500/5 rounded-full blur-[150px]" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center">
             <div>
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
                 <Sparkles size={14} />
                 Our Story
               </span>
-              <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+              <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
                 From Vision to <span className="text-primary-500">Reality</span>
               </h2>
               <div className="space-y-4 text-gray-400 text-lg leading-relaxed">
@@ -218,7 +218,7 @@ const About = () => {
               <div className="mt-8">
                 <Link
                   to="/pricing"
-                  className="group inline-flex items-center gap-2 px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105"
                 >
                   Start Your Journey
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
@@ -273,13 +273,13 @@ const About = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Heart size={14} />
               Our Values
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               The Principles That <span className="gradient-text-animated">Guide Us</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -287,7 +287,7 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {values.map((value, index) => {
               const Icon = value.icon
               return (
@@ -321,7 +321,7 @@ const About = () => {
               <Rocket size={14} />
               Our Journey
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               Milestones Along the <span className="gradient-text-animated">Way</span>
             </h2>
           </div>
@@ -336,11 +336,11 @@ const About = () => {
                 return (
                   <div
                     key={index}
-                    className={`relative flex items-center gap-8 ${
-                      index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'
+                    className={`relative flex flex-col md:flex-row items-center gap-4 md:gap-8 ${
+                      index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
                     }`}
                   >
-                    <div className={`flex-1 ${index % 2 === 0 ? 'text-right' : 'text-left'}`}>
+                    <div className={`flex-1 text-center md:text-left ${index % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                       <div className="inline-block glass-card p-6 rounded-2xl hover:scale-105 transition-transform duration-300 card-hover-glow">
                         <div className="flex items-center gap-3 mb-2 justify-end">
                           {index % 2 !== 0 && <Icon size={20} className="text-primary-500" />}
@@ -352,9 +352,9 @@ const About = () => {
                     </div>
 
                     {/* Center Dot */}
-                    <div className="absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-primary-500 rounded-full border-4 border-dark-400 z-10 shadow-glow" />
+                    <div className="hidden md:block absolute left-1/2 -translate-x-1/2 w-5 h-5 bg-primary-500 rounded-full border-4 border-dark-400 z-10 shadow-glow" />
 
-                    <div className="flex-1" />
+                    <div className="hidden md:block flex-1" />
                   </div>
                 )
               })}
@@ -369,13 +369,13 @@ const About = () => {
           <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-[150px]" />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Users size={14} />
               Our Team
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               Meet the <span className="gradient-text-animated">People</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
@@ -383,7 +383,7 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((member, index) => (
               <div
                 key={index}
@@ -406,7 +406,7 @@ const About = () => {
       {/* Contact Info */}
       <section className="py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
               <div className="w-14 h-14 mx-auto mb-4 bg-primary-500/20 rounded-xl flex items-center justify-center">
                 <MapPin size={24} className="text-primary-500" />
@@ -454,7 +454,7 @@ const About = () => {
             <span className="text-sm font-semibold text-yellow-400">Join 10,000+ Traders</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             Ready to Start <span className="gradient-text-animated">Trading?</span>
           </h2>
           <p className="text-xl text-gray-400 mb-10">
@@ -463,7 +463,7 @@ const About = () => {
 
           <Link
             to="/pricing"
-            className="group inline-flex items-center gap-3 px-10 py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
+            className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
           >
             <Zap size={22} />
             Start Your Challenge

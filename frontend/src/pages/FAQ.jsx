@@ -162,14 +162,14 @@ const FAQ = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="relative max-w-4xl mx-auto px-4 md:px-6 lg:px-8 text-center">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <HelpCircle className="text-primary-400" size={18} />
             <span className="text-primary-300 text-sm font-medium">Help Center</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
             Frequently Asked <span className="gradient-text-animated">Questions</span>
           </h1>
           <p className="text-gray-400 text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
@@ -244,13 +244,13 @@ const FAQ = () => {
                   >
                     <button
                       onClick={() => toggleItem(faq.id)}
-                      className="w-full flex items-center justify-between p-6 text-left group"
+                      className="w-full flex items-center justify-between p-4 md:p-6 text-left group"
                     >
-                      <div className="flex items-center gap-4 pr-4">
+                      <div className="flex items-center gap-3 md:gap-4 pr-2 md:pr-4">
                         <div className={`p-2 rounded-xl ${categoryInfo.bg} transition-all duration-300 group-hover:scale-110`}>
                           <categoryInfo.icon size={18} className={categoryInfo.color} />
                         </div>
-                        <span className={`font-medium transition-colors duration-300 ${isOpen ? 'text-primary-400' : 'text-white group-hover:text-primary-400'}`}>
+                        <span className={`text-sm md:text-base font-medium transition-colors duration-300 ${isOpen ? 'text-primary-400' : 'text-white group-hover:text-primary-400'}`}>
                           {faq.question}
                         </span>
                       </div>
@@ -262,8 +262,8 @@ const FAQ = () => {
                       />
                     </button>
                     <div className={`overflow-hidden transition-all duration-500 ${isOpen ? 'max-h-96' : 'max-h-0'}`}>
-                      <div className="px-6 pb-6 pt-0 border-t border-white/5">
-                        <p className="text-gray-400 leading-relaxed pt-4">
+                      <div className="px-4 md:px-6 pb-4 md:pb-6 pt-0 border-t border-white/5">
+                        <p className="text-sm md:text-base text-gray-400 leading-relaxed pt-4">
                           {faq.answer}
                         </p>
                       </div>
@@ -299,17 +299,17 @@ const FAQ = () => {
               Support
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
               Still Have <span className="gradient-text-animated">Questions</span>?
             </h2>
             <p className="text-gray-400 mb-10 text-lg max-w-xl mx-auto">
               Can't find what you're looking for? Our support team is here to help 24/7.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
               <Link
                 to="/contact"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-105 active:scale-95"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 md:px-8 py-4 bg-primary-500 text-white font-semibold rounded-xl hover:bg-primary-600 transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-105 active:scale-95"
               >
                 <Mail size={20} />
                 Contact Support
@@ -317,7 +317,7 @@ const FAQ = () => {
               </Link>
               <a
                 href="#"
-                className="group inline-flex items-center justify-center gap-3 px-8 py-4 glass-card text-white font-semibold rounded-xl hover:border-primary-500/30 transition-all duration-300 hover:scale-105 active:scale-95"
+                className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 md:px-8 py-4 glass-card text-white font-semibold rounded-xl hover:border-primary-500/30 transition-all duration-300 hover:scale-105 active:scale-95"
               >
                 <MessageCircle size={20} className="text-primary-400" />
                 Live Chat
@@ -343,7 +343,7 @@ const FAQ = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link
               to="/how-it-works"
               className="group glass-card p-8 rounded-2xl hover:border-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"

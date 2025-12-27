@@ -222,17 +222,17 @@ const KYCPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 md:space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-              <Shield className="text-primary-400" size={24} />
+          <h1 className="text-xl md:text-2xl font-bold text-white flex items-center gap-2 md:gap-3">
+            <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+              <Shield className="text-primary-400" size={20} />
             </div>
             KYC Verification
           </h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-gray-400 mt-1 text-sm md:text-base">
             Verify your identity to increase payout limits
           </p>
         </div>
@@ -240,13 +240,13 @@ const KYCPage = () => {
       </div>
 
       {/* Current Status Card */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
-        <div className="flex items-start justify-between">
-          <div>
-            <h2 className="text-lg font-semibold text-white mb-2">Verification Status</h2>
-            <div className="flex items-center gap-4">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 md:p-6">
+        <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+          <div className="min-w-0">
+            <h2 className="text-base md:text-lg font-semibold text-white mb-2">Verification Status</h2>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
               {getStatusBadge(kycData?.status)}
-              <span className="text-gray-400">
+              <span className="text-gray-400 text-sm md:text-base">
                 Monthly Limit: <span className="text-white font-medium">
                   {kycData?.payout_limit === null ? 'Unlimited' : `$${kycData?.payout_limit?.toLocaleString()}`}
                 </span>
@@ -254,8 +254,8 @@ const KYCPage = () => {
             </div>
           </div>
           {kycData?.status === 'rejected' && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 max-w-sm">
-              <p className="text-red-400 text-sm">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-3 lg:max-w-sm">
+              <p className="text-red-400 text-xs md:text-sm break-words">
                 <strong>Rejection Reason:</strong> {kycData.rejection_reason}
               </p>
             </div>
@@ -263,82 +263,87 @@ const KYCPage = () => {
         </div>
 
         {/* Tier Progress */}
-        <div className="mt-6">
+        <div className="mt-4 md:mt-6">
           <h3 className="text-sm font-medium text-gray-400 mb-3">Verification Tiers</h3>
-          <div className="grid grid-cols-5 gap-2">
-            {TIER_INFO.map((tier) => (
-              <div
-                key={tier.tier}
-                className={`relative p-3 rounded-lg border transition-all ${
-                  kycData?.current_tier >= tier.tier
-                    ? 'bg-primary-500/10 border-primary-500/30'
-                    : 'bg-dark-200 border-dark-300'
-                }`}
-              >
-                {kycData?.current_tier >= tier.tier && (
-                  <CheckCircle className="absolute top-2 right-2 text-primary-400" size={14} />
-                )}
-                <p className={`text-sm font-medium ${kycData?.current_tier >= tier.tier ? 'text-primary-400' : 'text-gray-400'}`}>
-                  Tier {tier.tier}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">{tier.limit}</p>
-              </div>
-            ))}
+          <div className="overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+            <div className="grid grid-cols-5 gap-1.5 md:gap-2 min-w-[500px] md:min-w-0">
+              {TIER_INFO.map((tier) => (
+                <div
+                  key={tier.tier}
+                  className={`relative p-2 md:p-3 rounded-lg border transition-all ${
+                    kycData?.current_tier >= tier.tier
+                      ? 'bg-primary-500/10 border-primary-500/30'
+                      : 'bg-dark-200 border-dark-300'
+                  }`}
+                >
+                  {kycData?.current_tier >= tier.tier && (
+                    <CheckCircle className="absolute top-1.5 right-1.5 md:top-2 md:right-2 text-primary-400" size={12} />
+                  )}
+                  <p className={`text-xs md:text-sm font-medium ${kycData?.current_tier >= tier.tier ? 'text-primary-400' : 'text-gray-400'}`}>
+                    Tier {tier.tier}
+                  </p>
+                  <p className="text-[10px] md:text-xs text-gray-500 mt-1 truncate">{tier.limit}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
-        {[
-          { id: 'status', label: 'Status', icon: Shield },
-          { id: 'personal', label: 'Personal Info', icon: User },
-          { id: 'address', label: 'Address', icon: MapPin },
-          { id: 'documents', label: 'Documents', icon: FileText }
-        ].map((tab) => {
-          const Icon = tab.icon
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveStep(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
-                activeStep === tab.id
-                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
-                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
-              }`}
-            >
-              <Icon size={18} />
-              {tab.label}
-            </button>
-          )
-        })}
+      <div className="flex gap-1 md:gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1 md:p-1.5 border border-white/5 overflow-x-auto -mx-4 px-4 md:mx-0 md:px-0">
+        <div className="flex gap-1 md:gap-2 min-w-max mx-auto md:mx-0 md:w-full">
+          {[
+            { id: 'status', label: 'Status', icon: Shield },
+            { id: 'personal', label: 'Personal Info', icon: User },
+            { id: 'address', label: 'Address', icon: MapPin },
+            { id: 'documents', label: 'Documents', icon: FileText }
+          ].map((tab) => {
+            const Icon = tab.icon
+            return (
+              <button
+                key={tab.id}
+                onClick={() => setActiveStep(tab.id)}
+                className={`flex items-center justify-center gap-1.5 md:gap-2 px-3 md:px-4 py-2.5 rounded-lg font-medium transition-all duration-300 whitespace-nowrap min-h-[44px] flex-1 md:flex-none text-xs md:text-sm ${
+                  activeStep === tab.id
+                    ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                    : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
+                }`}
+              >
+                <Icon size={16} className="flex-shrink-0" />
+                <span className="hidden sm:inline">{tab.label}</span>
+                <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       {/* Content */}
       <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5">
         {/* Status Tab */}
         {activeStep === 'status' && (
-          <div className="p-6 space-y-6">
-            <h3 className="text-lg font-semibold text-white">How to Upgrade Your Tier</h3>
+          <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <h3 className="text-base md:text-lg font-semibold text-white">How to Upgrade Your Tier</h3>
 
             {/* Email Verification */}
-            <div className={`p-4 rounded-xl border transition-all duration-300 ${emailVerified ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
-              <div className="flex items-center justify-between">
+            <div className={`p-3 md:p-4 rounded-xl border transition-all duration-300 ${emailVerified ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-3">
                   {emailVerified ? (
-                    <CheckCircle className="text-green-400" size={24} />
+                    <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
                   ) : (
-                    <Clock className="text-gray-400" size={24} />
+                    <Clock className="text-gray-400 flex-shrink-0" size={20} />
                   )}
-                  <div>
-                    <p className="font-medium text-white">Email Verification</p>
-                    <p className="text-sm text-gray-400">Unlocks Tier 1 ($500/month)</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-white text-sm md:text-base">Email Verification</p>
+                    <p className="text-xs md:text-sm text-gray-400">Unlocks Tier 1 ($500/month)</p>
                   </div>
                 </div>
                 {emailVerified ? (
                   <span className="text-green-400 text-sm">Verified</span>
                 ) : (
-                  <button className="px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg">
+                  <button className="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg min-h-[44px] w-full sm:w-auto">
                     Verify Email
                   </button>
                 )}
@@ -346,17 +351,17 @@ const KYCPage = () => {
             </div>
 
             {/* ID Verification */}
-            <div className={`p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 2 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
-              <div className="flex items-center justify-between">
+            <div className={`p-3 md:p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 2 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-3">
                   {kycData?.current_tier >= 2 ? (
-                    <CheckCircle className="text-green-400" size={24} />
+                    <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
                   ) : (
-                    <CreditCard className="text-gray-400" size={24} />
+                    <CreditCard className="text-gray-400 flex-shrink-0" size={20} />
                   )}
-                  <div>
-                    <p className="font-medium text-white">ID Verification</p>
-                    <p className="text-sm text-gray-400">Unlocks Tier 2 ($5,000/month)</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-white text-sm md:text-base">ID Verification</p>
+                    <p className="text-xs md:text-sm text-gray-400">Unlocks Tier 2 ($5,000/month)</p>
                   </div>
                 </div>
                 {kycData?.current_tier >= 2 ? (
@@ -364,7 +369,7 @@ const KYCPage = () => {
                 ) : (
                   <button
                     onClick={() => setActiveStep('documents')}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg"
+                    className="flex items-center justify-center gap-1 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg min-h-[44px] w-full sm:w-auto"
                   >
                     Upload Documents <ChevronRight size={16} />
                   </button>
@@ -373,17 +378,17 @@ const KYCPage = () => {
             </div>
 
             {/* Address Verification */}
-            <div className={`p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 3 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
-              <div className="flex items-center justify-between">
+            <div className={`p-3 md:p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 3 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-3">
                   {kycData?.current_tier >= 3 ? (
-                    <CheckCircle className="text-green-400" size={24} />
+                    <CheckCircle className="text-green-400 flex-shrink-0" size={20} />
                   ) : (
-                    <MapPin className="text-gray-400" size={24} />
+                    <MapPin className="text-gray-400 flex-shrink-0" size={20} />
                   )}
-                  <div>
-                    <p className="font-medium text-white">Address Verification</p>
-                    <p className="text-sm text-gray-400">Unlocks Tier 3 ($25,000/month)</p>
+                  <div className="min-w-0">
+                    <p className="font-medium text-white text-sm md:text-base">Address Verification</p>
+                    <p className="text-xs md:text-sm text-gray-400">Unlocks Tier 3 ($25,000/month)</p>
                   </div>
                 </div>
                 {kycData?.current_tier >= 3 ? (
@@ -391,7 +396,7 @@ const KYCPage = () => {
                 ) : (
                   <button
                     onClick={() => setActiveStep('documents')}
-                    className="flex items-center gap-1 px-3 py-1.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg"
+                    className="flex items-center justify-center gap-1 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white text-sm rounded-lg min-h-[44px] w-full sm:w-auto"
                   >
                     Upload Proof <ChevronRight size={16} />
                   </button>
@@ -400,11 +405,11 @@ const KYCPage = () => {
             </div>
 
             {/* Info Box */}
-            <div className="flex items-start gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
-              <Info className="text-blue-400 mt-0.5" size={20} />
-              <div>
-                <p className="text-blue-400 font-medium">Why verify your identity?</p>
-                <p className="text-sm text-gray-400 mt-1">
+            <div className="flex items-start gap-3 p-3 md:p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
+              <Info className="text-blue-400 mt-0.5 flex-shrink-0" size={18} />
+              <div className="min-w-0">
+                <p className="text-blue-400 font-medium text-sm md:text-base">Why verify your identity?</p>
+                <p className="text-xs md:text-sm text-gray-400 mt-1 break-words">
                   KYC verification is required to request payouts. Higher verification tiers allow you to withdraw more money each month.
                   Your documents are securely stored and only used for identity verification.
                 </p>
@@ -415,77 +420,77 @@ const KYCPage = () => {
 
         {/* Personal Info Tab */}
         {activeStep === 'personal' && (
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Personal Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">Personal Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">First Name *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">First Name *</label>
                 <input
                   type="text"
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Last Name *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Last Name *</label>
                 <input
                   type="text"
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Date of Birth *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Date of Birth *</label>
                 <input
                   type="date"
                   name="date_of_birth"
                   value={formData.date_of_birth}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Phone Number</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Phone Number</label>
                 <input
                   type="tel"
                   name="phone_number"
                   value={formData.phone_number}
                   onChange={handleInputChange}
                   placeholder="+1 234 567 8900"
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Nationality *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Nationality *</label>
                 <input
                   type="text"
                   name="nationality"
                   value={formData.nationality}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Country of Residence *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Country of Residence *</label>
                 <input
                   type="text"
                   name="country_of_residence"
                   value={formData.country_of_residence}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 md:mt-6 flex justify-end">
               <button
                 onClick={() => handleSubmitInfo(false)}
                 disabled={submitting}
-                className="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
+                className="px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50 min-h-[48px] w-full sm:w-auto text-sm md:text-base"
               >
                 {submitting ? <Loader2 className="animate-spin" size={20} /> : 'Save Information'}
               </button>
@@ -495,66 +500,66 @@ const KYCPage = () => {
 
         {/* Address Tab */}
         {activeStep === 'address' && (
-          <div className="p-6">
-            <h3 className="text-lg font-semibold text-white mb-4">Address Information</h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="p-4 md:p-6">
+            <h3 className="text-base md:text-lg font-semibold text-white mb-3 md:mb-4">Address Information</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Address Line 1 *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Address Line 1 *</label>
                 <input
                   type="text"
                   name="address_line_1"
                   value={formData.address_line_1}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div className="md:col-span-2">
-                <label className="block text-sm text-gray-400 mb-1">Address Line 2</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Address Line 2</label>
                 <input
                   type="text"
                   name="address_line_2"
                   value={formData.address_line_2}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">City *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">City *</label>
                 <input
                   type="text"
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">State / Province</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">State / Province</label>
                 <input
                   type="text"
                   name="state_province"
                   value={formData.state_province}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">Postal Code *</label>
+                <label className="block text-xs md:text-sm text-gray-400 mb-1">Postal Code *</label>
                 <input
                   type="text"
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
+                  className="w-full px-3 md:px-4 py-2.5 md:py-3 bg-dark-200/50 border border-white/10 rounded-xl text-white text-sm md:text-base focus:outline-none focus:border-primary-500/50 transition-colors min-h-[48px]"
                 />
               </div>
             </div>
 
-            <div className="mt-6 flex justify-end">
+            <div className="mt-4 md:mt-6 flex justify-end">
               <button
                 onClick={() => handleSubmitInfo(false)}
                 disabled={submitting}
-                className="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
+                className="px-4 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50 min-h-[48px] w-full sm:w-auto text-sm md:text-base"
               >
                 {submitting ? <Loader2 className="animate-spin" size={20} /> : 'Save Address'}
               </button>
@@ -564,20 +569,20 @@ const KYCPage = () => {
 
         {/* Documents Tab */}
         {activeStep === 'documents' && (
-          <div className="p-6 space-y-6">
-            <h3 className="text-lg font-semibold text-white">Upload Documents</h3>
+          <div className="p-4 md:p-6 space-y-4 md:space-y-6">
+            <h3 className="text-base md:text-lg font-semibold text-white">Upload Documents</h3>
 
             {/* ID Document Section */}
-            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
-              <h4 className="font-medium text-white mb-3 flex items-center gap-2">
-                <CreditCard size={18} className="text-primary-400" />
-                ID Document (Passport, National ID, or Driver's License)
+            <div className="border border-white/10 rounded-xl p-3 md:p-4 bg-dark-200/30">
+              <h4 className="font-medium text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
+                <CreditCard size={16} className="text-primary-400 flex-shrink-0" />
+                <span className="break-words">ID Document (Passport, National ID, or Driver's License)</span>
               </h4>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                 Upload a clear photo of your government-issued ID. Both sides if it's an ID card.
               </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
                 {/* Front Side */}
                 <div className="border-2 border-dashed border-dark-300 rounded-lg p-4 text-center">
                   <p className="text-sm text-gray-400 mb-2">Front Side</p>
@@ -650,12 +655,12 @@ const KYCPage = () => {
             </div>
 
             {/* Selfie Section */}
-            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
-              <h4 className="font-medium text-white mb-3 flex items-center gap-2">
-                <User size={18} className="text-primary-400" />
+            <div className="border border-white/10 rounded-xl p-3 md:p-4 bg-dark-200/30">
+              <h4 className="font-medium text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
+                <User size={16} className="text-primary-400 flex-shrink-0" />
                 Selfie Verification
               </h4>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                 Take a clear selfie holding your ID document next to your face.
               </p>
 
@@ -697,12 +702,12 @@ const KYCPage = () => {
             </div>
 
             {/* Proof of Address Section */}
-            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
-              <h4 className="font-medium text-white mb-3 flex items-center gap-2">
-                <MapPin size={18} className="text-primary-400" />
+            <div className="border border-white/10 rounded-xl p-3 md:p-4 bg-dark-200/30">
+              <h4 className="font-medium text-white mb-2 md:mb-3 flex items-center gap-2 text-sm md:text-base">
+                <MapPin size={16} className="text-primary-400 flex-shrink-0" />
                 Proof of Address
               </h4>
-              <p className="text-sm text-gray-400 mb-4">
+              <p className="text-xs md:text-sm text-gray-400 mb-3 md:mb-4">
                 Upload a utility bill or bank statement from the last 3 months showing your name and address.
               </p>
 
@@ -749,13 +754,13 @@ const KYCPage = () => {
                 <button
                   onClick={() => handleSubmitInfo(true)}
                   disabled={submitting || !kycData?.documents?.length}
-                  className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 px-4 md:px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50 min-h-[48px] w-full sm:w-auto text-sm md:text-base"
                 >
                   {submitting ? (
                     <Loader2 className="animate-spin" size={20} />
                   ) : (
                     <>
-                      <Shield size={20} />
+                      <Shield size={18} />
                       Submit for Review
                     </>
                   )}
@@ -765,11 +770,11 @@ const KYCPage = () => {
 
             {/* Pending Review Notice */}
             {(kycData?.status === 'pending' || kycData?.status === 'under_review') && (
-              <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
-                <Clock className="text-yellow-400 mt-0.5" size={20} />
-                <div>
-                  <p className="text-yellow-400 font-medium">Verification in Progress</p>
-                  <p className="text-sm text-gray-400 mt-1">
+              <div className="flex items-start gap-3 p-3 md:p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+                <Clock className="text-yellow-400 mt-0.5 flex-shrink-0" size={18} />
+                <div className="min-w-0">
+                  <p className="text-yellow-400 font-medium text-sm md:text-base">Verification in Progress</p>
+                  <p className="text-xs md:text-sm text-gray-400 mt-1 break-words">
                     Your documents are being reviewed. This usually takes 1-2 business days.
                     You'll receive an email once the review is complete.
                   </p>

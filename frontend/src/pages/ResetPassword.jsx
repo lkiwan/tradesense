@@ -95,14 +95,14 @@ const ResetPassword = () => {
           </div>
 
           {/* Success Card */}
-          <div className="glass-card rounded-3xl p-8 md:p-10 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/30">
-              <CheckCircle className="text-green-500" size={40} />
+          <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-green-500/30">
+              <CheckCircle className="text-green-500" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
               Password Reset Complete
             </h2>
-            <p className="text-gray-400 mb-6">
+            <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               Your password has been successfully reset.
               You can now log in with your new password.
             </p>
@@ -148,14 +148,14 @@ const ResetPassword = () => {
           </div>
 
           {/* Error Card */}
-          <div className="glass-card rounded-3xl p-8 md:p-10 text-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-red-500/30">
-              <AlertTriangle className="text-red-500" size={40} />
+          <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10 text-center">
+            <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-red-500/20 to-red-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-red-500/30">
+              <AlertTriangle className="text-red-500" size={32} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-4">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
               Invalid Reset Link
             </h2>
-            <p className="text-gray-400 mb-6">
+            <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               {error}
             </p>
 
@@ -198,15 +198,15 @@ const ResetPassword = () => {
         </div>
 
         {/* Form Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
-          <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary-500/30">
-              <KeyRound className="text-primary-400" size={28} />
+        <div className="glass-card rounded-3xl p-6 sm:p-8 md:p-10">
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 border border-primary-500/30">
+              <KeyRound className="text-primary-400" size={24} />
             </div>
-            <h2 className="text-2xl font-bold text-white mb-2">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
               Reset Your Password
             </h2>
-            <p className="text-gray-400">
+            <p className="text-sm sm:text-base text-gray-400">
               Enter your new password below
             </p>
           </div>

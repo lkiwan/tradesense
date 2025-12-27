@@ -194,9 +194,9 @@ const PlansPage = () => {
   const sortedSizes = selectedModel?.account_sizes?.slice().sort((a, b) => b.balance - a.balance) || []
 
   return (
-    <div className="space-y-8 -m-4 md:-m-6">
+    <div className="space-y-6 md:space-y-8 -m-4 md:-m-6">
       {/* Hero Section */}
-      <section className="relative py-16 overflow-hidden rounded-2xl mx-4 md:mx-6">
+      <section className="relative py-10 md:py-16 overflow-hidden rounded-2xl mx-4 md:mx-6">
         {/* Background Effects */}
         <div className="absolute inset-0">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/15 rounded-full blur-[150px]" />
@@ -205,46 +205,49 @@ const PlansPage = () => {
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative max-w-5xl mx-auto px-4 text-center">
+        <div className="relative max-w-5xl mx-auto px-3 md:px-4 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8">
+          <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 glass-card rounded-full mb-6 md:mb-8">
             <Brain className="text-purple-400" size={18} />
-            <span className="text-purple-300 text-sm font-medium">Propulsé par l'Intelligence Artificielle</span>
+            <span className="text-purple-300 text-xs md:text-sm font-medium">Propulse par l'Intelligence Artificielle</span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Tradez avec une <span className="gradient-text-animated">IA Prédictive</span>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight px-2">
+            Tradez avec une <span className="gradient-text-animated">IA Predictive</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-            Notre intelligence artificielle analyse des millions de données en temps réel pour prédire les mouvements du marché.
+          <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
+            Notre intelligence artificielle analyse des millions de donnees en temps reel pour predire les mouvements du marche.
           </p>
 
           {/* AI Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-6">
-            <div className="group flex items-center gap-3 glass-card px-5 py-3 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Brain size={24} className="text-purple-400" />
+          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 md:gap-4 lg:gap-6">
+            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-purple-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <Brain size={20} className="text-purple-400 md:hidden" />
+                <Brain size={24} className="text-purple-400 hidden md:block" />
               </div>
               <div className="text-left">
-                <p className="text-xl font-bold text-white">5 Niveaux</p>
+                <p className="text-lg md:text-xl font-bold text-white">5 Niveaux</p>
                 <p className="text-gray-500 text-xs">d'Intelligence IA</p>
               </div>
             </div>
-            <div className="group flex items-center gap-3 glass-card px-5 py-3 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Target size={24} className="text-green-400" />
+            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-green-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <Target size={20} className="text-green-400 md:hidden" />
+                <Target size={24} className="text-green-400 hidden md:block" />
               </div>
               <div className="text-left">
-                <p className="text-xl font-bold text-white">Jusqu'à 96%</p>
-                <p className="text-gray-500 text-xs">de Précision</p>
+                <p className="text-lg md:text-xl font-bold text-white">Jusqu'a 96%</p>
+                <p className="text-gray-500 text-xs">de Precision</p>
               </div>
             </div>
-            <div className="group flex items-center gap-3 glass-card px-5 py-3 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <BarChart3 size={24} className="text-blue-400" />
+            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
+              <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <BarChart3 size={20} className="text-blue-400 md:hidden" />
+                <BarChart3 size={24} className="text-blue-400 hidden md:block" />
               </div>
               <div className="text-left">
-                <p className="text-xl font-bold text-white">+40 Signaux</p>
+                <p className="text-lg md:text-xl font-bold text-white">+40 Signaux</p>
                 <p className="text-gray-500 text-xs">par jour (Elite)</p>
               </div>
             </div>
@@ -254,19 +257,19 @@ const PlansPage = () => {
 
       {/* Active Challenge Notice */}
       {hasActiveChallenge && (
-        <div className="mx-4 md:mx-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 flex items-center gap-4">
+        <div className="mx-4 md:mx-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
             <TrendingUp className="text-white" size={20} />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             <h3 className="font-semibold text-white">Vous avez un challenge actif</h3>
-            <p className="text-sm text-gray-400">
+            <p className="text-sm text-gray-400 break-words">
               Actuellement en {challenge?.phase} avec ${challenge?.current_balance?.toLocaleString()} de solde
             </p>
           </div>
           <Link
             to="/accounts"
-            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors"
+            className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors min-h-[44px] w-full sm:w-auto text-center"
           >
             Voir le Dashboard
           </Link>
@@ -275,14 +278,14 @@ const PlansPage = () => {
 
       {/* Pricing Matrix Section */}
       {selectedModel && sortedSizes.length > 0 && (
-        <section className="relative py-8 bg-dark-300/30 rounded-2xl mx-4 md:mx-6">
-          <div className="relative px-4 md:px-6">
+        <section className="relative py-6 md:py-8 bg-dark-300/30 rounded-2xl mx-4 md:mx-6">
+          <div className="relative px-3 md:px-4 lg:px-6">
             {/* Toggle */}
-            <div className="flex justify-end mb-6">
-              <label className="flex items-center gap-3 cursor-pointer glass-card px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
+            <div className="flex justify-center sm:justify-end mb-4 md:mb-6">
+              <label className="flex items-center gap-3 cursor-pointer glass-card px-3 md:px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
                 <div
                   onClick={() => setShowNumbers(!showNumbers)}
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                  className={`relative w-12 h-6 rounded-full transition-all duration-300 min-w-[48px] ${
                     showNumbers ? 'bg-primary-500 shadow-glow' : 'bg-dark-100'
                   }`}
                 >
@@ -290,15 +293,15 @@ const PlansPage = () => {
                     showNumbers ? 'left-7' : 'left-1'
                   }`} />
                 </div>
-                <span className="text-gray-300 text-sm font-medium">Afficher les chiffres</span>
+                <span className="text-gray-300 text-xs md:text-sm font-medium whitespace-nowrap">Afficher les chiffres</span>
               </label>
             </div>
 
             {/* Matrix Pricing Table */}
-            <div className="relative pb-4">
-              <div className="flex">
+            <div className="relative pb-4 overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0">
+              <div className="flex min-w-max">
                 {/* Left Labels Column */}
-                <div className="flex-shrink-0 w-40 lg:w-48">
+                <div className="flex-shrink-0 w-32 md:w-40 lg:w-48 sticky left-0 bg-dark-300/95 z-10">
                   {/* Empty header cell */}
                   <div className="h-[100px]" />
 
@@ -325,7 +328,7 @@ const PlansPage = () => {
                 </div>
 
                 {/* Account Columns */}
-                <div className="flex-1 flex gap-1 lg:gap-2 items-start overflow-x-auto">
+                <div className="flex-1 flex gap-1 md:gap-1.5 lg:gap-2 items-start">
                   {sortedSizes.map((size, index) => {
                     const aiTierKey = getAiTierForBalance(size.balance)
                     const aiTier = AI_TIERS[aiTierKey]
@@ -335,7 +338,7 @@ const PlansPage = () => {
                     return (
                       <div
                         key={size.id}
-                        className="flex-shrink-0 w-[130px] lg:w-[145px]"
+                        className="flex-shrink-0 w-[110px] md:w-[130px] lg:w-[145px]"
                       >
                         {/* Main Card */}
                         <div className={`rounded-2xl transition-all duration-300 backdrop-blur-sm
@@ -448,15 +451,15 @@ const PlansPage = () => {
               <Brain size={16} />
               Technologie Avancée
             </span>
-            <h2 className="text-2xl md:text-3xl font-bold text-white mb-3">
-              Comment notre <span className="gradient-text-animated">IA</span> prédit le marché
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 px-2">
+              Comment notre <span className="gradient-text-animated">IA</span> predit le marche
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto">
+            <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base px-2">
               Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
             <div className="group glass-card p-5 rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 cursor-pointer">
               <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
                 <Brain className="text-purple-400" size={28} />
@@ -506,25 +509,27 @@ const PlansPage = () => {
               <span className="text-white text-sm font-medium">Essai gratuit disponible</span>
             </div>
 
-            <h2 className="text-2xl lg:text-3xl font-bold text-white mb-4">
-              Pas encore prêt à vous lancer?
+            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-4 px-2">
+              Pas encore pret a vous lancer?
             </h2>
 
-            <p className="text-white/80 mb-8 max-w-lg mx-auto">
-              Essayez notre plateforme gratuitement pendant 7 jours avec un compte démo de $5,000
+            <p className="text-white/80 mb-6 md:mb-8 max-w-lg mx-auto text-sm md:text-base px-2">
+              Essayez notre plateforme gratuitement pendant 7 jours avec un compte demo de $5,000
             </p>
 
             <Link
               to="/free-trial"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-white text-dark-400 rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95"
+              className="inline-flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 bg-white text-dark-400 rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 min-h-[48px] w-full sm:w-auto max-w-xs sm:max-w-none mx-auto"
             >
-              <Star size={20} />
-              Commencer l'essai gratuit
-              <ArrowRight size={18} />
+              <Star size={18} className="md:hidden" />
+              <Star size={20} className="hidden md:block" />
+              <span className="text-sm md:text-base">Commencer l'essai gratuit</span>
+              <ArrowRight size={16} className="md:hidden" />
+              <ArrowRight size={18} className="hidden md:block" />
             </Link>
 
             {/* Trust badges */}
-            <div className="flex flex-wrap items-center justify-center gap-6 mt-10 pt-6 border-t border-white/10">
+            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 md:gap-6 mt-8 md:mt-10 pt-6 border-t border-white/10">
               <div className="flex items-center gap-2 text-white/60 text-sm">
                 <Shield size={16} className="text-green-400" />
                 <span>Paiement sécurisé</span>

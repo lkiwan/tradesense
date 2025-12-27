@@ -130,24 +130,24 @@ const ChallengeCheckout = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-dark-300 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
+      <div className="min-h-screen bg-dark-300 flex items-center justify-center px-4">
+        <div className="animate-spin rounded-full h-10 w-10 sm:h-12 sm:w-12 border-t-2 border-b-2 border-primary-500"></div>
       </div>
     )
   }
 
   if (success) {
     return (
-      <div className="min-h-screen bg-dark-300 flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-6 animate-pulse">
-            <CheckCircle className="text-white" size={40} />
+      <div className="min-h-screen bg-dark-300 flex items-center justify-center px-4">
+        <div className="text-center max-w-sm">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4 sm:mb-6 animate-pulse">
+            <CheckCircle className="text-white" size={32} />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Challenge Activé!</h2>
-          <p className="text-gray-400 mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">Challenge Activé!</h2>
+          <p className="text-gray-400 mb-4 text-sm sm:text-base">
             Votre challenge {model?.display_name} de ${selectedSize?.balance?.toLocaleString()} a été activé.
           </p>
-          <p className="text-gray-500 text-sm">Redirection vers vos comptes...</p>
+          <p className="text-gray-500 text-xs sm:text-sm">Redirection vers vos comptes...</p>
         </div>
       </div>
     )
@@ -155,12 +155,12 @@ const ChallengeCheckout = () => {
 
   if (!model || !selectedSize) {
     return (
-      <div className="min-h-screen bg-dark-300 flex items-center justify-center">
+      <div className="min-h-screen bg-dark-300 flex items-center justify-center px-4">
         <div className="text-center">
-          <p className="text-gray-400">Challenge non trouvé</p>
+          <p className="text-gray-400 text-sm sm:text-base">Challenge non trouvé</p>
           <button
             onClick={() => navigate('/plans')}
-            className="mt-4 px-6 py-2 bg-primary-500 text-white rounded-lg"
+            className="mt-4 px-5 sm:px-6 py-2.5 sm:py-2 bg-primary-500 text-white rounded-lg text-sm sm:text-base min-h-[44px] touch-manipulation"
           >
             Retour aux plans
           </button>
@@ -183,119 +183,119 @@ const ChallengeCheckout = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-dark-300 py-8 lg:py-12">
-      <div className="max-w-5xl mx-auto px-4">
+    <div className="min-h-screen bg-dark-300 py-6 sm:py-8 lg:py-12">
+      <div className="max-w-5xl mx-auto px-3 sm:px-4 lg:px-6">
         {/* Back Button */}
         <button
           onClick={() => navigate('/plans')}
-          className="flex items-center gap-2 text-gray-400 hover:text-white mb-8 transition-colors"
+          className="flex items-center gap-2 text-gray-400 hover:text-white mb-6 sm:mb-8 transition-colors min-h-[44px] touch-manipulation"
         >
           <ArrowLeft size={20} />
-          Retour aux plans
+          <span className="text-sm sm:text-base">Retour aux plans</span>
         </button>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl lg:text-3xl font-bold text-white mb-2">
+        <div className="text-center mb-6 sm:mb-8">
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
             Finaliser votre achat
           </h1>
-          <p className="text-gray-400">
+          <p className="text-sm sm:text-base text-gray-400">
             {model.display_name} - Compte ${selectedSize.balance.toLocaleString()}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8">
           {/* Order Summary */}
-          <div className="bg-dark-100 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <Target className="text-primary-500" size={24} />
-              Résumé de la Commande
+          <div className="bg-dark-100 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+              <Target className="text-primary-500 flex-shrink-0" size={20} />
+              <span>Résumé de la Commande</span>
             </h2>
 
             {/* Challenge Info */}
-            <div className="bg-dark-200 rounded-xl p-4 mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-400">Challenge</span>
-                <span className="font-semibold text-white">{model.display_name}</span>
+            <div className="bg-dark-200 rounded-lg sm:rounded-xl p-3 sm:p-4 mb-4 sm:mb-6">
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <span className="text-gray-400 text-sm sm:text-base">Challenge</span>
+                <span className="font-semibold text-white text-sm sm:text-base">{model.display_name}</span>
               </div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-400">Capital</span>
-                <span className="font-bold text-white text-lg">${selectedSize.balance.toLocaleString()}</span>
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <span className="text-gray-400 text-sm sm:text-base">Capital</span>
+                <span className="font-bold text-white text-base sm:text-lg">${selectedSize.balance.toLocaleString()}</span>
               </div>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-400 flex items-center gap-1">
-                  <Brain size={14} />
-                  Intelligence IA
+              <div className="flex items-center justify-between mb-3 sm:mb-4">
+                <span className="text-gray-400 flex items-center gap-1 text-sm sm:text-base">
+                  <Brain size={14} className="flex-shrink-0" />
+                  <span>Intelligence IA</span>
                 </span>
-                <span className={`font-semibold ${aiTier.color}`}>{aiTier.name}</span>
+                <span className={`font-semibold text-sm sm:text-base ${aiTier.color}`}>{aiTier.name}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-400">Précision IA</span>
-                <span className={`font-bold ${aiTier.color}`}>{aiTier.accuracy}</span>
+                <span className="text-gray-400 text-sm sm:text-base">Précision IA</span>
+                <span className={`font-bold text-sm sm:text-base ${aiTier.color}`}>{aiTier.accuracy}</span>
               </div>
             </div>
 
             {/* Challenge Rules */}
-            <div className="space-y-3 mb-6">
-              <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                <span className="text-gray-400 text-sm">Objectif Phase 1</span>
-                <span className="text-green-400 font-semibold">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
+              <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                <span className="text-gray-400 text-xs sm:text-sm">Objectif Phase 1</span>
+                <span className="text-green-400 font-semibold text-xs sm:text-sm">
                   ${phase1Target.toLocaleString()} ({model.phase1_profit_target}%)
                 </span>
               </div>
               {phase2Target && (
-                <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                  <span className="text-gray-400 text-sm">Objectif Phase 2</span>
-                  <span className="text-green-400 font-semibold">
+                <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                  <span className="text-gray-400 text-xs sm:text-sm">Objectif Phase 2</span>
+                  <span className="text-green-400 font-semibold text-xs sm:text-sm">
                     ${phase2Target.toLocaleString()} ({model.phase2_profit_target}%)
                   </span>
                 </div>
               )}
-              <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                <span className="text-gray-400 text-sm flex items-center gap-1">
-                  <TrendingDown size={14} />
-                  Perte Max Journalière
+              <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                <span className="text-gray-400 text-xs sm:text-sm flex items-center gap-1">
+                  <TrendingDown size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+                  <span>Perte Max Journalière</span>
                 </span>
-                <span className="text-orange-400 font-semibold">
+                <span className="text-orange-400 font-semibold text-xs sm:text-sm">
                   ${dailyLoss.toLocaleString()} ({model.max_daily_loss}%)
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                <span className="text-gray-400 text-sm flex items-center gap-1">
-                  <TrendingDown size={14} />
-                  Perte Max Totale
+              <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                <span className="text-gray-400 text-xs sm:text-sm flex items-center gap-1">
+                  <TrendingDown size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+                  <span>Perte Max Totale</span>
                 </span>
-                <span className="text-red-400 font-semibold">
+                <span className="text-red-400 font-semibold text-xs sm:text-sm">
                   ${maxLoss.toLocaleString()} ({model.max_overall_loss}%)
                 </span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                <span className="text-gray-400 text-sm flex items-center gap-1">
-                  <Calendar size={14} />
-                  Jours Min. de Trading
+              <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                <span className="text-gray-400 text-xs sm:text-sm flex items-center gap-1">
+                  <Calendar size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+                  <span>Jours Min. de Trading</span>
                 </span>
-                <span className="text-white font-semibold">{model.phase1_min_days || 0} jours</span>
+                <span className="text-white font-semibold text-xs sm:text-sm">{model.phase1_min_days || 0} jours</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-dark-200/50 rounded-lg">
-                <span className="text-gray-400 text-sm flex items-center gap-1">
-                  <Award size={14} />
-                  Partage des Profits
+              <div className="flex items-center justify-between p-2.5 sm:p-3 bg-dark-200/50 rounded-lg">
+                <span className="text-gray-400 text-xs sm:text-sm flex items-center gap-1">
+                  <Award size={12} className="sm:w-[14px] sm:h-[14px] flex-shrink-0" />
+                  <span>Partage des Profits</span>
                 </span>
-                <span className="text-primary-400 font-semibold">{model.default_profit_split}%</span>
+                <span className="text-primary-400 font-semibold text-xs sm:text-sm">{model.default_profit_split}%</span>
               </div>
             </div>
 
             {/* Total */}
-            <div className="border-t border-dark-200 pt-4">
+            <div className="border-t border-dark-200 pt-3 sm:pt-4">
               <div className="flex items-center justify-between">
-                <span className="font-semibold text-white text-lg">Total à payer</span>
+                <span className="font-semibold text-white text-base sm:text-lg">Total à payer</span>
                 <div className="text-right">
                   {selectedSize.is_on_sale && (
-                    <span className="text-gray-500 line-through text-sm mr-2">
+                    <span className="text-gray-500 line-through text-xs sm:text-sm mr-2">
                       €{selectedSize.price.toLocaleString()}
                     </span>
                   )}
-                  <span className="font-bold text-2xl text-primary-500">
+                  <span className="font-bold text-xl sm:text-2xl text-primary-500">
                     €{price.toLocaleString()}
                   </span>
                 </div>
@@ -303,15 +303,15 @@ const ChallengeCheckout = () => {
             </div>
 
             {/* Trust Badges */}
-            <div className="mt-6 flex items-center gap-2 text-sm text-gray-500">
-              <Shield size={16} className="text-green-500" />
+            <div className="mt-4 sm:mt-6 flex items-center gap-2 text-xs sm:text-sm text-gray-500">
+              <Shield size={14} className="text-green-500 flex-shrink-0 sm:w-4 sm:h-4" />
               <span>Paiement sécurisé • Remboursement 100% garanti</span>
             </div>
 
             {/* Expected Reward */}
-            <div className="mt-4 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
-              <div className="flex items-center gap-2 text-yellow-400 text-sm">
-                <Star size={16} />
+            <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
+              <div className="flex items-center gap-2 text-yellow-400 text-xs sm:text-sm">
+                <Star size={14} className="flex-shrink-0 sm:w-4 sm:h-4" />
                 <span className="font-semibold">
                   Récompense potentielle: €{Math.round(selectedSize.balance * 0.05).toLocaleString()}/mois
                 </span>
@@ -320,38 +320,38 @@ const ChallengeCheckout = () => {
           </div>
 
           {/* Payment Methods */}
-          <div className="bg-dark-100 rounded-2xl p-6">
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-              <CreditCard className="text-primary-500" size={24} />
-              Mode de Paiement
+          <div className="bg-dark-100 rounded-xl sm:rounded-2xl p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-bold text-white mb-4 sm:mb-6 flex items-center gap-2">
+              <CreditCard className="text-primary-500 flex-shrink-0" size={20} />
+              <span>Mode de Paiement</span>
             </h2>
 
-            <div className="space-y-3 mb-8">
+            <div className="space-y-2 sm:space-y-3 mb-6 sm:mb-8">
               {paymentMethods.map((method) => {
                 const Icon = method.icon
                 return (
                   <button
                     key={method.id}
                     onClick={() => setPaymentMethod(method.id)}
-                    className={`w-full flex items-center gap-4 p-4 rounded-xl border-2 transition-all ${
+                    className={`w-full flex items-center gap-3 sm:gap-4 p-3 sm:p-4 rounded-lg sm:rounded-xl border-2 transition-all min-h-[60px] sm:min-h-[72px] touch-manipulation ${
                       paymentMethod === method.id
                         ? 'border-primary-500 bg-primary-500/10'
                         : 'border-dark-200 hover:border-dark-100'
                     }`}
                   >
-                    <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${
+                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
                       paymentMethod === method.id
                         ? 'bg-primary-500 text-white'
                         : 'bg-dark-200 text-gray-400'
                     }`}>
-                      <Icon size={24} />
+                      <Icon size={20} className="sm:w-6 sm:h-6" />
                     </div>
-                    <div className="text-left flex-1">
-                      <div className="font-medium text-white">{method.name}</div>
-                      <div className="text-sm text-gray-500">{method.description}</div>
+                    <div className="text-left flex-1 min-w-0">
+                      <div className="font-medium text-white text-sm sm:text-base truncate">{method.name}</div>
+                      <div className="text-xs sm:text-sm text-gray-500 truncate">{method.description}</div>
                     </div>
                     {paymentMethod === method.id && (
-                      <CheckCircle className="text-primary-500" size={24} />
+                      <CheckCircle className="text-primary-500 flex-shrink-0" size={20} />
                     )}
                   </button>
                 )
@@ -362,42 +362,42 @@ const ChallengeCheckout = () => {
             <button
               onClick={handlePayment}
               disabled={processing}
-              className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold text-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25"
+              className="w-full py-3.5 sm:py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-lg sm:rounded-xl font-semibold text-base sm:text-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 min-h-[52px] sm:min-h-[56px] touch-manipulation active:scale-[0.98]"
             >
               {processing ? (
                 <>
-                  <Loader2 className="animate-spin" size={24} />
-                  Traitement en cours...
+                  <Loader2 className="animate-spin" size={20} />
+                  <span className="text-sm sm:text-base">Traitement en cours...</span>
                 </>
               ) : (
                 <>
-                  <Zap size={24} />
-                  Payer €{price.toLocaleString()}
+                  <Zap size={20} className="sm:w-6 sm:h-6" />
+                  <span>Payer €{price.toLocaleString()}</span>
                 </>
               )}
             </button>
 
-            <p className="mt-4 text-center text-sm text-gray-500">
+            <p className="mt-3 sm:mt-4 text-center text-xs sm:text-sm text-gray-500 px-2">
               En cliquant sur Payer, vous acceptez nos{' '}
               <a href="/terms" className="text-primary-400 hover:underline">conditions d'utilisation</a>
             </p>
 
             {/* Features List */}
-            <div className="mt-8 space-y-3">
-              <div className="flex items-center gap-3 text-gray-400 text-sm">
-                <CheckCircle size={16} className="text-green-500" />
+            <div className="mt-6 sm:mt-8 space-y-2.5 sm:space-y-3">
+              <div className="flex items-center gap-2.5 sm:gap-3 text-gray-400 text-xs sm:text-sm">
+                <CheckCircle size={14} className="text-green-500 flex-shrink-0 sm:w-4 sm:h-4" />
                 <span>Activation instantanée du compte</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 text-sm">
-                <CheckCircle size={16} className="text-green-500" />
+              <div className="flex items-center gap-2.5 sm:gap-3 text-gray-400 text-xs sm:text-sm">
+                <CheckCircle size={14} className="text-green-500 flex-shrink-0 sm:w-4 sm:h-4" />
                 <span>Accès immédiat aux signaux IA</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 text-sm">
-                <CheckCircle size={16} className="text-green-500" />
+              <div className="flex items-center gap-2.5 sm:gap-3 text-gray-400 text-xs sm:text-sm">
+                <CheckCircle size={14} className="text-green-500 flex-shrink-0 sm:w-4 sm:h-4" />
                 <span>Support prioritaire 24/7</span>
               </div>
-              <div className="flex items-center gap-3 text-gray-400 text-sm">
-                <CheckCircle size={16} className="text-green-500" />
+              <div className="flex items-center gap-2.5 sm:gap-3 text-gray-400 text-xs sm:text-sm">
+                <CheckCircle size={14} className="text-green-500 flex-shrink-0 sm:w-4 sm:h-4" />
                 <span>Période de trading illimitée</span>
               </div>
             </div>

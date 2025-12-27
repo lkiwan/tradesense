@@ -221,7 +221,7 @@ const Pricing = () => {
             <span className="text-purple-300 text-sm font-medium">Propulsé par l'Intelligence Artificielle</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
             Tradez avec une <span className="gradient-text-animated">IA Prédictive</span>
           </h1>
           <p className="text-gray-400 text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
@@ -230,32 +230,32 @@ const Pricing = () => {
           </p>
 
           {/* AI Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8 mb-12">
-            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Brain size={28} className="text-purple-400" />
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 lg:gap-8 mb-12 px-4">
+            <div className="group flex items-center gap-3 md:gap-4 glass-card px-4 md:px-6 py-3 md:py-4 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Brain size={24} className="text-purple-400" />
               </div>
               <div className="text-left">
-                <p className="text-2xl font-bold text-white">5 Niveaux</p>
-                <p className="text-gray-500 text-sm">d'Intelligence IA</p>
+                <p className="text-xl md:text-2xl font-bold text-white">5 Niveaux</p>
+                <p className="text-gray-500 text-xs md:text-sm">d'Intelligence IA</p>
               </div>
             </div>
-            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <Target size={28} className="text-green-400" />
+            <div className="group flex items-center gap-3 md:gap-4 glass-card px-4 md:px-6 py-3 md:py-4 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-green-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Target size={24} className="text-green-400" />
               </div>
               <div className="text-left">
-                <p className="text-2xl font-bold text-white">Jusqu'à 96%</p>
-                <p className="text-gray-500 text-sm">de Précision</p>
+                <p className="text-xl md:text-2xl font-bold text-white">Jusqu'a 96%</p>
+                <p className="text-gray-500 text-xs md:text-sm">de Precision</p>
               </div>
             </div>
-            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
-              <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                <BarChart3 size={28} className="text-blue-400" />
+            <div className="group flex items-center gap-3 md:gap-4 glass-card px-4 md:px-6 py-3 md:py-4 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <BarChart3 size={24} className="text-blue-400" />
               </div>
               <div className="text-left">
-                <p className="text-2xl font-bold text-white">+40 Signaux</p>
-                <p className="text-gray-500 text-sm">par jour (Elite)</p>
+                <p className="text-xl md:text-2xl font-bold text-white">+40 Signaux</p>
+                <p className="text-gray-500 text-xs md:text-sm">par jour (Elite)</p>
               </div>
             </div>
           </div>
@@ -273,7 +273,7 @@ const Pricing = () => {
           <p className="text-center text-xs font-bold text-primary-500 uppercase tracking-[0.3em] mb-6">
             Niveaux d'Intelligence
           </p>
-          <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 lg:gap-6 px-4">
             {Object.entries(AI_TIERS).reverse().map(([key, tier], index) => {
               const TierIcon = tier.icon
               return (
@@ -475,15 +475,15 @@ const Pricing = () => {
               <Brain size={16} />
               Technologie Avancée
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Comment notre <span className="gradient-text-animated">IA</span> prédit le marché
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+              Comment notre <span className="gradient-text-animated">IA</span> predit le marche
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
               Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="group glass-card p-6 rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)] cursor-pointer">
               <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-purple-500/20">
                 <Brain className="text-purple-400" size={32} />
@@ -532,12 +532,12 @@ const Pricing = () => {
               <Award size={16} />
               Comparaison
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Pourquoi choisir un <span className="gradient-text-animated">plan supérieur</span>?
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+              Pourquoi choisir un <span className="gradient-text-animated">plan superieur</span>?
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             {/* Starter comparison */}
             <div className="group glass-card p-8 rounded-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:-translate-y-2 cursor-pointer">
               <div className="flex items-center gap-3 mb-6">
@@ -623,8 +623,8 @@ const Pricing = () => {
               <Info size={16} />
               FAQ
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
-              Questions <span className="gradient-text-animated">Fréquentes</span>
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
+              Questions <span className="gradient-text-animated">Frequentes</span>
             </h2>
           </div>
 
@@ -680,8 +680,8 @@ const Pricing = () => {
             <span className="text-white text-sm font-medium">Offre limitée - Économisez jusqu'à 20%</span>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
-            Prêt à trader avec <span className="gradient-text-animated">l'IA</span>?
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
+            Pret a trader avec <span className="gradient-text-animated">l'IA</span>?
           </h2>
 
           <p className="text-white/80 mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
@@ -693,7 +693,7 @@ const Pricing = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity animate-pulse" />
             <button
               onClick={() => handleSelect(ACCOUNT_SIZES.find(a => a.isBestValue) || ACCOUNT_SIZES[1])}
-              className="relative group inline-flex items-center gap-3 px-10 py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
+              className="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-base md:text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
             >
               <Brain size={24} className="transition-transform duration-300 group-hover:rotate-12" />
               Commencer avec l'IA Pro
@@ -702,10 +702,10 @@ const Pricing = () => {
           </div>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-12 pt-8 border-t border-white/10">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mt-12 pt-8 border-t border-white/10">
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <Shield size={16} className="text-green-400" />
-              <span>Paiement sécurisé</span>
+              <span>Paiement securise</span>
             </div>
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <RefreshCw size={16} className="text-blue-400" />
@@ -713,7 +713,7 @@ const Pricing = () => {
             </div>
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <Zap size={16} className="text-yellow-400" />
-              <span>Activation instantanée</span>
+              <span>Activation instantanee</span>
             </div>
           </div>
         </div>

@@ -649,7 +649,7 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className={`relative z-10 max-w-7xl mx-auto px-4 md:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left pt-20">
@@ -666,7 +666,7 @@ const LandingPage = () => {
               </div>
 
               {/* Title with Gradient Animation */}
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
+              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-6 leading-tight">
                 Devenez Trader{' '}
                 <span className="gradient-text-animated">
                   <TypingText
@@ -687,7 +687,7 @@ const LandingPage = () => {
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Link
                   to="/pricing"
-                  className="group relative flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden"
+                  className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Commencer le Challenge
@@ -696,12 +696,12 @@ const LandingPage = () => {
                 </Link>
                 <Link
                   to="/free-trial"
-                  className="group flex items-center gap-2 px-8 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 spotlight"
+                  className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 md:px-8 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight"
                 >
                   <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={20} />
                   Essai Gratuit 7 Jours
                 </Link>
-                <button className="group flex items-center gap-2 px-6 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                <button className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105">
                   <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
                     <Play size={16} fill="white" className="text-white ml-0.5" />
                   </div>
@@ -970,7 +970,7 @@ const LandingPage = () => {
               <Sparkles size={14} />
               Fonctionnalites
             </span>
-            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
               Tout ce qu'il vous faut pour <span className="gradient-text-animated">reussir</span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
@@ -1013,14 +1013,14 @@ const LandingPage = () => {
           <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-center">
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-full mb-6 border border-green-500/20">
                   <Shield className="text-green-500" size={20} />
                   <span className="text-green-400 text-sm font-semibold">Garantie de Paiement</span>
                 </div>
 
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
                   Paiements Garantis en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">24 Heures</span>
                 </h2>
 
@@ -1100,12 +1100,12 @@ const LandingPage = () => {
             <span className="inline-block px-4 py-1 bg-blue-500/10 text-blue-500 rounded-full text-sm font-medium mb-4">
               Comment ca marche
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               4 etapes pour devenir trader finance
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {steps.map((step, index) => {
               const Icon = step.icon || Target
               return (
@@ -1161,7 +1161,7 @@ const LandingPage = () => {
               <Brain className="text-purple-400" size={18} />
               <span className="text-purple-400 text-sm font-medium">Propulsé par l'IA</span>
             </div>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Choisissez Votre <span className="text-primary-500">Challenge</span>
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
@@ -1170,7 +1170,7 @@ const LandingPage = () => {
           </div>
 
           {/* Pricing Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
             {PRICING_PLANS.map((plan, index) => {
               const aiTier = AI_TIERS[plan.aiTier]
               const AiIcon = aiTier.icon
@@ -1275,12 +1275,12 @@ const LandingPage = () => {
             <span className="inline-block px-4 py-1 bg-yellow-500/10 text-yellow-500 rounded-full text-sm font-medium mb-4">
               Temoignages
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Ce que disent nos traders
             </h2>
           </div>
 
-          <div dir="ltr" className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div dir="ltr" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
             {testimonials.map((testimonial, index) => (
               <div
                 key={index}
@@ -1398,8 +1398,8 @@ const LandingPage = () => {
             </button>
           </div>
 
-          <h2 className="text-2xl md:text-3xl font-medium text-white mb-4">
-            Vous avez encore des questions ? Demandez à <span className="font-bold">TradeSense AI !</span>
+          <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-white mb-4 px-4">
+            Vous avez encore des questions ? Demandez a <span className="font-bold">TradeSense AI !</span>
           </h2>
 
           <p className="text-gray-400 text-sm mb-6 flex items-center justify-center gap-2">
@@ -1472,13 +1472,13 @@ const LandingPage = () => {
         {/* Background Pattern */}
         < div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.05)_1px,transparent_1px)] bg-[size:30px_30px]" />
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div className="relative max-w-7xl mx-auto px-4 md:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-8">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 md:mb-8">
                 Pourquoi choisir TradeSense AI?
               </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 {benefits.map((benefit, index) => {
                   const Icon = benefit.icon
                   return (
@@ -1493,7 +1493,7 @@ const LandingPage = () => {
               </div>
               <Link
                 to="/register"
-                className="inline-flex items-center gap-2 mt-8 px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all hover:scale-105"
+                className="inline-flex items-center justify-center gap-2 mt-6 md:mt-8 w-full sm:w-auto px-6 md:px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold text-base md:text-lg hover:bg-gray-100 transition-all hover:scale-105"
               >
                 Creer un Compte Gratuit
                 <ChevronRight size={20} />
@@ -1555,7 +1555,7 @@ const LandingPage = () => {
             <span className="inline-block px-4 py-1 bg-purple-500/10 text-purple-500 rounded-full text-sm font-medium mb-4">
               FAQ
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               Questions frequentes
             </h2>
           </div>
@@ -1605,7 +1605,7 @@ const LandingPage = () => {
             <span className="text-sm font-semibold text-primary-400">Offre Limitee - 20% de reduction</span>
           </div>
 
-          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
             Pret a commencer votre parcours de{' '}
             <span className="gradient-text-animated">trader?</span>
           </h2>
@@ -1614,10 +1614,10 @@ const LandingPage = () => {
             Rejoignez plus de <span className="text-white font-semibold">10,000 traders</span> qui font confiance a TradeSense AI
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
             <Link
               to="/pricing"
-              className="group relative flex items-center gap-2 px-10 py-5 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
+              className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-base md:text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
             >
               <span className="relative z-10 flex items-center gap-2">
                 Voir les Challenges
@@ -1626,7 +1626,7 @@ const LandingPage = () => {
             </Link>
             <Link
               to="/register"
-              className="flex items-center gap-2 px-10 py-5 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 spotlight"
+              className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight"
             >
               <Users size={20} />
               Creer un Compte Gratuit
@@ -1639,7 +1639,7 @@ const LandingPage = () => {
           </p>
 
           {/* Trust Icons */}
-          <div className="mt-12 flex items-center justify-center gap-8 opacity-50">
+          <div className="mt-12 flex flex-wrap items-center justify-center gap-4 md:gap-8 opacity-50">
             <div className="flex items-center gap-2 text-gray-400">
               <Shield size={20} />
               <span className="text-sm">SSL Secured</span>

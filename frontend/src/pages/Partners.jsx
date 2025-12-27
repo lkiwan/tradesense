@@ -137,7 +137,7 @@ const Partners = () => {
               <span className="text-green-300 text-sm font-medium">Affiliate Program</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
               Earn Up to{' '}
               <span className="gradient-text-animated">25% Commission</span>
             </h1>
@@ -147,10 +147,10 @@ const Partners = () => {
             </p>
 
             {!isAuthenticated ? (
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
                 <Link
                   to="/register"
-                  className="group inline-flex items-center justify-center gap-3 px-8 py-5 bg-gradient-to-r from-green-500 to-primary-500 text-white font-semibold rounded-xl hover:from-green-600 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 hover:scale-105 active:scale-95"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-6 md:px-8 py-4 md:py-5 bg-gradient-to-r from-green-500 to-primary-500 text-white font-semibold rounded-xl hover:from-green-600 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 hover:scale-105 active:scale-95"
                 >
                   <Gift size={22} />
                   Become an Affiliate
@@ -158,7 +158,7 @@ const Partners = () => {
                 </Link>
                 <Link
                   to="/login"
-                  className="inline-flex items-center justify-center gap-2 px-8 py-5 glass-card text-white font-semibold rounded-xl hover:border-primary-500/30 transition-all duration-300 hover:scale-105"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 md:py-5 glass-card text-white font-semibold rounded-xl hover:border-primary-500/30 transition-all duration-300 hover:scale-105"
                 >
                   Already an Affiliate? Login
                 </Link>
@@ -278,7 +278,7 @@ const Partners = () => {
               <Zap size={16} />
               Simple Process
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
               How It <span className="gradient-text-animated">Works</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -286,7 +286,7 @@ const Partners = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
             {steps.map((step, index) => {
               const Icon = step.icon
               return (
@@ -325,7 +325,7 @@ const Partners = () => {
               <Crown size={16} />
               Reward Tiers
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
               Commission <span className="gradient-text-animated">Tiers</span>
             </h2>
             <p className="text-gray-400 text-lg max-w-2xl mx-auto">
@@ -333,7 +333,7 @@ const Partners = () => {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {tiers.map((tier, index) => {
               const Icon = tier.icon
               const isDiamond = tier.name === 'Diamond'
@@ -381,13 +381,13 @@ const Partners = () => {
       {/* Benefits Section */}
       <section className="relative py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-green-400 text-sm font-medium mb-6">
                 <Sparkles size={16} />
                 Why Join Us
               </span>
-              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+              <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6">
                 Why Become a <span className="gradient-text-animated">Partner</span>?
               </h2>
               <p className="text-gray-400 text-lg mb-8 leading-relaxed">
@@ -435,7 +435,7 @@ const Partners = () => {
                 </div>
                 <Link
                   to={isAuthenticated ? "/dashboard/referral" : "/register"}
-                  className="group inline-flex items-center justify-center gap-2 w-full px-8 py-4 bg-gradient-to-r from-green-500 to-primary-500 text-white font-semibold rounded-xl hover:from-green-600 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-green-500/25"
+                  className="group inline-flex items-center justify-center gap-2 w-full px-6 md:px-8 py-4 bg-gradient-to-r from-green-500 to-primary-500 text-white font-semibold rounded-xl hover:from-green-600 hover:to-primary-600 transition-all duration-300 shadow-lg shadow-green-500/25"
                 >
                   {isAuthenticated ? 'View Dashboard' : 'Start Earning Now'}
                   <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
@@ -464,7 +464,7 @@ const Partners = () => {
             <span className="text-white text-sm font-medium">Limited Time - Enhanced Bonuses</span>
           </div>
 
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
             Start Earning <span className="gradient-text-animated">Today</span>
           </h2>
 
@@ -477,7 +477,7 @@ const Partners = () => {
             <div className="absolute -inset-1 bg-gradient-to-r from-green-500 to-primary-500 rounded-2xl blur opacity-30 animate-pulse" />
             <Link
               to={isAuthenticated ? "/dashboard/referral" : "/register"}
-              className="relative group inline-flex items-center gap-3 px-10 py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
+              className="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-base md:text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
             >
               <Gift size={24} className="transition-transform duration-300 group-hover:rotate-12" />
               {isAuthenticated ? 'Go to Dashboard' : "Join Now - It's Free"}
@@ -486,7 +486,7 @@ const Partners = () => {
           </div>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap items-center justify-center gap-6 mt-12 pt-8 border-t border-white/10">
+          <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mt-12 pt-8 border-t border-white/10">
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <CheckCircle2 size={16} className="text-green-400" />
               <span>Free to join</span>
