@@ -72,17 +72,17 @@ const formatCurrency = (amount, currency = '$') => {
   return `${currency}${amount.toLocaleString('fr-FR')}`
 }
 
-// Row labels configuration
+// Row labels configuration - with short labels for mobile
 const ROW_LABELS = [
-  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', label: 'Intelligence Artificielle' },
-  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', label: 'Précision IA' },
-  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', label: 'Signaux / jour' },
-  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', label: 'Objectif de Profit' },
-  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', label: 'Perte Max Journalière' },
-  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', label: 'Perte Max.' },
-  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', label: 'Jours de Trading Min.' },
-  { key: 'period', icon: Clock, iconColor: 'text-gray-400', label: 'Période de Trading' },
-  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', label: 'Remboursement' },
+  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', label: 'Intelligence Artificielle', shortLabel: 'IA' },
+  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', label: 'Précision IA', shortLabel: 'Précision' },
+  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', label: 'Signaux / jour', shortLabel: 'Signaux' },
+  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', label: 'Objectif de Profit', shortLabel: 'Objectif' },
+  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', label: 'Perte Max Journalière', shortLabel: 'Perte/jour' },
+  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', label: 'Perte Max.', shortLabel: 'Perte Max' },
+  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', label: 'Jours de Trading Min.', shortLabel: 'Min. jours' },
+  { key: 'period', icon: Clock, iconColor: 'text-gray-400', label: 'Période de Trading', shortLabel: 'Période' },
+  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', label: 'Remboursement', shortLabel: 'Remb.' },
 ]
 
 // Get cell value for matrix
@@ -297,13 +297,20 @@ const PlansPage = () => {
               </label>
             </div>
 
+            {/* Scroll hint for mobile */}
+            <div className="flex md:hidden items-center justify-center gap-2 mb-3 text-gray-500 text-xs">
+              <span>←</span>
+              <span>Glissez pour voir tous les plans</span>
+              <span>→</span>
+            </div>
+
             {/* Matrix Pricing Table */}
-            <div className="relative pb-4 overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0">
+            <div className="relative pb-4 overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-dark-100 scrollbar-track-transparent">
               <div className="flex min-w-max">
                 {/* Left Labels Column */}
-                <div className="flex-shrink-0 w-32 md:w-40 lg:w-48 sticky left-0 bg-dark-300/95 z-10">
-                  {/* Empty header cell */}
-                  <div className="h-[100px]" />
+                <div className="flex-shrink-0 w-20 sm:w-28 md:w-40 lg:w-48 sticky left-0 bg-dark-300/95 z-10">
+                  {/* Empty header cell - matches badge + header height */}
+                  <div className="h-[91px] sm:h-[100px]" />
 
                   {/* Row Labels */}
                   {ROW_LABELS.map((row) => {
@@ -311,24 +318,27 @@ const PlansPage = () => {
                     return (
                       <div
                         key={row.key}
-                        className={`flex items-center gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
+                        className={`flex items-center gap-1 sm:gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
                       >
-                        <IconComponent size={14} className={row.iconColor} />
-                        <span className="text-gray-300 text-xs lg:text-sm font-medium">{row.label}</span>
+                        <IconComponent size={12} className={`${row.iconColor} flex-shrink-0 sm:w-[14px] sm:h-[14px]`} />
+                        <span className="text-gray-300 text-[10px] sm:text-xs lg:text-sm font-medium leading-tight">
+                          <span className="sm:hidden">{row.shortLabel}</span>
+                          <span className="hidden sm:inline">{row.label}</span>
+                        </span>
                       </div>
                     )
                   })}
 
                   {/* Payment note */}
                   <div className="pt-6 pr-2">
-                    <p className="text-xs text-gray-500 leading-relaxed">
+                    <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed">
                       Paiements uniques.
                     </p>
                   </div>
                 </div>
 
                 {/* Account Columns */}
-                <div className="flex-1 flex gap-1 md:gap-1.5 lg:gap-2 items-start">
+                <div className="flex-1 flex gap-1 sm:gap-1.5 lg:gap-2 items-start">
                   {sortedSizes.map((size, index) => {
                     const aiTierKey = getAiTierForBalance(size.balance)
                     const aiTier = AI_TIERS[aiTierKey]
@@ -338,7 +348,7 @@ const PlansPage = () => {
                     return (
                       <div
                         key={size.id}
-                        className="flex-shrink-0 w-[110px] md:w-[130px] lg:w-[145px]"
+                        className="flex-shrink-0 w-[95px] sm:w-[110px] md:w-[130px] lg:w-[145px]"
                       >
                         {/* Main Card */}
                         <div className={`rounded-2xl transition-all duration-300 backdrop-blur-sm
@@ -348,23 +358,24 @@ const PlansPage = () => {
                           }`}
                         >
                           {/* Best Value Badge */}
-                          <div className={`text-xs font-semibold py-1.5 text-center h-7 rounded-t-2xl ${
+                          <div className={`text-[10px] sm:text-xs font-semibold py-1 sm:py-1.5 text-center h-6 sm:h-7 rounded-t-2xl ${
                             isBestValue
                               ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white'
                               : 'bg-transparent'
                           }`}>
                             {isBestValue && (
                               <div className="flex items-center justify-center gap-1">
-                                <Flame size={12} />
-                                <span>Meilleur rapport</span>
+                                <Flame size={10} className="sm:w-3 sm:h-3" />
+                                <span className="hidden sm:inline">Meilleur rapport</span>
+                                <span className="sm:hidden">Top</span>
                               </div>
                             )}
                           </div>
 
                           {/* Header - Account Size */}
-                          <div className="text-center py-3 h-[72px] flex flex-col justify-center">
-                            <p className="text-gray-400 text-xs mb-1">Compte</p>
-                            <p className="text-lg lg:text-xl font-bold text-white">
+                          <div className="text-center py-2 sm:py-3 h-[65px] sm:h-[72px] flex flex-col justify-center">
+                            <p className="text-gray-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">Compte</p>
+                            <p className="text-base sm:text-lg lg:text-xl font-bold text-white">
                               {formatCurrency(size.balance)}
                             </p>
                           </div>
@@ -380,51 +391,53 @@ const PlansPage = () => {
                           ))}
 
                           {/* Price */}
-                          <div className="text-center py-3 border-t border-dark-200/50 mt-2 h-16 flex flex-col justify-center">
+                          <div className="text-center py-2 sm:py-3 border-t border-dark-200/50 mt-2 h-14 sm:h-16 flex flex-col justify-center">
                             {hasDiscount ? (
                               <div className="flex flex-col items-center">
                                 <div className="flex items-center gap-1">
-                                  <Flame size={12} className="text-orange-500" />
-                                  <span className="text-lg lg:text-xl font-bold text-orange-500">
+                                  <Flame size={10} className="text-orange-500 sm:w-3 sm:h-3" />
+                                  <span className="text-base sm:text-lg lg:text-xl font-bold text-orange-500">
                                     €{size.sale_price.toLocaleString('fr-FR')}
                                   </span>
                                 </div>
-                                <span className="text-gray-500 line-through text-xs">
+                                <span className="text-gray-500 line-through text-[10px] sm:text-xs">
                                   €{size.price.toLocaleString('fr-FR')}
                                 </span>
                               </div>
                             ) : (
-                              <span className="text-lg lg:text-xl font-bold text-white">
+                              <span className="text-base sm:text-lg lg:text-xl font-bold text-white">
                                 €{size.price.toLocaleString('fr-FR')}
                               </span>
                             )}
                           </div>
 
                           {/* CTA Button */}
-                          <div className="px-3 pb-3">
+                          <div className="px-2 sm:px-3 pb-2 sm:pb-3">
                             <button
                               onClick={() => handleSelect(size)}
-                              className={`group w-full py-2.5 rounded-xl font-semibold text-white text-xs transition-all duration-300 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 ${
+                              className={`group w-full py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-semibold text-white text-[10px] sm:text-xs transition-all duration-300 flex items-center justify-center gap-1 sm:gap-1.5 hover:scale-[1.02] active:scale-95 min-h-[36px] sm:min-h-[40px] touch-manipulation ${
                                 isBestValue
                                   ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25'
                                   : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25'
                               }`}
                             >
-                              <Rocket size={14} />
-                              Commencer
+                              <Rocket size={12} className="sm:w-[14px] sm:h-[14px]" />
+                              <span className="hidden sm:inline">Commencer</span>
+                              <span className="sm:hidden">Go</span>
                             </button>
                           </div>
                         </div>
 
                         {/* Average Reward */}
-                        <div className="mt-2 py-3 glass-card text-center rounded-xl">
-                          <div className="flex items-center justify-center gap-1.5">
-                            <Star size={14} className="text-yellow-500" />
-                            <span className="text-white font-bold text-sm">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
+                        <div className="mt-1.5 sm:mt-2 py-2 sm:py-3 glass-card text-center rounded-lg sm:rounded-xl">
+                          <div className="flex items-center justify-center gap-1 sm:gap-1.5">
+                            <Star size={12} className="text-yellow-500 sm:w-[14px] sm:h-[14px]" />
+                            <span className="text-white font-bold text-xs sm:text-sm">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
                           </div>
-                          <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-1">
-                            <span>Récompense moy.</span>
-                            <Info size={10} className="cursor-help" />
+                          <div className="flex items-center justify-center gap-1 text-gray-500 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
+                            <span className="hidden sm:inline">Récompense moy.</span>
+                            <span className="sm:hidden">Moy.</span>
+                            <Info size={8} className="cursor-help sm:w-[10px] sm:h-[10px]" />
                           </div>
                         </div>
                       </div>
@@ -438,58 +451,58 @@ const PlansPage = () => {
       )}
 
       {/* AI Features Section */}
-      <section className="relative py-12 overflow-hidden mx-4 md:mx-6 rounded-2xl">
+      <section className="relative py-8 sm:py-12 overflow-hidden mx-3 sm:mx-4 md:mx-6 rounded-xl sm:rounded-2xl">
         {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[150px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="absolute top-1/4 left-1/4 w-40 sm:w-80 h-40 sm:h-80 bg-purple-500/10 rounded-full blur-[100px] sm:blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-36 sm:w-72 h-36 sm:h-72 bg-blue-500/10 rounded-full blur-[80px] sm:blur-[120px]" />
         </div>
 
-        <div className="relative px-4">
-          <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-purple-400 text-sm font-medium mb-4">
-              <Brain size={16} />
+        <div className="relative px-3 sm:px-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 glass-card rounded-full text-purple-400 text-xs sm:text-sm font-medium mb-3 sm:mb-4">
+              <Brain size={14} className="sm:w-4 sm:h-4" />
               Technologie Avancée
             </span>
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 px-2">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3 px-2">
               Comment notre <span className="gradient-text-animated">IA</span> predit le marche
             </h2>
-            <p className="text-gray-400 max-w-xl mx-auto text-sm md:text-base px-2">
+            <p className="text-gray-400 max-w-xl mx-auto text-xs sm:text-sm md:text-base px-2">
               Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
-            <div className="group glass-card p-5 rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 cursor-pointer">
-              <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <Brain className="text-purple-400" size={28} />
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
+            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <Brain className="text-purple-400" size={20} />
               </div>
-              <h3 className="text-white font-semibold text-base mb-2 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Réseaux de neurones analysant les patterns historiques.</p>
+              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
+              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Réseaux de neurones analysant les patterns historiques.</p>
             </div>
 
-            <div className="group glass-card p-5 rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 cursor-pointer">
-              <div className="w-14 h-14 bg-blue-500/20 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <BarChart3 className="text-blue-400" size={28} />
+            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <BarChart3 className="text-blue-400" size={20} />
               </div>
-              <h3 className="text-white font-semibold text-base mb-2 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">150+ indicateurs calculés en temps réel.</p>
+              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
+              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">150+ indicateurs calculés en temps réel.</p>
             </div>
 
-            <div className="group glass-card p-5 rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 cursor-pointer">
-              <div className="w-14 h-14 bg-green-500/20 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <TrendingUp className="text-green-400" size={28} />
+            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <TrendingUp className="text-green-400" size={20} />
               </div>
-              <h3 className="text-white font-semibold text-base mb-2 group-hover:text-green-400 transition-colors">Sentiment Analysis</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Analyse des news et réseaux sociaux.</p>
+              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-green-400 transition-colors">Sentiment Analysis</h3>
+              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Analyse des news et réseaux sociaux.</p>
             </div>
 
-            <div className="group glass-card p-5 rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-2 cursor-pointer">
-              <div className="w-14 h-14 bg-orange-500/20 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <Zap className="text-orange-400" size={28} />
+            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-orange-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <Zap className="text-orange-400" size={20} />
               </div>
-              <h3 className="text-white font-semibold text-base mb-2 group-hover:text-orange-400 transition-colors">Exécution Rapide</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Signaux générés en millisecondes.</p>
+              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-orange-400 transition-colors">Exécution Rapide</h3>
+              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Signaux générés en millisecondes.</p>
             </div>
           </div>
         </div>
@@ -497,49 +510,47 @@ const PlansPage = () => {
 
       {/* Free Trial CTA */}
       {!hasActiveChallenge && (
-        <section className="relative py-12 overflow-hidden mx-4 md:mx-6 rounded-2xl">
+        <section className="relative py-8 sm:py-12 overflow-hidden mx-3 sm:mx-4 md:mx-6 rounded-xl sm:rounded-2xl">
           {/* Background Effects */}
-          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-primary-600/20 to-blue-600/20 rounded-2xl" />
-          <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-primary-500/20 rounded-full blur-[100px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-56 h-56 bg-purple-500/15 rounded-full blur-[80px]" />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-primary-600/20 to-blue-600/20 rounded-xl sm:rounded-2xl" />
+          <div className="absolute top-1/4 left-1/4 w-32 sm:w-64 h-32 sm:h-64 bg-primary-500/20 rounded-full blur-[60px] sm:blur-[100px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-28 sm:w-56 h-28 sm:h-56 bg-purple-500/15 rounded-full blur-[50px] sm:blur-[80px]" />
 
-          <div className="relative px-4 text-center">
-            <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-6">
-              <Sparkles className="text-yellow-400 animate-pulse" size={18} />
-              <span className="text-white text-sm font-medium">Essai gratuit disponible</span>
+          <div className="relative px-3 sm:px-4 text-center">
+            <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full mb-4 sm:mb-6">
+              <Sparkles className="text-yellow-400 animate-pulse" size={14} />
+              <span className="text-white text-xs sm:text-sm font-medium">Essai gratuit disponible</span>
             </div>
 
-            <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white mb-4 px-2">
+            <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 px-2">
               Pas encore pret a vous lancer?
             </h2>
 
-            <p className="text-white/80 mb-6 md:mb-8 max-w-lg mx-auto text-sm md:text-base px-2">
+            <p className="text-white/80 mb-5 sm:mb-6 md:mb-8 max-w-lg mx-auto text-xs sm:text-sm md:text-base px-2">
               Essayez notre plateforme gratuitement pendant 7 jours avec un compte demo de $5,000
             </p>
 
             <Link
               to="/free-trial"
-              className="inline-flex items-center justify-center gap-2 md:gap-3 px-6 md:px-8 py-3 md:py-4 bg-white text-dark-400 rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 min-h-[48px] w-full sm:w-auto max-w-xs sm:max-w-none mx-auto"
+              className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 bg-white text-dark-400 rounded-lg sm:rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 min-h-[48px] w-full sm:w-auto max-w-xs sm:max-w-none mx-auto touch-manipulation"
             >
-              <Star size={18} className="md:hidden" />
-              <Star size={20} className="hidden md:block" />
-              <span className="text-sm md:text-base">Commencer l'essai gratuit</span>
-              <ArrowRight size={16} className="md:hidden" />
-              <ArrowRight size={18} className="hidden md:block" />
+              <Star size={16} className="sm:w-[18px] sm:h-[18px] md:w-5 md:h-5" />
+              <span className="text-sm sm:text-base">Commencer l'essai gratuit</span>
+              <ArrowRight size={14} className="sm:w-4 sm:h-4 md:w-[18px] md:h-[18px]" />
             </Link>
 
             {/* Trust badges */}
-            <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 md:gap-6 mt-8 md:mt-10 pt-6 border-t border-white/10">
-              <div className="flex items-center gap-2 text-white/60 text-sm">
-                <Shield size={16} className="text-green-400" />
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10 pt-4 sm:pt-6 border-t border-white/10">
+              <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
+                <Shield size={14} className="text-green-400 sm:w-4 sm:h-4" />
                 <span>Paiement sécurisé</span>
               </div>
-              <div className="flex items-center gap-2 text-white/60 text-sm">
-                <RefreshCw size={16} className="text-blue-400" />
+              <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
+                <RefreshCw size={14} className="text-blue-400 sm:w-4 sm:h-4" />
                 <span>Remboursement 100%</span>
               </div>
-              <div className="flex items-center gap-2 text-white/60 text-sm">
-                <Zap size={16} className="text-yellow-400" />
+              <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
+                <Zap size={14} className="text-yellow-400 sm:w-4 sm:h-4" />
                 <span>Activation instantanée</span>
               </div>
             </div>
