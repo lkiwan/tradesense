@@ -979,23 +979,23 @@ const LandingPage = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
                 <div
                   key={index}
-                  className={`group p-6 glass-card-dark rounded-2xl hover:bg-dark-200/80 transition-all duration-500 hover:-translate-y-2 card-hover-glow spotlight ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  className={`group p-3 sm:p-6 glass-card-dark rounded-xl sm:rounded-2xl hover:bg-dark-200/80 transition-all duration-500 hover:-translate-y-2 card-hover-glow spotlight ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                     }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className={`w-14 h-14 ${feature.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                    <Icon className={feature.color} size={28} />
+                  <div className={`w-10 h-10 sm:w-14 sm:h-14 ${feature.bg} rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <Icon className={feature.color} size={18} />
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-400 transition-colors">
+                  <h3 className="text-sm sm:text-xl font-semibold text-white mb-1 sm:mb-3 group-hover:text-primary-400 transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-xs sm:text-base text-gray-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
