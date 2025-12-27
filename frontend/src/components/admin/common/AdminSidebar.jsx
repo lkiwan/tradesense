@@ -139,7 +139,7 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-dark-200">
           <Link to="/" className="flex items-center gap-2">
-            <img src="/logo.svg" alt="TradeSense" className="w-8 h-8 object-contain" />
+            <img src="/logo.png" alt="TradeSense" className="w-8 h-8 object-contain" />
             <div>
               <span className="text-white font-bold text-lg">Trade<span className="text-primary-500">Sense</span></span>
               <span className={`block text-xs ${isSuperAdmin ? 'text-purple-400' : 'text-primary-400'}`}>
