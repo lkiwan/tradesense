@@ -94,6 +94,9 @@ from .news import news_bp
 # Import signals blueprint (uses its own bp definition)
 from .signals import signals_bp
 
+# Import forex blueprint (uses its own bp definition)
+from .forex import forex_bp
+
 # Import webinars blueprint (uses its own bp definition)
 from .webinars import webinars_bp
 

@@ -11,7 +11,7 @@ import {
   Rocket, Brain, TrendingUp, BarChart3, Target, Zap, Users,
   CreditCard, FolderOpen, Calendar, ExternalLink, Sparkles, Crown,
   Layers, MousePointer2, FileCode, Monitor, BarChart2, Copy, Lightbulb,
-  Newspaper
+  Newspaper, DollarSign
 } from 'lucide-react'
 
 const DashboardLayout = ({ children }) => {
@@ -89,6 +89,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/utilities', icon: FolderOpen, label: 'Files & Utilities' },
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
     { path: '/news', icon: Newspaper, label: 'Market News', badge: 'NEW', badgeColor: 'bg-blue-500' },
+    { path: '/forex', icon: DollarSign, label: 'Forex Market', badge: 'NEW', badgeColor: 'bg-green-500' },
     { path: 'https://fundednext.com/symbols', icon: ExternalLink, label: 'Symbols', external: true },
   ]
 

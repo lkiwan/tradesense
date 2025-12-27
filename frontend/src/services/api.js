@@ -537,6 +537,49 @@ export const newsAPI = {
     api.get('/news/sentiments')
 }
 
+// Forex API (currency pairs and rates)
+export const forexAPI = {
+  // Get all forex pairs with prices
+  getPairs: (type = 'all') =>
+    api.get('/forex/pairs', { params: { type } }),
+
+  // Get single pair price
+  getPair: (symbol) =>
+    api.get(`/forex/pair/${symbol}`),
+
+  // Get pair metadata
+  getPairInfo: (symbol) =>
+    api.get(`/forex/pair/${symbol}/info`),
+
+  // Get historical data
+  getHistory: (symbol, period = '1mo') =>
+    api.get(`/forex/pair/${symbol}/history`, { params: { period } }),
+
+  // Get market summary (top gainers/losers)
+  getSummary: () =>
+    api.get('/forex/summary'),
+
+  // Get MAD pairs only
+  getMADPairs: () =>
+    api.get('/forex/mad'),
+
+  // Get major pairs only
+  getMajorPairs: () =>
+    api.get('/forex/majors'),
+
+  // Currency conversion
+  convert: (from, to, amount = 1) =>
+    api.get('/forex/convert', { params: { from, to, amount } }),
+
+  // Get available symbols (public)
+  getSymbols: () =>
+    api.get('/forex/symbols'),
+
+  // Get market status (public)
+  getStatus: () =>
+    api.get('/forex/status')
+}
+
 // Session Management API
 export const sessionsAPI = {
   // Get all active sessions

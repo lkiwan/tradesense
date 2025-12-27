@@ -40,6 +40,7 @@ export { default as IdeaDetailPage } from './IdeaDetailPage'
 export { default as UtilitiesPage } from './UtilitiesPage'
 export { default as CalendarPage } from './CalendarPage'
 export { default as NewsFeedPage } from './NewsFeedPage'
+export { default as ForexPage } from './ForexPage'
 
 // Legacy - keeping SignalsPage for any direct references
 export { default as SignalsPage } from './SignalsPage'
