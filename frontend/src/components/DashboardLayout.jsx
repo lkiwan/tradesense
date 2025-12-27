@@ -208,7 +208,7 @@ const DashboardLayout = ({ children }) => {
         {/* Logo */}
         <div className="p-4 border-b border-dark-200">
           <Link to="/accounts" className="flex items-center gap-3">
-            <img src="/logo.png" alt="TradeSense" className="w-10 h-10 object-contain flex-shrink-0" />
+            <img src="/logo.svg" alt="TradeSense" className="w-10 h-10 object-contain flex-shrink-0" />
             {sidebarOpen && (
               <span className="font-bold text-xl text-white">
                 Trade<span className="text-primary-500">Sense</span>
@@ -333,7 +333,7 @@ const DashboardLayout = ({ children }) => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-dark-100 border-b border-dark-200 flex items-center justify-between px-4 z-40">
         <Link to="/accounts" className="flex items-center gap-2">
-          <img src="/logo.png" alt="TradeSense" className="w-8 h-8 object-contain" />
+          <img src="/logo.svg" alt="TradeSense" className="w-8 h-8 object-contain" />
           <span className="font-bold text-lg text-white">Trade<span className="text-primary-500">Sense</span></span>
         </Link>
         <button

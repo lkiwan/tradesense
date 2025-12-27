@@ -40,6 +40,7 @@ import TwoFactorSetup from './pages/TwoFactorSetup'
 import TwoFactorVerify from './pages/TwoFactorVerify'
 import ForgotPassword from './pages/ForgotPassword'
 import ResetPassword from './pages/ResetPassword'
+import ChallengeCheckout from './pages/ChallengeCheckout'
 
 // Public Trader Profile
 import TraderProfile from './pages/public/TraderProfile'
@@ -386,7 +387,8 @@ const USER_DASHBOARD_ROUTES = [
   '/plans', '/profile', '/refer-and-earn', '/my-offers', '/competition', '/certificates',
   '/infinity-points', '/utilities', '/calendar', '/settings', '/sessions', '/dashboard', '/kyc',
   '/subscriptions', '/infinity-points/rewards', '/advanced-orders', '/quick-trading', '/order-templates',
-  '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas'
+  '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas',
+  '/challenge-checkout'
 ]
 
 // Admin routes - use AdminLayout (hide main Navbar/Footer completely)
@@ -823,6 +825,13 @@ function App() {
             } />
 
             {/* ==================== CHECKOUT ROUTES ==================== */}
+            {/* Challenge checkout - for purchasing challenge models */}
+            <Route path="/challenge-checkout" element={
+              <ProtectedRoute>
+                <ChallengeCheckout />
+              </ProtectedRoute>
+            } />
+
             {/* Trial checkout routes - must come before :planType */}
             <Route path="/checkout/trial" element={
               <ProtectedRoute>

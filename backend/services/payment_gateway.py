@@ -5,6 +5,15 @@ Handles PayPal integration and mock payment methods
 
 import os
 import paypalrestsdk
+
+# Fix SSL certificate issue on Windows
+try:
+    import certifi
+    os.environ['REQUESTS_CA_BUNDLE'] = certifi.where()
+    os.environ['SSL_CERT_FILE'] = certifi.where()
+except ImportError:
+    pass
+
 from models import Settings
 
 # PayPal configuration flag
@@ -48,7 +57,7 @@ def _configure_paypal():
         return False
 
 
-def create_paypal_order(amount: float, payment_id: int) -> dict | None:
+def create_paypal_order(amount: float, payment_id: int, currency: str = 'EUR') -> dict | None:
     """
     Create a PayPal order for the given amount
 
@@ -58,8 +67,11 @@ def create_paypal_order(amount: float, payment_id: int) -> dict | None:
         return None
 
     try:
-        # Convert MAD to USD (approximate rate)
-        usd_amount = round(amount / 10, 2)  # 1 USD ≈ 10 MAD
+        # Get base URL from environment or use default
+        base_url = os.getenv('API_URL', 'http://localhost:5000')
+
+        # Amount is already in the correct currency (EUR or USD)
+        final_amount = round(amount, 2)
 
         payment = paypalrestsdk.Payment({
             "intent": "sale",
@@ -67,22 +79,22 @@ def create_paypal_order(amount: float, payment_id: int) -> dict | None:
                 "payment_method": "paypal"
             },
             "redirect_urls": {
-                "return_url": f"/api/payments/paypal/success?payment_id={payment_id}",
-                "cancel_url": f"/api/payments/paypal/cancel?payment_id={payment_id}"
+                "return_url": f"{base_url}/api/payments/paypal/success?payment_id={payment_id}",
+                "cancel_url": f"{base_url}/api/payments/paypal/cancel?payment_id={payment_id}"
             },
             "transactions": [{
                 "item_list": {
                     "items": [{
                         "name": "TradeSense Trading Challenge",
                         "sku": f"CHALLENGE-{payment_id}",
-                        "price": str(usd_amount),
-                        "currency": "USD",
+                        "price": str(final_amount),
+                        "currency": currency,
                         "quantity": 1
                     }]
                 },
                 "amount": {
-                    "total": str(usd_amount),
-                    "currency": "USD"
+                    "total": str(final_amount),
+                    "currency": currency
                 },
                 "description": "TradeSense Prop Trading Challenge Fee"
             }]

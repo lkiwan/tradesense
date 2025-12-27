@@ -89,7 +89,7 @@ const ResetPassword = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex flex-col items-center gap-2 group">
-              <img src="/logo.png" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+              <img src="/logo.svg" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
             </Link>
           </div>
@@ -142,7 +142,7 @@ const ResetPassword = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <Link to="/" className="inline-flex flex-col items-center gap-2 group">
-              <img src="/logo.png" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+              <img src="/logo.svg" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
               <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
             </Link>
           </div>
@@ -192,7 +192,7 @@ const ResetPassword = () => {
         {/* Logo */}
         <div className="text-center mb-8">
           <Link to="/" className="inline-flex flex-col items-center gap-2 group">
-            <img src="/logo.png" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+            <img src="/logo.svg" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
             <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
           </Link>
         </div>

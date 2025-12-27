@@ -3,10 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import toast from 'react-hot-toast'
-import { Mail, Lock, Loader2, LogIn, AlertTriangle, Clock, Ban, ArrowRight, Sparkles } from 'lucide-react'
+import { Mail, Lock, Loader2, LogIn, AlertTriangle, Clock, Ban, ArrowRight, Sparkles, TrendingUp, Eye, EyeOff } from 'lucide-react'
 import SimpleCaptcha from '../components/auth/SimpleCaptcha'
 import SocialLoginButtons from '../components/auth/SocialLoginButtons'
 import { useRateLimit } from '../hooks/useRateLimit'
+import AnimatedAuthBackground from '../components/auth/AnimatedAuthBackground'
 
 const Login = () => {
   const { t } = useTranslation()
@@ -16,6 +17,8 @@ const Login = () => {
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [rememberMe, setRememberMe] = useState(false)
   const [loading, setLoading] = useState(false)
   const [requiresCaptcha, setRequiresCaptcha] = useState(false)
   const [captchaToken, setCaptchaToken] = useState(null)
@@ -124,25 +127,31 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-400 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px] animate-pulse-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
-      </div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedAuthBackground />
 
-      <div className="relative max-w-md w-full">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex flex-col items-center gap-2 group">
-            <img src="/logo.png" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
+      <div className="relative max-w-md w-full z-10">
+        {/* Logo with animation */}
+        <div className="text-center mb-8 animate-slide-up-fade">
+          <Link to="/" className="inline-flex flex-col items-center gap-3 group logo-hover">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-500/20 rounded-2xl blur-xl animate-pulse-slow" />
+              <img
+                src="/logo.svg"
+                alt="TradeSense"
+                className="relative w-20 h-20 object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-primary-400 animate-bounce-slow" />
+              <span className="text-2xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
+            </div>
           </Link>
         </div>
 
-        {/* Form Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
+        {/* Form Card with entrance animation */}
+        <div className="glass-card rounded-3xl p-8 md:p-10 auth-card-enter animate-glow-pulse">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">
               {t('auth.login.title')}
@@ -204,18 +213,45 @@ const Login = () => {
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={20} />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full pl-12 pr-12 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                   placeholder="••••••••"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary-400 transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
             </div>
 
-            {/* Forgot Password */}
-            <div className="flex items-center justify-end">
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center gap-3 cursor-pointer group">
+                <div className="relative">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={(e) => setRememberMe(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-5 h-5 rounded border border-white/10 bg-dark-300/50 peer-checked:bg-primary-500 peer-checked:border-primary-500 transition-all duration-300 flex items-center justify-center">
+                    {rememberMe && (
+                      <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+                <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
+                  Se souvenir de moi
+                </span>
+              </label>
               <Link to="/forgot-password" className="text-sm text-primary-400 hover:text-primary-300 transition-colors">
                 Mot de passe oublié?
               </Link>
@@ -251,7 +287,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading || isLimited || (requiresCaptcha && !captchaToken)}
-              className="group w-full flex items-center justify-center gap-3 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
+              className="group w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-[1.02] active:scale-[0.98] btn-shine"
             >
               {loading ? (
                 <>
@@ -317,10 +353,11 @@ const Login = () => {
         </div>
 
         {/* Footer Badge */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
-            <Sparkles size={14} className="text-primary-400" />
-            Secure login with 2FA support
+        <div className="mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full text-gray-400 text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
+            <Sparkles size={14} className="text-primary-400 animate-pulse" />
+            <span>Secure login with 2FA support</span>
+            <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
           </div>
         </div>
       </div>

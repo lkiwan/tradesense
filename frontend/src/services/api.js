@@ -192,6 +192,8 @@ export const paymentsAPI = {
   getPlans: () => api.get('/payments/plans'),
   createCheckout: (planType, paymentMethod) =>
     api.post('/payments/checkout', { plan_type: planType, payment_method: paymentMethod }),
+  createChallengeCheckout: (data) =>
+    api.post('/payments/challenge-checkout', data),
   processPayment: (paymentId, paypalOrderId) =>
     api.post('/payments/process', { payment_id: paymentId, paypal_order_id: paypalOrderId }),
   getHistory: () => api.get('/payments/history')

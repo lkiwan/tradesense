@@ -132,9 +132,20 @@ export const AuthProvider = ({ children }) => {
 
       return { success: true, user: userData }
     } catch (error) {
+      console.error('Registration error:', error.response?.status, error.response?.data)
+
+      // Handle rate limit error
+      if (error.response?.status === 429) {
+        return {
+          success: false,
+          error: 'Too many registration attempts. Please wait an hour before trying again.',
+          isRateLimited: true
+        }
+      }
+
       return {
         success: false,
-        error: error.response?.data?.error || 'Registration failed'
+        error: error.response?.data?.error || error.response?.data?.message || 'Registration failed. Please try again.'
       }
     }
   }

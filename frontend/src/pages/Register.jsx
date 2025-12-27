@@ -4,8 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useLanguage } from '../context/LanguageContext'
 import toast from 'react-hot-toast'
-import { User, Mail, Lock, Loader2, UserPlus, ArrowRight, Sparkles, CheckCircle2, Globe } from 'lucide-react'
+import { User, Mail, Lock, Loader2, UserPlus, ArrowRight, Sparkles, CheckCircle2, Globe, TrendingUp, Rocket, Eye, EyeOff } from 'lucide-react'
 import SocialLoginButtons from '../components/auth/SocialLoginButtons'
+import AnimatedAuthBackground from '../components/auth/AnimatedAuthBackground'
 
 const Register = () => {
   const { t } = useTranslation()
@@ -17,6 +18,8 @@ const Register = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
   const [preferredLanguage, setPreferredLanguage] = useState(language)
   const [loading, setLoading] = useState(false)
   const [agreedToTerms, setAgreedToTerms] = useState(false)
@@ -45,14 +48,31 @@ const Register = () => {
     }
 
     setLoading(true)
-    const result = await register(username, email, password, preferredLanguage)
-    setLoading(false)
+    try {
+      const result = await register(username, email, password, preferredLanguage)
+      setLoading(false)
 
-    if (result.success) {
-      toast.success('Account created successfully! Please verify your email.')
-      navigate('/email-verification-sent')
-    } else {
-      toast.error(result.error)
+      if (result.success) {
+        toast.success('Account created successfully! Please verify your email.')
+        navigate('/email-verification-sent')
+      } else {
+        // Check for rate limit error
+        if (result.error?.includes('rate') || result.error?.includes('Too many')) {
+          toast.error('Too many registration attempts. Please try again later.')
+        } else {
+          toast.error(result.error || 'Registration failed. Please try again.')
+        }
+      }
+    } catch (error) {
+      setLoading(false)
+      console.error('Registration error:', error)
+
+      // Handle rate limit (429)
+      if (error.response?.status === 429) {
+        toast.error('Too many registration attempts. Please wait an hour before trying again.')
+      } else {
+        toast.error(error.response?.data?.error || 'Registration failed. Please check your connection.')
+      }
     }
   }
 
@@ -74,25 +94,31 @@ const Register = () => {
   const passwordStrength = getPasswordStrength()
 
   return (
-    <div className="min-h-screen bg-dark-400 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px] animate-pulse-slow" />
-        <div className="absolute bottom-1/4 left-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
-        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
-      </div>
+    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Animated Background */}
+      <AnimatedAuthBackground />
 
-      <div className="relative max-w-md w-full">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex flex-col items-center gap-2 group">
-            <img src="/logo.png" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
-            <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
+      <div className="relative max-w-md w-full z-10">
+        {/* Logo with animation */}
+        <div className="text-center mb-8 animate-slide-up-fade">
+          <Link to="/" className="inline-flex flex-col items-center gap-3 group logo-hover">
+            <div className="relative">
+              <div className="absolute inset-0 bg-primary-500/20 rounded-2xl blur-xl animate-pulse-slow" />
+              <img
+                src="/logo.svg"
+                alt="TradeSense"
+                className="relative w-20 h-20 object-contain transition-all duration-500 group-hover:scale-110 group-hover:rotate-3"
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <Rocket className="w-5 h-5 text-primary-400 animate-bounce-slow" />
+              <span className="text-2xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
+            </div>
           </Link>
         </div>
 
-        {/* Form Card */}
-        <div className="glass-card rounded-3xl p-8 md:p-10">
+        {/* Form Card with entrance animation */}
+        <div className="glass-card rounded-3xl p-8 md:p-10 auth-card-enter animate-glow-pulse">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-white mb-2">
               {t('auth.register.title')}
@@ -147,14 +173,21 @@ const Register = () => {
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={20} />
                 <input
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
+                  className="w-full pl-12 pr-12 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                   placeholder="••••••••"
                   required
                   minLength={6}
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary-400 transition-colors focus:outline-none"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
               {/* Password Strength Indicator */}
               {password && (
@@ -184,10 +217,10 @@ const Register = () => {
               <div className="relative group">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={20} />
                 <input
-                  type="password"
+                  type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className={`w-full pl-12 pr-4 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border focus:outline-none focus:ring-2 transition-all duration-300 ${
+                  className={`w-full pl-12 pr-12 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border focus:outline-none focus:ring-2 transition-all duration-300 ${
                     confirmPassword && password !== confirmPassword
                       ? 'border-red-500/50 focus:ring-red-500/50'
                       : confirmPassword && password === confirmPassword
@@ -197,6 +230,18 @@ const Register = () => {
                   placeholder="••••••••"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className={`absolute right-4 top-1/2 -translate-y-1/2 transition-colors focus:outline-none ${
+                    confirmPassword && password === confirmPassword
+                      ? 'right-12 text-gray-500 hover:text-primary-400'
+                      : 'text-gray-500 hover:text-primary-400'
+                  }`}
+                  style={{ right: confirmPassword && password === confirmPassword ? '3rem' : '1rem' }}
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
                 {confirmPassword && password === confirmPassword && (
                   <CheckCircle2 className="absolute right-4 top-1/2 -translate-y-1/2 text-green-500" size={20} />
                 )}
@@ -246,7 +291,7 @@ const Register = () => {
             <button
               type="submit"
               disabled={loading || !agreedToTerms}
-              className="group w-full flex items-center justify-center gap-3 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
+              className="group w-full flex items-center justify-center gap-3 py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/40 hover:scale-[1.02] active:scale-[0.98] btn-shine"
             >
               {loading ? (
                 <>
@@ -286,10 +331,15 @@ const Register = () => {
         </div>
 
         {/* Footer Badge */}
-        <div className="mt-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
-            <Sparkles size={14} className="text-primary-400" />
-            Join 10,000+ traders worldwide
+        <div className="mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full text-gray-400 text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
+            <Sparkles size={14} className="text-primary-400 animate-pulse" />
+            <span>Join 10,000+ traders worldwide</span>
+            <div className="flex gap-1">
+              <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-primary-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+              <div className="w-2 h-2 bg-primary-300 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+            </div>
           </div>
         </div>
       </div>

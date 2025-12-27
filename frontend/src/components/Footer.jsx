@@ -14,7 +14,7 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img
-                src="/logo.png"
+                src="/logo.svg"
                 alt="TradeSense"
                 className="h-10 w-10 object-contain"
               />

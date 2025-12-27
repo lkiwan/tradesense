@@ -21,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 @auth_bp.route('/register', methods=['POST'])
-@limiter.limit("3 per hour", key_func=get_ip_key)
+@limiter.limit("10 per hour", key_func=get_ip_key)
 def register():
     """Register a new user"""
     data = request.get_json()

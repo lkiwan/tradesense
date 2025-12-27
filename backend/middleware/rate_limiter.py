@@ -60,7 +60,7 @@ def get_user_key():
 # Initialize the limiter (will be configured in app factory)
 limiter = Limiter(
     key_func=get_rate_limit_key,
-    default_limits=["500 per minute", "5000 per hour"],
+    default_limits=[],  # No default limits - will be set per-route if needed
     storage_uri="memory://",
     strategy="fixed-window"
 )
@@ -290,13 +290,18 @@ class RateLimitTracker:
 
 def init_rate_limiter(app):
     """Initialize rate limiter with app configuration"""
+    # Check if rate limiting is disabled
+    rate_limit_enabled = app.config.get('RATELIMIT_ENABLED', True)
+
+    if not rate_limit_enabled:
+        logger.info("Rate limiter is DISABLED via config")
+        # Set enabled=False in config which flask-limiter respects
+        app.config['RATELIMIT_ENABLED'] = False
+
     try:
-        redis_url = app.config.get('REDIS_URL')
-        if redis_url:
-            limiter._storage_uri = redis_url
-            logger.info(f"Rate limiter initialized with Redis: {redis_url}")
-        else:
-            logger.info("Rate limiter using in-memory storage")
+        storage_url = app.config.get('RATELIMIT_STORAGE_URL', 'memory://')
+        limiter._storage_uri = storage_url
+        logger.info(f"Rate limiter storage: {storage_url}, enabled: {rate_limit_enabled}")
     except Exception as e:
         logger.warning(f"Rate limiter init warning: {e}")
 
@@ -306,6 +311,9 @@ def init_rate_limiter(app):
     @limiter.request_filter
     def exempt_options():
         """Exempt OPTIONS (CORS preflight) and health check from rate limiting"""
+        # If rate limiting is disabled, exempt ALL requests
+        if not app.config.get('RATELIMIT_ENABLED', True):
+            return True
         if request.method == 'OPTIONS':
             return True
         if request.path == '/api/health':
