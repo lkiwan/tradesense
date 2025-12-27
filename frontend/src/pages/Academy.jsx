@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   BookOpen, Play, Clock, Star, ChevronRight, Search,
   TrendingUp, BarChart3, Shield, Brain, Target, Zap,
-  Lock, CheckCircle2, Users, Award
+  Lock, CheckCircle2, Users, Award, ArrowLeft
 } from 'lucide-react'
 
 const Academy = () => {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedCategory, setSelectedCategory] = useState('all')
 
@@ -165,18 +166,27 @@ const Academy = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-dark-200 py-12">
+    <div className="min-h-screen bg-gray-50 dark:bg-dark-200 py-8 sm:py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Back Button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-6 flex items-center gap-2 px-3 py-2 rounded-xl bg-white dark:bg-dark-100 border border-gray-200 dark:border-dark-100 hover:border-primary-500/50 transition-all duration-300 group"
+        >
+          <ArrowLeft className="w-4 h-4 text-gray-500 group-hover:text-primary-500 transition-colors" />
+          <span className="text-sm text-gray-600 dark:text-gray-400 group-hover:text-primary-500 transition-colors">Back</span>
+        </button>
+
         {/* Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 rounded-full text-primary-500 text-sm font-medium mb-4">
             <BookOpen size={16} />
             Trading Academy
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Learn to Trade Like a Pro
           </h1>
-          <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Free educational resources, trading courses, and guides to help you become a consistently profitable trader.
           </p>
         </div>
