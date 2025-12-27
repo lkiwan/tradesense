@@ -88,6 +88,9 @@ from .push_notifications import push_bp
 # Import blog blueprint (uses its own bp definition)
 from .blog import blog_bp
 
+# Import news blueprint (uses its own bp definition)
+from .news import news_bp
+
 # Import webinars blueprint (uses its own bp definition)
 from .webinars import webinars_bp
 

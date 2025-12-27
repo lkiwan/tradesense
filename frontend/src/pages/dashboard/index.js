@@ -39,6 +39,7 @@ export { default as IdeaDetailPage } from './IdeaDetailPage'
 // Help & Support
 export { default as UtilitiesPage } from './UtilitiesPage'
 export { default as CalendarPage } from './CalendarPage'
+export { default as NewsFeedPage } from './NewsFeedPage'
 
 // Legacy - keeping SignalsPage for any direct references
 export { default as SignalsPage } from './SignalsPage'

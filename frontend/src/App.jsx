@@ -150,6 +150,7 @@ import {
   // Help & Support
   UtilitiesPage,
   CalendarPage,
+  NewsFeedPage,
   // Legacy compatibility
   SignalsPage
 } from './pages/dashboard'
@@ -822,6 +823,15 @@ function App() {
               <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <CalendarPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Dashboard News Feed */}
+            <Route path="/news" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <NewsFeedPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />

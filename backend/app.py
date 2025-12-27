@@ -116,7 +116,7 @@ def create_app(config_name=None):
         subscriptions_v2_bp, challenge_addons_bp, affiliates_bp, advanced_orders_bp,
         quick_trading_bp, order_templates_bp, journal_bp, mt_bp, charts_bp,
         profiles_bp, followers_bp, copy_trading_bp, ideas_bp, push_bp, blog_bp,
-        webinars_bp, oauth_bp, events_bp, monitoring_bp, admin_users_bp,
+        webinars_bp, oauth_bp, events_bp, monitoring_bp, admin_users_bp, news_bp,
         admin_challenges_bp, admin_financial_bp, admin_tickets_bp, superadmin_config_bp,
         superadmin_security_bp, superadmin_advanced_bp, superadmin_analytics_bp,
         admin_permissions_bp
@@ -156,6 +156,7 @@ def create_app(config_name=None):
     app.register_blueprint(ideas_bp)
     app.register_blueprint(push_bp)
     app.register_blueprint(blog_bp)
+    app.register_blueprint(news_bp)
     app.register_blueprint(webinars_bp)
     app.register_blueprint(oauth_bp)
     app.register_blueprint(events_bp)

@@ -452,6 +452,33 @@ export const resourcesAPI = {
   updateCalendarEvent: (eventId, data) => api.put(`/resources/calendar/${eventId}`, data)
 }
 
+// News API (multi-source news aggregation)
+export const newsAPI = {
+  // Get aggregated news from all sources
+  getNews: (market = 'all', category = null, limit = 20, sentiment = null) =>
+    api.get('/news', { params: { market, category, limit, sentiment } }),
+
+  // Get breaking news (last 2 hours)
+  getBreaking: (limit = 5) =>
+    api.get('/news/breaking', { params: { limit } }),
+
+  // Get news for a specific symbol
+  getBySymbol: (symbol, limit = 10) =>
+    api.get(`/news/symbol/${symbol}`, { params: { limit } }),
+
+  // Get market sentiment summary
+  getSummary: () =>
+    api.get('/news/summary'),
+
+  // Get available markets (public)
+  getMarkets: () =>
+    api.get('/news/markets'),
+
+  // Get sentiment types (public)
+  getSentiments: () =>
+    api.get('/news/sentiments')
+}
+
 // Session Management API
 export const sessionsAPI = {
   // Get all active sessions

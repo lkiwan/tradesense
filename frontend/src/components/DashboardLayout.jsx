@@ -10,7 +10,8 @@ import {
   ChevronDown, ChevronRight, LogOut, Settings, User, Menu, X,
   Rocket, Brain, TrendingUp, BarChart3, Target, Zap, Users,
   CreditCard, FolderOpen, Calendar, ExternalLink, Sparkles, Crown,
-  Layers, MousePointer2, FileCode, Monitor, BarChart2, Copy, Lightbulb
+  Layers, MousePointer2, FileCode, Monitor, BarChart2, Copy, Lightbulb,
+  Newspaper
 } from 'lucide-react'
 
 const DashboardLayout = ({ children }) => {
@@ -87,6 +88,7 @@ const DashboardLayout = ({ children }) => {
   const supportItems = [
     { path: '/utilities', icon: FolderOpen, label: 'Files & Utilities' },
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
+    { path: '/news', icon: Newspaper, label: 'Market News', badge: 'NEW', badgeColor: 'bg-blue-500' },
     { path: 'https://fundednext.com/symbols', icon: ExternalLink, label: 'Symbols', external: true },
   ]
 
