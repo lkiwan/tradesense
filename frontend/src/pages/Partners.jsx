@@ -228,42 +228,42 @@ const Partners = () => {
           <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
 
           <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              <div className="glass-card p-6 rounded-2xl text-center hover:border-blue-500/30 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Users size={24} className="text-blue-400" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6">
+              <div className="glass-card p-3 sm:p-6 rounded-lg sm:rounded-2xl text-center hover:border-blue-500/30 transition-all duration-300 hover:scale-105">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                  <Users className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400" />
                 </div>
-                <div className="text-3xl font-bold text-white mb-1">
+                <div className="text-lg sm:text-3xl font-bold text-white mb-0.5 sm:mb-1">
                   {affiliateData.totalReferrals}
                 </div>
-                <div className="text-sm text-gray-500">Total Referrals</div>
+                <div className="text-[10px] sm:text-sm text-gray-500">Referrals</div>
               </div>
-              <div className="glass-card p-6 rounded-2xl text-center hover:border-yellow-500/30 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-yellow-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <DollarSign size={24} className="text-yellow-400" />
+              <div className="glass-card p-3 sm:p-6 rounded-lg sm:rounded-2xl text-center hover:border-yellow-500/30 transition-all duration-300 hover:scale-105">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-yellow-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                  <DollarSign className="w-4 h-4 sm:w-6 sm:h-6 text-yellow-400" />
                 </div>
-                <div className="text-3xl font-bold text-yellow-400 mb-1">
+                <div className="text-lg sm:text-3xl font-bold text-yellow-400 mb-0.5 sm:mb-1">
                   ${affiliateData.pendingCommission}
                 </div>
-                <div className="text-sm text-gray-500">Pending Commission</div>
+                <div className="text-[10px] sm:text-sm text-gray-500">Pending</div>
               </div>
-              <div className="glass-card p-6 rounded-2xl text-center hover:border-green-500/30 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp size={24} className="text-green-400" />
+              <div className="glass-card p-3 sm:p-6 rounded-lg sm:rounded-2xl text-center hover:border-green-500/30 transition-all duration-300 hover:scale-105">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                  <TrendingUp className="w-4 h-4 sm:w-6 sm:h-6 text-green-400" />
                 </div>
-                <div className="text-3xl font-bold text-green-400 mb-1">
+                <div className="text-lg sm:text-3xl font-bold text-green-400 mb-0.5 sm:mb-1">
                   ${affiliateData.totalEarned}
                 </div>
-                <div className="text-sm text-gray-500">Total Earned</div>
+                <div className="text-[10px] sm:text-sm text-gray-500">Earned</div>
               </div>
-              <div className="glass-card p-6 rounded-2xl text-center hover:border-purple-500/30 transition-all duration-300 hover:scale-105">
-                <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mx-auto mb-4">
-                  <Percent size={24} className="text-purple-400" />
+              <div className="glass-card p-3 sm:p-6 rounded-lg sm:rounded-2xl text-center hover:border-purple-500/30 transition-all duration-300 hover:scale-105">
+                <div className="w-8 h-8 sm:w-12 sm:h-12 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mx-auto mb-2 sm:mb-4">
+                  <Percent className="w-4 h-4 sm:w-6 sm:h-6 text-purple-400" />
                 </div>
-                <div className="text-3xl font-bold text-purple-400 mb-1">
+                <div className="text-lg sm:text-3xl font-bold text-purple-400 mb-0.5 sm:mb-1">
                   {affiliateData.conversionRate}%
                 </div>
-                <div className="text-sm text-gray-500">Conversion Rate</div>
+                <div className="text-[10px] sm:text-sm text-gray-500">Conversion</div>
               </div>
             </div>
           </div>
@@ -286,7 +286,7 @@ const Partners = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div className="grid grid-cols-3 gap-2 sm:gap-6 md:gap-8">
             {steps.map((step, index) => {
               const Icon = step.icon
               return (
@@ -294,17 +294,17 @@ const Partners = () => {
                   {index < steps.length - 1 && (
                     <div className="hidden md:block absolute top-20 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary-500/50 to-transparent" />
                   )}
-                  <div className="group relative glass-card rounded-2xl p-8 text-center transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:border-primary-500/30">
-                    <div className={`w-20 h-20 mx-auto mb-6 ${step.bg} rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                      <Icon size={36} className={step.color} />
+                  <div className="group relative glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:border-primary-500/30">
+                    <div className={`w-10 h-10 sm:w-20 sm:h-20 mx-auto mb-2 sm:mb-6 ${step.bg} rounded-lg sm:rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                      <Icon className={`w-5 h-5 sm:w-9 sm:h-9 ${step.color}`} />
                     </div>
-                    <div className="inline-flex px-3 py-1 bg-primary-500/20 rounded-full text-primary-400 text-sm font-bold mb-4">
+                    <div className="inline-flex px-2 sm:px-3 py-0.5 sm:py-1 bg-primary-500/20 rounded-full text-primary-400 text-[10px] sm:text-sm font-bold mb-2 sm:mb-4">
                       {step.number}
                     </div>
-                    <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-400 transition-colors">
+                    <h3 className="text-xs sm:text-xl font-semibold text-white mb-1 sm:mb-3 group-hover:text-primary-400 transition-colors">
                       {step.title}
                     </h3>
-                    <p className="text-gray-400 leading-relaxed">
+                    <p className="text-gray-400 text-[10px] sm:text-base leading-relaxed hidden sm:block">
                       {step.description}
                     </p>
                   </div>
@@ -333,40 +333,40 @@ const Partners = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
             {tiers.map((tier, index) => {
               const Icon = tier.icon
               const isDiamond = tier.name === 'Diamond'
               return (
                 <div
                   key={index}
-                  className={`group relative glass-card p-8 rounded-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${tier.border} ${isDiamond ? tier.glow : ''}`}
+                  className={`group relative glass-card p-3 sm:p-8 rounded-lg sm:rounded-2xl transition-all duration-500 hover:scale-105 hover:-translate-y-2 ${tier.border} ${isDiamond ? tier.glow : ''}`}
                 >
                   {isDiamond && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold rounded-full shadow-lg">
-                      BEST VALUE
+                    <div className="absolute -top-2 sm:-top-3 left-1/2 -translate-x-1/2 px-2 sm:px-4 py-0.5 sm:py-1.5 bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-[8px] sm:text-xs font-bold rounded-full shadow-lg">
+                      BEST
                     </div>
                   )}
 
-                  <div className="text-center mb-6">
-                    <div className={`w-16 h-16 mx-auto mb-4 ${tier.bg} rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
-                      <Icon size={32} className={tier.color} />
+                  <div className="text-center mb-2 sm:mb-6">
+                    <div className={`w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-4 ${tier.bg} rounded-lg sm:rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110 group-hover:rotate-6`}>
+                      <Icon className={`w-5 h-5 sm:w-8 sm:h-8 ${tier.color}`} />
                     </div>
-                    <h3 className={`text-xl font-bold mb-2 ${tier.color}`}>
+                    <h3 className={`text-sm sm:text-xl font-bold mb-1 sm:mb-2 ${tier.color}`}>
                       {tier.name}
                     </h3>
-                    <div className="text-4xl font-bold text-white mb-2">
+                    <div className="text-xl sm:text-4xl font-bold text-white mb-0.5 sm:mb-2">
                       {tier.commission}
                     </div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-[10px] sm:text-sm text-gray-500">
                       {tier.requirement}
                     </div>
                   </div>
 
-                  <ul className="space-y-3">
+                  <ul className="space-y-1 sm:space-y-3 hidden sm:block">
                     {tier.perks.map((perk, i) => (
-                      <li key={i} className="flex items-start gap-3 text-sm text-gray-400">
-                        <CheckCircle2 size={16} className="text-green-500 mt-0.5 flex-shrink-0" />
+                      <li key={i} className="flex items-start gap-2 sm:gap-3 text-xs sm:text-sm text-gray-400">
+                        <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-green-500 mt-0.5 flex-shrink-0" />
                         {perk}
                       </li>
                     ))}
@@ -394,20 +394,23 @@ const Partners = () => {
                 Join our growing network of successful affiliates and unlock unlimited earning potential with industry-leading commission rates.
               </p>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-2 sm:grid-cols-1 gap-2 sm:gap-4">
                 {[
-                  { icon: DollarSign, text: 'Highest commission rates in the industry - up to 25%', color: 'text-green-400', bg: 'bg-green-500/20' },
-                  { icon: Zap, text: 'Fast payouts - weekly for Gold, instant for Diamond', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-                  { icon: Target, text: 'Real-time tracking dashboard with detailed analytics', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-                  { icon: Award, text: 'Marketing materials and dedicated support team', color: 'text-purple-400', bg: 'bg-purple-500/20' }
+                  { icon: DollarSign, text: 'Highest commission rates in the industry - up to 25%', shortText: 'Up to 25% commission', color: 'text-green-400', bg: 'bg-green-500/20' },
+                  { icon: Zap, text: 'Fast payouts - weekly for Gold, instant for Diamond', shortText: 'Fast payouts', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
+                  { icon: Target, text: 'Real-time tracking dashboard with detailed analytics', shortText: 'Real-time tracking', color: 'text-blue-400', bg: 'bg-blue-500/20' },
+                  { icon: Award, text: 'Marketing materials and dedicated support team', shortText: 'Dedicated support', color: 'text-purple-400', bg: 'bg-purple-500/20' }
                 ].map((benefit, index) => {
                   const Icon = benefit.icon
                   return (
-                    <div key={index} className="flex items-center gap-4 p-4 glass-card rounded-xl hover:border-white/10 transition-all duration-300">
-                      <div className={`w-12 h-12 ${benefit.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-                        <Icon size={24} className={benefit.color} />
+                    <div key={index} className="flex flex-col sm:flex-row items-center sm:items-center gap-2 sm:gap-4 p-3 sm:p-4 glass-card rounded-lg sm:rounded-xl hover:border-white/10 transition-all duration-300 text-center sm:text-left">
+                      <div className={`w-8 h-8 sm:w-12 sm:h-12 ${benefit.bg} rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0`}>
+                        <Icon className={`w-4 h-4 sm:w-6 sm:h-6 ${benefit.color}`} />
                       </div>
-                      <span className="text-gray-300">{benefit.text}</span>
+                      <span className="text-gray-300 text-[10px] sm:text-base">
+                        <span className="hidden sm:inline">{benefit.text}</span>
+                        <span className="sm:hidden">{benefit.shortText}</span>
+                      </span>
                     </div>
                   )
                 })}

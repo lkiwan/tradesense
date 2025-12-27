@@ -164,21 +164,21 @@ const About = () => {
         <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
 
         <div className="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 relative z-10">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
                 <div
                   key={index}
-                  className="glass-card rounded-2xl p-6 text-center hover:scale-105 transition-transform duration-300 card-hover-glow"
+                  className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-6 text-center hover:scale-105 transition-transform duration-300 card-hover-glow"
                 >
-                  <div className="w-12 h-12 mx-auto mb-4 bg-primary-500/20 rounded-xl flex items-center justify-center">
-                    <Icon size={24} className="text-primary-500" />
+                  <div className="w-8 h-8 sm:w-12 sm:h-12 mx-auto mb-2 sm:mb-4 bg-primary-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                    <Icon size={16} className="text-primary-500 sm:w-6 sm:h-6" />
                   </div>
-                  <div className="text-3xl md:text-4xl font-bold text-white mb-2">
+                  <div className="text-lg sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
                     {stat.prefix}<AnimatedCounter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <div className="text-gray-400 text-sm">{stat.label}</div>
+                  <div className="text-gray-400 text-[10px] sm:text-sm">{stat.label}</div>
                 </div>
               )
             })}
@@ -287,21 +287,21 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
             {values.map((value, index) => {
               const Icon = value.icon
               return (
                 <div
                   key={index}
-                  className="glass-card-dark rounded-2xl p-6 text-center hover:-translate-y-2 transition-all duration-500 card-hover-glow spotlight group"
+                  className="glass-card-dark rounded-lg sm:rounded-2xl p-3 sm:p-6 text-center hover:-translate-y-2 transition-all duration-500 card-hover-glow spotlight group"
                 >
-                  <div className={`w-16 h-16 mx-auto mb-6 ${value.bg} rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
-                    <Icon size={28} className={value.color} />
+                  <div className={`w-10 h-10 sm:w-16 sm:h-16 mx-auto mb-2 sm:mb-6 ${value.bg} rounded-lg sm:rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
+                    <Icon className={`w-5 h-5 sm:w-7 sm:h-7 ${value.color}`} />
                   </div>
-                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-400 transition-colors">
+                  <h3 className="text-sm sm:text-xl font-semibold text-white mb-1 sm:mb-3 group-hover:text-primary-400 transition-colors">
                     {value.title}
                   </h3>
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-gray-400 text-[10px] sm:text-base leading-relaxed hidden sm:block">
                     {value.description}
                   </p>
                 </div>
@@ -383,20 +383,20 @@ const About = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-6">
             {team.map((member, index) => (
               <div
                 key={index}
-                className="glass-card-dark rounded-2xl p-6 text-center hover:-translate-y-2 transition-all duration-500 card-hover-glow group"
+                className="glass-card-dark rounded-lg sm:rounded-2xl p-3 sm:p-6 text-center hover:-translate-y-2 transition-all duration-500 card-hover-glow group"
               >
-                <div className={`w-24 h-24 mx-auto mb-6 bg-gradient-to-br ${member.gradient} rounded-full flex items-center justify-center text-white text-3xl font-bold group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
+                <div className={`w-14 h-14 sm:w-24 sm:h-24 mx-auto mb-2 sm:mb-6 bg-gradient-to-br ${member.gradient} rounded-full flex items-center justify-center text-white text-xl sm:text-3xl font-bold group-hover:scale-110 transition-transform duration-300 shadow-lg`}>
                   {member.name.charAt(0)}
                 </div>
-                <h3 className="text-lg font-semibold text-white mb-1 group-hover:text-primary-400 transition-colors">
+                <h3 className="text-xs sm:text-lg font-semibold text-white mb-0.5 sm:mb-1 group-hover:text-primary-400 transition-colors">
                   {member.name}
                 </h3>
-                <p className="text-primary-500 text-sm font-medium mb-3">{member.role}</p>
-                <p className="text-sm text-gray-400 leading-relaxed">{member.bio}</p>
+                <p className="text-primary-500 text-[10px] sm:text-sm font-medium mb-1 sm:mb-3">{member.role}</p>
+                <p className="text-[10px] sm:text-sm text-gray-400 leading-relaxed hidden sm:block">{member.bio}</p>
               </div>
             ))}
           </div>
@@ -404,37 +404,37 @@ const About = () => {
       </section>
 
       {/* Contact Info */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-12 sm:py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
-              <div className="w-14 h-14 mx-auto mb-4 bg-primary-500/20 rounded-xl flex items-center justify-center">
-                <MapPin size={24} className="text-primary-500" />
+          <div className="grid grid-cols-3 gap-2 sm:gap-6">
+            <div className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-primary-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-primary-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Location</h3>
-              <p className="text-gray-400">
-                Casablanca, Morocco<br />
-                Dubai, UAE
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Location</h3>
+              <p className="text-gray-400 text-[10px] sm:text-base">
+                <span className="hidden sm:inline">Casablanca, Morocco<br />Dubai, UAE</span>
+                <span className="sm:hidden">Morocco<br />UAE</span>
               </p>
             </div>
-            <div className="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
-              <div className="w-14 h-14 mx-auto mb-4 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <Mail size={24} className="text-blue-500" />
+            <div className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                <Mail className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Email</h3>
-              <p className="text-gray-400">
-                support@tradesense.com<br />
-                partners@tradesense.com
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Email</h3>
+              <p className="text-gray-400 text-[10px] sm:text-base">
+                <span className="hidden sm:inline">support@tradesense.com<br />partners@tradesense.com</span>
+                <span className="sm:hidden">support@<br />tradesense.com</span>
               </p>
             </div>
-            <div className="glass-card rounded-2xl p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
-              <div className="w-14 h-14 mx-auto mb-4 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <Phone size={24} className="text-purple-500" />
+            <div className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
+                <Phone className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
               </div>
-              <h3 className="text-lg font-semibold text-white mb-3">Phone</h3>
-              <p className="text-gray-400">
-                +212 XXX XXX XXX<br />
-                24/7 Live Chat
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Phone</h3>
+              <p className="text-gray-400 text-[10px] sm:text-base">
+                <span className="hidden sm:inline">+212 XXX XXX XXX<br />24/7 Live Chat</span>
+                <span className="sm:hidden">+212 XXX<br />24/7 Chat</span>
               </p>
             </div>
           </div>

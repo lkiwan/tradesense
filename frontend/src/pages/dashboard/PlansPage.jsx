@@ -640,36 +640,36 @@ const PlansPage = () => {
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4">
-            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
-                <Brain className="text-purple-400" size={20} />
+            <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 bg-purple-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <Brain className="text-purple-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
-              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Réseaux de neurones analysant les patterns historiques.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Réseaux de neurones analysant les patterns historiques.</p>
             </div>
 
-            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
-                <BarChart3 className="text-blue-400" size={20} />
+            <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 bg-blue-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <BarChart3 className="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
-              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">150+ indicateurs calculés en temps réel.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">150+ indicateurs calculés en temps réel.</p>
             </div>
 
-            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
-                <TrendingUp className="text-green-400" size={20} />
+            <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 bg-green-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <TrendingUp className="text-green-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-green-400 transition-colors">Sentiment Analysis</h3>
-              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Analyse des news et réseaux sociaux.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-green-400 transition-colors">Sentiment</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Analyse des news et réseaux sociaux.</p>
             </div>
 
-            <div className="group glass-card p-3 sm:p-5 rounded-xl sm:rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
-              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-orange-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-4 transition-all duration-300 group-hover:scale-110">
-                <Zap className="text-orange-400" size={20} />
+            <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
+              <div className="w-8 h-8 sm:w-14 sm:h-14 bg-orange-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
+                <Zap className="text-orange-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-sm sm:text-base mb-1 sm:mb-2 group-hover:text-orange-400 transition-colors">Exécution Rapide</h3>
-              <p className="text-gray-400 text-xs sm:text-sm leading-relaxed hidden sm:block">Signaux générés en millisecondes.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-orange-400 transition-colors">Rapide</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Signaux générés en millisecondes.</p>
             </div>
           </div>
         </div>

@@ -343,48 +343,48 @@ const FAQ = () => {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-3 gap-2 sm:gap-6">
             <Link
               to="/how-it-works"
-              className="group glass-card p-8 rounded-2xl hover:border-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"
+              className="group glass-card p-3 sm:p-8 rounded-lg sm:rounded-2xl hover:border-blue-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)]"
             >
-              <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <Target size={28} className="text-blue-400" />
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-blue-500/20 rounded-lg sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-5 mx-auto sm:mx-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                <Target className="w-5 h-5 sm:w-7 sm:h-7 text-blue-400" />
               </div>
-              <h3 className="font-semibold text-white text-lg mb-2 group-hover:text-blue-400 transition-colors">
+              <h3 className="font-semibold text-white text-xs sm:text-lg mb-1 sm:mb-2 group-hover:text-blue-400 transition-colors text-center sm:text-left">
                 How It Works
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">
                 Learn about our challenge process step by step.
               </p>
             </Link>
 
             <Link
               to="/pricing"
-              className="group glass-card p-8 rounded-2xl hover:border-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(34,197,94,0.15)]"
+              className="group glass-card p-3 sm:p-8 rounded-lg sm:rounded-2xl hover:border-green-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(34,197,94,0.15)]"
             >
-              <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <DollarSign size={28} className="text-green-400" />
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-green-500/20 rounded-lg sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-5 mx-auto sm:mx-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                <DollarSign className="w-5 h-5 sm:w-7 sm:h-7 text-green-400" />
               </div>
-              <h3 className="font-semibold text-white text-lg mb-2 group-hover:text-green-400 transition-colors">
+              <h3 className="font-semibold text-white text-xs sm:text-lg mb-1 sm:mb-2 group-hover:text-green-400 transition-colors text-center sm:text-left">
                 Pricing
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">
                 View our challenge plans and pricing options.
               </p>
             </Link>
 
             <Link
               to="/academy"
-              className="group glass-card p-8 rounded-2xl hover:border-purple-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)]"
+              className="group glass-card p-3 sm:p-8 rounded-lg sm:rounded-2xl hover:border-purple-500/30 transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)]"
             >
-              <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <BookOpen size={28} className="text-purple-400" />
+              <div className="w-10 h-10 sm:w-14 sm:h-14 bg-purple-500/20 rounded-lg sm:rounded-2xl flex items-center justify-center mb-2 sm:mb-5 mx-auto sm:mx-0 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6">
+                <BookOpen className="w-5 h-5 sm:w-7 sm:h-7 text-purple-400" />
               </div>
-              <h3 className="font-semibold text-white text-lg mb-2 group-hover:text-purple-400 transition-colors">
+              <h3 className="font-semibold text-white text-xs sm:text-lg mb-1 sm:mb-2 group-hover:text-purple-400 transition-colors text-center sm:text-left">
                 Academy
               </h3>
-              <p className="text-gray-400 text-sm leading-relaxed">
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">
                 Free educational resources for traders.
               </p>
             </Link>
