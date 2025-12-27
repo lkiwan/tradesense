@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Calendar, Clock, AlertTriangle, TrendingUp, TrendingDown, Filter, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { Calendar, Clock, AlertTriangle, TrendingUp, TrendingDown, Filter, ChevronLeft, ChevronRight, ArrowLeft } from 'lucide-react'
 
 const CalendarPage = () => {
+  const navigate = useNavigate()
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [filter, setFilter] = useState('all')
 
@@ -57,14 +59,22 @@ const CalendarPage = () => {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-              <Calendar className="text-primary-400" size={24} />
-            </div>
-            Economic Calendar
-          </h1>
-          <p className="text-gray-400 mt-1">Track important economic events that may impact your trading</p>
+        <div className="flex items-start gap-3">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group"
+          >
+            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+          </button>
+          <div>
+            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
+              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+                <Calendar className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
+              </div>
+              Economic Calendar
+            </h1>
+            <p className="text-gray-400 mt-1 text-sm sm:text-base">Track important economic events</p>
+          </div>
         </div>
       </div>
 
