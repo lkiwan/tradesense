@@ -652,7 +652,7 @@ const LandingPage = () => {
         <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left pt-16 sm:pt-20">
+            <div className="text-center lg:text-left pt-16 sm:pt-20 px-2 sm:px-0">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-card mb-6 sm:mb-8 animate-float hover:scale-105 transition-transform cursor-default">
                 <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
@@ -674,17 +674,20 @@ const LandingPage = () => {
                   />
                 </span>
                 <br className="hidden sm:block" />
-                <span className="text-glow block mt-1 sm:mt-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">avec l'Intelligence Artificielle</span>
+                <span className="text-glow block mt-1 sm:mt-0 text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">avec l'Intelligence Artificielle</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0">
-                La premiere plateforme de prop trading au Maroc. Passez votre challenge,
-                recevez jusqu'a <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez <span className="text-primary-400 font-semibold">80% des profits</span>.
+              <p className="text-sm sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
+                La premiere plateforme de prop trading au Maroc.
+                <br className="sm:hidden" />
+                {' '}Passez votre challenge, recevez jusqu'a{' '}
+                <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez{' '}
+                <span className="text-primary-400 font-semibold">80% des profits</span>.
               </p>
 
               {/* CTA Buttons with Glow Effects */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 px-2 sm:px-0">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
                 <Link
                   to="/pricing"
                   className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-sm sm:text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden min-h-[48px] touch-manipulation"
