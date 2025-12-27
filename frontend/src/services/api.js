@@ -179,13 +179,18 @@ export const tradesAPI = {
 
 export const marketAPI = {
   getPrice: (symbol) => api.get(`/api/market/price/${symbol}`),
-  getAllPrices: (category) => api.get('/api/market/prices', { params: { category } }),
+  getAllPrices: (category, sector = null) => api.get('/api/market/prices', { params: { category, sector } }),
   getHistory: (symbol, period, interval) =>
     api.get(`/api/market/history/${symbol}`, { params: { period, interval } }),
   getSignal: (symbol) => api.get(`/api/market/signal/${symbol}`),
   getAllSignals: (symbols) =>
     api.get('/api/market/signals', { params: { symbols: symbols.join(',') } }),
-  getMarketStatus: () => api.get('/api/market/status')
+  getMarketStatus: () => api.get('/api/market/status'),
+
+  // Enhanced Moroccan market endpoints (78 stocks)
+  getMoroccanSectors: () => api.get('/api/market/moroccan/sectors'),
+  getMoroccanInfo: (symbol) => api.get(`/api/market/moroccan/info/${symbol}`),
+  getMoroccanPrices: (sector = null) => api.get('/api/market/prices', { params: { category: 'moroccan', sector } })
 }
 
 export const paymentsAPI = {

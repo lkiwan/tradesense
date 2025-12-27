@@ -10,11 +10,15 @@ from services.yfinance_service import (
     get_historical_data,
     get_multiple_prices
 )
-from services.market_scraper import get_moroccan_stocks
+from services.market_scraper import get_moroccan_stocks  # Legacy import for backward compatibility
+from services.market.moroccan_provider import get_moroccan_provider, MOROCCAN_STOCKS
 from services.gemini_signals import get_ai_signal
 from services.cache_service import CacheService, cache
 
 logger = logging.getLogger(__name__)
+
+# Initialize enhanced Moroccan market provider
+moroccan_provider = get_moroccan_provider()
 
 
 def get_market_status():
@@ -99,28 +103,13 @@ SUPPORTED_CRYPTO = [
 # Combined international list
 SUPPORTED_INTERNATIONAL = SUPPORTED_US_STOCKS + SUPPORTED_CRYPTO
 
-# Moroccan stocks (Casablanca Stock Exchange)
-SUPPORTED_MOROCCAN = [
-    # Banks
-    'IAM', 'ATW', 'BCP', 'CIH', 'BOA', 'CDM', 'BMCI',
-    # Insurance
-    'WAA', 'SAH', 'ATL',
-    # Energy & Mining
-    'TAQA', 'MNG', 'CMT', 'SMI',
-    # Real Estate
-    'ADH', 'RDS', 'DLM',
-    # Industry
-    'LBV', 'SNA', 'HOL', 'NEX', 'JET',
-    # Telecom & Tech
-    'HPS', 'M2M', 'DIS',
-    # Consumer
-    'LES', 'SID', 'OUL', 'MUT'
-]
+# Moroccan stocks (Casablanca Stock Exchange) - Now using 78 stocks from MoroccanMarketProvider
+SUPPORTED_MOROCCAN = list(MOROCCAN_STOCKS.keys())
 
 
 @market_data_bp.route('/price/<symbol>', methods=['GET'])
 def get_price(symbol):
-    """Get current price for a symbol (cached for 5 seconds)"""
+    """Get current price for a symbol (cached for 30 seconds)"""
     symbol = symbol.upper()
     cache_key = CacheService.market_key(symbol)
 
@@ -130,18 +119,27 @@ def get_price(symbol):
         logger.debug(f"Cache hit for price: {symbol}")
         return jsonify(cached_data), 200
 
-    # Check if Moroccan stock
+    # Check if Moroccan stock - use enhanced provider
     if symbol in SUPPORTED_MOROCCAN:
-        moroccan_data = get_moroccan_stocks()
-        if symbol in moroccan_data:
+        price_data = moroccan_provider.get_price(symbol)
+        if price_data:
             result = {
                 'symbol': symbol,
-                'price': moroccan_data[symbol]['price'],
-                'change': moroccan_data[symbol].get('change', 0),
-                'change_percent': moroccan_data[symbol].get('change_percent', 0),
-                'market': 'MOROCCO'
+                'name': price_data.get('name', symbol),
+                'price': price_data['price'],
+                'change': price_data.get('change', 0),
+                'change_percent': price_data.get('change_percent', 0),
+                'volume': price_data.get('volume', 0),
+                'open': price_data.get('open', 0),
+                'high': price_data.get('high', 0),
+                'low': price_data.get('low', 0),
+                'sector': price_data.get('sector', ''),
+                'currency': 'MAD',
+                'market': 'MOROCCO',
+                'source': price_data.get('source', 'unknown'),
+                'timestamp': price_data.get('timestamp', '')
             }
-            CacheService.set(cache_key, result, timeout=CacheService.TTL['market_prices'])
+            CacheService.set(cache_key, result, timeout=30)
             return jsonify(result), 200
         return jsonify({'error': f'Moroccan stock {symbol} not found'}), 404
 
@@ -168,13 +166,15 @@ def get_all_prices():
     """Get prices for all supported symbols"""
     # Get category filter from query params
     category = request.args.get('category', 'all')
+    sector = request.args.get('sector', None)  # Optional sector filter for Moroccan stocks
 
     result = {
         'supported_symbols': {
             'us_stocks': SUPPORTED_US_STOCKS,
             'crypto': SUPPORTED_CRYPTO,
             'moroccan': SUPPORTED_MOROCCAN
-        }
+        },
+        'moroccan_sectors': moroccan_provider.get_sectors()
     }
 
     if category in ['all', 'us']:
@@ -184,13 +184,50 @@ def get_all_prices():
         result['crypto'] = get_multiple_prices(SUPPORTED_CRYPTO)
 
     if category in ['all', 'moroccan']:
-        result['moroccan'] = get_moroccan_stocks()
+        # Use enhanced provider for Moroccan stocks
+        all_moroccan = moroccan_provider.get_all_prices()
+
+        # Filter by sector if specified
+        if sector:
+            all_moroccan = [p for p in all_moroccan if p.get('sector', '').lower() == sector.lower()]
+
+        # Convert to dictionary format for backward compatibility
+        moroccan_dict = {}
+        for stock in all_moroccan:
+            moroccan_dict[stock['symbol']] = stock
+        result['moroccan'] = moroccan_dict
+        result['moroccan_list'] = all_moroccan  # Also provide as list for easier frontend iteration
 
     # Keep backward compatibility
     if category == 'all':
         result['international'] = {**result.get('us_stocks', {}), **result.get('crypto', {})}
 
     return jsonify(result), 200
+
+
+@market_data_bp.route('/moroccan/sectors', methods=['GET'])
+def get_moroccan_sectors():
+    """Get all available sectors for Moroccan stocks"""
+    sectors = moroccan_provider.get_sectors()
+    sector_stocks = {}
+    for sector in sectors:
+        sector_stocks[sector] = moroccan_provider.get_stocks_by_sector(sector)
+
+    return jsonify({
+        'sectors': sectors,
+        'sector_stocks': sector_stocks,
+        'total_stocks': len(SUPPORTED_MOROCCAN)
+    }), 200
+
+
+@market_data_bp.route('/moroccan/info/<symbol>', methods=['GET'])
+def get_moroccan_info(symbol):
+    """Get detailed info for a Moroccan stock"""
+    symbol = symbol.upper()
+    info = moroccan_provider.get_symbol_info(symbol)
+    if not info:
+        return jsonify({'error': f'Symbol {symbol} not found'}), 404
+    return jsonify(info), 200
 
 
 @market_data_bp.route('/history/<symbol>', methods=['GET'])
@@ -232,23 +269,26 @@ def get_signal(symbol):
 
     # Get current price and info
     if symbol in SUPPORTED_MOROCCAN:
-        moroccan_data = get_moroccan_stocks()
-        if symbol not in moroccan_data:
+        price_data = moroccan_provider.get_price(symbol)
+        if not price_data:
             return jsonify({'error': f'Symbol {symbol} not found'}), 404
-        price = moroccan_data[symbol]['price']
-        change_percent = moroccan_data[symbol].get('change_percent', 0)
+        price = price_data['price']
+        change_percent = price_data.get('change_percent', 0)
+        name = price_data.get('name', symbol)
     else:
         price = get_current_price(symbol)
         if price is None:
             return jsonify({'error': f'Could not get price for {symbol}'}), 404
         info = get_stock_info(symbol)
         change_percent = info.get('change_percent', 0)
+        name = info.get('name', symbol)
 
     # Get AI signal
     signal = get_ai_signal(symbol, price, change_percent)
 
     return jsonify({
         'symbol': symbol,
+        'name': name,
         'current_price': price,
         'change_percent': change_percent,
         'signal': signal
@@ -261,8 +301,8 @@ def get_all_signals():
     symbols = request.args.get('symbols', '')
 
     if not symbols:
-        # Default to top symbols
-        symbols_list = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW']
+        # Default to top symbols including more Moroccan stocks
+        symbols_list = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW', 'BCP', 'HPS', 'TAQA']
     else:
         symbols_list = [s.strip().upper() for s in symbols.split(',')]
 
@@ -276,26 +316,28 @@ def get_all_signals():
         return jsonify(cached_data), 200
 
     signals = []
-    moroccan_data = get_moroccan_stocks()
 
     for symbol in symbols_list:
         try:
             if symbol in SUPPORTED_MOROCCAN:
-                if symbol in moroccan_data:
-                    price = moroccan_data[symbol]['price']
-                    change_percent = moroccan_data[symbol].get('change_percent', 0)
-                else:
+                price_data = moroccan_provider.get_price(symbol)
+                if not price_data:
                     continue
+                price = price_data['price']
+                change_percent = price_data.get('change_percent', 0)
+                name = price_data.get('name', symbol)
             else:
                 price = get_current_price(symbol)
                 if price is None:
                     continue
                 info = get_stock_info(symbol)
                 change_percent = info.get('change_percent', 0)
+                name = info.get('name', symbol)
 
             signal = get_ai_signal(symbol, price, change_percent)
             signals.append({
                 'symbol': symbol,
+                'name': name,
                 'price': price,
                 'change_percent': change_percent,
                 'signal': signal
