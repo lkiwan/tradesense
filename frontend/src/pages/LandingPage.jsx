@@ -609,7 +609,7 @@ const LandingPage = () => {
       {/* Hero Section - Full Panoramic Background */}
       <section
         ref={heroRef}
-        className="relative min-h-screen flex items-center overflow-hidden"
+        className="relative min-h-screen flex items-center overflow-x-hidden"
       >
         {/* Animated Gradient Background */}
         <div className="absolute inset-0 z-0 animated-gradient-bg">
@@ -649,10 +649,10 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+        <div className={`relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-8 transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left pt-16 sm:pt-20 px-2 sm:px-0">
+            <div className="text-center lg:text-left pt-16 sm:pt-20">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-card mb-6 sm:mb-8 animate-float hover:scale-105 transition-transform cursor-default">
                 <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
@@ -678,17 +678,17 @@ const LandingPage = () => {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-lg md:text-xl text-gray-300 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
+              <p className="text-sm sm:text-lg md:text-xl text-gray-300 mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed max-w-[90%] sm:max-w-lg md:max-w-2xl">
                 La premiere plateforme de prop trading au Maroc. Passez votre challenge, recevez jusqu'a{' '}
                 <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez{' '}
                 <span className="text-primary-400 font-semibold">80% des profits</span>.
               </p>
 
               {/* CTA Buttons with Glow Effects */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4">
+              <div className="flex flex-col items-stretch sm:flex-row sm:items-center sm:justify-center lg:justify-start gap-3 sm:gap-4">
                 <Link
                   to="/pricing"
-                  className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-sm sm:text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden min-h-[48px] touch-manipulation"
+                  className="group relative flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-sm sm:text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden min-h-[48px] touch-manipulation"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Commencer le Challenge
@@ -697,12 +697,12 @@ const LandingPage = () => {
                 </Link>
                 <Link
                   to="/free-trial"
-                  className="group w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight min-h-[48px] touch-manipulation"
+                  className="group flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight min-h-[48px] touch-manipulation"
                 >
                   <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={18} />
                   Essai Gratuit 7 Jours
                 </Link>
-                <button className="group w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 min-h-[48px] touch-manipulation">
+                <button className="group flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 min-h-[48px] touch-manipulation">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
                     <Play size={14} fill="white" className="text-white ml-0.5" />
                   </div>
@@ -711,7 +711,7 @@ const LandingPage = () => {
               </div>
 
               {/* Trustpilot-style Review Badge */}
-              <div className="flex items-center justify-center lg:justify-start mt-8 sm:mt-10">
+              <div className="flex items-center justify-center lg:justify-start mt-8 sm:mt-10 overflow-hidden">
                 <TrustBadge />
               </div>
             </div>
