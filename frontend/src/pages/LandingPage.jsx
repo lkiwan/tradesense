@@ -1170,8 +1170,15 @@ const LandingPage = () => {
             </p>
           </div>
 
-          {/* Pricing Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6">
+          {/* Swipe hint for mobile */}
+          <div className="flex sm:hidden items-center justify-center gap-2 mb-4 text-gray-500 text-xs">
+            <span>←</span>
+            <span>Glissez pour voir les plans</span>
+            <span>→</span>
+          </div>
+
+          {/* Pricing Cards - Horizontal scroll on mobile */}
+          <div className="flex sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 lg:gap-6 overflow-x-auto sm:overflow-visible snap-x snap-mandatory pb-4 sm:pb-0 -mx-6 px-6 sm:mx-0 sm:px-0 scrollbar-hide">
             {PRICING_PLANS.map((plan, index) => {
               const aiTier = AI_TIERS[plan.aiTier]
               const AiIcon = aiTier.icon
@@ -1180,7 +1187,7 @@ const LandingPage = () => {
               return (
                 <div
                   key={plan.balance}
-                  className={`relative bg-white dark:bg-dark-100 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl cursor-pointer ${pricingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  className={`relative bg-white dark:bg-dark-100 rounded-2xl overflow-hidden transition-all duration-500 hover:scale-105 hover:-translate-y-2 hover:shadow-2xl cursor-pointer flex-shrink-0 w-[75vw] sm:w-auto snap-center ${pricingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                     } ${plan.isBestValue ? 'ring-2 ring-orange-500 shadow-lg shadow-orange-500/20' : 'hover:ring-2 hover:ring-primary-500/50'}`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
@@ -1239,7 +1246,7 @@ const LandingPage = () => {
                     {/* CTA */}
                     <Link
                       to="/pricing"
-                      className={`w-full py-2.5 rounded-lg font-semibold text-white text-sm transition-all duration-300 flex items-center justify-center gap-1 hover:scale-105 active:scale-95 ${plan.isBestValue
+                      className={`w-full py-2.5 rounded-lg font-semibold text-white text-sm transition-all duration-300 flex items-center justify-center gap-1 hover:scale-105 active:scale-95 min-h-[44px] touch-manipulation ${plan.isBestValue
                         ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:shadow-lg hover:shadow-orange-500/30'
                         : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:shadow-lg hover:shadow-primary-500/30'
                         }`}
