@@ -678,10 +678,8 @@ const LandingPage = () => {
               </h1>
 
               {/* Subtitle */}
-              <p className="text-sm sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
-                La premiere plateforme de prop trading au Maroc.
-                <br className="sm:hidden" />
-                {' '}Passez votre challenge, recevez jusqu'a{' '}
+              <p className="text-sm sm:text-lg md:text-xl text-gray-300 max-w-xs sm:max-w-lg md:max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed">
+                La premiere plateforme de prop trading au Maroc. Passez votre challenge, recevez jusqu'a{' '}
                 <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez{' '}
                 <span className="text-primary-400 font-semibold">80% des profits</span>.
               </p>
