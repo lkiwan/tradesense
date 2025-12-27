@@ -276,12 +276,12 @@ const PlansPage = () => {
         </div>
       )}
 
-      {/* Pricing Matrix Section */}
+      {/* Pricing Section */}
       {selectedModel && sortedSizes.length > 0 && (
         <section className="relative py-6 md:py-8 bg-dark-300/30 rounded-2xl mx-4 md:mx-6">
           <div className="relative px-3 md:px-4 lg:px-6">
-            {/* Toggle */}
-            <div className="flex justify-center sm:justify-end mb-4 md:mb-6">
+            {/* Toggle - Desktop only */}
+            <div className="hidden sm:flex justify-end mb-4 md:mb-6">
               <label className="flex items-center gap-3 cursor-pointer glass-card px-3 md:px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
                 <div
                   onClick={() => setShowNumbers(!showNumbers)}
@@ -297,152 +297,304 @@ const PlansPage = () => {
               </label>
             </div>
 
-            {/* Scroll hint for mobile */}
-            <div className="flex md:hidden items-center justify-center gap-2 mb-3 text-gray-500 text-xs">
-              <span>←</span>
-              <span>Glissez pour voir tous les plans</span>
-              <span>→</span>
-            </div>
+            {/* Mobile Swipeable Cards */}
+            <div className="sm:hidden">
+              {/* Swipe hint */}
+              <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 text-xs">
+                <span>←</span>
+                <span>Glissez pour voir les plans</span>
+                <span>→</span>
+              </div>
 
-            {/* Matrix Pricing Table */}
-            <div className="relative pb-4 overflow-x-auto -mx-3 px-3 md:mx-0 md:px-0 scrollbar-thin scrollbar-thumb-dark-100 scrollbar-track-transparent">
-              <div className="flex min-w-max">
-                {/* Left Labels Column */}
-                <div className="flex-shrink-0 w-20 sm:w-28 md:w-40 lg:w-48 sticky left-0 bg-dark-300/95 z-10">
-                  {/* Empty header cell - matches badge + header height */}
-                  <div className="h-[91px] sm:h-[100px]" />
+              {/* Horizontal scroll container */}
+              <div className="flex gap-4 overflow-x-auto snap-x snap-mandatory pb-4 -mx-3 px-3 scrollbar-hide">
+                {sortedSizes.map((size) => {
+                  const aiTierKey = getAiTierForBalance(size.balance)
+                  const aiTier = AI_TIERS[aiTierKey]
+                  const AiIcon = aiTier.icon
+                  const hasDiscount = size.is_on_sale && size.sale_price
+                  const isBestValue = size.balance === 100000
 
-                  {/* Row Labels */}
-                  {ROW_LABELS.map((row) => {
-                    const IconComponent = row.icon
-                    return (
-                      <div
-                        key={row.key}
-                        className={`flex items-center gap-1 sm:gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
-                      >
-                        <IconComponent size={12} className={`${row.iconColor} flex-shrink-0 sm:w-[14px] sm:h-[14px]`} />
-                        <span className="text-gray-300 text-[10px] sm:text-xs lg:text-sm font-medium leading-tight">
-                          <span className="sm:hidden">{row.shortLabel}</span>
-                          <span className="hidden sm:inline">{row.label}</span>
-                        </span>
-                      </div>
-                    )
-                  })}
+                  const phase1Target = (size.balance * (selectedModel?.phase1_profit_target || 10)) / 100
+                  const phase2Target = (size.balance * (selectedModel?.phase2_profit_target || 5)) / 100
+                  const dailyLoss = (size.balance * (selectedModel?.max_daily_loss || 5)) / 100
+                  const maxLoss = (size.balance * (selectedModel?.max_total_loss || 10)) / 100
 
-                  {/* Payment note */}
-                  <div className="pt-6 pr-2">
-                    <p className="text-[10px] sm:text-xs text-gray-500 leading-relaxed">
-                      Paiements uniques.
-                    </p>
-                  </div>
-                </div>
+                  return (
+                    <div
+                      key={size.id}
+                      className={`flex-shrink-0 w-[85vw] max-w-[320px] snap-center rounded-2xl overflow-hidden ${
+                        isBestValue
+                          ? 'ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)]'
+                          : 'ring-1 ring-white/10'
+                      }`}
+                    >
+                      {/* Best Value Badge */}
+                      {isBestValue && (
+                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold py-2 text-center">
+                          <div className="flex items-center justify-center gap-1">
+                            <Flame size={14} />
+                            <span>Meilleur choix</span>
+                          </div>
+                        </div>
+                      )}
 
-                {/* Account Columns */}
-                <div className="flex-1 flex gap-1 sm:gap-1.5 lg:gap-2 items-start">
-                  {sortedSizes.map((size, index) => {
-                    const aiTierKey = getAiTierForBalance(size.balance)
-                    const aiTier = AI_TIERS[aiTierKey]
-                    const hasDiscount = size.is_on_sale && size.sale_price
-                    const isBestValue = size.balance === 100000
+                      <div className="bg-gradient-to-b from-dark-100 to-dark-200 p-5">
+                        {/* Header */}
+                        <div className="text-center mb-4">
+                          <p className="text-gray-400 text-xs mb-1">Compte</p>
+                          <p className="text-3xl font-bold text-white">{formatCurrency(size.balance)}</p>
+                        </div>
 
-                    return (
-                      <div
-                        key={size.id}
-                        className="flex-shrink-0 w-[95px] sm:w-[110px] md:w-[130px] lg:w-[145px]"
-                      >
-                        {/* Main Card */}
-                        <div className={`rounded-2xl transition-all duration-300 backdrop-blur-sm
-                          ${isBestValue
-                            ? 'bg-gradient-to-b from-dark-100 to-dark-200 ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)]'
-                            : 'bg-gradient-to-b from-dark-100 to-dark-200 ring-1 ring-white/5 hover:ring-primary-500/30'
+                        {/* AI Tier */}
+                        <div className="flex items-center justify-center gap-3 mb-4 py-3 bg-dark-300/50 rounded-xl">
+                          <div className={`p-2 rounded-lg ${aiTier.bgColor}`}>
+                            <AiIcon size={24} className={aiTier.color} />
+                          </div>
+                          <div>
+                            <p className={`font-bold ${aiTier.color}`}>{aiTier.name}</p>
+                            <p className="text-xs text-gray-400">{aiTier.description}</p>
+                          </div>
+                        </div>
+
+                        {/* Stats Grid */}
+                        <div className="grid grid-cols-2 gap-3 mb-4">
+                          <div className="bg-dark-300/30 rounded-lg p-3 text-center">
+                            <div className="flex items-center justify-center gap-1 text-green-500 mb-1">
+                              <Target size={14} />
+                              <span className="text-xs">Précision</span>
+                            </div>
+                            <p className={`text-lg font-bold ${aiTier.color}`}>{aiTier.accuracy}</p>
+                          </div>
+                          <div className="bg-dark-300/30 rounded-lg p-3 text-center">
+                            <div className="flex items-center justify-center gap-1 text-blue-500 mb-1">
+                              <BarChart3 size={14} />
+                              <span className="text-xs">Signaux/j</span>
+                            </div>
+                            <p className="text-lg font-bold text-white">{aiTier.signals}</p>
+                          </div>
+                        </div>
+
+                        {/* Details */}
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <TrendingUp size={14} className="text-primary-500" />
+                              Objectif Étape 1
+                            </span>
+                            <span className="text-white font-semibold">{formatCurrency(phase1Target)}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <TrendingUp size={14} className="text-primary-500" />
+                              Objectif Étape 2
+                            </span>
+                            <span className="text-white font-semibold">{formatCurrency(phase2Target)}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <TrendingDown size={14} className="text-orange-500" />
+                              Perte Max/Jour
+                            </span>
+                            <span className="text-white font-semibold">{formatCurrency(dailyLoss)}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <TrendingDown size={14} className="text-red-500" />
+                              Perte Max Totale
+                            </span>
+                            <span className="text-white font-semibold">{formatCurrency(maxLoss)}</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <Calendar size={14} className="text-gray-400" />
+                              Min. Jours Trading
+                            </span>
+                            <span className="text-white font-semibold">{selectedModel?.min_trading_days || 4} jours</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <Clock size={14} className="text-gray-400" />
+                              Période
+                            </span>
+                            <span className="text-white font-semibold">Illimitée</span>
+                          </div>
+                          <div className="flex justify-between items-center py-2">
+                            <span className="text-gray-400 text-sm flex items-center gap-2">
+                              <RefreshCw size={14} className="text-green-500" />
+                              Remboursement
+                            </span>
+                            <span className="text-green-400 font-semibold">100%</span>
+                          </div>
+                        </div>
+
+                        {/* Price */}
+                        <div className="text-center py-4 border-t border-dark-300/50">
+                          {hasDiscount ? (
+                            <div>
+                              <div className="flex items-center justify-center gap-2">
+                                <Flame size={18} className="text-orange-500" />
+                                <span className="text-3xl font-bold text-orange-500">€{size.sale_price.toLocaleString('fr-FR')}</span>
+                              </div>
+                              <span className="text-gray-500 line-through">€{size.price.toLocaleString('fr-FR')}</span>
+                            </div>
+                          ) : (
+                            <span className="text-3xl font-bold text-white">€{size.price.toLocaleString('fr-FR')}</span>
+                          )}
+                        </div>
+
+                        {/* CTA */}
+                        <button
+                          onClick={() => handleSelect(size)}
+                          className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 min-h-[56px] touch-manipulation ${
+                            isBestValue
+                              ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg shadow-orange-500/30'
+                              : 'bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg shadow-primary-500/30'
                           }`}
                         >
-                          {/* Best Value Badge */}
-                          <div className={`text-[10px] sm:text-xs font-semibold py-1 sm:py-1.5 text-center h-6 sm:h-7 rounded-t-2xl ${
-                            isBestValue
-                              ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white'
-                              : 'bg-transparent'
-                          }`}>
-                            {isBestValue && (
-                              <div className="flex items-center justify-center gap-1">
-                                <Flame size={10} className="sm:w-3 sm:h-3" />
-                                <span className="hidden sm:inline">Meilleur rapport</span>
-                                <span className="sm:hidden">Top</span>
-                              </div>
-                            )}
-                          </div>
+                          <Rocket size={18} />
+                          Commencer le Challenge
+                        </button>
 
-                          {/* Header - Account Size */}
-                          <div className="text-center py-2 sm:py-3 h-[65px] sm:h-[72px] flex flex-col justify-center">
-                            <p className="text-gray-400 text-[10px] sm:text-xs mb-0.5 sm:mb-1">Compte</p>
-                            <p className="text-base sm:text-lg lg:text-xl font-bold text-white">
-                              {formatCurrency(size.balance)}
-                            </p>
-                          </div>
-
-                          {/* Data Rows */}
-                          {ROW_LABELS.map((row) => (
-                            <div
-                              key={row.key}
-                              className={`flex items-center justify-center text-center px-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
-                            >
-                              {getCellValue(size, selectedModel, row.key, showNumbers)}
-                            </div>
-                          ))}
-
-                          {/* Price */}
-                          <div className="text-center py-2 sm:py-3 border-t border-dark-200/50 mt-2 h-14 sm:h-16 flex flex-col justify-center">
-                            {hasDiscount ? (
-                              <div className="flex flex-col items-center">
-                                <div className="flex items-center gap-1">
-                                  <Flame size={10} className="text-orange-500 sm:w-3 sm:h-3" />
-                                  <span className="text-base sm:text-lg lg:text-xl font-bold text-orange-500">
-                                    €{size.sale_price.toLocaleString('fr-FR')}
-                                  </span>
-                                </div>
-                                <span className="text-gray-500 line-through text-[10px] sm:text-xs">
-                                  €{size.price.toLocaleString('fr-FR')}
-                                </span>
-                              </div>
-                            ) : (
-                              <span className="text-base sm:text-lg lg:text-xl font-bold text-white">
-                                €{size.price.toLocaleString('fr-FR')}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* CTA Button */}
-                          <div className="px-2 sm:px-3 pb-2 sm:pb-3">
-                            <button
-                              onClick={() => handleSelect(size)}
-                              className={`group w-full py-2 sm:py-2.5 rounded-lg sm:rounded-xl font-semibold text-white text-[10px] sm:text-xs transition-all duration-300 flex items-center justify-center gap-1 sm:gap-1.5 hover:scale-[1.02] active:scale-95 min-h-[36px] sm:min-h-[40px] touch-manipulation ${
-                                isBestValue
-                                  ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25'
-                                  : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25'
-                              }`}
-                            >
-                              <Rocket size={12} className="sm:w-[14px] sm:h-[14px]" />
-                              <span className="hidden sm:inline">Commencer</span>
-                              <span className="sm:hidden">Go</span>
-                            </button>
-                          </div>
-                        </div>
-
-                        {/* Average Reward */}
-                        <div className="mt-1.5 sm:mt-2 py-2 sm:py-3 glass-card text-center rounded-lg sm:rounded-xl">
-                          <div className="flex items-center justify-center gap-1 sm:gap-1.5">
-                            <Star size={12} className="text-yellow-500 sm:w-[14px] sm:h-[14px]" />
-                            <span className="text-white font-bold text-xs sm:text-sm">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
-                          </div>
-                          <div className="flex items-center justify-center gap-1 text-gray-500 text-[10px] sm:text-xs mt-0.5 sm:mt-1">
-                            <span className="hidden sm:inline">Récompense moy.</span>
-                            <span className="sm:hidden">Moy.</span>
-                            <Info size={8} className="cursor-help sm:w-[10px] sm:h-[10px]" />
+                        {/* Avg Reward */}
+                        <div className="mt-4 py-3 glass-card rounded-xl text-center">
+                          <div className="flex items-center justify-center gap-2">
+                            <Star size={16} className="text-yellow-500" />
+                            <span className="text-white font-bold">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
+                            <span className="text-gray-400 text-sm">récompense moy.</span>
                           </div>
                         </div>
                       </div>
-                    )
-                  })}
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+
+            {/* Desktop Matrix Table */}
+            <div className="hidden sm:block">
+              {/* Scroll hint for tablet */}
+              <div className="flex md:hidden items-center justify-center gap-2 mb-3 text-gray-500 text-xs">
+                <span>←</span>
+                <span>Glissez pour voir tous les plans</span>
+                <span>→</span>
+              </div>
+
+              {/* Matrix Pricing Table */}
+              <div className="relative pb-4 overflow-x-auto scrollbar-thin scrollbar-thumb-dark-100 scrollbar-track-transparent">
+                <div className="flex min-w-max">
+                  {/* Left Labels Column */}
+                  <div className="flex-shrink-0 w-28 md:w-40 lg:w-48 sticky left-0 bg-dark-300/95 z-10">
+                    {/* Empty header cell */}
+                    <div className="h-[100px]" />
+
+                    {/* Row Labels */}
+                    {ROW_LABELS.map((row) => {
+                      const IconComponent = row.icon
+                      return (
+                        <div
+                          key={row.key}
+                          className={`flex items-center gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
+                        >
+                          <IconComponent size={14} className={`${row.iconColor} flex-shrink-0`} />
+                          <span className="text-gray-300 text-xs lg:text-sm font-medium leading-tight">{row.label}</span>
+                        </div>
+                      )
+                    })}
+
+                    {/* Payment note */}
+                    <div className="pt-6 pr-2">
+                      <p className="text-xs text-gray-500 leading-relaxed">Paiements uniques.</p>
+                    </div>
+                  </div>
+
+                  {/* Account Columns */}
+                  <div className="flex-1 flex gap-1.5 lg:gap-2 items-start">
+                    {sortedSizes.map((size) => {
+                      const aiTierKey = getAiTierForBalance(size.balance)
+                      const aiTier = AI_TIERS[aiTierKey]
+                      const hasDiscount = size.is_on_sale && size.sale_price
+                      const isBestValue = size.balance === 100000
+
+                      return (
+                        <div key={size.id} className="flex-shrink-0 w-[110px] md:w-[130px] lg:w-[145px]">
+                          {/* Main Card */}
+                          <div className={`rounded-2xl transition-all duration-300 backdrop-blur-sm ${
+                            isBestValue
+                              ? 'bg-gradient-to-b from-dark-100 to-dark-200 ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)]'
+                              : 'bg-gradient-to-b from-dark-100 to-dark-200 ring-1 ring-white/5 hover:ring-primary-500/30'
+                          }`}>
+                            {/* Best Value Badge */}
+                            <div className={`text-xs font-semibold py-1.5 text-center h-7 rounded-t-2xl ${
+                              isBestValue ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white' : 'bg-transparent'
+                            }`}>
+                              {isBestValue && (
+                                <div className="flex items-center justify-center gap-1">
+                                  <Flame size={12} />
+                                  <span>Meilleur rapport</span>
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Header */}
+                            <div className="text-center py-3 h-[72px] flex flex-col justify-center">
+                              <p className="text-gray-400 text-xs mb-1">Compte</p>
+                              <p className="text-lg lg:text-xl font-bold text-white">{formatCurrency(size.balance)}</p>
+                            </div>
+
+                            {/* Data Rows */}
+                            {ROW_LABELS.map((row) => (
+                              <div key={row.key} className={`flex items-center justify-center text-center px-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}>
+                                {getCellValue(size, selectedModel, row.key, showNumbers)}
+                              </div>
+                            ))}
+
+                            {/* Price */}
+                            <div className="text-center py-3 border-t border-dark-200/50 mt-2 h-16 flex flex-col justify-center">
+                              {hasDiscount ? (
+                                <div className="flex flex-col items-center">
+                                  <div className="flex items-center gap-1">
+                                    <Flame size={12} className="text-orange-500" />
+                                    <span className="text-lg lg:text-xl font-bold text-orange-500">€{size.sale_price.toLocaleString('fr-FR')}</span>
+                                  </div>
+                                  <span className="text-gray-500 line-through text-xs">€{size.price.toLocaleString('fr-FR')}</span>
+                                </div>
+                              ) : (
+                                <span className="text-lg lg:text-xl font-bold text-white">€{size.price.toLocaleString('fr-FR')}</span>
+                              )}
+                            </div>
+
+                            {/* CTA Button */}
+                            <div className="px-3 pb-3">
+                              <button
+                                onClick={() => handleSelect(size)}
+                                className={`group w-full py-2.5 rounded-xl font-semibold text-white text-xs transition-all duration-300 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 min-h-[40px] touch-manipulation ${
+                                  isBestValue
+                                    ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25'
+                                    : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25'
+                                }`}
+                              >
+                                <Rocket size={14} />
+                                Commencer
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Average Reward */}
+                          <div className="mt-2 py-3 glass-card text-center rounded-xl">
+                            <div className="flex items-center justify-center gap-1.5">
+                              <Star size={14} className="text-yellow-500" />
+                              <span className="text-white font-bold text-sm">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
+                            </div>
+                            <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-1">
+                              <span>Récompense moy.</span>
+                              <Info size={10} className="cursor-help" />
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
               </div>
             </div>
