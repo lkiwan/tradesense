@@ -649,68 +649,68 @@ const LandingPage = () => {
           </div>
         </div>
 
-        <div className={`relative z-10 max-w-7xl mx-auto px-4 md:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left pt-20">
+            <div className="text-center lg:text-left pt-16 sm:pt-20">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-card mb-8 animate-float hover:scale-105 transition-transform cursor-default">
-                <div className="w-6 h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
-                  <Sparkles className="text-primary-400" size={14} />
+              <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-card mb-6 sm:mb-8 animate-float hover:scale-105 transition-transform cursor-default">
+                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
+                  <Sparkles className="text-primary-400" size={12} />
                 </div>
-                <span className="text-sm font-medium text-primary-400">Powered by AI</span>
-                <span className="relative flex h-2.5 w-2.5">
+                <span className="text-xs sm:text-sm font-medium text-primary-400">Powered by AI</span>
+                <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-500"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-primary-500"></span>
                 </span>
               </div>
 
               {/* Title with Gradient Animation */}
-              <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-6 leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-4 sm:mb-6 leading-tight">
                 Devenez Trader{' '}
-                <span className="gradient-text-animated">
+                <span className="gradient-text-animated block sm:inline">
                   <TypingText
-                    texts={['Professionnel', 'Finance', 'Rentable', 'Expert']}
+                    texts={['Rentable', 'Pro', 'Expert']}
                   />
                 </span>
-                <br />
-                <span className="text-glow">avec l'Intelligence Artificielle</span>
+                <br className="hidden sm:block" />
+                <span className="text-glow block mt-1 sm:mt-0 text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">avec l'Intelligence Artificielle</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
+              <p className="text-base sm:text-lg md:text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0">
                 La premiere plateforme de prop trading au Maroc. Passez votre challenge,
                 recevez jusqu'a <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez <span className="text-primary-400 font-semibold">80% des profits</span>.
               </p>
 
               {/* CTA Buttons with Glow Effects */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 px-2 sm:px-0">
                 <Link
                   to="/pricing"
-                  className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden"
+                  className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-sm sm:text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden min-h-[48px] touch-manipulation"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     Commencer le Challenge
-                    <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                    <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
                   </span>
                 </Link>
                 <Link
                   to="/free-trial"
-                  className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 md:px-8 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight"
+                  className="group w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight min-h-[48px] touch-manipulation"
                 >
-                  <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={20} />
+                  <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={18} />
                   Essai Gratuit 7 Jours
                 </Link>
-                <button className="group w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105">
-                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
-                    <Play size={16} fill="white" className="text-white ml-0.5" />
+                <button className="group w-full sm:w-auto flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 min-h-[48px] touch-manipulation">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+                    <Play size={14} fill="white" className="text-white ml-0.5" />
                   </div>
                   Demo
                 </button>
               </div>
 
               {/* Trustpilot-style Review Badge */}
-              <div className="flex items-center justify-center lg:justify-start mt-10">
+              <div className="flex items-center justify-center lg:justify-start mt-8 sm:mt-10">
                 <TrustBadge />
               </div>
             </div>
@@ -812,63 +812,63 @@ const LandingPage = () => {
 
 
           {/* Stats - Enhanced with Icons and Gradient Cards */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-16 max-w-4xl mx-auto lg:max-w-none">
-            <div className="group relative bg-gradient-to-br from-primary-500/20 to-primary-600/10 backdrop-blur-sm rounded-2xl p-5 border border-primary-500/20 hover:border-primary-500/40 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mt-10 sm:mt-16 max-w-4xl mx-auto lg:max-w-none px-2 sm:px-0">
+            <div className="group relative bg-gradient-to-br from-primary-500/20 to-primary-600/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-primary-500/20 hover:border-primary-500/40 transition-all hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-primary-500/10 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-10 h-10 bg-primary-500/20 rounded-xl flex items-center justify-center mb-3">
-                  <Users className="text-primary-400" size={20} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-primary-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
+                  <Users className="text-primary-400" size={16} />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-white">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={10000} suffix="+" />
                 </div>
-                <div className="text-gray-400 text-sm mt-1">Traders Actifs</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">Traders Actifs</div>
               </div>
             </div>
 
-            <div className="group relative bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-sm rounded-2xl p-5 border border-blue-500/20 hover:border-blue-500/40 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="group relative bg-gradient-to-br from-blue-500/20 to-blue-600/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-blue-500/20 hover:border-blue-500/40 transition-all hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-10 h-10 bg-blue-500/20 rounded-xl flex items-center justify-center mb-3">
-                  <DollarSign className="text-blue-400" size={20} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
+                  <DollarSign className="text-blue-400" size={16} />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-white">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   $<AnimatedCounter end={2} suffix="M+" />
                 </div>
-                <div className="text-gray-400 text-sm mt-1">Capital Distribue</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">Capital Distribue</div>
               </div>
             </div>
 
-            <div className="group relative bg-gradient-to-br from-green-500/20 to-green-600/10 backdrop-blur-sm rounded-2xl p-5 border border-green-500/20 hover:border-green-500/40 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="group relative bg-gradient-to-br from-green-500/20 to-green-600/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-green-500/20 hover:border-green-500/40 transition-all hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-green-500/10 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-10 h-10 bg-green-500/20 rounded-xl flex items-center justify-center mb-3">
-                  <TrendingUp className="text-green-400" size={20} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
+                  <TrendingUp className="text-green-400" size={16} />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-white">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={85} suffix="%" />
                 </div>
-                <div className="text-gray-400 text-sm mt-1">Taux de Reussite</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">Taux de Reussite</div>
               </div>
             </div>
 
-            <div className="group relative bg-gradient-to-br from-purple-500/20 to-purple-600/10 backdrop-blur-sm rounded-2xl p-5 border border-purple-500/20 hover:border-purple-500/40 transition-all hover:scale-105">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="group relative bg-gradient-to-br from-purple-500/20 to-purple-600/10 backdrop-blur-sm rounded-xl sm:rounded-2xl p-3 sm:p-5 border border-purple-500/20 hover:border-purple-500/40 transition-all hover:scale-105">
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-transparent rounded-xl sm:rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="relative">
-                <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center mb-3">
-                  <Award className="text-purple-400" size={20} />
+                <div className="w-8 h-8 sm:w-10 sm:h-10 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center mb-2 sm:mb-3">
+                  <Award className="text-purple-400" size={16} />
                 </div>
-                <div className="text-2xl md:text-3xl font-bold text-white">
+                <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={80} suffix="%" />
                 </div>
-                <div className="text-gray-400 text-sm mt-1">Profit Split</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">Profit Split</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Enhanced Scroll Indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 scroll-indicator">
+        {/* Enhanced Scroll Indicator - Hidden on mobile */}
+        <div className="hidden sm:flex absolute bottom-8 left-1/2 -translate-x-1/2 flex-col items-center gap-2 scroll-indicator">
           <span className="text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
           <div className="w-6 h-10 rounded-full border-2 border-gray-600 flex items-start justify-center p-1">
             <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-bounce" />
