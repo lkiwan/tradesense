@@ -8,8 +8,10 @@ import {
   ChevronDown, BarChart3, Target, Award, Clock,
   DollarSign, LineChart, Lock, Headphones,
   Brain, Cpu, Crown, Rocket, Flame, Info,
-  Volume2, VolumeX, Send, MessageCircle
+  Volume2, VolumeX, Send, MessageCircle, RotateCcw, Trophy
 } from 'lucide-react'
+import PaymentMarquee from '../components/PaymentMarquee'
+import TrustBadge from '../components/TrustBadge'
 
 // Animated counter component
 const AnimatedCounter = ({ end, duration = 2000, suffix = '' }) => {
@@ -164,32 +166,46 @@ const LandingPage = () => {
 
   const features = [
     {
-      icon: Sparkles,
-      title: t('landing.features.ai.title'),
-      description: t('landing.features.ai.description'),
+      icon: TrendingUp,
+      title: "15% Profit Split",
+      description: "Recevez 15% des profits même pendant la phase de challenge.",
       color: 'text-primary-500',
       bg: 'bg-primary-500/10'
     },
     {
-      icon: Newspaper,
-      title: t('landing.features.news.title'),
-      description: t('landing.features.news.description'),
+      icon: Clock,
+      title: "Pas de Limite de Temps",
+      description: "Prenez tout le temps nécessaire pour réussir votre challenge.",
       color: 'text-blue-500',
       bg: 'bg-blue-500/10'
     },
     {
-      icon: Users,
-      title: t('landing.features.community.title'),
-      description: t('landing.features.community.description'),
+      icon: Newspaper,
+      title: "News Trading",
+      description: "Le trading pendant les annonces économiques est autorisé.",
       color: 'text-purple-500',
       bg: 'bg-purple-500/10'
     },
     {
-      icon: GraduationCap,
-      title: t('landing.features.education.title'),
-      description: t('landing.features.education.description'),
+      icon: Zap,
+      title: "Spreads & Levier",
+      description: "Spreads compétitifs et effet de levier jusqu'à 1:100.",
       color: 'text-orange-500',
       bg: 'bg-orange-500/10'
+    },
+    {
+      icon: RotateCcw,
+      title: "Option Reset",
+      description: "Réinitialisez votre compte à prix réduit si vous échouez.",
+      color: 'text-red-500',
+      bg: 'bg-red-500/10'
+    },
+    {
+      icon: Trophy,
+      title: "Compétitions Mensuelles",
+      description: "Participez et gagnez des comptes challenge gratuits.",
+      color: 'text-yellow-500',
+      bg: 'bg-yellow-500/10'
     }
   ]
 
@@ -595,22 +611,42 @@ const LandingPage = () => {
         ref={heroRef}
         className="relative min-h-screen flex items-center overflow-hidden"
       >
-        {/* Background Image with Blur/Gradient Overlay */}
-        <div className="absolute inset-0 z-0">
+        {/* Animated Gradient Background */}
+        <div className="absolute inset-0 z-0 animated-gradient-bg">
+          {/* Primary Background Image */}
           <img
             src="/images/hero-bg-panoramic.png"
             alt="Pro Trading Desk"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover opacity-60"
           />
-          {/* Gradient & Blur Overlay - Blurs left side, keeps right side clear */}
-          <div className="absolute inset-0 bg-gradient-to-r from-dark-300 via-dark-300/80 to-transparent backdrop-blur-[2px] lg:backdrop-blur-0 lg:via-transparent lg:to-transparent">
-            {/* Mobile: darker full overlay. Desktop: Gradient from left (dark+blur) to right (clear) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-dark-300/90 via-dark-300/60 to-transparent md:w-[65%] backdrop-blur-sm md:backdrop-filter-none mix-blend-multiply" />
-            {/* Actual blur mask for text readability on left */}
-            <div className="absolute top-0 bottom-0 left-0 w-full md:w-[60%] bg-dark-300/40 backdrop-blur-md mask-linear-fade" style={{ maskImage: 'linear-gradient(to right, black 50%, transparent 100%)', WebkitMaskImage: 'linear-gradient(to right, black 50%, transparent 100%)' }} />
+
+          {/* Gradient Overlays */}
+          <div className="absolute inset-0 bg-gradient-to-b from-dark-400/90 via-dark-400/70 to-dark-400" />
+          <div className="absolute inset-0 bg-gradient-to-r from-dark-400 via-transparent to-transparent" />
+
+          {/* Animated Glow Orbs */}
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-[150px] animate-pulse-slow" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/15 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-[200px]" />
+
+          {/* Grid Pattern Overlay */}
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
+
+          {/* Floating Particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(20)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-1 h-1 bg-primary-500/30 rounded-full animate-float"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animationDelay: `${Math.random() * 5}s`,
+                  animationDuration: `${5 + Math.random() * 5}s`,
+                }}
+              />
+            ))}
           </div>
-          {/* Darken overlay for text contrast generally */}
-          <div className="absolute inset-0 bg-black/20" />
         </div>
 
         <div className={`relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
@@ -618,85 +654,159 @@ const LandingPage = () => {
             {/* Left Content */}
             <div className="text-center lg:text-left pt-20">
               {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 mb-8 animate-bounce-slow backdrop-blur-md">
-                <Sparkles className="text-primary-500" size={16} />
-                <span className="text-sm text-primary-400">Powered by AI</span>
-                <span className="relative flex h-2 w-2">
+              <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-card mb-8 animate-float hover:scale-105 transition-transform cursor-default">
+                <div className="w-6 h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
+                  <Sparkles className="text-primary-400" size={14} />
+                </div>
+                <span className="text-sm font-medium text-primary-400">Powered by AI</span>
+                <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary-500"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary-500"></span>
                 </span>
               </div>
 
-              {/* Title */}
-              <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight drop-shadow-lg">
+              {/* Title with Gradient Animation */}
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
                 Devenez Trader{' '}
-                <span className="text-primary-500">
+                <span className="gradient-text-animated">
                   <TypingText
                     texts={['Professionnel', 'Finance', 'Rentable', 'Expert']}
                   />
                 </span>
                 <br />
-                avec l'Intelligence Artificielle
+                <span className="text-glow">avec l'Intelligence Artificielle</span>
               </h1>
 
               {/* Subtitle */}
-              <p className="text-xl text-gray-200 max-w-2xl mx-auto lg:mx-0 mb-10 drop-shadow-md font-medium">
+              <p className="text-xl text-gray-300 max-w-2xl mx-auto lg:mx-0 mb-10 leading-relaxed">
                 La premiere plateforme de prop trading au Maroc. Passez votre challenge,
-                recevez jusqu'a $200,000 de capital et gardez 80% des profits.
+                recevez jusqu'a <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez <span className="text-primary-400 font-semibold">80% des profits</span>.
               </p>
 
-              {/* CTA Buttons */}
+              {/* CTA Buttons with Glow Effects */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
                 <Link
                   to="/pricing"
-                  className="group flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold text-lg transition-all shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40 hover:scale-105"
+                  className="group relative flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden"
                 >
-                  Commencer le Challenge
-                  <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                  <span className="relative z-10 flex items-center gap-2">
+                    Commencer le Challenge
+                    <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+                  </span>
                 </Link>
                 <Link
                   to="/free-trial"
-                  className="group flex items-center gap-2 px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-semibold text-lg transition-all border border-white/20 backdrop-blur-md"
+                  className="group flex items-center gap-2 px-8 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 spotlight"
                 >
-                  <Zap className="group-hover:scale-110 transition-transform" size={20} />
+                  <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={20} />
                   Essai Gratuit 7 Jours
                 </Link>
-                <button className="group flex items-center gap-2 px-6 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl font-semibold transition-all border border-white/10 hover:border-white/20 backdrop-blur-sm">
-                  <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                    <Play size={14} fill="white" />
+                <button className="group flex items-center gap-2 px-6 py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105">
+                  <div className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
+                    <Play size={16} fill="white" className="text-white ml-0.5" />
                   </div>
                   Demo
                 </button>
               </div>
 
               {/* Trustpilot-style Review Badge */}
-              <div className="flex items-center justify-center lg:justify-start mt-8">
-                <div className="flex items-center gap-3 px-5 py-3 bg-black/40 backdrop-blur-md rounded-full border border-white/10 hover:bg-black/50 transition-all cursor-pointer">
-                  <div className="flex items-center gap-1">
-                    <span className="text-sm text-gray-300">Excellent</span>
-                    <div className="flex gap-0.5">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} size={16} className="text-green-500 fill-green-500" />
-                      ))}
-                    </div>
-                  </div>
-                  <div className="w-px h-5 bg-white/20" />
-                  <div className="flex items-center gap-2">
-                    <span className="text-white font-semibold">4.9</span>
-                    <span className="text-gray-400 text-sm">sur 2,847 avis</span>
-                  </div>
-                  <div className="w-px h-5 bg-white/20" />
-                  <div className="flex items-center gap-1">
-                    <Star size={14} className="text-green-500 fill-green-500" />
-                    <span className="text-green-500 text-sm font-medium">Trustpilot</span>
-                  </div>
-                </div>
+              <div className="flex items-center justify-center lg:justify-start mt-10">
+                <TrustBadge />
               </div>
             </div>
 
-            {/* Right Content - Empty to let image show, but keeping layout for spacing */}
-            <div className="hidden lg:block relative h-full">
-              {/* Floating elements can be added here if needed, but keeping it clean for the panoramic view as requested */}
+            {/* Right Content - Horizontal Floating Cards */}
+            <div className="hidden lg:flex relative h-full items-center justify-center">
+              {/* Main Container for Horizontal Layout */}
+              <div className="flex flex-col gap-4 w-full max-w-md">
+                {/* Top Row - Two small cards */}
+                <div className="flex gap-4">
+                  {/* New Traders Card */}
+                  <div className="flex-1 glass-card rounded-xl p-4 float-element card-hover-glow">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                        <Users className="text-blue-400" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-white text-lg font-bold">+248</p>
+                        <p className="text-xs text-gray-400">New traders today</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Payout Card */}
+                  <div className="flex-1 glass-card rounded-xl p-4 float-element-delayed card-hover-glow">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                        <DollarSign className="text-green-400" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-green-400 text-lg font-bold">$12,450</p>
+                        <p className="text-xs text-gray-400">Just paid out</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Main Trading Signal Card */}
+                <div className="glass-card rounded-2xl p-5 float-element card-hover-glow" style={{ animationDelay: '0.5s' }}>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-xl bg-primary-500/20 flex items-center justify-center">
+                        <TrendingUp className="text-primary-500" size={22} />
+                      </div>
+                      <div>
+                        <p className="text-white font-semibold">Live AI Signal</p>
+                        <p className="text-xs text-gray-400">Just now</p>
+                      </div>
+                    </div>
+                    <span className="px-4 py-1.5 bg-green-500/20 text-green-400 text-sm font-bold rounded-full border border-green-500/30">BUY</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-2xl font-bold text-white">EUR/USD</p>
+                      <p className="text-sm text-gray-400">Entry: 1.0892</p>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xl font-bold text-green-400">+2.4%</p>
+                      <p className="text-xs text-gray-400">Target: 1.0940</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 h-2.5 bg-dark-200 rounded-full overflow-hidden">
+                    <div className="h-full w-[94%] bg-gradient-to-r from-primary-500 to-primary-400 rounded-full animate-pulse" />
+                  </div>
+                  <p className="text-xs text-gray-500 mt-2 text-center">AI Confidence: 94%</p>
+                </div>
+
+                {/* Bottom Row - Stats */}
+                <div className="flex gap-4">
+                  {/* Win Rate */}
+                  <div className="flex-1 glass-card rounded-xl p-4 float-element card-hover-glow" style={{ animationDelay: '1s' }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                        <Target className="text-purple-400" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-purple-400 text-lg font-bold">92%</p>
+                        <p className="text-xs text-gray-400">Win rate</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Active Signals */}
+                  <div className="flex-1 glass-card rounded-xl p-4 float-element-delayed card-hover-glow" style={{ animationDelay: '0.3s' }}>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-orange-500/20 flex items-center justify-center">
+                        <Zap className="text-orange-400" size={18} />
+                      </div>
+                      <div>
+                        <p className="text-orange-400 text-lg font-bold">12</p>
+                        <p className="text-xs text-gray-400">Active signals</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -757,11 +867,17 @@ const LandingPage = () => {
           </div>
         </div>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="text-gray-500" size={32} />
+        {/* Enhanced Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 scroll-indicator">
+          <span className="text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+          <div className="w-6 h-10 rounded-full border-2 border-gray-600 flex items-start justify-center p-1">
+            <div className="w-1.5 h-3 bg-primary-500 rounded-full animate-bounce" />
+          </div>
         </div>
       </section>
+
+      {/* Payment Marquee - Trusted By */}
+      <PaymentMarquee />
 
       {/* Markets Section with Flashlight Effect */}
       <section
@@ -837,40 +953,48 @@ const LandingPage = () => {
 
 
       {/* Features Section */}
-      < section
+      <section
         ref={featuresRef}
-        className="py-20 bg-gray-50 dark:bg-dark-300"
+        className="py-24 bg-dark-300 relative overflow-hidden"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary-500/5 rounded-full blur-[150px]" />
+          <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-blue-500/5 rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
-            <span className="inline-block px-4 py-1 bg-primary-500/10 text-primary-500 rounded-full text-sm font-medium mb-4">
+            <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
+              <Sparkles size={14} />
               Fonctionnalites
             </span>
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Tout ce qu'il vous faut pour reussir
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-4">
+              Tout ce qu'il vous faut pour <span className="gradient-text-animated">reussir</span>
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
               Une plateforme complete pour devenir un trader professionnel finance
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feature, index) => {
               const Icon = feature.icon
               return (
                 <div
                   key={index}
-                  className={`group p-6 bg-white dark:bg-dark-100 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-500 hover:-translate-y-2 ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+                  className={`group p-6 glass-card-dark rounded-2xl hover:bg-dark-200/80 transition-all duration-500 hover:-translate-y-2 card-hover-glow spotlight ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
                     }`}
                   style={{ transitionDelay: `${index * 100}ms` }}
                 >
-                  <div className={`w-14 h-14 ${feature.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <div className={`w-14 h-14 ${feature.bg} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300`}>
                     <Icon className={feature.color} size={28} />
                   </div>
-                  <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                  <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-400 transition-colors">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-600 dark:text-gray-400">
+                  <p className="text-gray-400 leading-relaxed">
                     {feature.description}
                   </p>
                 </div>
@@ -878,7 +1002,93 @@ const LandingPage = () => {
             })}
           </div>
         </div>
-      </section >
+      </section>
+
+      {/* Guarantee Section */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-dark-300 to-dark-200" />
+        <div className="absolute inset-0 bg-[url('/images/grid-pattern.svg')] opacity-5" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-r from-purple-900/40 to-blue-900/40 border border-white/10 rounded-3xl p-8 md:p-12 backdrop-blur-sm overflow-hidden group">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
+
+            <div className="grid md:grid-cols-2 gap-12 items-center">
+              <div>
+                <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-full mb-6 border border-green-500/20">
+                  <Shield className="text-green-500" size={20} />
+                  <span className="text-green-400 text-sm font-semibold">Garantie de Paiement</span>
+                </div>
+
+                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">
+                  Paiements Garantis en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">24 Heures</span>
+                </h2>
+
+                <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                  Nous sommes tellement confiants dans notre processus que nous vous
+                  payons <span className="text-white font-bold">$1,000</span> si votre
+                  paiement prend plus de 24 heures.
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-dark-300/50 flex items-center justify-center border border-white/5">
+                      <Zap className="text-yellow-400" size={24} />
+                    </div>
+                    <div>
+                      <p className="text-white font-bold">5 Heures</p>
+                      <p className="text-gray-400 text-sm">Temps moyen</p>
+                    </div>
+                  </div>
+
+                  <div className="hidden sm:block w-px h-12 bg-white/10" />
+
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-xl bg-dark-300/50 flex items-center justify-center border border-white/5">
+                      <Shield className="text-primary-500" size={24} />
+                    </div>
+                    <div>
+                      <p className="text-white font-bold">100% Sécurisé</p>
+                      <p className="text-gray-400 text-sm">Garantie</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="relative">
+                <div className="relative z-10 bg-dark-200/80 backdrop-blur-xl rounded-2xl p-6 border border-white/10 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+                        <CheckCircle className="text-green-500" size={20} />
+                      </div>
+                      <div>
+                        <p className="text-white font-bold">Paiement Approuvé</p>
+                        <p className="text-green-500 text-sm">Il y a 2 minutes</p>
+                      </div>
+                    </div>
+                    <span className="text-white font-mono font-bold">$12,450.00</span>
+                  </div>
+
+                  <div className="space-y-3">
+                    <div className="h-2 bg-dark-100 rounded-full w-full overflow-hidden">
+                      <div className="h-full bg-green-500 w-full animate-pulse" />
+                    </div>
+                    <div className="flex justify-between text-xs text-gray-400">
+                      <span>Traitement</span>
+                      <span>Complété</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Background decorative elements */}
+                <div className="absolute -top-6 -right-6 z-0 w-24 h-24 bg-purple-500/30 rounded-full blur-2xl" />
+                <div className="absolute -bottom-6 -left-6 z-0 w-32 h-32 bg-blue-500/30 rounded-full blur-2xl" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* How It Works Section */}
       < section
@@ -1365,38 +1575,86 @@ const LandingPage = () => {
       </section >
 
       {/* Final CTA Section */}
-      < section className="py-20 bg-gray-50 dark:bg-dark-300" >
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 text-green-500 mb-6">
-            <Zap size={16} />
-            <span className="text-sm font-medium">Offre Limitee - 20% de reduction</span>
+      <section className="py-24 relative overflow-hidden">
+        {/* Animated Background */}
+        <div className="absolute inset-0 bg-gradient-to-b from-dark-300 via-dark-400 to-dark-400">
+          {/* Glow Effects */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary-500/10 rounded-full blur-[150px]" />
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+
+          {/* Floating Particles */}
+          <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {[...Array(10)].map((_, i) => (
+              <div
+                key={i}
+                className="absolute w-2 h-2 bg-primary-500/20 rounded-full animate-float"
+                style={{
+                  left: `${10 + i * 10}%`,
+                  top: `${20 + (i % 3) * 20}%`,
+                  animationDelay: `${i * 0.5}s`,
+                }}
+              />
+            ))}
           </div>
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-6">
-            Pret a commencer votre parcours de trader?
+        </div>
+
+        <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          {/* Badge with Pulse */}
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-card mb-8 animate-pulse-green">
+            <Zap className="text-primary-400" size={18} />
+            <span className="text-sm font-semibold text-primary-400">Offre Limitee - 20% de reduction</span>
+          </div>
+
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            Pret a commencer votre parcours de{' '}
+            <span className="gradient-text-animated">trader?</span>
           </h2>
-          <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-            Rejoignez plus de 10,000 traders qui font confiance a TradeSense AI
+
+          <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+            Rejoignez plus de <span className="text-white font-semibold">10,000 traders</span> qui font confiance a TradeSense AI
           </p>
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link
               to="/pricing"
-              className="group flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold text-lg transition-all shadow-lg hover:scale-105"
+              className="group relative flex items-center gap-2 px-10 py-5 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
             >
-              Voir les Challenges
-              <ArrowRight className="group-hover:translate-x-1 transition-transform" size={20} />
+              <span className="relative z-10 flex items-center gap-2">
+                Voir les Challenges
+                <ArrowRight className="group-hover:translate-x-1 transition-transform" size={22} />
+              </span>
             </Link>
             <Link
               to="/register"
-              className="flex items-center gap-2 px-8 py-4 bg-gray-200 dark:bg-dark-100 hover:bg-gray-300 dark:hover:bg-dark-200 text-gray-900 dark:text-white rounded-xl font-semibold text-lg transition-all"
+              className="flex items-center gap-2 px-10 py-5 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-lg transition-all duration-300 hover:scale-105 spotlight"
             >
+              <Users size={20} />
               Creer un Compte Gratuit
             </Link>
           </div>
-          <p className="mt-6 text-sm text-gray-500">
+
+          <p className="mt-8 text-sm text-gray-500 flex items-center justify-center gap-2">
+            <Lock size={14} />
             Pas de carte bancaire requise pour l'inscription
           </p>
+
+          {/* Trust Icons */}
+          <div className="mt-12 flex items-center justify-center gap-8 opacity-50">
+            <div className="flex items-center gap-2 text-gray-400">
+              <Shield size={20} />
+              <span className="text-sm">SSL Secured</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400">
+              <CheckCircle size={20} />
+              <span className="text-sm">24h Payouts</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-400">
+              <Globe size={20} />
+              <span className="text-sm">Global Support</span>
+            </div>
+          </div>
         </div>
-      </section >
+      </section>
     </div >
   )
 }

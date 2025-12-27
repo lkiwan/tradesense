@@ -14,13 +14,9 @@ const api = axios.create({
 // Request interceptor - add auth token, session token, and fix API paths
 api.interceptors.request.use(
   (config) => {
-    // Ensure all paths start with /api (fix inconsistent paths)
-    if (config.url && !config.url.startsWith('/api') && !config.url.startsWith('http')) {
-      config.url = '/api' + config.url
-    }
-    // Remove double /api/api if present
-    if (config.url && config.url.startsWith('/api/api')) {
-      config.url = config.url.replace('/api/api', '/api')
+    // Remove /api prefix from URL since baseURL already includes /api
+    if (config.url && config.url.startsWith('/api/')) {
+      config.url = config.url.replace('/api/', '/')
     }
 
     const token = localStorage.getItem('access_token')
@@ -157,10 +153,10 @@ api.interceptors.response.use(
 
 // API helper functions
 export const authAPI = {
-  login: (email, password) => api.post('/api/auth/login', { email, password }),
-  register: (data) => api.post('/api/auth/register', data),
-  getMe: () => api.get('/api/auth/me'),
-  updateMe: (data) => api.put('/api/auth/me', data)
+  login: (email, password) => api.post('/auth/login', { email, password }),
+  register: (data) => api.post('/auth/register', data),
+  getMe: () => api.get('/auth/me'),
+  updateMe: (data) => api.put('/auth/me', data)
 }
 
 export const challengesAPI = {

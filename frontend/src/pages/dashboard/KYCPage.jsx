@@ -227,7 +227,7 @@ const KYCPage = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
               <Shield className="text-primary-400" size={24} />
             </div>
             KYC Verification
@@ -240,7 +240,7 @@ const KYCPage = () => {
       </div>
 
       {/* Current Status Card */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
         <div className="flex items-start justify-between">
           <div>
             <h2 className="text-lg font-semibold text-white mb-2">Verification Status</h2>
@@ -289,7 +289,7 @@ const KYCPage = () => {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex gap-2 bg-dark-100 rounded-xl p-2">
+      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
         {[
           { id: 'status', label: 'Status', icon: Shield },
           { id: 'personal', label: 'Personal Info', icon: User },
@@ -301,10 +301,10 @@ const KYCPage = () => {
             <button
               key={tab.id}
               onClick={() => setActiveStep(tab.id)}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all ${
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 whitespace-nowrap ${
                 activeStep === tab.id
-                  ? 'bg-primary-500 text-white'
-                  : 'text-gray-400 hover:text-white hover:bg-dark-200'
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
               }`}
             >
               <Icon size={18} />
@@ -315,14 +315,14 @@ const KYCPage = () => {
       </div>
 
       {/* Content */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5">
         {/* Status Tab */}
         {activeStep === 'status' && (
           <div className="p-6 space-y-6">
             <h3 className="text-lg font-semibold text-white">How to Upgrade Your Tier</h3>
 
             {/* Email Verification */}
-            <div className={`p-4 rounded-lg border ${emailVerified ? 'bg-green-500/5 border-green-500/30' : 'bg-dark-200 border-dark-300'}`}>
+            <div className={`p-4 rounded-xl border transition-all duration-300 ${emailVerified ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {emailVerified ? (
@@ -346,7 +346,7 @@ const KYCPage = () => {
             </div>
 
             {/* ID Verification */}
-            <div className={`p-4 rounded-lg border ${kycData?.current_tier >= 2 ? 'bg-green-500/5 border-green-500/30' : 'bg-dark-200 border-dark-300'}`}>
+            <div className={`p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 2 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {kycData?.current_tier >= 2 ? (
@@ -373,7 +373,7 @@ const KYCPage = () => {
             </div>
 
             {/* Address Verification */}
-            <div className={`p-4 rounded-lg border ${kycData?.current_tier >= 3 ? 'bg-green-500/5 border-green-500/30' : 'bg-dark-200 border-dark-300'}`}>
+            <div className={`p-4 rounded-xl border transition-all duration-300 ${kycData?.current_tier >= 3 ? 'bg-green-500/10 border-green-500/30' : 'bg-dark-200/50 border-white/5 hover:border-primary-500/30'}`}>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   {kycData?.current_tier >= 3 ? (
@@ -400,7 +400,7 @@ const KYCPage = () => {
             </div>
 
             {/* Info Box */}
-            <div className="flex items-start gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-lg">
+            <div className="flex items-start gap-3 p-4 bg-blue-500/10 border border-blue-500/30 rounded-xl">
               <Info className="text-blue-400 mt-0.5" size={20} />
               <div>
                 <p className="text-blue-400 font-medium">Why verify your identity?</p>
@@ -425,7 +425,7 @@ const KYCPage = () => {
                   name="first_name"
                   value={formData.first_name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -435,7 +435,7 @@ const KYCPage = () => {
                   name="last_name"
                   value={formData.last_name}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -445,7 +445,7 @@ const KYCPage = () => {
                   name="date_of_birth"
                   value={formData.date_of_birth}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -456,7 +456,7 @@ const KYCPage = () => {
                   value={formData.phone_number}
                   onChange={handleInputChange}
                   placeholder="+1 234 567 8900"
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -466,7 +466,7 @@ const KYCPage = () => {
                   name="nationality"
                   value={formData.nationality}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -476,7 +476,7 @@ const KYCPage = () => {
                   name="country_of_residence"
                   value={formData.country_of_residence}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
             </div>
@@ -485,7 +485,7 @@ const KYCPage = () => {
               <button
                 onClick={() => handleSubmitInfo(false)}
                 disabled={submitting}
-                className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium disabled:opacity-50"
+                className="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
               >
                 {submitting ? <Loader2 className="animate-spin" size={20} /> : 'Save Information'}
               </button>
@@ -505,7 +505,7 @@ const KYCPage = () => {
                   name="address_line_1"
                   value={formData.address_line_1}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div className="md:col-span-2">
@@ -515,7 +515,7 @@ const KYCPage = () => {
                   name="address_line_2"
                   value={formData.address_line_2}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -525,7 +525,7 @@ const KYCPage = () => {
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -535,7 +535,7 @@ const KYCPage = () => {
                   name="state_province"
                   value={formData.state_province}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
               <div>
@@ -545,7 +545,7 @@ const KYCPage = () => {
                   name="postal_code"
                   value={formData.postal_code}
                   onChange={handleInputChange}
-                  className="w-full px-4 py-2 bg-dark-200 border border-dark-300 rounded-lg text-white focus:outline-none focus:border-primary-500"
+                  className="w-full px-4 py-2.5 bg-dark-200/50 border border-white/10 rounded-xl text-white focus:outline-none focus:border-primary-500/50 transition-colors"
                 />
               </div>
             </div>
@@ -554,7 +554,7 @@ const KYCPage = () => {
               <button
                 onClick={() => handleSubmitInfo(false)}
                 disabled={submitting}
-                className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium disabled:opacity-50"
+                className="px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
               >
                 {submitting ? <Loader2 className="animate-spin" size={20} /> : 'Save Address'}
               </button>
@@ -568,7 +568,7 @@ const KYCPage = () => {
             <h3 className="text-lg font-semibold text-white">Upload Documents</h3>
 
             {/* ID Document Section */}
-            <div className="border border-dark-300 rounded-lg p-4">
+            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
               <h4 className="font-medium text-white mb-3 flex items-center gap-2">
                 <CreditCard size={18} className="text-primary-400" />
                 ID Document (Passport, National ID, or Driver's License)
@@ -650,7 +650,7 @@ const KYCPage = () => {
             </div>
 
             {/* Selfie Section */}
-            <div className="border border-dark-300 rounded-lg p-4">
+            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
               <h4 className="font-medium text-white mb-3 flex items-center gap-2">
                 <User size={18} className="text-primary-400" />
                 Selfie Verification
@@ -697,7 +697,7 @@ const KYCPage = () => {
             </div>
 
             {/* Proof of Address Section */}
-            <div className="border border-dark-300 rounded-lg p-4">
+            <div className="border border-white/10 rounded-xl p-4 bg-dark-200/30">
               <h4 className="font-medium text-white mb-3 flex items-center gap-2">
                 <MapPin size={18} className="text-primary-400" />
                 Proof of Address
@@ -749,7 +749,7 @@ const KYCPage = () => {
                 <button
                   onClick={() => handleSubmitInfo(true)}
                   disabled={submitting || !kycData?.documents?.length}
-                  className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium disabled:opacity-50"
+                  className="flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300 disabled:opacity-50"
                 >
                   {submitting ? (
                     <Loader2 className="animate-spin" size={20} />
@@ -765,7 +765,7 @@ const KYCPage = () => {
 
             {/* Pending Review Notice */}
             {(kycData?.status === 'pending' || kycData?.status === 'under_review') && (
-              <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-lg">
+              <div className="flex items-start gap-3 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
                 <Clock className="text-yellow-400 mt-0.5" size={20} />
                 <div>
                   <p className="text-yellow-400 font-medium">Verification in Progress</p>

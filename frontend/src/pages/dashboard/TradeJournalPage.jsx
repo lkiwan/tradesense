@@ -1,111 +1,47 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react'
 import {
-  Box,
-  Container,
-  Typography,
-  Grid,
-  Paper,
-  Card,
-  CardContent,
-  Button,
-  IconButton,
-  TextField,
-  InputAdornment,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  FormControl,
-  FormControlLabel,
-  InputLabel,
-  Select,
-  MenuItem,
-  Switch,
-  Chip,
-  Divider,
-  Tooltip,
-  Alert,
-  Snackbar,
-  CircularProgress,
-  Tabs,
-  Tab,
-  Rating,
-  Slider,
-  Autocomplete,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TablePagination,
-  LinearProgress
-} from '@mui/material';
-import {
-  Add,
-  Search,
-  Star,
-  StarBorder,
-  Edit,
-  Delete,
-  TrendingUp,
-  TrendingDown,
-  CalendarMonth,
-  BarChart,
-  Download,
-  FilterList,
-  Refresh,
-  Psychology,
-  Timeline,
-  EmojiEvents,
-  Warning,
-  CheckCircle,
-  Cancel
-} from '@mui/icons-material';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
-import api from '../../services/api';
+  Plus, Search, Star, Edit3, Trash2, TrendingUp, TrendingDown,
+  Calendar, BarChart3, Download, RefreshCw, Brain, Activity,
+  Trophy, AlertTriangle, CheckCircle, XCircle, X, ChevronDown
+} from 'lucide-react'
+import api from '../../services/api'
+import { showSuccessToast, showErrorToast } from '../../utils/errorHandler'
 
 // Constants
 const EMOTIONS = [
   'confident', 'fearful', 'greedy', 'patient', 'impatient',
   'frustrated', 'calm', 'excited', 'anxious', 'neutral'
-];
+]
 
-const SETUP_QUALITIES = ['A+', 'A', 'B', 'C', 'D'];
-
-const EXECUTION_RATINGS = ['perfect', 'good', 'average', 'poor', 'terrible'];
-
-const SESSIONS = ['asian', 'london', 'new_york', 'overlap'];
-
-const TIMEFRAMES = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1', 'W1'];
+const SETUP_QUALITIES = ['A+', 'A', 'B', 'C', 'D']
+const EXECUTION_RATINGS = ['perfect', 'good', 'average', 'poor', 'terrible']
+const SESSIONS = ['asian', 'london', 'new_york', 'overlap']
+const TIMEFRAMES = ['M1', 'M5', 'M15', 'M30', 'H1', 'H4', 'D1', 'W1']
 
 const COMMON_TAGS = [
   'trend_following', 'breakout', 'pullback', 'reversal', 'scalp',
   'day_trade', 'swing', 'support_resistance', 'fibonacci', 'price_action'
-];
+]
 
 const TradeJournalPage = () => {
   // State
-  const [entries, setEntries] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [tabValue, setTabValue] = useState(0);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [totalEntries, setTotalEntries] = useState(0);
-  const [analytics, setAnalytics] = useState(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingEntry, setEditingEntry] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [entries, setEntries] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState('entries')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [totalEntries, setTotalEntries] = useState(0)
+  const [analytics, setAnalytics] = useState(null)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [editingEntry, setEditingEntry] = useState(null)
+  const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [filters, setFilters] = useState({
     symbol: '',
-    startDate: null,
-    endDate: null,
+    startDate: '',
+    endDate: '',
     isWin: '',
     setupQuality: ''
-  });
+  })
 
   // Form state
   const [formData, setFormData] = useState({
@@ -143,61 +79,57 @@ const TradeJournalPage = () => {
     notes: '',
     overall_rating: 0,
     is_favorite: false
-  });
+  })
 
   useEffect(() => {
-    loadEntries();
-    loadAnalytics();
-  }, [page, rowsPerPage, filters]);
+    loadEntries()
+    loadAnalytics()
+  }, [page, rowsPerPage, filters])
 
   const loadEntries = async () => {
     try {
-      setLoading(true);
+      setLoading(true)
       const params = {
         page: page + 1,
         per_page: rowsPerPage,
-        ...filters.symbol && { symbol: filters.symbol },
-        ...filters.startDate && { start_date: filters.startDate.toISOString().split('T')[0] },
-        ...filters.endDate && { end_date: filters.endDate.toISOString().split('T')[0] },
-        ...filters.isWin && { is_win: filters.isWin },
-        ...filters.setupQuality && { setup_quality: filters.setupQuality }
-      };
+        ...(filters.symbol && { symbol: filters.symbol }),
+        ...(filters.startDate && { start_date: filters.startDate }),
+        ...(filters.endDate && { end_date: filters.endDate }),
+        ...(filters.isWin && { is_win: filters.isWin }),
+        ...(filters.setupQuality && { setup_quality: filters.setupQuality })
+      }
 
-      const response = await api.get('/journal', { params });
-      setEntries(response.data?.entries || []);
-      setTotalEntries(response.data?.total || 0);
+      const response = await api.get('/journal', { params })
+      setEntries(response.data?.entries || [])
+      setTotalEntries(response.data?.total || 0)
     } catch (error) {
-      showSnackbar('Failed to load journal entries', 'error');
+      showErrorToast('Failed to load journal entries')
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   const loadAnalytics = async () => {
     try {
-      const response = await api.get('/journal/analytics');
-      setAnalytics(response.data);
+      const response = await api.get('/journal/analytics')
+      setAnalytics(response.data)
     } catch (error) {
-      console.error('Failed to load analytics:', error);
+      console.error('Failed to load analytics:', error)
     }
-  };
-
-  const showSnackbar = (message, severity = 'success') => {
-    setSnackbar({ open: true, message, severity });
-  };
+  }
 
   const handleOpenDialog = (entry = null) => {
     if (entry) {
-      setEditingEntry(entry);
+      setEditingEntry(entry)
       setFormData({
         ...entry,
         trade_date: entry.trade_date || new Date().toISOString().split('T')[0],
         tags: entry.tags || [],
         confidence_level: entry.confidence_level || 5,
         stress_level: entry.stress_level || 5
-      });
+      })
     } else {
-      setEditingEntry(null);
+      setEditingEntry(null)
       setFormData({
         symbol: '',
         trade_type: 'buy',
@@ -233,15 +165,15 @@ const TradeJournalPage = () => {
         notes: '',
         overall_rating: 0,
         is_favorite: false
-      });
+      })
     }
-    setDialogOpen(true);
-  };
+    setDialogOpen(true)
+  }
 
   const handleSave = async () => {
     if (!formData.symbol.trim()) {
-      showSnackbar('Symbol is required', 'error');
-      return;
+      showErrorToast('Symbol is required')
+      return
     }
 
     try {
@@ -254,769 +186,873 @@ const TradeJournalPage = () => {
         take_profit: formData.take_profit ? parseFloat(formData.take_profit) : null,
         profit_loss: formData.profit_loss ? parseFloat(formData.profit_loss) : null,
         profit_pips: formData.profit_pips ? parseFloat(formData.profit_pips) : null
-      };
+      }
 
       if (editingEntry) {
-        await api.put(`/api/journal/${editingEntry.id}`, payload);
-        showSnackbar('Journal entry updated');
+        await api.put(`/api/journal/${editingEntry.id}`, payload)
+        showSuccessToast('Journal entry updated')
       } else {
-        await api.post('/journal', payload);
-        showSnackbar('Journal entry created');
+        await api.post('/journal', payload)
+        showSuccessToast('Journal entry created')
       }
-      setDialogOpen(false);
-      loadEntries();
-      loadAnalytics();
+      setDialogOpen(false)
+      loadEntries()
+      loadAnalytics()
     } catch (error) {
-      showSnackbar(error.response?.data?.error || 'Failed to save entry', 'error');
+      showErrorToast(error.response?.data?.error || 'Failed to save entry')
     }
-  };
+  }
 
   const handleDelete = async () => {
-    if (!deleteConfirm) return;
+    if (!deleteConfirm) return
 
     try {
-      await api.delete(`/api/journal/${deleteConfirm.id}`);
-      showSnackbar('Entry deleted');
-      setDeleteConfirm(null);
-      loadEntries();
-      loadAnalytics();
+      await api.delete(`/api/journal/${deleteConfirm.id}`)
+      showSuccessToast('Entry deleted')
+      setDeleteConfirm(null)
+      loadEntries()
+      loadAnalytics()
     } catch (error) {
-      showSnackbar('Failed to delete entry', 'error');
+      showErrorToast('Failed to delete entry')
     }
-  };
+  }
 
   const handleToggleFavorite = async (entry) => {
     try {
-      await api.post(`/api/journal/${entry.id}/toggle-favorite`);
-      loadEntries();
+      await api.post(`/api/journal/${entry.id}/toggle-favorite`)
+      loadEntries()
     } catch (error) {
-      showSnackbar('Failed to update', 'error');
+      showErrorToast('Failed to update')
     }
-  };
+  }
 
   const handleExportCSV = async () => {
     try {
-      const response = await api.get('/journal/export/csv', { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `trade_journal_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      showSnackbar('Journal exported successfully');
+      const response = await api.get('/journal/export/csv', { responseType: 'blob' })
+      const url = window.URL.createObjectURL(new Blob([response.data]))
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', `trade_journal_${new Date().toISOString().split('T')[0]}.csv`)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      showSuccessToast('Journal exported successfully')
     } catch (error) {
-      showSnackbar('Failed to export', 'error');
+      showErrorToast('Failed to export')
     }
-  };
+  }
 
   const getPnLColor = (pnl) => {
-    if (!pnl) return 'text.secondary';
-    return parseFloat(pnl) >= 0 ? 'success.main' : 'error.main';
-  };
+    if (!pnl) return 'text-gray-400'
+    return parseFloat(pnl) >= 0 ? 'text-green-400' : 'text-red-400'
+  }
+
+  const resetFilters = () => {
+    setFilters({ symbol: '', startDate: '', endDate: '', isWin: '', setupQuality: '' })
+  }
+
+  const totalPages = Math.ceil(totalEntries / rowsPerPage)
 
   return (
-    <LocalizationProvider dateAdapter={AdapterDateFns}>
-      <Container maxWidth="xl" sx={{ py: 3 }}>
-        {/* Header */}
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Psychology sx={{ fontSize: 40, color: 'primary.main' }} />
-            <Box>
-              <Typography variant="h4" fontWeight="bold">
-                Trade Journal
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Document, analyze, and learn from your trades
-              </Typography>
-            </Box>
-          </Box>
-          <Box sx={{ display: 'flex', gap: 1 }}>
-            <Button variant="outlined" startIcon={<Download />} onClick={handleExportCSV}>
-              Export
-            </Button>
-            <Button variant="contained" startIcon={<Add />} onClick={() => handleOpenDialog()}>
-              New Entry
-            </Button>
-          </Box>
-        </Box>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div className="flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+            <Brain className="text-purple-400" size={24} />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold text-white">Trade Journal</h1>
+            <p className="text-gray-400 text-sm">Document, analyze, and learn from your trades</p>
+          </div>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={handleExportCSV}
+            className="flex items-center gap-2 px-4 py-2.5 bg-dark-100 hover:bg-dark-200 text-white rounded-xl font-medium border border-dark-200 transition-all"
+          >
+            <Download size={18} />
+            Export
+          </button>
+          <button
+            onClick={() => handleOpenDialog()}
+            className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
+          >
+            <Plus size={18} />
+            New Entry
+          </button>
+        </div>
+      </div>
 
-        {/* Analytics Cards */}
-        {analytics && (
-          <Grid container spacing={2} sx={{ mb: 3 }}>
-            <Grid item xs={6} sm={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}>
-                <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h4" fontWeight="bold">{analytics.total_entries}</Typography>
-                  <Typography variant="caption">Total Entries</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' }}>
-                <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h4" fontWeight="bold">{analytics.win_rate}%</Typography>
-                  <Typography variant="caption">Win Rate</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Card sx={{ background: analytics.total_pnl >= 0
-                ? 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)'
-                : 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)' }}>
-                <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Typography variant="h4" fontWeight="bold">
-                    ${Math.abs(analytics.total_pnl).toLocaleString()}
-                  </Typography>
-                  <Typography variant="caption">Total P&L</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid item xs={6} sm={3}>
-              <Card sx={{ background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' }}>
-                <CardContent sx={{ textAlign: 'center', py: 2 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
-                    <EmojiEvents />
-                    <Typography variant="h4" fontWeight="bold">{analytics.streak?.current || 0}</Typography>
-                  </Box>
-                  <Typography variant="caption">Win Streak</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-        )}
+      {/* Analytics Cards */}
+      {analytics && (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-gradient-to-br from-purple-500/20 to-purple-600/20 backdrop-blur-xl rounded-xl p-4 border border-purple-500/20">
+            <Activity className="text-purple-400 mb-2" size={24} />
+            <p className="text-2xl font-bold text-white">{analytics.total_entries}</p>
+            <p className="text-xs text-gray-400">Total Entries</p>
+          </div>
 
-        {/* Tabs */}
-        <Paper sx={{ mb: 3 }}>
-          <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tab label="Journal Entries" icon={<Timeline />} iconPosition="start" />
-            <Tab label="Analytics" icon={<BarChart />} iconPosition="start" />
-          </Tabs>
-        </Paper>
+          <div className="bg-gradient-to-br from-green-500/20 to-green-600/20 backdrop-blur-xl rounded-xl p-4 border border-green-500/20">
+            <TrendingUp className="text-green-400 mb-2" size={24} />
+            <p className="text-2xl font-bold text-white">{analytics.win_rate}%</p>
+            <p className="text-xs text-gray-400">Win Rate</p>
+          </div>
 
-        {/* Tab Content */}
-        {tabValue === 0 && (
-          <>
-            {/* Filters */}
-            <Paper sx={{ p: 2, mb: 3 }}>
-              <Grid container spacing={2} alignItems="center">
-                <Grid item xs={12} sm={3}>
-                  <TextField
-                    fullWidth
-                    size="small"
-                    label="Symbol"
-                    value={filters.symbol}
-                    onChange={(e) => setFilters({ ...filters, symbol: e.target.value.toUpperCase() })}
-                    placeholder="EURUSD"
-                  />
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                  <DatePicker
-                    label="From"
-                    value={filters.startDate}
-                    onChange={(date) => setFilters({ ...filters, startDate: date })}
-                    slotProps={{ textField: { size: 'small', fullWidth: true } }}
-                  />
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                  <DatePicker
-                    label="To"
-                    value={filters.endDate}
-                    onChange={(date) => setFilters({ ...filters, endDate: date })}
-                    slotProps={{ textField: { size: 'small', fullWidth: true } }}
-                  />
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Result</InputLabel>
-                    <Select
-                      value={filters.isWin}
-                      label="Result"
-                      onChange={(e) => setFilters({ ...filters, isWin: e.target.value })}
-                    >
-                      <MenuItem value="">All</MenuItem>
-                      <MenuItem value="true">Winners</MenuItem>
-                      <MenuItem value="false">Losers</MenuItem>
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={6} sm={2}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Quality</InputLabel>
-                    <Select
-                      value={filters.setupQuality}
-                      label="Quality"
-                      onChange={(e) => setFilters({ ...filters, setupQuality: e.target.value })}
-                    >
-                      <MenuItem value="">All</MenuItem>
-                      {SETUP_QUALITIES.map(q => (
-                        <MenuItem key={q} value={q}>{q}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12} sm={1}>
-                  <IconButton onClick={() => setFilters({ symbol: '', startDate: null, endDate: null, isWin: '', setupQuality: '' })}>
-                    <Refresh />
-                  </IconButton>
-                </Grid>
-              </Grid>
-            </Paper>
+          <div className={`bg-gradient-to-br ${analytics.total_pnl >= 0 ? 'from-green-500/20 to-green-600/20 border-green-500/20' : 'from-red-500/20 to-red-600/20 border-red-500/20'} backdrop-blur-xl rounded-xl p-4 border`}>
+            {analytics.total_pnl >= 0 ? (
+              <TrendingUp className="text-green-400 mb-2" size={24} />
+            ) : (
+              <TrendingDown className="text-red-400 mb-2" size={24} />
+            )}
+            <p className={`text-2xl font-bold ${analytics.total_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              ${Math.abs(analytics.total_pnl).toLocaleString()}
+            </p>
+            <p className="text-xs text-gray-400">Total P&L</p>
+          </div>
 
-            {/* Entries Table */}
-            <Paper>
-              {loading ? (
-                <Box sx={{ p: 4, textAlign: 'center' }}>
-                  <CircularProgress />
-                </Box>
-              ) : entries.length === 0 ? (
-                <Box sx={{ p: 6, textAlign: 'center' }}>
-                  <Psychology sx={{ fontSize: 64, color: 'text.disabled', mb: 2 }} />
-                  <Typography variant="h6" color="text.secondary">
-                    No journal entries yet
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                    Start documenting your trades to improve your performance
-                  </Typography>
-                  <Button variant="contained" onClick={() => handleOpenDialog()}>
-                    Create First Entry
-                  </Button>
-                </Box>
-              ) : (
-                <>
-                  <TableContainer>
-                    <Table>
-                      <TableHead>
-                        <TableRow>
-                          <TableCell>Date</TableCell>
-                          <TableCell>Symbol</TableCell>
-                          <TableCell>Type</TableCell>
-                          <TableCell align="right">P&L</TableCell>
-                          <TableCell>Setup</TableCell>
-                          <TableCell>Execution</TableCell>
-                          <TableCell>Tags</TableCell>
-                          <TableCell>Rating</TableCell>
-                          <TableCell align="right">Actions</TableCell>
-                        </TableRow>
-                      </TableHead>
-                      <TableBody>
-                        {entries.map((entry) => (
-                          <TableRow key={entry.id} hover>
-                            <TableCell>{entry.trade_date}</TableCell>
-                            <TableCell>
-                              <Typography fontWeight="bold">{entry.symbol}</Typography>
-                            </TableCell>
-                            <TableCell>
-                              <Chip
-                                size="small"
-                                label={entry.trade_type?.toUpperCase()}
-                                color={entry.trade_type === 'buy' ? 'success' : 'error'}
-                                icon={entry.trade_type === 'buy' ? <TrendingUp /> : <TrendingDown />}
-                              />
-                            </TableCell>
-                            <TableCell align="right">
-                              <Typography
-                                fontWeight="bold"
-                                color={getPnLColor(entry.profit_loss)}
-                              >
-                                {entry.profit_loss !== null
-                                  ? `$${parseFloat(entry.profit_loss).toFixed(2)}`
-                                  : '-'}
-                              </Typography>
-                              {entry.profit_pips && (
-                                <Typography variant="caption" color="text.secondary">
-                                  {entry.profit_pips} pips
-                                </Typography>
+          <div className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 backdrop-blur-xl rounded-xl p-4 border border-blue-500/20">
+            <Trophy className="text-blue-400 mb-2" size={24} />
+            <p className="text-2xl font-bold text-white">{analytics.streak?.current || 0}</p>
+            <p className="text-xs text-gray-400">Win Streak</p>
+          </div>
+        </div>
+      )}
+
+      {/* Tabs */}
+      <div className="flex bg-dark-100/80 rounded-lg p-1 border border-dark-200">
+        <button
+          onClick={() => setActiveTab('entries')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
+            activeTab === 'entries'
+              ? 'bg-primary-500 text-white'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          <Activity size={18} />
+          Journal Entries
+        </button>
+        <button
+          onClick={() => setActiveTab('analytics')}
+          className={`flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all ${
+            activeTab === 'analytics'
+              ? 'bg-primary-500 text-white'
+              : 'text-gray-400 hover:text-white'
+          }`}
+        >
+          <BarChart3 size={18} />
+          Analytics
+        </button>
+      </div>
+
+      {/* Journal Entries Tab */}
+      {activeTab === 'entries' && (
+        <>
+          {/* Filters */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
+              <input
+                type="text"
+                placeholder="Symbol"
+                value={filters.symbol}
+                onChange={(e) => setFilters({ ...filters, symbol: e.target.value.toUpperCase() })}
+                className="bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <input
+                type="date"
+                value={filters.startDate}
+                onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
+                className="bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <input
+                type="date"
+                value={filters.endDate}
+                onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
+                className="bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+              <select
+                value={filters.isWin}
+                onChange={(e) => setFilters({ ...filters, isWin: e.target.value })}
+                className="bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Results</option>
+                <option value="true">Winners</option>
+                <option value="false">Losers</option>
+              </select>
+              <select
+                value={filters.setupQuality}
+                onChange={(e) => setFilters({ ...filters, setupQuality: e.target.value })}
+                className="bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              >
+                <option value="">All Quality</option>
+                {SETUP_QUALITIES.map(q => (
+                  <option key={q} value={q}>{q}</option>
+                ))}
+              </select>
+              <button
+                onClick={resetFilters}
+                className="p-2 bg-dark-200 hover:bg-dark-300 text-gray-400 hover:text-white rounded-lg transition-colors"
+              >
+                <RefreshCw size={18} />
+              </button>
+            </div>
+          </div>
+
+          {/* Entries Table */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+            {loading ? (
+              <div className="flex items-center justify-center py-16">
+                <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+              </div>
+            ) : entries.length === 0 ? (
+              <div className="text-center py-16">
+                <Brain className="mx-auto text-gray-600 mb-4" size={64} />
+                <h3 className="text-xl font-bold text-white mb-2">No journal entries yet</h3>
+                <p className="text-gray-400 mb-4">Start documenting your trades to improve your performance</p>
+                <button
+                  onClick={() => handleOpenDialog()}
+                  className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors"
+                >
+                  Create First Entry
+                </button>
+              </div>
+            ) : (
+              <>
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-dark-200/50 border-b border-dark-200">
+                      <tr className="text-xs text-gray-500 uppercase">
+                        <th className="px-4 py-3 text-left font-medium">Date</th>
+                        <th className="px-4 py-3 text-left font-medium">Symbol</th>
+                        <th className="px-4 py-3 text-left font-medium">Type</th>
+                        <th className="px-4 py-3 text-right font-medium">P&L</th>
+                        <th className="px-4 py-3 text-left font-medium">Setup</th>
+                        <th className="px-4 py-3 text-left font-medium">Execution</th>
+                        <th className="px-4 py-3 text-left font-medium">Tags</th>
+                        <th className="px-4 py-3 text-left font-medium">Rating</th>
+                        <th className="px-4 py-3 text-right font-medium">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-dark-200">
+                      {entries.map((entry) => (
+                        <tr key={entry.id} className="hover:bg-dark-200/30 transition-colors">
+                          <td className="px-4 py-3 text-sm text-gray-300">{entry.trade_date}</td>
+                          <td className="px-4 py-3 font-medium text-white">{entry.symbol}</td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
+                              entry.trade_type === 'buy'
+                                ? 'bg-green-500/10 text-green-400'
+                                : 'bg-red-500/10 text-red-400'
+                            }`}>
+                              {entry.trade_type === 'buy' ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                              {entry.trade_type?.toUpperCase()}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <p className={`font-medium ${getPnLColor(entry.profit_loss)}`}>
+                              {entry.profit_loss !== null ? `$${parseFloat(entry.profit_loss).toFixed(2)}` : '-'}
+                            </p>
+                            {entry.profit_pips && (
+                              <p className="text-xs text-gray-500">{entry.profit_pips} pips</p>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {entry.setup_quality && (
+                              <span className={`px-2 py-1 rounded text-xs font-medium ${
+                                entry.setup_quality === 'A+' || entry.setup_quality === 'A'
+                                  ? 'bg-green-500/10 text-green-400'
+                                  : 'bg-dark-200 text-gray-400'
+                              }`}>
+                                {entry.setup_quality}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            {entry.execution_rating && (
+                              <span className="px-2 py-1 bg-dark-200 rounded text-xs text-gray-400 capitalize">
+                                {entry.execution_rating}
+                              </span>
+                            )}
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-1 flex-wrap max-w-[150px]">
+                              {(entry.tags || []).slice(0, 2).map(tag => (
+                                <span key={tag} className="px-1.5 py-0.5 bg-dark-200 rounded text-xs text-gray-400">
+                                  {tag}
+                                </span>
+                              ))}
+                              {(entry.tags || []).length > 2 && (
+                                <span className="px-1.5 py-0.5 bg-primary-500/20 rounded text-xs text-primary-400">
+                                  +{entry.tags.length - 2}
+                                </span>
                               )}
-                            </TableCell>
-                            <TableCell>
-                              {entry.setup_quality && (
-                                <Chip
-                                  size="small"
-                                  label={entry.setup_quality}
-                                  color={entry.setup_quality === 'A+' || entry.setup_quality === 'A' ? 'success' : 'default'}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3">
+                            <div className="flex gap-0.5">
+                              {[1, 2, 3, 4, 5].map((star) => (
+                                <Star
+                                  key={star}
+                                  size={14}
+                                  className={star <= (entry.overall_rating || 0) ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}
                                 />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {entry.execution_rating && (
-                                <Chip size="small" label={entry.execution_rating} variant="outlined" />
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', maxWidth: 150 }}>
-                                {(entry.tags || []).slice(0, 2).map(tag => (
-                                  <Chip key={tag} label={tag} size="small" variant="outlined" />
-                                ))}
-                                {(entry.tags || []).length > 2 && (
-                                  <Chip label={`+${entry.tags.length - 2}`} size="small" />
-                                )}
-                              </Box>
-                            </TableCell>
-                            <TableCell>
-                              <Rating value={entry.overall_rating || 0} size="small" readOnly />
-                            </TableCell>
-                            <TableCell align="right">
-                              <IconButton size="small" onClick={() => handleToggleFavorite(entry)}>
-                                {entry.is_favorite ? <Star sx={{ color: '#ffd700' }} /> : <StarBorder />}
-                              </IconButton>
-                              <IconButton size="small" onClick={() => handleOpenDialog(entry)}>
-                                <Edit fontSize="small" />
-                              </IconButton>
-                              <IconButton size="small" onClick={() => setDeleteConfirm(entry)} color="error">
-                                <Delete fontSize="small" />
-                              </IconButton>
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  <TablePagination
-                    component="div"
-                    count={totalEntries}
-                    page={page}
-                    onPageChange={(e, p) => setPage(p)}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={(e) => {
-                      setRowsPerPage(parseInt(e.target.value, 10));
-                      setPage(0);
-                    }}
-                  />
-                </>
-              )}
-            </Paper>
-          </>
-        )}
+                              ))}
+                            </div>
+                          </td>
+                          <td className="px-4 py-3 text-right">
+                            <div className="flex items-center justify-end gap-1">
+                              <button
+                                onClick={() => handleToggleFavorite(entry)}
+                                className="p-1.5 rounded-lg hover:bg-dark-200 transition-colors"
+                              >
+                                <Star
+                                  size={16}
+                                  className={entry.is_favorite ? 'text-yellow-400 fill-yellow-400' : 'text-gray-500'}
+                                />
+                              </button>
+                              <button
+                                onClick={() => handleOpenDialog(entry)}
+                                className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-white transition-colors"
+                              >
+                                <Edit3 size={16} />
+                              </button>
+                              <button
+                                onClick={() => setDeleteConfirm(entry)}
+                                className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-red-400 transition-colors"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
 
-        {tabValue === 1 && analytics && (
-          <Grid container spacing={3}>
-            {/* Performance by Setup Quality */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom>Performance by Setup Quality</Typography>
-                {Object.entries(analytics.by_setup_quality || {}).map(([quality, data]) => (
-                  <Box key={quality} sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography>{quality} Setup</Typography>
-                      <Typography>
-                        {data.wins}/{data.count} wins ({data.count > 0 ? Math.round((data.wins/data.count)*100) : 0}%)
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={data.count > 0 ? (data.wins/data.count)*100 : 0}
-                      color={data.pnl >= 0 ? 'success' : 'error'}
+                {/* Pagination */}
+                <div className="flex items-center justify-between px-4 py-3 border-t border-dark-200">
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-gray-400">Rows per page:</span>
+                    <select
+                      value={rowsPerPage}
+                      onChange={(e) => {
+                        setRowsPerPage(parseInt(e.target.value, 10))
+                        setPage(0)
+                      }}
+                      className="bg-dark-200 border border-dark-200 rounded px-2 py-1 text-white text-sm focus:outline-none"
+                    >
+                      {[5, 10, 25, 50].map(n => (
+                        <option key={n} value={n}>{n}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="text-sm text-gray-400">
+                      {page * rowsPerPage + 1}-{Math.min((page + 1) * rowsPerPage, totalEntries)} of {totalEntries}
+                    </span>
+                    <div className="flex gap-1">
+                      <button
+                        onClick={() => setPage(Math.max(0, page - 1))}
+                        disabled={page === 0}
+                        className="p-1.5 rounded bg-dark-200 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronDown className="rotate-90" size={18} />
+                      </button>
+                      <button
+                        onClick={() => setPage(Math.min(totalPages - 1, page + 1))}
+                        disabled={page >= totalPages - 1}
+                        className="p-1.5 rounded bg-dark-200 text-gray-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <ChevronDown className="-rotate-90" size={18} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Analytics Tab */}
+      {activeTab === 'analytics' && analytics && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Performance by Setup Quality */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
+            <h3 className="font-semibold text-white mb-4">Performance by Setup Quality</h3>
+            <div className="space-y-4">
+              {Object.entries(analytics.by_setup_quality || {}).map(([quality, data]) => (
+                <div key={quality}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-400">{quality} Setup</span>
+                    <span className="text-white">
+                      {data.wins}/{data.count} wins ({data.count > 0 ? Math.round((data.wins/data.count)*100) : 0}%)
+                    </span>
+                  </div>
+                  <div className="h-2 bg-dark-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${data.pnl >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
+                      style={{ width: `${data.count > 0 ? (data.wins/data.count)*100 : 0}%` }}
                     />
-                    <Typography variant="caption" color={data.pnl >= 0 ? 'success.main' : 'error.main'}>
-                      P&L: ${data.pnl.toFixed(2)}
-                    </Typography>
-                  </Box>
-                ))}
-              </Paper>
-            </Grid>
+                  </div>
+                  <p className={`text-xs mt-1 ${data.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    P&L: ${data.pnl.toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            {/* Performance by Emotion */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom>Performance by Pre-Trade Emotion</Typography>
-                {Object.entries(analytics.by_emotion || {}).slice(0, 5).map(([emotion, data]) => (
-                  <Box key={emotion} sx={{ mb: 2 }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 0.5 }}>
-                      <Typography sx={{ textTransform: 'capitalize' }}>{emotion}</Typography>
-                      <Typography>
-                        {data.wins}/{data.count} wins
-                      </Typography>
-                    </Box>
-                    <LinearProgress
-                      variant="determinate"
-                      value={data.count > 0 ? (data.wins/data.count)*100 : 0}
-                      color={data.pnl >= 0 ? 'success' : 'error'}
+          {/* Performance by Emotion */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
+            <h3 className="font-semibold text-white mb-4">Performance by Pre-Trade Emotion</h3>
+            <div className="space-y-4">
+              {Object.entries(analytics.by_emotion || {}).slice(0, 5).map(([emotion, data]) => (
+                <div key={emotion}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="text-gray-400 capitalize">{emotion}</span>
+                    <span className="text-white">{data.wins}/{data.count} wins</span>
+                  </div>
+                  <div className="h-2 bg-dark-200 rounded-full overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${data.pnl >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
+                      style={{ width: `${data.count > 0 ? (data.wins/data.count)*100 : 0}%` }}
                     />
-                    <Typography variant="caption" color={data.pnl >= 0 ? 'success.main' : 'error.main'}>
-                      P&L: ${data.pnl.toFixed(2)}
-                    </Typography>
-                  </Box>
-                ))}
-              </Paper>
-            </Grid>
+                  </div>
+                  <p className={`text-xs mt-1 ${data.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                    P&L: ${data.pnl.toFixed(2)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
 
-            {/* Top Tags */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom>Top Strategy Tags</Typography>
-                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                  {Object.entries(analytics.by_tag || {}).map(([tag, data]) => (
-                    <Chip
-                      key={tag}
-                      label={`${tag} (${data.count})`}
-                      color={data.pnl >= 0 ? 'success' : 'error'}
-                      variant="outlined"
-                    />
-                  ))}
-                </Box>
-              </Paper>
-            </Grid>
+          {/* Top Tags */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
+            <h3 className="font-semibold text-white mb-4">Top Strategy Tags</h3>
+            <div className="flex flex-wrap gap-2">
+              {Object.entries(analytics.by_tag || {}).map(([tag, data]) => (
+                <span
+                  key={tag}
+                  className={`px-3 py-1.5 rounded-lg text-sm border ${
+                    data.pnl >= 0
+                      ? 'bg-green-500/10 border-green-500/30 text-green-400'
+                      : 'bg-red-500/10 border-red-500/30 text-red-400'
+                  }`}
+                >
+                  {tag} ({data.count})
+                </span>
+              ))}
+            </div>
+          </div>
 
-            {/* By Day of Week */}
-            <Grid item xs={12} md={6}>
-              <Paper sx={{ p: 3 }}>
-                <Typography variant="h6" gutterBottom>Performance by Day</Typography>
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => {
-                  const data = analytics.by_day?.[i] || { count: 0, wins: 0, pnl: 0 };
-                  if (data.count === 0) return null;
-                  return (
-                    <Box key={day} sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 1 }}>
-                      <Typography sx={{ width: 40 }}>{day}</Typography>
-                      <Box sx={{ flexGrow: 1 }}>
-                        <LinearProgress
-                          variant="determinate"
-                          value={data.count > 0 ? (data.wins/data.count)*100 : 0}
-                          color={data.pnl >= 0 ? 'success' : 'error'}
-                        />
-                      </Box>
-                      <Typography variant="caption" sx={{ width: 80, textAlign: 'right' }}>
-                        {data.count} trades
-                      </Typography>
-                    </Box>
-                  );
-                })}
-              </Paper>
-            </Grid>
-          </Grid>
-        )}
+          {/* By Day of Week */}
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
+            <h3 className="font-semibold text-white mb-4">Performance by Day</h3>
+            <div className="space-y-3">
+              {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day, i) => {
+                const data = analytics.by_day?.[i] || { count: 0, wins: 0, pnl: 0 }
+                if (data.count === 0) return null
+                return (
+                  <div key={day} className="flex items-center gap-3">
+                    <span className="w-10 text-sm text-gray-400">{day}</span>
+                    <div className="flex-1 h-2 bg-dark-200 rounded-full overflow-hidden">
+                      <div
+                        className={`h-full rounded-full ${data.pnl >= 0 ? 'bg-green-500' : 'bg-red-500'}`}
+                        style={{ width: `${data.count > 0 ? (data.wins/data.count)*100 : 0}%` }}
+                      />
+                    </div>
+                    <span className="text-xs text-gray-500 w-20 text-right">{data.count} trades</span>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+        </div>
+      )}
 
-        {/* Create/Edit Dialog */}
-        <Dialog open={dialogOpen} onClose={() => setDialogOpen(false)} maxWidth="md" fullWidth>
-          <DialogTitle>
-            {editingEntry ? 'Edit Journal Entry' : 'New Journal Entry'}
-          </DialogTitle>
-          <DialogContent dividers sx={{ maxHeight: '70vh' }}>
-            <Grid container spacing={2}>
+      {/* Create/Edit Modal */}
+      {dialogOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setDialogOpen(false)} />
+          <div className="relative bg-dark-100 rounded-2xl border border-dark-200 shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between p-5 border-b border-dark-200">
+              <h2 className="text-xl font-bold text-white">
+                {editingEntry ? 'Edit Journal Entry' : 'New Journal Entry'}
+              </h2>
+              <button
+                onClick={() => setDialogOpen(false)}
+                className="p-2 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-white transition-colors"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-5 overflow-y-auto max-h-[60vh] space-y-6">
               {/* Trade Details */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>Trade Details</Typography>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Symbol"
-                  value={formData.symbol}
-                  onChange={(e) => setFormData({ ...formData, symbol: e.target.value.toUpperCase() })}
-                  required
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Type</InputLabel>
-                  <Select
-                    value={formData.trade_type}
-                    label="Type"
-                    onChange={(e) => setFormData({ ...formData, trade_type: e.target.value })}
-                  >
-                    <MenuItem value="buy">Buy</MenuItem>
-                    <MenuItem value="sell">Sell</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Lot Size"
-                  type="number"
-                  value={formData.lot_size}
-                  onChange={(e) => setFormData({ ...formData, lot_size: e.target.value })}
-                  inputProps={{ step: 0.01 }}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Date"
-                  type="date"
-                  value={formData.trade_date}
-                  onChange={(e) => setFormData({ ...formData, trade_date: e.target.value })}
-                  InputLabelProps={{ shrink: true }}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Entry Price"
-                  type="number"
-                  value={formData.entry_price}
-                  onChange={(e) => setFormData({ ...formData, entry_price: e.target.value })}
-                  inputProps={{ step: 0.00001 }}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="Exit Price"
-                  type="number"
-                  value={formData.exit_price}
-                  onChange={(e) => setFormData({ ...formData, exit_price: e.target.value })}
-                  inputProps={{ step: 0.00001 }}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="P/L ($)"
-                  type="number"
-                  value={formData.profit_loss}
-                  onChange={(e) => setFormData({ ...formData, profit_loss: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <TextField
-                  fullWidth
-                  label="P/L (pips)"
-                  type="number"
-                  value={formData.profit_pips}
-                  onChange={(e) => setFormData({ ...formData, profit_pips: e.target.value })}
-                />
-              </Grid>
-
-              <Grid item xs={12}><Divider sx={{ my: 1 }} /></Grid>
+              <div>
+                <h4 className="text-sm font-medium text-primary-400 mb-3">Trade Details</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Symbol *</label>
+                    <input
+                      type="text"
+                      value={formData.symbol}
+                      onChange={(e) => setFormData({ ...formData, symbol: e.target.value.toUpperCase() })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                      placeholder="EURUSD"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Type</label>
+                    <select
+                      value={formData.trade_type}
+                      onChange={(e) => setFormData({ ...formData, trade_type: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="buy">Buy</option>
+                      <option value="sell">Sell</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Lot Size</label>
+                    <input
+                      type="number"
+                      step="0.01"
+                      value={formData.lot_size}
+                      onChange={(e) => setFormData({ ...formData, lot_size: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Date</label>
+                    <input
+                      type="date"
+                      value={formData.trade_date}
+                      onChange={(e) => setFormData({ ...formData, trade_date: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Entry Price</label>
+                    <input
+                      type="number"
+                      step="0.00001"
+                      value={formData.entry_price}
+                      onChange={(e) => setFormData({ ...formData, entry_price: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Exit Price</label>
+                    <input
+                      type="number"
+                      step="0.00001"
+                      value={formData.exit_price}
+                      onChange={(e) => setFormData({ ...formData, exit_price: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">P/L ($)</label>
+                    <input
+                      type="number"
+                      value={formData.profit_loss}
+                      onChange={(e) => setFormData({ ...formData, profit_loss: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">P/L (pips)</label>
+                    <input
+                      type="number"
+                      value={formData.profit_pips}
+                      onChange={(e) => setFormData({ ...formData, profit_pips: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* Analysis */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>Analysis</Typography>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Setup Quality</InputLabel>
-                  <Select
-                    value={formData.setup_quality}
-                    label="Setup Quality"
-                    onChange={(e) => setFormData({ ...formData, setup_quality: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {SETUP_QUALITIES.map(q => <MenuItem key={q} value={q}>{q}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Execution</InputLabel>
-                  <Select
-                    value={formData.execution_rating}
-                    label="Execution"
-                    onChange={(e) => setFormData({ ...formData, execution_rating: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {EXECUTION_RATINGS.map(r => <MenuItem key={r} value={r} sx={{ textTransform: 'capitalize' }}>{r}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Session</InputLabel>
-                  <Select
-                    value={formData.session}
-                    label="Session"
-                    onChange={(e) => setFormData({ ...formData, session: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {SESSIONS.map(s => <MenuItem key={s} value={s} sx={{ textTransform: 'capitalize' }}>{s.replace('_', ' ')}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={6} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Timeframe</InputLabel>
-                  <Select
-                    value={formData.timeframe}
-                    label="Timeframe"
-                    onChange={(e) => setFormData({ ...formData, timeframe: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {TIMEFRAMES.map(t => <MenuItem key={t} value={t}>{t}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Setup Description"
-                  value={formData.setup_description}
-                  onChange={(e) => setFormData({ ...formData, setup_description: e.target.value })}
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Lessons Learned"
-                  value={formData.lessons_learned}
-                  onChange={(e) => setFormData({ ...formData, lessons_learned: e.target.value })}
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-
-              <Grid item xs={12}><Divider sx={{ my: 1 }} /></Grid>
+              <div className="pt-4 border-t border-dark-200">
+                <h4 className="text-sm font-medium text-primary-400 mb-3">Analysis</h4>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Setup Quality</label>
+                    <select
+                      value={formData.setup_quality}
+                      onChange={(e) => setFormData({ ...formData, setup_quality: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">-</option>
+                      {SETUP_QUALITIES.map(q => <option key={q} value={q}>{q}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Execution</label>
+                    <select
+                      value={formData.execution_rating}
+                      onChange={(e) => setFormData({ ...formData, execution_rating: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
+                    >
+                      <option value="">-</option>
+                      {EXECUTION_RATINGS.map(r => <option key={r} value={r} className="capitalize">{r}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Session</label>
+                    <select
+                      value={formData.session}
+                      onChange={(e) => setFormData({ ...formData, session: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
+                    >
+                      <option value="">-</option>
+                      {SESSIONS.map(s => <option key={s} value={s} className="capitalize">{s.replace('_', ' ')}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Timeframe</label>
+                    <select
+                      value={formData.timeframe}
+                      onChange={(e) => setFormData({ ...formData, timeframe: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    >
+                      <option value="">-</option>
+                      {TIMEFRAMES.map(t => <option key={t} value={t}>{t}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-xs text-gray-400 mb-1">Setup Description</label>
+                  <textarea
+                    value={formData.setup_description}
+                    onChange={(e) => setFormData({ ...formData, setup_description: e.target.value })}
+                    rows={2}
+                    className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-xs text-gray-400 mb-1">Lessons Learned</label>
+                  <textarea
+                    value={formData.lessons_learned}
+                    onChange={(e) => setFormData({ ...formData, lessons_learned: e.target.value })}
+                    rows={2}
+                    className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                  />
+                </div>
+              </div>
 
               {/* Psychology */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>Psychology</Typography>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl fullWidth size="small">
-                  <InputLabel>Emotion Before</InputLabel>
-                  <Select
-                    value={formData.emotion_before}
-                    label="Emotion Before"
-                    onChange={(e) => setFormData({ ...formData, emotion_before: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {EMOTIONS.map(e => <MenuItem key={e} value={e} sx={{ textTransform: 'capitalize' }}>{e}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl fullWidth size="small">
-                  <InputLabel>Emotion During</InputLabel>
-                  <Select
-                    value={formData.emotion_during}
-                    label="Emotion During"
-                    onChange={(e) => setFormData({ ...formData, emotion_during: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {EMOTIONS.map(e => <MenuItem key={e} value={e} sx={{ textTransform: 'capitalize' }}>{e}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={4}>
-                <FormControl fullWidth size="small">
-                  <InputLabel>Emotion After</InputLabel>
-                  <Select
-                    value={formData.emotion_after}
-                    label="Emotion After"
-                    onChange={(e) => setFormData({ ...formData, emotion_after: e.target.value })}
-                  >
-                    <MenuItem value="">-</MenuItem>
-                    {EMOTIONS.map(e => <MenuItem key={e} value={e} sx={{ textTransform: 'capitalize' }}>{e}</MenuItem>)}
-                  </Select>
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption">Confidence Level: {formData.confidence_level}</Typography>
-                <Slider
-                  value={formData.confidence_level}
-                  onChange={(e, v) => setFormData({ ...formData, confidence_level: v })}
-                  min={1}
-                  max={10}
-                  marks
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption">Stress Level: {formData.stress_level}</Typography>
-                <Slider
-                  value={formData.stress_level}
-                  onChange={(e, v) => setFormData({ ...formData, stress_level: v })}
-                  min={1}
-                  max={10}
-                  marks
-                />
-              </Grid>
-
-              <Grid item xs={12}><Divider sx={{ my: 1 }} /></Grid>
+              <div className="pt-4 border-t border-dark-200">
+                <h4 className="text-sm font-medium text-primary-400 mb-3">Psychology</h4>
+                <div className="grid grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Emotion Before</label>
+                    <select
+                      value={formData.emotion_before}
+                      onChange={(e) => setFormData({ ...formData, emotion_before: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
+                    >
+                      <option value="">-</option>
+                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Emotion During</label>
+                    <select
+                      value={formData.emotion_during}
+                      onChange={(e) => setFormData({ ...formData, emotion_during: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
+                    >
+                      <option value="">-</option>
+                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Emotion After</label>
+                    <select
+                      value={formData.emotion_after}
+                      onChange={(e) => setFormData({ ...formData, emotion_after: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
+                    >
+                      <option value="">-</option>
+                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
+                    </select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4 mt-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-2">Confidence Level: {formData.confidence_level}</label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={formData.confidence_level}
+                      onChange={(e) => setFormData({ ...formData, confidence_level: parseInt(e.target.value) })}
+                      className="w-full accent-primary-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-2">Stress Level: {formData.stress_level}</label>
+                    <input
+                      type="range"
+                      min="1"
+                      max="10"
+                      value={formData.stress_level}
+                      onChange={(e) => setFormData({ ...formData, stress_level: parseInt(e.target.value) })}
+                      className="w-full accent-primary-500"
+                    />
+                  </div>
+                </div>
+              </div>
 
               {/* Tags & Rating */}
-              <Grid item xs={12}>
-                <Typography variant="subtitle2" color="primary" gutterBottom>Tags & Rating</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Autocomplete
-                  multiple
-                  freeSolo
-                  options={COMMON_TAGS}
-                  value={formData.tags}
-                  onChange={(e, v) => setFormData({ ...formData, tags: v })}
-                  renderTags={(value, getTagProps) =>
-                    value.map((option, index) => (
-                      <Chip variant="outlined" label={option} size="small" {...getTagProps({ index })} />
-                    ))
-                  }
-                  renderInput={(params) => <TextField {...params} label="Tags" placeholder="Add tags" />}
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Strategy Name"
-                  value={formData.strategy_name}
-                  onChange={(e) => setFormData({ ...formData, strategy_name: e.target.value })}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  fullWidth
-                  label="Notes"
-                  value={formData.notes}
-                  onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  multiline
-                  rows={2}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="caption">Overall Rating</Typography>
-                <Rating
-                  value={formData.overall_rating}
-                  onChange={(e, v) => setFormData({ ...formData, overall_rating: v })}
-                />
-              </Grid>
-              <Grid item xs={6}>
-                <FormControlLabel
-                  control={
-                    <Switch
-                      checked={formData.is_mistake}
-                      onChange={(e) => setFormData({ ...formData, is_mistake: e.target.checked })}
+              <div className="pt-4 border-t border-dark-200">
+                <h4 className="text-sm font-medium text-primary-400 mb-3">Tags & Rating</h4>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Tags</label>
+                    <div className="flex flex-wrap gap-1 p-2 bg-dark-200 rounded-lg min-h-[40px]">
+                      {formData.tags.map((tag, idx) => (
+                        <span
+                          key={idx}
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-500/20 text-primary-400 rounded text-xs"
+                        >
+                          {tag}
+                          <button
+                            onClick={() => setFormData({
+                              ...formData,
+                              tags: formData.tags.filter((_, i) => i !== idx)
+                            })}
+                            className="hover:text-white"
+                          >
+                            <X size={12} />
+                          </button>
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex flex-wrap gap-1 mt-2">
+                      {COMMON_TAGS.filter(t => !formData.tags.includes(t)).slice(0, 6).map(tag => (
+                        <button
+                          key={tag}
+                          onClick={() => setFormData({ ...formData, tags: [...formData.tags, tag] })}
+                          className="px-2 py-0.5 bg-dark-200 hover:bg-dark-300 text-gray-400 hover:text-white rounded text-xs transition-colors"
+                        >
+                          + {tag}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Strategy Name</label>
+                    <input
+                      type="text"
+                      value={formData.strategy_name}
+                      onChange={(e) => setFormData({ ...formData, strategy_name: e.target.value })}
+                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
-                  }
-                  label="Mark as Mistake"
-                />
-              </Grid>
-            </Grid>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDialogOpen(false)}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained">
-              {editingEntry ? 'Update' : 'Save'}
-            </Button>
-          </DialogActions>
-        </Dialog>
+                  </div>
+                </div>
+                <div className="mt-4">
+                  <label className="block text-xs text-gray-400 mb-1">Notes</label>
+                  <textarea
+                    value={formData.notes}
+                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                    rows={2}
+                    className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
+                  />
+                </div>
+                <div className="flex items-center justify-between mt-4">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Overall Rating</label>
+                    <div className="flex gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button
+                          key={star}
+                          onClick={() => setFormData({ ...formData, overall_rating: star })}
+                          className="p-0.5"
+                        >
+                          <Star
+                            size={20}
+                            className={star <= formData.overall_rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <label className="flex items-center gap-3 cursor-pointer">
+                    <span className="text-sm text-gray-300">Mark as Mistake</span>
+                    <div className="relative">
+                      <input
+                        type="checkbox"
+                        checked={formData.is_mistake}
+                        onChange={(e) => setFormData({ ...formData, is_mistake: e.target.checked })}
+                        className="sr-only"
+                      />
+                      <div className={`w-11 h-6 rounded-full transition-colors ${
+                        formData.is_mistake ? 'bg-red-500' : 'bg-dark-200'
+                      }`}>
+                        <div className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${
+                          formData.is_mistake ? 'translate-x-5' : ''
+                        }`} />
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </div>
+            </div>
 
-        {/* Delete Confirmation */}
-        <Dialog open={Boolean(deleteConfirm)} onClose={() => setDeleteConfirm(null)}>
-          <DialogTitle>Delete Entry</DialogTitle>
-          <DialogContent>
-            <Typography>
+            {/* Modal Footer */}
+            <div className="flex items-center justify-end gap-3 p-5 border-t border-dark-200">
+              <button
+                onClick={() => setDialogOpen(false)}
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="px-6 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors"
+              >
+                {editingEntry ? 'Update' : 'Save'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setDeleteConfirm(null)} />
+          <div className="relative bg-dark-100 rounded-2xl border border-dark-200 shadow-2xl w-full max-w-md p-6">
+            <h3 className="text-lg font-bold text-white mb-2">Delete Entry</h3>
+            <p className="text-gray-400 mb-6">
               Are you sure you want to delete this journal entry? This action cannot be undone.
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setDeleteConfirm(null)}>Cancel</Button>
-            <Button onClick={handleDelete} color="error" variant="contained">Delete</Button>
-          </DialogActions>
-        </Dialog>
+            </p>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={() => setDeleteConfirm(null)}
+                className="px-4 py-2 text-gray-400 hover:text-white transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-medium transition-colors"
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
 
-        {/* Snackbar */}
-        <Snackbar
-          open={snackbar.open}
-          autoHideDuration={3000}
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-        >
-          <Alert severity={snackbar.severity} variant="filled">
-            {snackbar.message}
-          </Alert>
-        </Snackbar>
-      </Container>
-    </LocalizationProvider>
-  );
-};
-
-export default TradeJournalPage;
+export default TradeJournalPage

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import api from '../services/api'
 import toast from 'react-hot-toast'
-import { Mail, Loader2, ArrowLeft, CheckCircle } from 'lucide-react'
+import { Mail, Loader2, ArrowLeft, CheckCircle, KeyRound, Sparkles } from 'lucide-react'
 
 const ForgotPassword = () => {
   const { t } = useTranslation()
@@ -34,46 +34,58 @@ const ForgotPassword = () => {
 
   if (submitted) {
     return (
-      <div className="min-h-[calc(100vh-100px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-md w-full">
+      <div className="min-h-screen bg-dark-400 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px] animate-pulse-slow" />
+          <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+        </div>
+
+        <div className="relative max-w-md w-full">
           {/* Logo */}
           <div className="text-center mb-8">
-            <Link to="/" className="inline-flex items-center gap-2">
-              <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
-                <span className="text-white font-bold text-2xl">T</span>
-              </div>
-              <span className="font-bold text-2xl text-gray-900 dark:text-white">
-                Trade<span className="text-primary-500">Sense</span>
-              </span>
+            <Link to="/" className="inline-flex flex-col items-center gap-2 group">
+              <img src="/logo.svg" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+              <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
             </Link>
           </div>
 
-          <div className="bg-white dark:bg-dark-100 rounded-2xl shadow-xl p-8 text-center">
-            <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
-              <CheckCircle className="text-green-500" size={32} />
+          {/* Success Card */}
+          <div className="glass-card rounded-3xl p-8 md:p-10 text-center">
+            <div className="w-20 h-20 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-green-500/30">
+              <CheckCircle className="text-green-500" size={40} />
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+            <h2 className="text-2xl font-bold text-white mb-4">
               Check Your Email
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-6">
-              If an account exists with the email <strong>{email}</strong>,
+            <p className="text-gray-400 mb-6">
+              If an account exists with the email <span className="text-primary-400 font-medium">{email}</span>,
               you will receive a password reset link shortly.
             </p>
 
-            <div className="bg-gray-50 dark:bg-dark-200 rounded-xl p-4 mb-6 text-left">
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                <strong>Note:</strong> The link will expire in 1 hour. If you don't see the email,
+            <div className="bg-dark-300/50 rounded-xl p-4 mb-6 text-left border border-white/5">
+              <p className="text-sm text-gray-400">
+                <strong className="text-gray-300">Note:</strong> The link will expire in 1 hour. If you don't see the email,
                 check your spam folder.
               </p>
             </div>
 
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-primary-500 hover:text-primary-600 font-medium"
+              className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium transition-colors"
             >
               <ArrowLeft size={18} />
               Back to login
             </Link>
+          </div>
+
+          {/* Footer Badge */}
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
+              <Sparkles size={14} className="text-primary-400" />
+              Secure password recovery
+            </div>
           </div>
         </div>
       </div>
@@ -81,42 +93,50 @@ const ForgotPassword = () => {
   }
 
   return (
-    <div className="min-h-[calc(100vh-100px)] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full">
+    <div className="min-h-screen bg-dark-400 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/3 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px] animate-pulse-slow" />
+        <div className="absolute bottom-1/4 right-1/3 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+        <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+      </div>
+
+      <div className="relative max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-12 h-12 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center">
-              <span className="text-white font-bold text-2xl">T</span>
-            </div>
-            <span className="font-bold text-2xl text-gray-900 dark:text-white">
-              Trade<span className="text-primary-500">Sense</span>
-            </span>
+          <Link to="/" className="inline-flex flex-col items-center gap-2 group">
+            <img src="/logo.svg" alt="TradeSense" className="w-16 h-16 object-contain transition-transform duration-300 group-hover:scale-110" />
+            <span className="text-xl font-bold text-white">Trade<span className="text-primary-500">Sense</span></span>
           </Link>
         </div>
 
         {/* Form Card */}
-        <div className="bg-white dark:bg-dark-100 rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white text-center mb-2">
-            Forgot Password?
-          </h2>
-          <p className="text-gray-500 dark:text-gray-400 text-center mb-8">
-            Enter your email and we'll send you a link to reset your password
-          </p>
+        <div className="glass-card rounded-3xl p-8 md:p-10">
+          <div className="text-center mb-8">
+            <div className="w-16 h-16 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-2xl flex items-center justify-center mx-auto mb-4 border border-primary-500/30">
+              <KeyRound className="text-primary-400" size={28} />
+            </div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Forgot Password?
+            </h2>
+            <p className="text-gray-400">
+              Enter your email and we'll send you a link to reset your password
+            </p>
+          </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Email Address
               </label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={20} />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="input input-icon"
+                  className="w-full pl-12 pr-4 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                   placeholder="you@example.com"
                   required
                 />
@@ -127,7 +147,7 @@ const ForgotPassword = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center gap-2 py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-semibold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="group w-full flex items-center justify-center gap-3 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
             >
               {loading ? (
                 <>
@@ -135,20 +155,31 @@ const ForgotPassword = () => {
                   Sending...
                 </>
               ) : (
-                'Send Reset Link'
+                <>
+                  <Mail size={20} />
+                  Send Reset Link
+                </>
               )}
             </button>
           </form>
 
           {/* Back to login */}
-          <div className="mt-6 text-center">
+          <div className="mt-8 text-center">
             <Link
               to="/login"
-              className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft size={18} />
               Back to login
             </Link>
+          </div>
+        </div>
+
+        {/* Footer Badge */}
+        <div className="mt-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
+            <Sparkles size={14} className="text-primary-400" />
+            Secure password recovery
           </div>
         </div>
       </div>

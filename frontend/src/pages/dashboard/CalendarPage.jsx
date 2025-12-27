@@ -59,7 +59,7 @@ const CalendarPage = () => {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
               <Calendar className="text-primary-400" size={24} />
             </div>
             Economic Calendar
@@ -69,11 +69,11 @@ const CalendarPage = () => {
       </div>
 
       {/* Date Navigation */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <button
             onClick={() => navigateDate(-1)}
-            className="p-2 bg-dark-200 hover:bg-dark-300 rounded-lg transition-colors"
+            className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
           >
             <ChevronLeft className="text-gray-400" size={20} />
           </button>
@@ -82,33 +82,33 @@ const CalendarPage = () => {
           </div>
           <button
             onClick={() => navigateDate(1)}
-            className="p-2 bg-dark-200 hover:bg-dark-300 rounded-lg transition-colors"
+            className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
           >
             <ChevronRight className="text-gray-400" size={20} />
           </button>
           <button
             onClick={() => setSelectedDate(new Date())}
-            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors"
+            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:scale-105"
           >
             Today
           </button>
         </div>
 
         {/* Impact Filter */}
-        <div className="flex gap-2">
+        <div className="flex gap-2 bg-dark-200/30 rounded-xl p-1.5 border border-white/5">
           {[
             { key: 'all', label: 'All' },
-            { key: 'high', label: 'High Impact', color: 'text-red-500' },
+            { key: 'high', label: 'High', color: 'text-red-500' },
             { key: 'medium', label: 'Medium', color: 'text-yellow-500' },
             { key: 'low', label: 'Low', color: 'text-green-500' }
           ].map(f => (
             <button
               key={f.key}
               onClick={() => setFilter(f.key)}
-              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
                 filter === f.key
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-dark-200 text-gray-400 hover:text-white'
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
               }`}
             >
               {f.label}
@@ -118,27 +118,27 @@ const CalendarPage = () => {
       </div>
 
       {/* Impact Legend */}
-      <div className="flex gap-4 text-sm">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-red-500 rounded-full" />
-          <span className="text-gray-400">High Impact</span>
+      <div className="flex flex-wrap gap-4 text-sm">
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 rounded-lg border border-red-500/20">
+          <div className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
+          <span className="text-red-400 font-medium">High Impact</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-yellow-500 rounded-full" />
-          <span className="text-gray-400">Medium Impact</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+          <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full" />
+          <span className="text-yellow-400 font-medium">Medium Impact</span>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-green-500 rounded-full" />
-          <span className="text-gray-400">Low Impact</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 rounded-lg border border-green-500/20">
+          <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
+          <span className="text-green-400 font-medium">Low Impact</span>
         </div>
       </div>
 
       {/* Events Table */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-dark-200/50">
-              <tr className="text-xs text-gray-500 uppercase">
+            <thead className="bg-dark-200/30 border-b border-white/5">
+              <tr className="text-xs text-gray-400 uppercase tracking-wider">
                 <th className="px-4 py-3 text-left font-medium">Time</th>
                 <th className="px-4 py-3 text-left font-medium">Currency</th>
                 <th className="px-4 py-3 text-left font-medium">Event</th>
@@ -148,9 +148,9 @@ const CalendarPage = () => {
                 <th className="px-4 py-3 text-right font-medium">Actual</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-dark-200">
+            <tbody className="divide-y divide-white/5">
               {filteredEvents.map(event => (
-                <tr key={event.id} className={`hover:bg-dark-200/30 transition-colors ${impactColors[event.impact].bg}`}>
+                <tr key={event.id} className={`hover:bg-dark-200/50 transition-all duration-300 ${impactColors[event.impact].bg}`}>
                   <td className="px-4 py-4">
                     <div className="flex items-center gap-2">
                       <Clock className="text-gray-500" size={14} />
@@ -191,16 +191,21 @@ const CalendarPage = () => {
 
         {filteredEvents.length === 0 && (
           <div className="p-12 text-center">
-            <Calendar className="mx-auto text-gray-500 mb-4" size={48} />
-            <p className="text-gray-400">No events scheduled for this date</p>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+              <Calendar className="text-gray-500" size={32} />
+            </div>
+            <p className="text-gray-400 font-medium">No events scheduled for this date</p>
+            <p className="text-gray-500 text-sm mt-1">Try selecting a different date</p>
           </div>
         )}
       </div>
 
       {/* Trading Tip */}
-      <div className="bg-yellow-500/10 rounded-xl border border-yellow-500/30 p-4">
+      <div className="bg-yellow-500/10 backdrop-blur-xl rounded-xl border border-yellow-500/30 p-4">
         <div className="flex items-start gap-3">
-          <AlertTriangle className="text-yellow-500 mt-0.5" size={20} />
+          <div className="p-1.5 rounded-lg bg-yellow-500/20">
+            <AlertTriangle className="text-yellow-400" size={18} />
+          </div>
           <div>
             <h4 className="font-medium text-white mb-1">Trading Tip</h4>
             <p className="text-sm text-gray-400">

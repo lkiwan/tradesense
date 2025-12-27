@@ -203,53 +203,55 @@ const Pricing = () => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-300">
+    <div className="min-h-screen bg-dark-400">
       {/* Hero Section */}
-      <section className="relative py-16 overflow-hidden">
+      <section className="relative py-20 overflow-hidden">
+        {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/15 rounded-full blur-[150px] animate-pulse-slow" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-[200px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/20 rounded-full mb-6">
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <Brain className="text-purple-400" size={18} />
             <span className="text-purple-300 text-sm font-medium">Propulsé par l'Intelligence Artificielle</span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            Tradez avec une <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-primary-400 to-blue-400">IA Prédictive</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+            Tradez avec une <span className="gradient-text-animated">IA Prédictive</span>
           </h1>
-          <p className="text-gray-400 text-lg max-w-3xl mx-auto mb-8">
+          <p className="text-gray-400 text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
             Notre intelligence artificielle analyse des millions de données en temps réel pour prédire les mouvements du marché.
             Plus votre plan est élevé, plus l'IA est puissante et précise.
           </p>
 
           {/* AI Stats */}
-          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-12 mb-12">
-            <div className="flex items-center gap-3 bg-dark-100/50 px-5 py-3 rounded-xl">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center">
-                <Brain size={24} className="text-purple-400" />
+          <div className="flex flex-wrap items-center justify-center gap-6 lg:gap-8 mb-12">
+            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Brain size={28} className="text-purple-400" />
               </div>
               <div className="text-left">
                 <p className="text-2xl font-bold text-white">5 Niveaux</p>
                 <p className="text-gray-500 text-sm">d'Intelligence IA</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-dark-100/50 px-5 py-3 rounded-xl">
-              <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center">
-                <Target size={24} className="text-green-400" />
+            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <Target size={28} className="text-green-400" />
               </div>
               <div className="text-left">
                 <p className="text-2xl font-bold text-white">Jusqu'à 96%</p>
                 <p className="text-gray-500 text-sm">de Précision</p>
               </div>
             </div>
-            <div className="flex items-center gap-3 bg-dark-100/50 px-5 py-3 rounded-xl">
-              <div className="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center">
-                <BarChart3 size={24} className="text-blue-400" />
+            <div className="group flex items-center gap-4 glass-card px-6 py-4 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <BarChart3 size={28} className="text-blue-400" />
               </div>
               <div className="text-left">
                 <p className="text-2xl font-bold text-white">+40 Signaux</p>
@@ -261,19 +263,28 @@ const Pricing = () => {
       </section>
 
       {/* AI Tiers Explanation */}
-      <section className="py-8 bg-dark-200/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-8">
-            {Object.entries(AI_TIERS).reverse().map(([key, tier]) => {
+      <section className="relative py-10 overflow-hidden">
+        {/* Subtle glow */}
+        <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-transparent to-blue-500/5" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+        <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs font-bold text-primary-500 uppercase tracking-[0.3em] mb-6">
+            Niveaux d'Intelligence
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 lg:gap-6">
+            {Object.entries(AI_TIERS).reverse().map(([key, tier], index) => {
               const TierIcon = tier.icon
               return (
                 <div
                   key={key}
-                  className="flex items-center gap-2 px-4 py-2 bg-dark-100 rounded-lg transition-all duration-300 ease-out
-                    hover:scale-110 hover:-translate-y-1 hover:shadow-lg cursor-pointer"
+                  className="group flex items-center gap-3 px-5 py-3 glass-card rounded-xl transition-all duration-300 ease-out
+                    hover:scale-110 hover:-translate-y-2 hover:shadow-lg cursor-pointer animate-float"
+                  style={{ animationDelay: `${index * 0.1}s` }}
                 >
-                  <div className={`p-1.5 rounded-lg ${tier.bgColor} transition-transform duration-300 hover:rotate-12`}>
-                    <TierIcon size={16} className={tier.color} />
+                  <div className={`p-2 rounded-xl ${tier.bgColor} transition-all duration-300 group-hover:scale-110 group-hover:rotate-12`}>
+                    <TierIcon size={20} className={tier.color} />
                   </div>
                   <div>
                     <p className={`text-sm font-bold ${tier.color}`}>{tier.name}</p>
@@ -287,22 +298,28 @@ const Pricing = () => {
       </section>
 
       {/* Pricing Table Section */}
-      <section className="relative py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative py-16 bg-dark-300/50">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 right-1/4 w-72 h-72 bg-orange-500/10 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/3 left-1/4 w-64 h-64 bg-purple-500/10 rounded-full blur-[100px]" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Toggle */}
           <div className="flex justify-end mb-8">
-            <label className="flex items-center gap-3 cursor-pointer">
+            <label className="flex items-center gap-3 cursor-pointer glass-card px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
               <div
                 onClick={() => setShowNumbers(!showNumbers)}
-                className={`relative w-12 h-6 rounded-full transition-colors ${
-                  showNumbers ? 'bg-primary-500' : 'bg-dark-100'
+                className={`relative w-12 h-6 rounded-full transition-all duration-300 ${
+                  showNumbers ? 'bg-primary-500 shadow-glow' : 'bg-dark-100'
                 }`}
               >
-                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-transform ${
+                <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${
                   showNumbers ? 'left-7' : 'left-1'
                 }`} />
               </div>
-              <span className="text-gray-300 text-sm">Afficher les chiffres</span>
+              <span className="text-gray-300 text-sm font-medium">Afficher les chiffres</span>
             </label>
           </div>
 
@@ -348,10 +365,10 @@ const Pricing = () => {
                       className="flex-shrink-0 w-40 lg:w-44 cursor-pointer"
                     >
                       {/* Main Card */}
-                      <div className={`rounded-2xl transition-all duration-300
+                      <div className={`rounded-2xl transition-all duration-500 backdrop-blur-sm
                         ${account.isBestValue
-                          ? 'bg-dark-100 ring-2 ring-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.4)]'
-                          : 'bg-dark-100 ring-1 ring-dark-200 hover:ring-2 hover:ring-primary-500 hover:shadow-[0_0_25px_rgba(139,92,246,0.5)]'
+                          ? 'bg-gradient-to-b from-dark-100 to-dark-200 ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.5)] hover:shadow-[0_0_50px_rgba(249,115,22,0.6)]'
+                          : 'bg-gradient-to-b from-dark-100 to-dark-200 ring-1 ring-white/5 hover:ring-2 hover:ring-primary-500/50 hover:shadow-[0_0_40px_rgba(34,197,94,0.3)] hover:-translate-y-1'
                         }`}
                       >
                         {/* Best Value Badge */}
@@ -411,27 +428,27 @@ const Pricing = () => {
                         <div className="px-3 pb-3">
                           <button
                             onClick={() => handleSelect(account)}
-                            className={`w-full py-2.5 rounded-lg font-semibold text-white text-xs transition-colors duration-300 flex items-center justify-center gap-1 ${
+                            className={`group w-full py-2.5 rounded-xl font-semibold text-white text-xs transition-all duration-300 flex items-center justify-center gap-1.5 hover:scale-[1.02] active:scale-95 ${
                               account.isBestValue
-                                ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700'
-                                : 'bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700'
+                                ? 'bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25'
+                                : 'bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 shadow-lg shadow-primary-500/25'
                             }`}
                           >
-                            <Rocket size={14} />
+                            <Rocket size={14} className="transition-transform duration-300 group-hover:-rotate-12" />
                             Commencer
                           </button>
                         </div>
                       </div>
 
                       {/* Average Reward - Separate section with 5px gap */}
-                      <div className="mt-[5px] py-3 bg-dark-100 text-center rounded-xl">
-                        <div className="flex items-center justify-center gap-1">
-                          <Star size={12} className="text-yellow-500" />
+                      <div className="mt-2 py-3 glass-card text-center rounded-xl hover:border-yellow-500/30 transition-all duration-300">
+                        <div className="flex items-center justify-center gap-1.5">
+                          <Star size={14} className="text-yellow-500" />
                           <span className="text-white font-bold text-sm">€{account.avgReward.toLocaleString('fr-FR')}</span>
                         </div>
-                        <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-0.5">
+                        <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-1">
                           <span>Récompense moy.</span>
-                          <Info size={10} />
+                          <Info size={10} className="hover:text-primary-400 cursor-help transition-colors" />
                         </div>
                       </div>
                     </div>
@@ -444,114 +461,146 @@ const Pricing = () => {
       </section>
 
       {/* AI Features Section */}
-      <section className="py-16 bg-dark-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Comment notre <span className="text-purple-400">IA</span> prédit le marché
+      <section className="relative py-20 bg-dark-400 overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/4 left-1/4 w-80 h-80 bg-purple-500/10 rounded-full blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-72 h-72 bg-blue-500/10 rounded-full blur-[120px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:60px_60px]" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-purple-400 text-sm font-medium mb-6 animate-float">
+              <Brain size={16} />
+              Technologie Avancée
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Comment notre <span className="gradient-text-animated">IA</span> prédit le marché
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg">
               Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="group bg-dark-100 p-6 rounded-2xl border border-dark-200/50 hover:border-purple-500/50 transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-xl hover:shadow-purple-500/10 cursor-pointer">
-              <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <Brain className="text-purple-400" size={28} />
+            <div className="group glass-card p-6 rounded-2xl hover:border-purple-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(168,85,247,0.15)] cursor-pointer">
+              <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-purple-500/20">
+                <Brain className="text-purple-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Deep Learning</h3>
-              <p className="text-gray-400 text-sm">Réseaux de neurones profonds analysant les patterns historiques sur 20 ans de données.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Réseaux de neurones profonds analysant les patterns historiques sur 20 ans de données.</p>
             </div>
 
-            <div className="group bg-dark-100 p-6 rounded-2xl border border-dark-200/50 hover:border-blue-500/50 transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-xl hover:shadow-blue-500/10 cursor-pointer">
-              <div className="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <BarChart3 className="text-blue-400" size={28} />
+            <div className="group glass-card p-6 rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)] cursor-pointer">
+              <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                <BarChart3 className="text-blue-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Analyse Technique</h3>
-              <p className="text-gray-400 text-sm">Plus de 150 indicateurs techniques calculés en temps réel sur tous les timeframes.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Plus de 150 indicateurs techniques calculés en temps réel sur tous les timeframes.</p>
             </div>
 
-            <div className="group bg-dark-100 p-6 rounded-2xl border border-dark-200/50 hover:border-green-500/50 transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-xl hover:shadow-green-500/10 cursor-pointer">
-              <div className="w-14 h-14 bg-green-500/20 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <TrendingUp className="text-green-400" size={28} />
+            <div className="group glass-card p-6 rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(34,197,94,0.15)] cursor-pointer">
+              <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-green-500/20">
+                <TrendingUp className="text-green-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Sentiment Analysis</h3>
-              <p className="text-gray-400 text-sm">Analyse du sentiment des news, réseaux sociaux et rapports économiques.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-green-400 transition-colors">Sentiment Analysis</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Analyse du sentiment des news, réseaux sociaux et rapports économiques.</p>
             </div>
 
-            <div className="group bg-dark-100 p-6 rounded-2xl border border-dark-200/50 hover:border-orange-500/50 transition-all duration-300 ease-out hover:scale-105 hover:-translate-y-2 hover:shadow-xl hover:shadow-orange-500/10 cursor-pointer">
-              <div className="w-14 h-14 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-4 transition-transform duration-300 group-hover:scale-110 group-hover:rotate-6">
-                <Zap className="text-orange-400" size={28} />
+            <div className="group glass-card p-6 rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(249,115,22,0.15)] cursor-pointer">
+              <div className="w-16 h-16 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-orange-500/20">
+                <Zap className="text-orange-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-2">Exécution Rapide</h3>
-              <p className="text-gray-400 text-sm">Signaux générés en millisecondes pour capturer les meilleures opportunités.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-orange-400 transition-colors">Exécution Rapide</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">Signaux générés en millisecondes pour capturer les meilleures opportunités.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Comparison Section */}
-      <section className="py-16">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
-              Pourquoi choisir un plan supérieur?
+      <section className="relative py-20 bg-dark-300/50 overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yellow-500/5 rounded-full blur-[150px]" />
+        </div>
+
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-yellow-400 text-sm font-medium mb-6">
+              <Award size={16} />
+              Comparaison
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Pourquoi choisir un <span className="gradient-text-animated">plan supérieur</span>?
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Starter vs Elite comparison */}
-            <div className="group bg-dark-100 p-6 rounded-2xl transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl cursor-pointer">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-gray-500/20 rounded-lg transition-transform duration-300 group-hover:scale-110">
-                  <Cpu size={20} className="text-gray-400" />
+            {/* Starter comparison */}
+            <div className="group glass-card p-8 rounded-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:-translate-y-2 cursor-pointer">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-3 bg-gray-500/20 rounded-xl transition-transform duration-300 group-hover:scale-110">
+                  <Cpu size={24} className="text-gray-400" />
                 </div>
-                <h3 className="text-white font-semibold">IA Starter</h3>
+                <div>
+                  <h3 className="text-white font-semibold text-lg">IA Starter</h3>
+                  <p className="text-gray-500 text-xs">Niveau débutant</p>
+                </div>
               </div>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2 text-gray-400">
-                  <CheckCircle2 size={16} className="text-gray-500" />
+              <ul className="space-y-4 text-sm">
+                <li className="flex items-center gap-3 text-gray-400">
+                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
                   Analyse basique EUR/USD, GBP/USD
                 </li>
-                <li className="flex items-center gap-2 text-gray-400">
-                  <CheckCircle2 size={16} className="text-gray-500" />
+                <li className="flex items-center gap-3 text-gray-400">
+                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
                   5-10 signaux par jour
                 </li>
-                <li className="flex items-center gap-2 text-gray-400">
-                  <CheckCircle2 size={16} className="text-gray-500" />
+                <li className="flex items-center gap-3 text-gray-400">
+                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
                   Précision de 72%
                 </li>
-                <li className="flex items-center gap-2 text-gray-400">
-                  <CheckCircle2 size={16} className="text-gray-500" />
+                <li className="flex items-center gap-3 text-gray-400">
+                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
                   Indicateurs techniques de base
                 </li>
               </ul>
             </div>
 
-            <div className="group bg-gradient-to-br from-yellow-500/10 to-orange-500/10 p-6 rounded-2xl border border-yellow-500/30 transition-all duration-300 ease-out hover:scale-[1.02] hover:-translate-y-1 hover:shadow-xl hover:shadow-yellow-500/20 hover:border-yellow-500/50 cursor-pointer">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 bg-yellow-500/20 rounded-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12">
-                  <Crown size={20} className="text-yellow-400" />
+            {/* Elite comparison */}
+            <div className="group relative p-8 rounded-2xl transition-all duration-500 ease-out hover:scale-[1.02] hover:-translate-y-2 cursor-pointer bg-gradient-to-br from-yellow-500/10 via-orange-500/10 to-yellow-500/5 border border-yellow-500/30 hover:border-yellow-500/50 hover:shadow-[0_20px_60px_rgba(234,179,8,0.2)]">
+              {/* Glow effect */}
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-yellow-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              <div className="relative flex items-center gap-3 mb-6">
+                <div className="p-3 bg-yellow-500/20 rounded-xl transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-yellow-500/30">
+                  <Crown size={24} className="text-yellow-400" />
                 </div>
-                <h3 className="text-white font-semibold">IA Elite</h3>
-                <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full animate-pulse">PREMIUM</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-white font-semibold text-lg">IA Elite</h3>
+                    <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full animate-pulse">PREMIUM</span>
+                  </div>
+                  <p className="text-yellow-500/70 text-xs">Niveau expert</p>
+                </div>
               </div>
-              <ul className="space-y-3 text-sm">
-                <li className="flex items-center gap-2 text-white">
-                  <CheckCircle2 size={16} className="text-yellow-500" />
+              <ul className="relative space-y-4 text-sm">
+                <li className="flex items-center gap-3 text-white">
+                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
                   Tous les marchés (Forex, Crypto, Indices, Commodités)
                 </li>
-                <li className="flex items-center gap-2 text-white">
-                  <CheckCircle2 size={16} className="text-yellow-500" />
+                <li className="flex items-center gap-3 text-white">
+                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
                   Signaux illimités en temps réel
                 </li>
-                <li className="flex items-center gap-2 text-white">
-                  <CheckCircle2 size={16} className="text-yellow-500" />
+                <li className="flex items-center gap-3 text-white">
+                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
                   Précision de 96% avec Neural Network Quantique
                 </li>
-                <li className="flex items-center gap-2 text-white">
-                  <CheckCircle2 size={16} className="text-yellow-500" />
+                <li className="flex items-center gap-3 text-white">
+                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
                   Analyse institutionnelle + Sentiment + API
                 </li>
               </ul>
@@ -561,11 +610,23 @@ const Pricing = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-16 bg-dark-200">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl font-bold text-white text-center mb-12">
-            Questions Fréquentes
-          </h2>
+      <section className="relative py-20 bg-dark-400 overflow-hidden">
+        {/* Background Effects */}
+        <div className="absolute inset-0">
+          <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-primary-500/5 rounded-full blur-[120px]" />
+          <div className="absolute bottom-1/3 right-1/4 w-56 h-56 bg-blue-500/5 rounded-full blur-[100px]" />
+        </div>
+
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-primary-400 text-sm font-medium mb-6">
+              <Info size={16} />
+              FAQ
+            </span>
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Questions <span className="gradient-text-animated">Fréquentes</span>
+            </h2>
+          </div>
 
           <div className="space-y-4">
             {[
@@ -586,13 +647,13 @@ const Pricing = () => {
                 a: 'Oui! Vous pouvez upgrader votre plan à tout moment pour accéder à une IA plus puissante. La différence de prix sera calculée au prorata.'
               }
             ].map((faq, index) => (
-              <details key={index} className="group bg-dark-100 rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-primary-500/5">
-                <summary className="flex items-center justify-between p-5 cursor-pointer list-none transition-colors duration-300 hover:bg-dark-200/50">
-                  <span className="text-white font-medium group-hover:text-primary-400 transition-colors duration-300">{faq.q}</span>
-                  <ChevronDown className="text-gray-400 group-open:rotate-180 transition-all duration-300 group-hover:text-primary-400" size={20} />
+              <details key={index} className="group glass-card rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(34,197,94,0.1)] hover:border-primary-500/30">
+                <summary className="flex items-center justify-between p-6 cursor-pointer list-none transition-colors duration-300">
+                  <span className="text-white font-medium group-hover:text-primary-400 transition-colors duration-300 pr-4">{faq.q}</span>
+                  <ChevronDown className="text-gray-400 group-open:rotate-180 transition-all duration-500 group-hover:text-primary-400 flex-shrink-0" size={22} />
                 </summary>
-                <div className="px-5 pb-5 text-gray-400 animate-fadeIn">
-                  {faq.a}
+                <div className="px-6 pb-6 text-gray-400 leading-relaxed animate-fadeIn border-t border-white/5">
+                  <p className="pt-4">{faq.a}</p>
                 </div>
               </details>
             ))}
@@ -601,29 +662,60 @@ const Pricing = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 relative overflow-hidden">
+      <section className="relative py-24 overflow-hidden">
+        {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-purple-600/20 via-primary-600/20 to-blue-600/20" />
+          <div className="absolute inset-0 bg-gradient-to-br from-purple-600/20 via-primary-600/20 to-blue-600/20" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-500/20 rounded-full blur-[150px] animate-pulse-slow" />
+          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-500/15 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '1s' }} />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.02)_1px,transparent_1px)] bg-[size:40px_40px]" />
         </div>
+
+        {/* Top Border Glow */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary-500/50 to-transparent" />
+
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full mb-6">
-            <Sparkles className="text-yellow-400" size={18} />
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
+            <Sparkles className="text-yellow-400 animate-pulse" size={18} />
             <span className="text-white text-sm font-medium">Offre limitée - Économisez jusqu'à 20%</span>
           </div>
-          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
-            Prêt à trader avec l'IA?
+
+          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-6">
+            Prêt à trader avec <span className="gradient-text-animated">l'IA</span>?
           </h2>
-          <p className="text-white/80 mb-8 text-lg">
+
+          <p className="text-white/80 mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
             Rejoignez plus de 10,000 traders qui utilisent déjà notre IA pour maximiser leurs profits.
           </p>
-          <button
-            onClick={() => handleSelect(ACCOUNT_SIZES.find(a => a.isBestValue) || ACCOUNT_SIZES[1])}
-            className="group inline-flex items-center gap-2 px-8 py-4 bg-white text-dark-300 rounded-xl font-semibold hover:bg-gray-100 transition-all duration-300 shadow-xl text-lg hover:scale-105 hover:shadow-2xl hover:shadow-white/20 active:scale-95"
-          >
-            <Brain size={22} className="transition-transform duration-300 group-hover:rotate-12" />
-            Commencer avec l'IA Pro
-            <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
-          </button>
+
+          {/* CTA Button with pulse ring */}
+          <div className="relative inline-block">
+            <div className="absolute -inset-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl blur opacity-30 group-hover:opacity-50 transition-opacity animate-pulse" />
+            <button
+              onClick={() => handleSelect(ACCOUNT_SIZES.find(a => a.isBestValue) || ACCOUNT_SIZES[1])}
+              className="relative group inline-flex items-center gap-3 px-10 py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
+            >
+              <Brain size={24} className="transition-transform duration-300 group-hover:rotate-12" />
+              Commencer avec l'IA Pro
+              <ArrowRight size={22} className="transition-transform duration-300 group-hover:translate-x-2" />
+            </button>
+          </div>
+
+          {/* Trust badges */}
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-12 pt-8 border-t border-white/10">
+            <div className="flex items-center gap-2 text-white/60 text-sm">
+              <Shield size={16} className="text-green-400" />
+              <span>Paiement sécurisé</span>
+            </div>
+            <div className="flex items-center gap-2 text-white/60 text-sm">
+              <RefreshCw size={16} className="text-blue-400" />
+              <span>Remboursement 100%</span>
+            </div>
+            <div className="flex items-center gap-2 text-white/60 text-sm">
+              <Zap size={16} className="text-yellow-400" />
+              <span>Activation instantanée</span>
+            </div>
+          </div>
         </div>
       </section>
     </div>

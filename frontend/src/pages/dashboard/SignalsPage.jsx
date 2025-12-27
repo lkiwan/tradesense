@@ -36,10 +36,10 @@ const SignalsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
               <Brain className="text-primary-400" size={24} />
             </div>
             Signaux IA
@@ -47,31 +47,31 @@ const SignalsPage = () => {
           <p className="text-gray-400 mt-1">Signaux de trading generes par notre intelligence artificielle</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-3 py-2 bg-dark-100 rounded-lg border border-dark-200">
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-green-500/10 rounded-xl border border-green-500/30">
             <Zap size={16} className="text-green-400" />
-            <span className="text-sm text-gray-400">IA Active</span>
+            <span className="text-sm text-green-400 font-medium">IA Active</span>
           </div>
         </div>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Signaux Aujourd'hui</p>
-          <p className="text-2xl font-bold text-white">24</p>
+          <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">24</p>
           <p className="text-xs text-green-400 mt-1">+8 depuis hier</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Taux de Reussite</p>
           <p className="text-2xl font-bold text-green-400">78%</p>
           <p className="text-xs text-gray-500 mt-1">Sur les 30 derniers jours</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Meilleur Signal</p>
-          <p className="text-2xl font-bold text-white">+12.5%</p>
+          <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">+12.5%</p>
           <p className="text-xs text-gray-500 mt-1">TSLA il y a 3 jours</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Confiance Moyenne</p>
           <p className="text-2xl font-bold text-primary-400">82%</p>
           <p className="text-xs text-gray-500 mt-1">Score IA moyen</p>
@@ -116,8 +116,8 @@ const SignalsPage = () => {
       </div>
 
       {/* Signals List */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
-        <div className="p-4 border-b border-dark-200">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+        <div className="p-4 border-b border-white/5">
           <h3 className="font-semibold text-white">Signaux Recents</h3>
         </div>
         <div className="divide-y divide-dark-200">

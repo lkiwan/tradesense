@@ -14,13 +14,13 @@ const Footer = () => {
           <div className="col-span-1 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img
-                src="/images/logo.png"
+                src="/logo.svg"
                 alt="TradeSense"
                 className="h-10 w-10 object-contain"
               />
               <span className="text-2xl font-bold">
-                <span className="bg-gradient-to-r from-purple-500 to-cyan-400 bg-clip-text text-transparent">Trade</span>
-                <span className="bg-gradient-to-r from-cyan-400 to-cyan-300 bg-clip-text text-transparent">Sense</span>
+                <span className="text-gray-900 dark:text-white">Trade</span>
+                <span className="text-primary-500">Sense</span>
               </span>
             </Link>
             <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md mb-4">

@@ -35,10 +35,10 @@ const PayoutsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-green-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30">
               <Wallet className="text-green-400" size={24} />
             </div>
             Retraits
@@ -47,7 +47,7 @@ const PayoutsPage = () => {
         </div>
         <button
           onClick={() => setShowWithdrawModal(true)}
-          className="flex items-center gap-2 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-colors"
+          className="flex items-center gap-2 px-5 py-2.5 bg-green-500 hover:bg-green-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-green-500/25 hover:shadow-xl hover:shadow-green-500/30 hover:scale-[1.02]"
         >
           <Plus size={18} />
           Nouveau Retrait
@@ -56,26 +56,32 @@ const PayoutsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-dark-100 rounded-xl p-6 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-400">Solde Disponible</span>
-            <Wallet size={20} className="text-green-400" />
+            <div className="p-1.5 rounded-lg bg-green-500/10">
+              <Wallet size={18} className="text-green-400" />
+            </div>
           </div>
-          <p className="text-3xl font-bold text-white">${availableBalance.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-white group-hover:text-green-400 transition-colors">${availableBalance.toLocaleString()}</p>
           <p className="text-sm text-green-400 mt-2">Pret a retirer</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-6 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-400">Total Retire</span>
-            <ArrowUpRight size={20} className="text-blue-400" />
+            <div className="p-1.5 rounded-lg bg-blue-500/10">
+              <ArrowUpRight size={18} className="text-blue-400" />
+            </div>
           </div>
-          <p className="text-3xl font-bold text-white">${totalWithdrawn.toLocaleString()}</p>
+          <p className="text-3xl font-bold text-white group-hover:text-blue-400 transition-colors">${totalWithdrawn.toLocaleString()}</p>
           <p className="text-sm text-gray-500 mt-2">{payouts.filter(p => p.status === 'completed').length} retraits completes</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-6 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 hover:border-yellow-500/30 transition-all duration-300 group">
           <div className="flex items-center justify-between mb-2">
             <span className="text-gray-400">En Cours</span>
-            <Clock size={20} className="text-yellow-400" />
+            <div className="p-1.5 rounded-lg bg-yellow-500/10">
+              <Clock size={18} className="text-yellow-400" />
+            </div>
           </div>
           <p className="text-3xl font-bold text-yellow-400">${pendingAmount.toLocaleString()}</p>
           <p className="text-sm text-gray-500 mt-2">En attente de traitement</p>
@@ -83,27 +89,32 @@ const PayoutsPage = () => {
       </div>
 
       {/* Withdrawal Methods */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
-        <h3 className="font-semibold text-white mb-4">Methodes de Retrait</h3>
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
+        <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+          <div className="p-1.5 rounded-lg bg-primary-500/10">
+            <CreditCard size={18} className="text-primary-400" />
+          </div>
+          Methodes de Retrait
+        </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-dark-200 rounded-lg p-4 border border-dark-200 hover:border-primary-500/50 transition-colors cursor-pointer">
+          <div className="bg-dark-200/50 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 cursor-pointer group">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-blue-500/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Building2 className="text-blue-400" size={24} />
               </div>
               <div>
-                <h4 className="font-medium text-white">Virement Bancaire</h4>
+                <h4 className="font-medium text-white group-hover:text-blue-400 transition-colors">Virement Bancaire</h4>
                 <p className="text-sm text-gray-400">2-5 jours ouvrables</p>
               </div>
             </div>
           </div>
-          <div className="bg-dark-200 rounded-lg p-4 border border-dark-200 hover:border-primary-500/50 transition-colors cursor-pointer">
+          <div className="bg-dark-200/50 rounded-xl p-4 border border-white/5 hover:border-orange-500/30 transition-all duration-300 cursor-pointer group">
             <div className="flex items-center gap-3">
-              <div className="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500/20 to-orange-600/20 border border-orange-500/30 flex items-center justify-center group-hover:scale-105 transition-transform">
                 <Wallet className="text-orange-400" size={24} />
               </div>
               <div>
-                <h4 className="font-medium text-white">Crypto (USDT)</h4>
+                <h4 className="font-medium text-white group-hover:text-orange-400 transition-colors">Crypto (USDT)</h4>
                 <p className="text-sm text-gray-400">Instantane - 24h</p>
               </div>
             </div>
@@ -112,8 +123,10 @@ const PayoutsPage = () => {
       </div>
 
       {/* Info Alert */}
-      <div className="bg-blue-500/10 rounded-xl border border-blue-500/20 p-4 flex items-start gap-3">
-        <AlertCircle className="text-blue-400 mt-0.5" size={20} />
+      <div className="bg-blue-500/10 backdrop-blur-xl rounded-xl border border-blue-500/20 p-4 flex items-start gap-3">
+        <div className="p-1.5 rounded-lg bg-blue-500/20">
+          <AlertCircle className="text-blue-400" size={18} />
+        </div>
         <div>
           <h4 className="font-medium text-white mb-1">Information sur les Retraits</h4>
           <p className="text-sm text-gray-400">
@@ -124,8 +137,8 @@ const PayoutsPage = () => {
       </div>
 
       {/* Payouts History */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
-        <div className="p-4 border-b border-dark-200">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+        <div className="p-4 border-b border-white/5">
           <h3 className="font-semibold text-white">Historique des Retraits</h3>
         </div>
         <div className="overflow-x-auto">
@@ -140,12 +153,12 @@ const PayoutsPage = () => {
                 <th className="px-6 py-4 text-right font-medium">Montant</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-dark-200">
+            <tbody className="divide-y divide-white/5">
               {payouts.map(payout => {
                 const status = getStatusConfig(payout.status)
                 const MethodIcon = getMethodIcon(payout.method)
                 return (
-                  <tr key={payout.id} className="hover:bg-dark-200/30 transition-colors">
+                  <tr key={payout.id} className="hover:bg-dark-200/50 transition-colors">
                     <td className="px-6 py-4 text-gray-400">#{payout.id.toString().padStart(5, '0')}</td>
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-2">

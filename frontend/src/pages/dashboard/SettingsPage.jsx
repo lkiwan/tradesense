@@ -75,7 +75,7 @@ const SettingsPage = () => {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-          <div className="p-2 rounded-lg bg-gray-500/10">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-gray-500/20 to-gray-600/20 border border-gray-500/30">
             <Settings className="text-gray-400" size={24} />
           </div>
           Parametres
@@ -85,9 +85,11 @@ const SettingsPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Notifications */}
-        <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
           <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-            <Bell size={18} className="text-primary-400" />
+            <div className="p-1.5 rounded-lg bg-primary-500/10">
+              <Bell size={18} className="text-primary-400" />
+            </div>
             Notifications
           </h3>
           <div className="space-y-4">
@@ -114,9 +116,11 @@ const SettingsPage = () => {
         </div>
 
         {/* Security */}
-        <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
           <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-            <Shield size={18} className="text-green-400" />
+            <div className="p-1.5 rounded-lg bg-green-500/10">
+              <Shield size={18} className="text-green-400" />
+            </div>
             Securite
           </h3>
           <div className="space-y-4">
@@ -296,9 +300,11 @@ const SettingsPage = () => {
         <LinkedAccounts />
 
         {/* Appearance */}
-        <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
           <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-            <Moon size={18} className="text-purple-400" />
+            <div className="p-1.5 rounded-lg bg-purple-500/10">
+              <Moon size={18} className="text-purple-400" />
+            </div>
             Apparence
           </h3>
           <div className="flex items-center justify-between py-3">
@@ -316,19 +322,21 @@ const SettingsPage = () => {
         </div>
 
         {/* Language */}
-        <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-6">
           <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-            <Globe size={18} className="text-blue-400" />
+            <div className="p-1.5 rounded-lg bg-blue-500/10">
+              <Globe size={18} className="text-blue-400" />
+            </div>
             Langue
           </h3>
           <select
             value={settings.language}
             onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
-            className="w-full bg-dark-200 border border-dark-200 rounded-lg px-4 py-3 text-white"
+            className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-4 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 cursor-pointer"
           >
-            <option value="fr">Francais</option>
-            <option value="en">English</option>
-            <option value="ar">العربية</option>
+            <option value="fr" className="bg-dark-300">Francais</option>
+            <option value="en" className="bg-dark-300">English</option>
+            <option value="ar" className="bg-dark-300">العربية</option>
           </select>
         </div>
       </div>

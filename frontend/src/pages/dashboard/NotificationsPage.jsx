@@ -187,11 +187,16 @@ const NotificationsPage = () => {
   ];
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white">Notifications</h1>
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+              <Bell className="text-primary-400" size={24} />
+            </div>
+            Notifications
+          </h1>
           <p className="text-gray-400 mt-1">
             Manage your notification preferences and history
           </p>
@@ -200,7 +205,7 @@ const NotificationsPage = () => {
         {pushPermission !== 'granted' && (
           <button
             onClick={enableNotifications}
-            className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center gap-2"
+            className="px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl flex items-center gap-2 font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30"
           >
             <Bell className="h-5 w-5" />
             Enable Notifications
@@ -210,8 +215,10 @@ const NotificationsPage = () => {
 
       {/* Permission Banner */}
       {pushPermission === 'denied' && (
-        <div className="bg-red-900/30 border border-red-500/30 rounded-lg p-4 mb-6 flex items-center gap-3">
-          <AlertTriangle className="h-5 w-5 text-red-500" />
+        <div className="bg-red-500/10 backdrop-blur-xl border border-red-500/30 rounded-xl p-4 flex items-center gap-3">
+          <div className="p-1.5 rounded-lg bg-red-500/20">
+            <AlertTriangle className="h-5 w-5 text-red-400" />
+          </div>
           <div>
             <p className="text-red-200 font-medium">Notifications Blocked</p>
             <p className="text-red-300/70 text-sm">
@@ -222,21 +229,21 @@ const NotificationsPage = () => {
       )}
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 border-b border-gray-700">
+      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5">
         {tabs.map(tab => (
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-3 flex items-center gap-2 text-sm font-medium transition-colors ${
+            className={`flex-1 px-4 py-2.5 flex items-center justify-center gap-2 text-sm font-medium rounded-lg transition-all duration-300 ${
               activeTab === tab.id
-                ? 'text-indigo-400 border-b-2 border-indigo-400'
-                : 'text-gray-400 hover:text-white'
+                ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
             }`}
           >
             <tab.icon className="h-4 w-4" />
             {tab.label}
             {tab.id === 'history' && unreadCount > 0 && (
-              <span className="px-2 py-0.5 text-xs bg-indigo-600 rounded-full">
+              <span className="px-2 py-0.5 text-xs bg-white/20 rounded-full">
                 {unreadCount}
               </span>
             )}

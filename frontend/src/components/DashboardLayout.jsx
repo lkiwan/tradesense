@@ -208,9 +208,7 @@ const DashboardLayout = ({ children }) => {
         {/* Logo */}
         <div className="p-4 border-b border-dark-200">
           <Link to="/accounts" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary-400 to-primary-600 rounded-xl flex items-center justify-center flex-shrink-0">
-              <span className="text-white font-bold text-xl">T</span>
-            </div>
+            <img src="/logo.svg" alt="TradeSense" className="w-10 h-10 object-contain flex-shrink-0" />
             {sidebarOpen && (
               <span className="font-bold text-xl text-white">
                 Trade<span className="text-primary-500">Sense</span>
@@ -335,10 +333,8 @@ const DashboardLayout = ({ children }) => {
       {/* Mobile Header */}
       <div className="lg:hidden fixed top-0 left-0 right-0 h-16 bg-dark-100 border-b border-dark-200 flex items-center justify-between px-4 z-40">
         <Link to="/accounts" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-lg flex items-center justify-center">
-            <span className="text-white font-bold">T</span>
-          </div>
-          <span className="font-bold text-lg text-white">TradeSense</span>
+          <img src="/logo.svg" alt="TradeSense" className="w-8 h-8 object-contain" />
+          <span className="font-bold text-lg text-white">Trade<span className="text-primary-500">Sense</span></span>
         </Link>
         <button
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}

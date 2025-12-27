@@ -130,7 +130,7 @@ const SessionsPage = () => {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-primary-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
               <Shield className="text-primary-400" size={24} />
             </div>
             Active Sessions
@@ -143,7 +143,7 @@ const SessionsPage = () => {
           <button
             onClick={loadSessions}
             disabled={loading}
-            className="p-2 bg-dark-100 hover:bg-dark-200 rounded-lg text-gray-400 hover:text-white transition-colors"
+            className="p-2.5 bg-dark-100/80 backdrop-blur-xl hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 text-gray-400 hover:text-white transition-all duration-300"
           >
             <RefreshCw size={20} className={loading ? 'animate-spin' : ''} />
           </button>
@@ -151,7 +151,7 @@ const SessionsPage = () => {
             <button
               onClick={handleRevokeAll}
               disabled={revokingAll}
-              className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg font-medium transition-colors disabled:opacity-50"
+              className="flex items-center gap-2 px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-xl border border-red-500/30 font-medium transition-all duration-300 disabled:opacity-50"
             >
               {revokingAll ? (
                 <Loader2 className="animate-spin" size={18} />
@@ -172,9 +172,9 @@ const SessionsPage = () => {
         <div className="space-y-4">
           {/* Current Session */}
           {currentSession && (
-            <div className="bg-dark-100 rounded-xl border border-primary-500/30 p-5">
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-primary-500/30 p-5">
               <div className="flex items-start gap-4">
-                <div className="p-3 bg-primary-500/10 rounded-xl">
+                <div className="p-3 bg-gradient-to-br from-primary-500/20 to-primary-600/20 rounded-xl border border-primary-500/30">
                   <DeviceIcon type={currentSession.device_type} />
                 </div>
                 <div className="flex-1">
@@ -210,17 +210,17 @@ const SessionsPage = () => {
 
           {/* Other Sessions */}
           {otherSessions.length > 0 ? (
-            <div className="bg-dark-100 rounded-xl border border-dark-200">
-              <div className="p-4 border-b border-dark-200">
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5">
+              <div className="p-4 border-b border-white/5">
                 <h3 className="font-semibold text-white">Other Active Sessions</h3>
                 <p className="text-sm text-gray-400 mt-1">
                   {otherSessions.length} other device{otherSessions.length !== 1 ? 's' : ''} signed in
                 </p>
               </div>
-              <div className="divide-y divide-dark-200">
+              <div className="divide-y divide-white/5">
                 {otherSessions.map((session) => (
-                  <div key={session.id} className="p-4 flex items-start gap-4">
-                    <div className="p-3 bg-dark-200 rounded-xl">
+                  <div key={session.id} className="p-4 flex items-start gap-4 hover:bg-dark-200/30 transition-all duration-300">
+                    <div className="p-3 bg-dark-200/50 rounded-xl border border-white/5">
                       <DeviceIcon type={session.device_type} />
                     </div>
                     <div className="flex-1">
@@ -258,7 +258,7 @@ const SessionsPage = () => {
                     <button
                       onClick={() => handleRevokeSession(session.id)}
                       disabled={revoking === session.id}
-                      className="px-4 py-2 bg-dark-200 hover:bg-red-500/10 hover:text-red-400 text-gray-400 rounded-lg text-sm font-medium transition-colors disabled:opacity-50"
+                      className="px-4 py-2 bg-dark-200/50 hover:bg-red-500/10 hover:text-red-400 text-gray-400 rounded-xl border border-white/5 hover:border-red-500/30 text-sm font-medium transition-all duration-300 disabled:opacity-50"
                     >
                       {revoking === session.id ? (
                         <Loader2 className="animate-spin" size={16} />
@@ -271,8 +271,8 @@ const SessionsPage = () => {
               </div>
             </div>
           ) : (
-            <div className="bg-dark-100 rounded-xl border border-dark-200 p-8 text-center">
-              <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-4">
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-8 text-center">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-2xl border border-green-500/30 flex items-center justify-center mx-auto mb-4">
                 <CheckCircle className="text-green-400" size={32} />
               </div>
               <h3 className="font-semibold text-white mb-2">No Other Sessions</h3>
@@ -283,9 +283,11 @@ const SessionsPage = () => {
           )}
 
           {/* Security Tips */}
-          <div className="bg-dark-100 rounded-xl border border-dark-200 p-5">
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-5">
             <h3 className="font-semibold text-white mb-3 flex items-center gap-2">
-              <Shield size={18} className="text-primary-400" />
+              <div className="p-1.5 rounded-lg bg-primary-500/10">
+                <Shield size={16} className="text-primary-400" />
+              </div>
               Security Tips
             </h3>
             <ul className="space-y-2 text-sm text-gray-400">
@@ -302,10 +304,10 @@ const SessionsPage = () => {
                 Sign out from all devices if you suspect unauthorized access.
               </li>
             </ul>
-            <div className="mt-4 pt-4 border-t border-dark-200">
+            <div className="mt-4 pt-4 border-t border-white/5">
               <button
                 onClick={() => navigate('/settings')}
-                className="text-primary-400 hover:text-primary-300 text-sm font-medium"
+                className="text-primary-400 hover:text-primary-300 text-sm font-medium transition-colors"
               >
                 Go to Security Settings →
               </button>

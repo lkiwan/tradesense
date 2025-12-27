@@ -50,17 +50,17 @@ const TransactionsPage = () => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-white flex items-center gap-3">
-            <div className="p-2 rounded-lg bg-purple-500/10">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30">
               <Receipt className="text-purple-400" size={24} />
             </div>
             Transactions
           </h1>
           <p className="text-gray-400 mt-1">Historique de toutes vos transactions</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-dark-100 border border-dark-200 rounded-lg text-gray-400 hover:text-white transition-colors">
+        <button className="flex items-center gap-2 px-4 py-2.5 bg-dark-100/80 backdrop-blur-xl border border-white/5 rounded-xl text-gray-400 hover:text-white hover:border-primary-500/30 transition-all duration-300">
           <Download size={18} />
           Exporter
         </button>
@@ -68,19 +68,19 @@ const TransactionsPage = () => {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Depots</p>
           <p className="text-2xl font-bold text-green-400">${totalDeposits.toLocaleString()}</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Profits Trading</p>
           <p className="text-2xl font-bold text-green-400">+${totalProfits.toLocaleString()}</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-red-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Pertes Trading</p>
           <p className="text-2xl font-bold text-red-400">-${totalLosses.toLocaleString()}</p>
         </div>
-        <div className="bg-dark-100 rounded-xl p-4 border border-dark-200">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group">
           <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Retraits</p>
           <p className="text-2xl font-bold text-blue-400">${totalWithdrawals.toLocaleString()}</p>
         </div>
@@ -88,14 +88,14 @@ const TransactionsPage = () => {
 
       {/* Filters */}
       <div className="flex flex-wrap items-center gap-4">
-        <div className="flex-1 min-w-[200px] relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
+        <div className="flex-1 min-w-[200px] relative group">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
           <input
             type="text"
             placeholder="Rechercher une transaction..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-dark-100 border border-dark-200 rounded-lg px-10 py-2.5 text-white focus:border-primary-500 outline-none"
+            className="w-full bg-dark-100/80 backdrop-blur-xl border border-white/5 rounded-xl px-11 py-2.5 text-white focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all duration-300"
           />
         </div>
         <div className="flex items-center gap-2">
@@ -104,10 +104,10 @@ const TransactionsPage = () => {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                 filter === f
-                  ? 'bg-primary-500 text-white'
-                  : 'bg-dark-100 text-gray-400 hover:text-white border border-dark-200'
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                  : 'bg-dark-100/80 text-gray-400 hover:text-white border border-white/5 hover:border-primary-500/30'
               }`}
             >
               {f === 'all' ? 'Tous' : getTypeLabel(f)}
@@ -117,7 +117,7 @@ const TransactionsPage = () => {
       </div>
 
       {/* Transactions Table */}
-      <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead className="bg-dark-200/50">
@@ -129,12 +129,12 @@ const TransactionsPage = () => {
                 <th className="px-6 py-4 text-right font-medium">Montant</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-dark-200">
+            <tbody className="divide-y divide-white/5">
               {filteredTransactions.map(transaction => (
-                <tr key={transaction.id} className="hover:bg-dark-200/30 transition-colors">
+                <tr key={transaction.id} className="hover:bg-dark-200/50 transition-colors">
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-dark-200 flex items-center justify-center">
+                      <div className="w-8 h-8 rounded-lg bg-dark-200/50 border border-white/5 flex items-center justify-center">
                         {getTypeIcon(transaction.type)}
                       </div>
                       <span className="text-sm font-medium text-white capitalize">

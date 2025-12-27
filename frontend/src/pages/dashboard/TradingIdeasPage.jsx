@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Lightbulb, Plus, Search, Newspaper, Bookmark, TrendingUp, Hash, Users, ChevronLeft, ChevronRight, Flame, Sparkles } from 'lucide-react';
 import api from '../../services/api';
 import { IdeaCard, CreateIdeaModal } from '../../components/ideas';
 
@@ -125,69 +126,75 @@ const TradingIdeasPage = () => {
   };
 
   const tabs = [
-    { id: 'discover', label: 'Discover', icon: '🔍' },
-    { id: 'feed', label: 'My Feed', icon: '📰' },
-    { id: 'my-ideas', label: 'My Ideas', icon: '💡' },
-    { id: 'bookmarks', label: 'Bookmarks', icon: '🔖' }
+    { id: 'discover', label: 'Discover', icon: Search },
+    { id: 'feed', label: 'My Feed', icon: Newspaper },
+    { id: 'my-ideas', label: 'My Ideas', icon: Lightbulb },
+    { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark }
   ];
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Trading Ideas</h1>
-          <p className="text-gray-400">
+          <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+            <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30">
+              <Lightbulb className="text-purple-400" size={24} />
+            </div>
+            Trading Ideas
+          </h1>
+          <p className="text-gray-400 mt-1">
             Discover and share trading setups with the community
           </p>
         </div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all"
+          className="flex items-center gap-2 bg-gradient-to-r from-primary-500 to-purple-600 hover:from-primary-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:scale-105"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-          </svg>
+          <Plus size={20} />
           Share Idea
         </button>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Main Content */}
-        <div className="lg:col-span-3">
+        <div className="lg:col-span-3 space-y-6">
           {/* Tabs */}
-          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => { setActiveTab(tab.id); setPage(1); }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
-                  activeTab === tab.id
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-                }`}
-              >
-                <span>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            ))}
+          <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
+            {tabs.map(tab => {
+              const IconComponent = tab.icon;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => { setActiveTab(tab.id); setPage(1); }}
+                  className={`flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all duration-300 ${
+                    activeTab === tab.id
+                      ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                      : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
+                  }`}
+                >
+                  <IconComponent size={16} />
+                  <span className="font-medium">{tab.label}</span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Filters */}
           {activeTab === 'discover' && (
-            <div className="bg-gray-800 rounded-xl p-4 mb-6">
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
               <div className="flex flex-wrap gap-3">
                 <input
                   type="text"
                   placeholder="Symbol (e.g., EURUSD)"
                   value={filters.symbol}
                   onChange={(e) => setFilters(f => ({ ...f, symbol: e.target.value }))}
-                  className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500 w-32"
+                  className="bg-dark-200/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary-500/50 transition-colors w-36"
                 />
                 <select
                   value={filters.type}
                   onChange={(e) => setFilters(f => ({ ...f, type: e.target.value }))}
-                  className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="bg-dark-200/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary-500/50 transition-colors"
                 >
                   <option value="">All Directions</option>
                   <option value="long">Long</option>
@@ -197,7 +204,7 @@ const TradingIdeasPage = () => {
                 <select
                   value={filters.timeframe}
                   onChange={(e) => setFilters(f => ({ ...f, timeframe: e.target.value }))}
-                  className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="bg-dark-200/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary-500/50 transition-colors"
                 >
                   <option value="">All Timeframes</option>
                   <option value="scalp">Scalp</option>
@@ -208,7 +215,7 @@ const TradingIdeasPage = () => {
                 <select
                   value={filters.sort}
                   onChange={(e) => setFilters(f => ({ ...f, sort: e.target.value }))}
-                  className="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
+                  className="bg-dark-200/50 border border-white/10 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:border-primary-500/50 transition-colors"
                 >
                   <option value="recent">Most Recent</option>
                   <option value="popular">Most Liked</option>
@@ -218,7 +225,7 @@ const TradingIdeasPage = () => {
                 {(filters.symbol || filters.type || filters.timeframe) && (
                   <button
                     onClick={() => setFilters({ symbol: '', type: '', timeframe: '', tag: '', sort: 'recent' })}
-                    className="text-gray-400 hover:text-white text-sm"
+                    className="text-gray-400 hover:text-white text-sm px-3 py-2 bg-dark-200/30 rounded-lg border border-white/5 hover:border-red-500/30 transition-all"
                   >
                     Clear filters
                   </button>
@@ -231,10 +238,10 @@ const TradingIdeasPage = () => {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {[1, 2, 3, 4].map(i => (
-                <div key={i} className="bg-gray-800 rounded-xl p-6 animate-pulse">
-                  <div className="h-40 bg-gray-700 rounded-lg mb-4" />
-                  <div className="h-4 bg-gray-700 rounded w-3/4 mb-2" />
-                  <div className="h-3 bg-gray-700 rounded w-1/2" />
+                <div key={i} className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 animate-pulse">
+                  <div className="h-40 bg-dark-200/50 rounded-lg mb-4" />
+                  <div className="h-4 bg-dark-200/50 rounded w-3/4 mb-2" />
+                  <div className="h-3 bg-dark-200/50 rounded w-1/2" />
                 </div>
               ))}
             </div>
@@ -253,33 +260,33 @@ const TradingIdeasPage = () => {
 
               {/* Pagination */}
               {pagination && pagination.pages > 1 && (
-                <div className="flex justify-center gap-2 mt-8">
+                <div className="flex justify-center items-center gap-3 mt-8">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+                    className="p-2.5 bg-dark-100/80 backdrop-blur-xl text-white rounded-xl border border-white/5 hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    Previous
+                    <ChevronLeft size={20} />
                   </button>
-                  <span className="px-4 py-2 text-gray-400">
-                    Page {page} of {pagination.pages}
+                  <span className="px-4 py-2 text-gray-400 text-sm">
+                    Page <span className="text-white font-medium">{page}</span> of <span className="text-white font-medium">{pagination.pages}</span>
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
                     disabled={page === pagination.pages}
-                    className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+                    className="p-2.5 bg-dark-100/80 backdrop-blur-xl text-white rounded-xl border border-white/5 hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    Next
+                    <ChevronRight size={20} />
                   </button>
                 </div>
               )}
             </>
           ) : (
-            <div className="bg-gray-800 rounded-xl p-12 text-center">
-              <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-              <p className="text-gray-400 text-lg">
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-12 text-center border border-white/5">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                <Lightbulb className="text-gray-500" size={32} />
+              </div>
+              <p className="text-gray-400 text-lg font-medium">
                 {activeTab === 'my-ideas'
                   ? "You haven't shared any ideas yet"
                   : activeTab === 'bookmarks'
@@ -291,7 +298,7 @@ const TradingIdeasPage = () => {
               {activeTab === 'my-ideas' && (
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
+                  className="mt-4 bg-primary-500 hover:bg-primary-600 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300"
                 >
                   Share Your First Idea
                 </button>
@@ -303,9 +310,12 @@ const TradingIdeasPage = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Trending Ideas */}
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-              <span>🔥</span> Trending Now
+              <div className="p-1.5 rounded-lg bg-orange-500/10">
+                <Flame size={16} className="text-orange-400" />
+              </div>
+              Trending Now
             </h3>
             <div className="space-y-3">
               {trendingIdeas.map(idea => (
@@ -318,19 +328,22 @@ const TradingIdeasPage = () => {
           </div>
 
           {/* Popular Tags */}
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
-              <span>#</span> Popular Tags
+              <div className="p-1.5 rounded-lg bg-blue-500/10">
+                <Hash size={16} className="text-blue-400" />
+              </div>
+              Popular Tags
             </h3>
             <div className="flex flex-wrap gap-2">
               {popularTags.map(tag => (
                 <button
                   key={tag}
                   onClick={() => setFilters(f => ({ ...f, tag: f.tag === tag ? '' : tag }))}
-                  className={`px-3 py-1 rounded-full text-sm transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-sm transition-all duration-300 ${
                     filters.tag === tag
-                      ? 'bg-blue-500 text-white'
-                      : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                      ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                      : 'bg-dark-200/50 text-gray-300 hover:bg-dark-200 border border-white/5 hover:border-primary-500/30'
                   }`}
                 >
                   #{tag}
@@ -340,30 +353,42 @@ const TradingIdeasPage = () => {
           </div>
 
           {/* Quick Stats */}
-          <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
-            <h3 className="text-white font-semibold mb-4">Community Stats</h3>
+          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+            <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-green-500/10">
+                <Users size={16} className="text-green-400" />
+              </div>
+              Community Stats
+            </h3>
             <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="text-gray-400">Ideas Today</span>
-                <span className="text-white font-medium">{ideas.length}+</span>
+              <div className="flex justify-between items-center p-2.5 bg-dark-200/30 rounded-lg">
+                <span className="text-gray-400 text-sm">Ideas Today</span>
+                <span className="text-white font-bold">{ideas.length}+</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Active Traders</span>
-                <span className="text-white font-medium">50+</span>
+              <div className="flex justify-between items-center p-2.5 bg-dark-200/30 rounded-lg">
+                <span className="text-gray-400 text-sm">Active Traders</span>
+                <span className="text-white font-bold">50+</span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-gray-400">Total Ideas</span>
-                <span className="text-white font-medium">{pagination?.total || 0}</span>
+              <div className="flex justify-between items-center p-2.5 bg-dark-200/30 rounded-lg">
+                <span className="text-gray-400 text-sm">Total Ideas</span>
+                <span className="text-white font-bold">{pagination?.total || 0}</span>
               </div>
             </div>
           </div>
 
           {/* Tips */}
-          <div className="bg-gradient-to-br from-blue-500/10 to-purple-500/10 rounded-xl p-4 border border-blue-500/20">
-            <h3 className="text-white font-semibold mb-2">💡 Pro Tip</h3>
-            <p className="text-gray-400 text-sm">
-              Include clear entry, stop loss, and take profit levels in your ideas to help others understand your trade setup.
-            </p>
+          <div className="bg-primary-500/10 backdrop-blur-xl rounded-xl p-4 border border-primary-500/30">
+            <div className="flex items-start gap-3">
+              <div className="p-1.5 rounded-lg bg-primary-500/20">
+                <Sparkles className="text-primary-400" size={16} />
+              </div>
+              <div>
+                <h3 className="text-white font-semibold mb-1">Pro Tip</h3>
+                <p className="text-gray-400 text-sm">
+                  Include clear entry, stop loss, and take profit levels in your ideas to help others understand your trade setup.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </div>

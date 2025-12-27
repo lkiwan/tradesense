@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Users, Copy, TrendingUp, BarChart3, Search, ChevronLeft, ChevronRight, UserCheck, UserPlus } from 'lucide-react';
 import api from '../../services/api';
 import { TraderCard, CopySettingsModal, CopyPerformance } from '../../components/copy';
 
@@ -141,50 +142,58 @@ const CopyTradingPage = () => {
   };
 
   const tabs = [
-    { id: 'discover', label: 'Discover Traders', icon: '🔍' },
-    { id: 'my-copies', label: 'My Copies', icon: '📋' },
-    { id: 'my-copiers', label: 'My Copiers', icon: '👥' },
-    { id: 'performance', label: 'Performance', icon: '📊' }
+    { id: 'discover', label: 'Discover Traders', icon: Search },
+    { id: 'my-copies', label: 'My Copies', icon: Copy },
+    { id: 'my-copiers', label: 'My Copiers', icon: Users },
+    { id: 'performance', label: 'Performance', icon: BarChart3 }
   ];
 
   return (
-    <div className="p-6">
+    <div className="space-y-6">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white mb-2">Copy Trading</h1>
-        <p className="text-gray-400">
+      <div>
+        <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+          <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30">
+            <Copy className="text-blue-400" size={24} />
+          </div>
+          Copy Trading
+        </h1>
+        <p className="text-gray-400 mt-1">
           Copy successful traders automatically and earn while you learn
         </p>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
-        {tabs.map(tab => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg whitespace-nowrap transition-all ${
-              activeTab === tab.id
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-800 text-gray-400 hover:bg-gray-700'
-            }`}
-          >
-            <span>{tab.icon}</span>
-            <span>{tab.label}</span>
-          </button>
-        ))}
+      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
+        {tabs.map(tab => {
+          const IconComponent = tab.icon;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all duration-300 ${
+                activeTab === tab.id
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
+              }`}
+            >
+              <IconComponent size={16} />
+              <span className="font-medium">{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
 
       {/* Discover Tab */}
       {activeTab === 'discover' && (
-        <div>
+        <div className="space-y-6">
           {/* Sort Options */}
-          <div className="flex items-center gap-4 mb-6">
-            <span className="text-gray-400">Sort by:</span>
+          <div className="flex items-center gap-4 bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+            <span className="text-gray-400 text-sm">Sort by:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500"
+              className="bg-dark-200/50 border border-white/10 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-primary-500/50 transition-colors"
             >
               <option value="win_rate">Win Rate</option>
               <option value="profit">Profit</option>
@@ -195,20 +204,20 @@ const CopyTradingPage = () => {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3, 4, 5, 6].map(i => (
-                <div key={i} className="bg-gray-800 rounded-xl p-6 animate-pulse">
+                <div key={i} className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 animate-pulse">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-gray-700 rounded-full" />
+                    <div className="w-12 h-12 bg-dark-200/50 rounded-full" />
                     <div>
-                      <div className="h-4 bg-gray-700 rounded w-24 mb-2" />
-                      <div className="h-3 bg-gray-700 rounded w-16" />
+                      <div className="h-4 bg-dark-200/50 rounded w-24 mb-2" />
+                      <div className="h-3 bg-dark-200/50 rounded w-16" />
                     </div>
                   </div>
                   <div className="grid grid-cols-3 gap-3 mb-4">
                     {[1, 2, 3].map(j => (
-                      <div key={j} className="h-16 bg-gray-700 rounded-lg" />
+                      <div key={j} className="h-16 bg-dark-200/50 rounded-lg" />
                     ))}
                   </div>
-                  <div className="h-10 bg-gray-700 rounded-lg" />
+                  <div className="h-10 bg-dark-200/50 rounded-lg" />
                 </div>
               ))}
             </div>
@@ -227,33 +236,33 @@ const CopyTradingPage = () => {
 
               {/* Pagination */}
               {pagination && pagination.pages > 1 && (
-                <div className="flex justify-center gap-2 mt-8">
+                <div className="flex justify-center items-center gap-3 mt-8">
                   <button
                     onClick={() => setPage(p => Math.max(1, p - 1))}
                     disabled={page === 1}
-                    className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+                    className="p-2.5 bg-dark-100/80 backdrop-blur-xl text-white rounded-xl border border-white/5 hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    Previous
+                    <ChevronLeft size={20} />
                   </button>
-                  <span className="px-4 py-2 text-gray-400">
-                    Page {page} of {pagination.pages}
+                  <span className="px-4 py-2 text-gray-400 text-sm">
+                    Page <span className="text-white font-medium">{page}</span> of <span className="text-white font-medium">{pagination.pages}</span>
                   </span>
                   <button
                     onClick={() => setPage(p => Math.min(pagination.pages, p + 1))}
                     disabled={page === pagination.pages}
-                    className="px-4 py-2 bg-gray-800 text-white rounded-lg disabled:opacity-50"
+                    className="p-2.5 bg-dark-100/80 backdrop-blur-xl text-white rounded-xl border border-white/5 hover:border-primary-500/30 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-300"
                   >
-                    Next
+                    <ChevronRight size={20} />
                   </button>
                 </div>
               )}
             </>
           ) : (
-            <div className="bg-gray-800 rounded-xl p-12 text-center">
-              <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <p className="text-gray-400 text-lg">No traders available for copying</p>
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-12 text-center border border-white/5">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                <Users className="text-gray-500" size={32} />
+              </div>
+              <p className="text-gray-400 text-lg font-medium">No traders available for copying</p>
               <p className="text-gray-500 text-sm mt-2">Check back later or adjust filters</p>
             </div>
           )}
@@ -266,8 +275,8 @@ const CopyTradingPage = () => {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-gray-800 rounded-xl p-6 animate-pulse">
-                  <div className="h-20 bg-gray-700 rounded" />
+                <div key={i} className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 animate-pulse">
+                  <div className="h-20 bg-dark-200/50 rounded" />
                 </div>
               ))}
             </div>
@@ -276,11 +285,11 @@ const CopyTradingPage = () => {
               {myCopies.map(copy => (
                 <div
                   key={copy.relationship.id}
-                  className="bg-gray-800 rounded-xl p-6 border border-gray-700"
+                  className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 hover:border-primary-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
                         <span className="text-white font-bold">
                           {copy.master_profile?.display_name?.charAt(0) || 'T'}
                         </span>
@@ -289,13 +298,13 @@ const CopyTradingPage = () => {
                         <h3 className="text-white font-semibold">
                           {copy.master_profile?.display_name || 'Unknown'}
                         </h3>
-                        <div className="flex items-center gap-3 text-sm">
-                          <span className={`px-2 py-0.5 rounded-full text-xs ${
+                        <div className="flex items-center gap-3 text-sm mt-1">
+                          <span className={`px-2.5 py-0.5 rounded-lg text-xs font-medium ${
                             copy.relationship.status === 'active'
-                              ? 'bg-green-500/20 text-green-400'
+                              ? 'bg-green-500/20 text-green-400 border border-green-500/30'
                               : copy.relationship.status === 'paused'
-                              ? 'bg-yellow-500/20 text-yellow-400'
-                              : 'bg-gray-500/20 text-gray-400'
+                              ? 'bg-yellow-500/20 text-yellow-400 border border-yellow-500/30'
+                              : 'bg-gray-500/20 text-gray-400 border border-gray-500/30'
                           }`}>
                             {copy.relationship.status}
                           </span>
@@ -308,21 +317,21 @@ const CopyTradingPage = () => {
 
                     <div className="flex items-center gap-6">
                       <div className="text-right">
-                        <p className={`font-bold ${
+                        <p className={`font-bold text-lg ${
                           (copy.relationship.total_profit - copy.relationship.total_loss) >= 0
                             ? 'text-green-400'
                             : 'text-red-400'
                         }`}>
                           ${((copy.relationship.total_profit || 0) - (copy.relationship.total_loss || 0)).toFixed(2)}
                         </p>
-                        <p className="text-gray-400 text-sm">Net P/L</p>
+                        <p className="text-gray-500 text-sm">Net P/L</p>
                       </div>
 
                       <div className="flex gap-2">
                         {copy.relationship.status === 'active' && (
                           <button
                             onClick={() => handlePauseCopy(copy.relationship.master_id)}
-                            className="p-2 bg-yellow-500/20 text-yellow-400 rounded-lg hover:bg-yellow-500/30"
+                            className="p-2.5 bg-yellow-500/10 text-yellow-400 rounded-xl border border-yellow-500/30 hover:bg-yellow-500/20 transition-all duration-300"
                             title="Pause"
                           >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -333,7 +342,7 @@ const CopyTradingPage = () => {
                         {copy.relationship.status === 'paused' && (
                           <button
                             onClick={() => handleResumeCopy(copy.relationship.master_id)}
-                            className="p-2 bg-green-500/20 text-green-400 rounded-lg hover:bg-green-500/30"
+                            className="p-2.5 bg-green-500/10 text-green-400 rounded-xl border border-green-500/30 hover:bg-green-500/20 transition-all duration-300"
                             title="Resume"
                           >
                             <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -343,7 +352,7 @@ const CopyTradingPage = () => {
                         )}
                         <button
                           onClick={() => handleStopCopy(copy.relationship.master_id)}
-                          className="p-2 bg-red-500/20 text-red-400 rounded-lg hover:bg-red-500/30"
+                          className="p-2.5 bg-red-500/10 text-red-400 rounded-xl border border-red-500/30 hover:bg-red-500/20 transition-all duration-300"
                           title="Stop"
                         >
                           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -357,15 +366,15 @@ const CopyTradingPage = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-gray-800 rounded-xl p-12 text-center">
-              <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
-              <p className="text-gray-400 text-lg">You're not copying anyone yet</p>
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-12 text-center border border-white/5">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                <Copy className="text-gray-500" size={32} />
+              </div>
+              <p className="text-gray-400 text-lg font-medium">You're not copying anyone yet</p>
               <p className="text-gray-500 text-sm mt-2">Discover traders and start copying their trades</p>
               <button
                 onClick={() => setActiveTab('discover')}
-                className="mt-4 bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg"
+                className="mt-4 bg-primary-500 hover:bg-primary-600 text-white px-6 py-2.5 rounded-xl font-medium shadow-lg shadow-primary-500/25 hover:scale-105 transition-all duration-300"
               >
                 Find Traders
               </button>
@@ -380,8 +389,8 @@ const CopyTradingPage = () => {
           {loading ? (
             <div className="space-y-4">
               {[1, 2, 3].map(i => (
-                <div key={i} className="bg-gray-800 rounded-xl p-6 animate-pulse">
-                  <div className="h-16 bg-gray-700 rounded" />
+                <div key={i} className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 animate-pulse">
+                  <div className="h-16 bg-dark-200/50 rounded" />
                 </div>
               ))}
             </div>
@@ -390,11 +399,11 @@ const CopyTradingPage = () => {
               {myCopiers.map(copier => (
                 <div
                   key={copier.relationship.id}
-                  className="bg-gray-800 rounded-xl p-6 border border-gray-700"
+                  className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-6 border border-white/5 hover:border-green-500/30 transition-all duration-300"
                 >
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-full flex items-center justify-center">
+                      <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg shadow-green-500/25">
                         <span className="text-white font-bold">
                           {copier.copier_profile?.display_name?.charAt(0) || 'C'}
                         </span>
@@ -403,18 +412,18 @@ const CopyTradingPage = () => {
                         <h3 className="text-white font-semibold">
                           {copier.copier_profile?.display_name || 'Anonymous'}
                         </h3>
-                        <p className="text-gray-400 text-sm">
+                        <p className="text-gray-400 text-sm mt-1">
                           Copying since {new Date(copier.relationship.started_at).toLocaleDateString()}
                         </p>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <p className="text-white font-bold">
+                      <p className="text-white font-bold text-lg">
                         {copier.relationship.total_copied_trades} trades
                       </p>
                       <p className="text-gray-400 text-sm">
-                        Mode: {copier.relationship.copy_mode}
+                        Mode: <span className="text-primary-400">{copier.relationship.copy_mode}</span>
                       </p>
                     </div>
                   </div>
@@ -422,11 +431,11 @@ const CopyTradingPage = () => {
               ))}
             </div>
           ) : (
-            <div className="bg-gray-800 rounded-xl p-12 text-center">
-              <svg className="w-16 h-16 text-gray-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>
-              <p className="text-gray-400 text-lg">No one is copying you yet</p>
+            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-12 text-center border border-white/5">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                <UserPlus className="text-gray-500" size={32} />
+              </div>
+              <p className="text-gray-400 text-lg font-medium">No one is copying you yet</p>
               <p className="text-gray-500 text-sm mt-2">Improve your trading performance to attract copiers</p>
             </div>
           )}

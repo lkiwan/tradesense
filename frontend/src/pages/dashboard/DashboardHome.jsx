@@ -163,9 +163,14 @@ const DashboardHome = () => {
 
   if (!challenge) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="bg-dark-100 rounded-2xl p-12 text-center max-w-md">
-          <AlertTriangle className="mx-auto text-yellow-500 mb-6" size={64} />
+      <div className="flex items-center justify-center min-h-[60vh] relative">
+        {/* Background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px]" />
+
+        <div className="relative bg-dark-100/80 backdrop-blur-xl rounded-2xl p-12 text-center max-w-md border border-white/5 shadow-2xl">
+          <div className="w-20 h-20 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-yellow-500/30">
+            <AlertTriangle className="text-yellow-500" size={40} />
+          </div>
           <h2 className="text-2xl font-bold text-white mb-4">
             {t('dashboard.noActiveChallenge')}
           </h2>
@@ -174,7 +179,7 @@ const DashboardHome = () => {
           </p>
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02]"
           >
             <DollarSign size={20} />
             Voir les Challenges
