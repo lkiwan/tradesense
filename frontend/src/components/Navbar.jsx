@@ -391,16 +391,13 @@ const Navbar = () => {
               {navStructure.map(menu => renderDropdown(menu))}
             </div>
 
-            {/* Right side */}
-            <div className="flex items-center gap-2">
-              {/* Start Challenge CTA */}
-
-
+            {/* Right side - Desktop */}
+            <div className="hidden lg:flex items-center gap-2">
               {/* Phase Badge (when authenticated with challenge) */}
               {phaseBadge && (
                 <Link
                   to="/dashboard"
-                  className={`hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${phaseBadge.color === 'blue' ? 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' :
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${phaseBadge.color === 'blue' ? 'bg-blue-500/10 text-blue-500 hover:bg-blue-500/20' :
                     phaseBadge.color === 'purple' ? 'bg-purple-500/10 text-purple-500 hover:bg-purple-500/20' :
                       phaseBadge.color === 'orange' ? 'bg-orange-500/10 text-orange-500 hover:bg-orange-500/20' :
                         'bg-green-500/10 text-green-500 hover:bg-green-500/20'
@@ -427,7 +424,7 @@ const Navbar = () => {
                   className="flex items-center gap-1 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 transition-colors"
                 >
                   <Globe size={20} />
-                  <span className="hidden sm:inline text-sm font-medium">{language.toUpperCase()}</span>
+                  <span className="text-sm font-medium">{language.toUpperCase()}</span>
                   <ChevronDown size={16} />
                 </button>
 
@@ -468,7 +465,7 @@ const Navbar = () => {
                         </span>
                       )}
                     </div>
-                    <span className="hidden sm:block text-sm font-medium text-gray-700 dark:text-gray-300">
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
                       {user?.username}
                     </span>
                     <ChevronDown size={16} className="text-gray-400" />
@@ -564,21 +561,51 @@ const Navbar = () => {
                 </div>
               )}
 
-              {/* Start Challenge CTA - Moved to far right */}
+              {/* Start Challenge CTA */}
               {!hasActiveChallenge && (
                 <Link
                   to="/pricing"
-                  className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-primary-500/25 ml-2"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-primary-500/25 ml-2"
                 >
                   <Zap size={16} />
                   Start Challenge
+                </Link>
+              )}
+            </div>
+
+            {/* Right side - Mobile */}
+            <div className="flex lg:hidden items-center gap-2">
+              {/* Login Button - Always visible on mobile when not authenticated */}
+              {!isAuthenticated && (
+                <Link
+                  to="/login"
+                  className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors"
+                >
+                  {t('nav.login')}
+                </Link>
+              )}
+
+              {/* User Avatar - When authenticated */}
+              {isAuthenticated && (
+                <Link
+                  to="/dashboard"
+                  className={`w-8 h-8 rounded-full flex items-center justify-center ${isFunded ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-primary-500'
+                    }`}
+                >
+                  {isFunded ? (
+                    <Star size={14} className="text-white" />
+                  ) : (
+                    <span className="text-white text-sm font-medium">
+                      {user?.username?.charAt(0).toUpperCase()}
+                    </span>
+                  )}
                 </Link>
               )}
 
               {/* Mobile menu button */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100"
+                className="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
               >
                 {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
@@ -614,17 +641,84 @@ const Navbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden bg-white dark:bg-dark-200 border-b border-gray-200 dark:border-dark-100 max-h-[80vh] overflow-y-auto">
             <div className="py-4">
-              {/* Phase badge in mobile */}
-              {phaseBadge && (
-                <div className={`mx-4 mb-4 px-4 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${phaseBadge.color === 'blue' ? 'bg-blue-500/10 text-blue-500' :
-                  phaseBadge.color === 'purple' ? 'bg-purple-500/10 text-purple-500' :
-                    phaseBadge.color === 'orange' ? 'bg-orange-500/10 text-orange-500' :
-                      'bg-green-500/10 text-green-500'
-                  }`}>
-                  <phaseBadge.icon size={18} />
-                  {challenge?.phase_display || phaseBadge.label}
+              {/* User info when authenticated */}
+              {isAuthenticated && (
+                <div className="px-4 pb-4 mb-4 border-b border-gray-200 dark:border-dark-100">
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isFunded ? 'bg-gradient-to-br from-green-400 to-green-600' : 'bg-primary-500'
+                      }`}>
+                      {isFunded ? (
+                        <Star size={16} className="text-white" />
+                      ) : (
+                        <span className="text-white font-medium">
+                          {user?.username?.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900 dark:text-white">{user?.username}</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
+                  </div>
+
+                  {/* Phase badge */}
+                  {phaseBadge && (
+                    <div className={`mt-3 px-3 py-2 rounded-lg text-sm font-medium flex items-center gap-2 ${phaseBadge.color === 'blue' ? 'bg-blue-500/10 text-blue-500' :
+                      phaseBadge.color === 'purple' ? 'bg-purple-500/10 text-purple-500' :
+                        phaseBadge.color === 'orange' ? 'bg-orange-500/10 text-orange-500' :
+                          'bg-green-500/10 text-green-500'
+                      }`}>
+                      <phaseBadge.icon size={16} />
+                      {challenge?.phase_display || phaseBadge.label}
+                    </div>
+                  )}
                 </div>
               )}
+
+              {/* Quick Actions */}
+              <div className="px-4 pb-4 mb-4 border-b border-gray-200 dark:border-dark-100">
+                <div className="flex items-center gap-2">
+                  {/* Theme Toggle */}
+                  <button
+                    onClick={toggleTheme}
+                    className="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-dark-100 text-gray-700 dark:text-gray-300 transition-colors min-h-[48px] touch-manipulation"
+                  >
+                    {isDark ? <Sun size={20} /> : <Moon size={20} />}
+                    <span className="text-sm font-medium">{isDark ? 'Clair' : 'Sombre'}</span>
+                  </button>
+
+                  {/* Language Selector */}
+                  <div className="relative flex-1">
+                    <button
+                      onClick={() => setIsLangOpen(!isLangOpen)}
+                      className="w-full flex items-center justify-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-dark-100 text-gray-700 dark:text-gray-300 transition-colors min-h-[48px] touch-manipulation"
+                    >
+                      <Globe size={20} />
+                      <span className="text-sm font-medium">{language.toUpperCase()}</span>
+                      <ChevronDown size={16} />
+                    </button>
+
+                    {isLangOpen && (
+                      <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-dark-100 rounded-lg shadow-lg border border-gray-200 dark:border-dark-100 py-1 z-50">
+                        {languages.map((lang) => (
+                          <button
+                            key={lang.code}
+                            onClick={() => {
+                              setLanguage(lang.code)
+                              setIsLangOpen(false)
+                            }}
+                            className={`w-full flex items-center gap-2 px-4 py-3 text-sm hover:bg-gray-100 dark:hover:bg-dark-200 min-h-[48px]
+                            ${language === lang.code ? 'text-primary-500' : 'text-gray-700 dark:text-gray-300'}`}
+                          >
+                            <span>{lang.flag}</span>
+                            <span>{lang.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {/* Mobile menu sections */}
               {navStructure.map((menu) => (
@@ -642,19 +736,50 @@ const Navbar = () => {
               {!isAuthenticated && (
                 <div className="px-4 pt-4 space-y-2 border-t border-gray-200 dark:border-dark-100">
                   <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="block w-full px-4 py-3 text-center text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-dark-100 rounded-lg"
-                  >
-                    {t('nav.login')}
-                  </Link>
-                  <Link
                     to="/register"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block w-full px-4 py-3 text-center text-sm font-medium bg-primary-500 text-white rounded-lg"
+                    className="block w-full px-4 py-3 text-center text-sm font-medium bg-primary-500 text-white rounded-lg min-h-[48px] flex items-center justify-center touch-manipulation"
                   >
                     {t('nav.register')}
                   </Link>
+                </div>
+              )}
+
+              {/* Logout button when authenticated */}
+              {isAuthenticated && (
+                <div className="px-4 pt-4 border-t border-gray-200 dark:border-dark-100">
+                  {/* Admin/SuperAdmin links */}
+                  {['admin', 'superadmin'].includes(user?.role) && (
+                    <Link
+                      to="/admin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 rounded-lg mb-2"
+                    >
+                      <Settings size={18} />
+                      <span>{t('nav.admin')}</span>
+                    </Link>
+                  )}
+                  {user?.role === 'superadmin' && (
+                    <Link
+                      to="/superadmin"
+                      onClick={() => setIsMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 rounded-lg mb-2"
+                    >
+                      <User size={18} />
+                      <span>{t('nav.superadmin')}</span>
+                    </Link>
+                  )}
+
+                  <button
+                    onClick={() => {
+                      logout()
+                      setIsMenuOpen(false)
+                    }}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-red-500 bg-red-500/10 rounded-lg font-medium min-h-[48px] touch-manipulation"
+                  >
+                    <LogOut size={18} />
+                    {t('nav.logout')}
+                  </button>
                 </div>
               )}
             </div>
