@@ -183,22 +183,22 @@ const Academy = () => {
 
         {/* Quick Start Guides */}
         <div className="mb-12">
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-6">Quick Start Guides</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white mb-4 sm:mb-6">Quick Start Guides</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
             {guides.map((guide, index) => {
               const Icon = guide.icon
               return (
                 <div
                   key={index}
-                  className="p-5 bg-white dark:bg-dark-100 rounded-xl border border-gray-200 dark:border-dark-100 hover:border-primary-500/50 transition-colors cursor-pointer group"
+                  className="p-3 sm:p-5 bg-white dark:bg-dark-100 rounded-lg sm:rounded-xl border border-gray-200 dark:border-dark-100 hover:border-primary-500/50 transition-colors cursor-pointer group"
                 >
-                  <div className={`w-10 h-10 rounded-lg ${getColorClasses(guide.color)} flex items-center justify-center mb-3`}>
-                    <Icon size={20} />
+                  <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-lg ${getColorClasses(guide.color)} flex items-center justify-center mb-2 sm:mb-3`}>
+                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
                   </div>
-                  <h3 className="font-medium text-gray-900 dark:text-white mb-1 group-hover:text-primary-500 transition-colors">
+                  <h3 className="font-medium text-gray-900 dark:text-white mb-0.5 sm:mb-1 group-hover:text-primary-500 transition-colors text-xs sm:text-base">
                     {guide.title}
                   </h3>
-                  <p className="text-sm text-gray-600 dark:text-gray-400">
+                  <p className="text-[10px] sm:text-sm text-gray-600 dark:text-gray-400 hidden sm:block">
                     {guide.description}
                   </p>
                 </div>

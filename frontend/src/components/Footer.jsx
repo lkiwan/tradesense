@@ -9,88 +9,88 @@ const Footer = () => {
   return (
     <footer className="bg-white dark:bg-dark-200 border-t border-gray-200 dark:border-dark-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* Brand */}
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          {/* Brand - Full width on mobile */}
+          <div className="col-span-2 md:col-span-2">
             <Link to="/" className="flex items-center gap-2 mb-4">
               <img
                 src="/logo.svg"
                 alt="TradeSense"
-                className="h-10 w-10 object-contain"
+                className="h-8 w-8 sm:h-10 sm:w-10 object-contain"
               />
-              <span className="text-2xl font-bold">
+              <span className="text-xl sm:text-2xl font-bold">
                 <span className="text-gray-900 dark:text-white">Trade</span>
                 <span className="text-primary-500">Sense</span>
               </span>
             </Link>
-            <p className="text-gray-600 dark:text-gray-400 text-sm max-w-md mb-4">
+            <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm max-w-md mb-4">
               La premiere Prop Firm assistee par IA pour l'Afrique. Tradez sur des donnees reelles,
               atteignez vos objectifs et devenez un trader finance.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Twitter size={20} />
+                <Twitter size={18} className="sm:w-5 sm:h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Linkedin size={20} />
+                <Linkedin size={18} className="sm:w-5 sm:h-5" />
               </a>
               <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Github size={20} />
+                <Github size={18} className="sm:w-5 sm:h-5" />
               </a>
               <a href="mailto:contact@tradesense.com" className="text-gray-400 hover:text-primary-500 transition-colors">
-                <Mail size={20} />
+                <Mail size={18} className="sm:w-5 sm:h-5" />
               </a>
             </div>
           </div>
 
-          {/* Quick Links */}
+          {/* Quick Links - Side by side on mobile */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Platform</h3>
-            <ul className="space-y-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">Platform</h3>
+            <ul className="space-y-1.5 sm:space-y-2">
               <li>
-                <Link to="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
+                <Link to="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
                   {t('nav.pricing')}
                 </Link>
               </li>
               <li>
-                <Link to="/leaderboard" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
+                <Link to="/leaderboard" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
                   {t('nav.leaderboard')}
                 </Link>
               </li>
               <li>
-                <Link to="/masterclass" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
+                <Link to="/masterclass" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
                   {t('nav.masterclass')}
                 </Link>
               </li>
               <li>
-                <Link to="/community" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
+                <Link to="/community" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
                   {t('nav.community')}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Legal - Side by side on mobile */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Legal</h3>
-            <ul className="space-y-2">
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">Legal</h3>
+            <ul className="space-y-1.5 sm:space-y-2">
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
-                  Conditions d'utilisation
+                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
+                  Conditions
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
-                  Politique de confidentialite
+                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
+                  Confidentialite
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
-                  Regles du Challenge
+                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
+                  Regles
                 </a>
               </li>
               <li>
-                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-sm transition-colors">
+                <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
                   Contact
                 </a>
               </li>

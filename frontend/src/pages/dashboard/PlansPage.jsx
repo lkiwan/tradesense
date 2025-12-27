@@ -220,35 +220,32 @@ const PlansPage = () => {
           </p>
 
           {/* AI Stats */}
-          <div className="flex flex-col sm:flex-row flex-wrap items-center justify-center gap-3 md:gap-4 lg:gap-6">
-            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-purple-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                <Brain size={20} className="text-purple-400 md:hidden" />
-                <Brain size={24} className="text-purple-400 hidden md:block" />
+          <div className="grid grid-cols-3 gap-2 sm:gap-3 md:gap-4 lg:gap-6 px-2">
+            <div className="group flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 glass-card px-2 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover:border-purple-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <Brain className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-400" />
               </div>
-              <div className="text-left">
-                <p className="text-lg md:text-xl font-bold text-white">5 Niveaux</p>
-                <p className="text-gray-500 text-xs">d'Intelligence IA</p>
-              </div>
-            </div>
-            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-green-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                <Target size={20} className="text-green-400 md:hidden" />
-                <Target size={24} className="text-green-400 hidden md:block" />
-              </div>
-              <div className="text-left">
-                <p className="text-lg md:text-xl font-bold text-white">Jusqu'a 96%</p>
-                <p className="text-gray-500 text-xs">de Precision</p>
+              <div className="text-center sm:text-left">
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">5 Niveaux</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">d'Intelligence IA</p>
               </div>
             </div>
-            <div className="group flex items-center gap-3 glass-card px-4 md:px-5 py-3 rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer w-full sm:w-auto">
-              <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-500/20 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                <BarChart3 size={20} className="text-blue-400 md:hidden" />
-                <BarChart3 size={24} className="text-blue-400 hidden md:block" />
+            <div className="group flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 glass-card px-2 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-green-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <Target className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
               </div>
-              <div className="text-left">
-                <p className="text-lg md:text-xl font-bold text-white">+40 Signaux</p>
-                <p className="text-gray-500 text-xs">par jour (Elite)</p>
+              <div className="text-center sm:text-left">
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">96%</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">de Precision</p>
+              </div>
+            </div>
+            <div className="group flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 glass-card px-2 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-400" />
+              </div>
+              <div className="text-center sm:text-left">
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">+40</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">Signaux/jour</p>
               </div>
             </div>
           </div>
