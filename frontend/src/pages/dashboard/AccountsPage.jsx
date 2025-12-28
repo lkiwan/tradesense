@@ -138,9 +138,10 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
     let balance = initialBalance
     const data = [
       {
-        date: 'Start',
+        label: 'Start',
         balance: initialBalance,
-        pnl: 0
+        pnl: 0,
+        tradeNum: 0
       }
     ]
 
@@ -148,11 +149,12 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
       balance += (trade.pnl || 0)
       const date = new Date(trade.closed_at)
       data.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        label: `#${index + 1}`,
+        fullDate: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
         balance: Math.round(balance * 100) / 100,
         pnl: trade.pnl || 0,
         symbol: trade.symbol,
-        tradeIndex: index + 1
+        tradeNum: index + 1
       })
     })
 
@@ -163,12 +165,15 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
   const strokeColor = isProfit ? '#22c55e' : '#ef4444'
   const gradientColor = isProfit ? '#22c55e' : '#ef4444'
 
-  const CustomTooltip = ({ active, payload, label }) => {
+  const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
         <div className="bg-dark-200 border border-white/10 rounded-lg p-3 shadow-xl">
-          <p className="text-gray-400 text-xs mb-1">{label}</p>
+          <p className="text-gray-400 text-xs mb-1">
+            {data.tradeNum === 0 ? 'Starting Balance' : `Trade ${data.tradeNum}`}
+            {data.fullDate && <span className="ml-1">• {data.fullDate}</span>}
+          </p>
           <p className="text-white font-bold text-lg">
             ${data.balance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </p>
@@ -197,12 +202,20 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
 
   const minBalance = Math.min(...chartData.map(d => d.balance))
   const maxBalance = Math.max(...chartData.map(d => d.balance))
-  const padding = (maxBalance - minBalance) * 0.1 || 1000
+  const range = maxBalance - minBalance
+  const padding = range * 0.15 || 500
+
+  // Format Y-axis values based on the range
+  const formatYAxis = (value) => {
+    if (value >= 1000000) return `$${(value / 1000000).toFixed(1)}M`
+    if (value >= 1000) return `$${(value / 1000).toFixed(range < 5000 ? 1 : 0)}k`
+    return `$${value.toFixed(0)}`
+  }
 
   return (
     <div className="h-64">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
           <defs>
             <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor={gradientColor} stopOpacity={0.3} />
@@ -211,19 +224,21 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
           <XAxis
-            dataKey="date"
+            dataKey="label"
             stroke="#6b7280"
             tick={{ fill: '#9ca3af', fontSize: 11 }}
             tickLine={false}
             axisLine={false}
+            interval="preserveStartEnd"
           />
           <YAxis
             stroke="#6b7280"
             tick={{ fill: '#9ca3af', fontSize: 11 }}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+            tickFormatter={formatYAxis}
             domain={[minBalance - padding, maxBalance + padding]}
+            tickCount={5}
           />
           <Tooltip content={<CustomTooltip />} />
           <ReferenceLine
@@ -231,6 +246,7 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
             stroke="#6b7280"
             strokeDasharray="5 5"
             strokeWidth={1}
+            label={{ value: 'Initial', position: 'left', fill: '#6b7280', fontSize: 10 }}
           />
           <Area
             type="monotone"
