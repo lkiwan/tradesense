@@ -1,15 +1,22 @@
 """
 Yahoo Finance Service
 Fetches real-time stock and crypto prices from Yahoo Finance
+Falls back to Finnhub API when yfinance fails
 """
 
 import yfinance as yf
+import requests
+import os
 from functools import lru_cache
 from datetime import datetime, timedelta
 import threading
 import logging
 
 logger = logging.getLogger(__name__)
+
+# Finnhub API configuration
+FINNHUB_API_KEY = os.environ.get('FINNHUB_API_KEY', '')
+FINNHUB_BASE_URL = "https://finnhub.io/api/v1"
 
 # Check if eventlet is being used and get tpool for native thread execution
 try:
@@ -30,7 +37,71 @@ _cache_lock = threading.Lock()
 CACHE_DURATION = 3  # seconds (fast updates for real-time feel)
 PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
 
-# Fallback prices when yfinance is unavailable (updated periodically)
+# Finnhub symbol mapping (convert our symbols to Finnhub format)
+FINNHUB_SYMBOLS = {
+    # Forex (Finnhub uses OANDA format)
+    'EURUSD': 'OANDA:EUR_USD',
+    'GBPUSD': 'OANDA:GBP_USD',
+    'USDJPY': 'OANDA:USD_JPY',
+    'USDCHF': 'OANDA:USD_CHF',
+    'AUDUSD': 'OANDA:AUD_USD',
+    'USDCAD': 'OANDA:USD_CAD',
+    'NZDUSD': 'OANDA:NZD_USD',
+    'EURGBP': 'OANDA:EUR_GBP',
+    # Crypto (Finnhub uses exchange:pair format)
+    'BTCUSD': 'BINANCE:BTCUSDT',
+    'ETHUSD': 'BINANCE:ETHUSDT',
+    'XRPUSD': 'BINANCE:XRPUSDT',
+    'SOLUSD': 'BINANCE:SOLUSDT',
+    'BNBUSD': 'BINANCE:BNBUSDT',
+    # Stocks (direct symbol)
+    'AAPL': 'AAPL',
+    'TSLA': 'TSLA',
+    'NVDA': 'NVDA',
+    'GOOGL': 'GOOGL',
+    'MSFT': 'MSFT',
+    'AMZN': 'AMZN',
+    # Commodities (Finnhub futures)
+    'XAUUSD': 'OANDA:XAU_USD',
+    'XAGUSD': 'OANDA:XAG_USD',
+}
+
+
+def _fetch_price_from_finnhub(symbol: str) -> float | None:
+    """Fetch price from Finnhub API as fallback"""
+    if not FINNHUB_API_KEY:
+        logger.warning("Finnhub API key not configured")
+        return None
+
+    # Convert symbol to Finnhub format
+    finnhub_symbol = FINNHUB_SYMBOLS.get(symbol.upper(), symbol.upper())
+
+    try:
+        url = f"{FINNHUB_BASE_URL}/quote"
+        params = {
+            'symbol': finnhub_symbol,
+            'token': FINNHUB_API_KEY
+        }
+        response = requests.get(url, params=params, timeout=5)
+
+        if response.status_code == 200:
+            data = response.json()
+            # Finnhub returns 'c' for current price
+            price = data.get('c')
+            if price and price > 0:
+                logger.info(f"Finnhub price for {symbol} ({finnhub_symbol}): {price}")
+                return float(price)
+            else:
+                logger.warning(f"Finnhub returned zero/null price for {finnhub_symbol}")
+        else:
+            logger.warning(f"Finnhub API error: {response.status_code}")
+    except Exception as e:
+        logger.error(f"Finnhub fetch error for {symbol}: {e}")
+
+    return None
+
+
+# Fallback prices when both yfinance and Finnhub fail
 FALLBACK_PRICES = {
     'BTCUSD': 95000.00,
     'BTC-USD': 95000.00,
@@ -205,11 +276,16 @@ def get_current_price(symbol: str) -> float | None:
         logger.error(f"Price fetch error for {normalized}: {e}")
         price = None
 
-    # Use fallback price if yfinance failed
+    # Try Finnhub if yfinance failed
+    if price is None:
+        logger.info(f"Trying Finnhub for {original_symbol}...")
+        price = _fetch_price_from_finnhub(original_symbol)
+
+    # Use static fallback price if both yfinance and Finnhub failed
     if price is None:
         fallback = FALLBACK_PRICES.get(original_symbol) or FALLBACK_PRICES.get(normalized)
         if fallback:
-            logger.info(f"Using fallback price for {original_symbol}: {fallback}")
+            logger.warning(f"Using static fallback price for {original_symbol}: {fallback}")
             price = fallback
 
     if price is not None:
