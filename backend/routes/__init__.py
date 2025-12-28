@@ -97,6 +97,9 @@ from .signals import signals_bp
 # Import forex blueprint (uses its own bp definition)
 from .forex import forex_bp
 
+# Import calendar blueprint (uses its own bp definition)
+from .calendar import calendar_bp
+
 # Import webinars blueprint (uses its own bp definition)
 from .webinars import webinars_bp
 
