@@ -174,6 +174,7 @@ export const challengesAPI = {
   getActive: () => api.get('/api/challenges/active'),
   getById: (id) => api.get(`/api/challenges/${id}`),
   getStats: (id) => api.get(`/api/challenges/${id}/stats`),
+  getExtendedStats: (id) => api.get(`/api/challenges/${id}/stats/extended`),
   // Trial endpoints
   activateTrial: () => api.post('/api/challenges/activate-trial'),
   checkTrial: () => api.get('/api/challenges/check-trial')

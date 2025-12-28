@@ -445,3 +445,198 @@ class ChallengeEngine:
             'can_start_trial': not any(c.is_trial for c in all_challenges),
             'can_access_dashboard': current_challenge is not None
         }
+
+    def get_extended_stats(self, challenge: UserChallenge) -> dict:
+        """Get extended statistics for dashboard charts and analytics"""
+        from datetime import timedelta
+        from collections import defaultdict
+
+        # Get all closed trades
+        closed_trades = Trade.query.filter_by(
+            challenge_id=challenge.id,
+            status='closed'
+        ).order_by(Trade.closed_at.asc()).all()
+
+        # ========== Balance History ==========
+        balance_history = []
+        running_balance = float(challenge.initial_balance)
+
+        # Group trades by date
+        trades_by_date = defaultdict(list)
+        for trade in closed_trades:
+            if trade.closed_at:
+                trade_date = trade.closed_at.strftime('%Y-%m-%d')
+                trades_by_date[trade_date].append(trade)
+
+        # Build balance history
+        current_date = challenge.start_date or datetime.utcnow()
+        end_date = datetime.utcnow()
+
+        while current_date <= end_date:
+            date_str = current_date.strftime('%Y-%m-%d')
+            day_pnl = sum(float(t.pnl or 0) for t in trades_by_date.get(date_str, []))
+            running_balance += day_pnl
+            balance_history.append({
+                'date': current_date.strftime('%b %d'),
+                'balance': round(running_balance, 2)
+            })
+            current_date += timedelta(days=1)
+
+        # ========== Drawdown History ==========
+        drawdown_history = []
+        peak_balance = float(challenge.initial_balance)
+        running_balance = float(challenge.initial_balance)
+
+        for entry in balance_history:
+            balance = entry['balance']
+            if balance > peak_balance:
+                peak_balance = balance
+            drawdown = ((peak_balance - balance) / peak_balance * 100) if peak_balance > 0 else 0
+            drawdown_history.append({
+                'date': entry['date'],
+                'drawdown': -round(drawdown, 2)
+            })
+
+        # ========== Daily P&L ==========
+        daily_pnl = []
+        for date_str, trades in sorted(trades_by_date.items())[-30:]:
+            day_pnl = sum(float(t.pnl or 0) for t in trades)
+            daily_pnl.append({
+                'date': datetime.strptime(date_str, '%Y-%m-%d').strftime('%b %d'),
+                'pnl': round(day_pnl, 2)
+            })
+
+        # ========== Weekly P&L ==========
+        weekly_pnl = defaultdict(float)
+        for trade in closed_trades:
+            if trade.closed_at:
+                week_start = trade.closed_at - timedelta(days=trade.closed_at.weekday())
+                week_key = week_start.strftime('%b %d')
+                weekly_pnl[week_key] += float(trade.pnl or 0)
+
+        weekly_pnl_list = [{'week': k, 'pnl': round(v, 2)} for k, v in list(weekly_pnl.items())[-12:]]
+
+        # ========== Monthly P&L ==========
+        monthly_pnl = defaultdict(float)
+        for trade in closed_trades:
+            if trade.closed_at:
+                month_key = trade.closed_at.strftime('%b %Y')
+                monthly_pnl[month_key] += float(trade.pnl or 0)
+
+        monthly_pnl_list = [{'month': k, 'pnl': round(v, 2)} for k, v in list(monthly_pnl.items())[-6:]]
+
+        # ========== Win/Loss Streaks ==========
+        current_streak = 0
+        max_win_streak = 0
+        max_loss_streak = 0
+        temp_win_streak = 0
+        temp_loss_streak = 0
+        recent_trades = []
+
+        for trade in closed_trades:
+            is_win = (trade.pnl or 0) > 0
+            recent_trades.append({'result': 'win' if is_win else 'loss'})
+
+            if is_win:
+                temp_win_streak += 1
+                temp_loss_streak = 0
+                max_win_streak = max(max_win_streak, temp_win_streak)
+            else:
+                temp_loss_streak += 1
+                temp_win_streak = 0
+                max_loss_streak = max(max_loss_streak, temp_loss_streak)
+
+        # Current streak from last trades
+        if closed_trades:
+            last_trade = closed_trades[-1]
+            is_last_win = (last_trade.pnl or 0) > 0
+            current_streak = temp_win_streak if is_last_win else -temp_loss_streak
+
+        # ========== Trade Duration Stats ==========
+        durations = []
+        for trade in closed_trades:
+            if trade.opened_at and trade.closed_at:
+                duration = (trade.closed_at - trade.opened_at).total_seconds() / 60  # in minutes
+                durations.append(duration)
+
+        avg_duration = sum(durations) / len(durations) if durations else 0
+        shortest_duration = min(durations) if durations else 0
+        longest_duration = max(durations) if durations else 0
+
+        # Duration distribution
+        duration_ranges = [
+            ('<1m', lambda d: d < 1),
+            ('1-5m', lambda d: 1 <= d < 5),
+            ('5-15m', lambda d: 5 <= d < 15),
+            ('15m-1h', lambda d: 15 <= d < 60),
+            ('1-4h', lambda d: 60 <= d < 240),
+            ('4h-1d', lambda d: 240 <= d < 1440),
+            ('>1d', lambda d: d >= 1440)
+        ]
+
+        duration_distribution = []
+        for range_name, condition in duration_ranges:
+            count = sum(1 for d in durations if condition(d))
+            duration_distribution.append({'range': range_name, 'count': count})
+
+        # ========== Asset Exposure ==========
+        symbol_counts = defaultdict(int)
+        for trade in closed_trades:
+            symbol_counts[trade.symbol] += 1
+
+        total_trades = sum(symbol_counts.values())
+        exposure = []
+        for symbol, count in sorted(symbol_counts.items(), key=lambda x: -x[1])[:6]:
+            exposure.append({
+                'name': symbol,
+                'value': round((count / total_trades) * 100, 1) if total_trades > 0 else 0
+            })
+
+        # ========== Calculate ROI and Sharpe Ratio ==========
+        initial = float(challenge.initial_balance)
+        current = float(challenge.current_balance)
+        roi_percentage = ((current - initial) / initial) * 100 if initial > 0 else 0
+
+        # Simple Sharpe Ratio approximation (using daily returns)
+        daily_returns = [entry['pnl'] / initial * 100 for entry in daily_pnl if initial > 0]
+        if len(daily_returns) > 1:
+            import statistics
+            avg_return = statistics.mean(daily_returns)
+            std_return = statistics.stdev(daily_returns)
+            sharpe_ratio = (avg_return / std_return) * (252 ** 0.5) if std_return > 0 else 0  # Annualized
+        else:
+            sharpe_ratio = 0
+
+        # Max drawdown
+        max_drawdown = max(abs(d['drawdown']) for d in drawdown_history) if drawdown_history else 0
+
+        # Best/Worst trade
+        pnl_values = [float(t.pnl or 0) for t in closed_trades]
+        best_trade = max(pnl_values) if pnl_values else 0
+        worst_trade = min(pnl_values) if pnl_values else 0
+
+        return {
+            'balance_history': balance_history[-60:],  # Last 60 days
+            'drawdown_history': drawdown_history[-60:],
+            'daily_pnl': daily_pnl,
+            'weekly_pnl': weekly_pnl_list,
+            'monthly_pnl': monthly_pnl_list,
+            'streaks': {
+                'current': current_streak,
+                'max_win': max_win_streak,
+                'max_loss': max_loss_streak,
+                'recent_trades': recent_trades[-20:]
+            },
+            'duration_stats': {
+                'average': round(avg_duration, 1),
+                'shortest': round(shortest_duration, 1),
+                'longest': round(longest_duration, 1),
+                'distribution': duration_distribution
+            },
+            'exposure': exposure,
+            'roi_percentage': round(roi_percentage, 2),
+            'sharpe_ratio': round(sharpe_ratio, 2),
+            'max_drawdown': round(max_drawdown, 2),
+            'best_trade': round(best_trade, 2),
+            'worst_trade': round(worst_trade, 2)
+        }

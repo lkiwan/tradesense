@@ -102,6 +102,26 @@ def get_challenge_stats(challenge_id):
     return jsonify({'stats': stats}), 200
 
 
+@challenges_bp.route('/<int:challenge_id>/stats/extended', methods=['GET'])
+@jwt_required()
+def get_challenge_extended_stats(challenge_id):
+    """Get extended stats for dashboard charts and analytics"""
+    current_user_id = int(get_jwt_identity())
+    challenge = UserChallenge.query.get(challenge_id)
+
+    if not challenge:
+        return jsonify({'error': 'Challenge not found'}), 404
+
+    user = User.query.get(current_user_id)
+    if challenge.user_id != current_user_id and user.role not in ['admin', 'superadmin']:
+        return jsonify({'error': 'Unauthorized'}), 403
+
+    engine = ChallengeEngine()
+    extended_stats = engine.get_extended_stats(challenge)
+
+    return jsonify({'extended_stats': extended_stats}), 200
+
+
 @challenges_bp.route('/activate-trial', methods=['POST'])
 @jwt_required()
 def activate_trial():

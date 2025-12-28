@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useChallenge } from '../../context/ChallengeContext'
 import { tradesAPI, challengesAPI, marketAPI } from '../../services/api'
 import { showErrorToast, showSuccessToast } from '../../utils/errorHandler'
+import SignalsPanel from '../../components/SignalsPanel'
 import {
   TrendingUp, TrendingDown, Target, Shield, DollarSign,
   Calculator, Play, X, RefreshCw, Settings, ChevronDown,
@@ -569,8 +570,8 @@ const TradingPage = () => {
           </div>
         </div>
 
-        {/* Trading Panel */}
-        <div className="space-y-4 overflow-y-auto">
+        {/* Trading Panel & Signals */}
+        <div className="space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {/* Trade Type Selector */}
           <div className="bg-dark-100 rounded-xl border border-dark-200 p-4">
             <div className="grid grid-cols-2 gap-2 mb-4">
@@ -764,6 +765,11 @@ const TradingPage = () => {
               )}
             </p>
           </div>
+
+          {/* AI Signals Panel */}
+          <SignalsPanel
+            symbols={SYMBOL_CATEGORIES[selectedCategory].slice(0, 5).map(s => s.symbol)}
+          />
         </div>
       </div>
     </div>
