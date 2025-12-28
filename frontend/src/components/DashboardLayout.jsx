@@ -89,6 +89,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/utilities', icon: FolderOpen, label: 'Files & Utilities' },
     { path: '/calendar', icon: Calendar, label: 'Calendar' },
     { path: '/news', icon: Newspaper, label: 'Market News', badge: 'NEW', badgeColor: 'bg-blue-500' },
+    { path: '/markets', icon: BarChart3, label: 'Market Overview', badge: 'NEW', badgeColor: 'bg-purple-500' },
     { path: '/forex', icon: DollarSign, label: 'Forex Market', badge: 'NEW', badgeColor: 'bg-green-500' },
     { path: 'https://fundednext.com/symbols', icon: ExternalLink, label: 'Symbols', external: true },
   ]

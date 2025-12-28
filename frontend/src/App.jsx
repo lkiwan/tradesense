@@ -152,6 +152,8 @@ import {
   CalendarPage,
   NewsFeedPage,
   ForexPage,
+  // Market Overview
+  MarketOverviewPage,
   // Legacy compatibility
   SignalsPage
 } from './pages/dashboard'
@@ -391,7 +393,7 @@ const USER_DASHBOARD_ROUTES = [
   '/infinity-points', '/utilities', '/calendar', '/settings', '/sessions', '/dashboard', '/kyc',
   '/subscriptions', '/infinity-points/rewards', '/advanced-orders', '/quick-trading', '/order-templates',
   '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas',
-  '/challenge-checkout', '/forex'
+  '/challenge-checkout', '/forex', '/markets'
 ]
 
 // Admin routes - use AdminLayout (hide main Navbar/Footer completely)
@@ -842,6 +844,15 @@ function App() {
               <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <ForexPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Market Overview */}
+            <Route path="/markets" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <MarketOverviewPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />

@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Calendar, Clock, AlertTriangle, ChevronLeft, ChevronRight, ArrowLeft, RefreshCw, Globe, Loader2 } from 'lucide-react'
+import { Calendar, Clock, AlertTriangle, ChevronLeft, ChevronRight, ArrowLeft, RefreshCw, Globe, Loader2, Timer, Bell, CalendarDays, List } from 'lucide-react'
 import { resourcesAPI } from '../../services/api'
 
 const CalendarPage = () => {
@@ -8,9 +8,12 @@ const CalendarPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date())
   const [impactFilter, setImpactFilter] = useState('all')
   const [currencyFilter, setCurrencyFilter] = useState('all')
+  const [viewMode, setViewMode] = useState('day') // 'day' or 'week'
   const [events, setEvents] = useState([])
+  const [upcomingEvents, setUpcomingEvents] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [countdown, setCountdown] = useState(null)
 
   const impactColors = {
     high: { bg: 'bg-red-500/10', text: 'text-red-500', border: 'border-red-500/30' },
@@ -40,7 +43,40 @@ const CalendarPage = () => {
   // Fetch events when date or filters change
   useEffect(() => {
     fetchEvents()
-  }, [selectedDate, impactFilter, currencyFilter])
+  }, [selectedDate, impactFilter, currencyFilter, viewMode])
+
+  // Countdown timer for next high-impact event
+  useEffect(() => {
+    const updateCountdown = () => {
+      const now = new Date()
+      const nextHighImpact = upcomingEvents.find(e => e.impact === 'high')
+
+      if (nextHighImpact && nextHighImpact.datetime) {
+        const eventTime = new Date(nextHighImpact.datetime)
+        const diff = eventTime - now
+
+        if (diff > 0) {
+          const hours = Math.floor(diff / (1000 * 60 * 60))
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+
+          setCountdown({
+            event: nextHighImpact,
+            hours,
+            minutes,
+            seconds,
+            total: diff
+          })
+        } else {
+          setCountdown(null)
+        }
+      }
+    }
+
+    updateCountdown()
+    const interval = setInterval(updateCountdown, 1000)
+    return () => clearInterval(interval)
+  }, [upcomingEvents])
 
   const fetchEvents = async () => {
     setLoading(true)
@@ -50,8 +86,40 @@ const CalendarPage = () => {
       const impact = impactFilter !== 'all' ? impactFilter : null
       const currency = currencyFilter !== 'all' ? currencyFilter : null
 
+      // Fetch events for selected date/week
       const response = await resourcesAPI.getCalendarEvents(dateStr, impact, currency)
-      setEvents(response.data.events || [])
+      let fetchedEvents = response.data.events || []
+
+      // For week view, fetch multiple days
+      if (viewMode === 'week') {
+        const weekEvents = []
+        for (let i = 0; i < 7; i++) {
+          const date = new Date(selectedDate)
+          date.setDate(date.getDate() + i)
+          const dayStr = date.toISOString().split('T')[0]
+          try {
+            const dayResponse = await resourcesAPI.getCalendarEvents(dayStr, impact, currency)
+            const dayEvents = (dayResponse.data.events || []).map(e => ({
+              ...e,
+              displayDate: dayStr
+            }))
+            weekEvents.push(...dayEvents)
+          } catch (e) {
+            console.error(`Failed to fetch events for ${dayStr}`)
+          }
+        }
+        fetchedEvents = weekEvents
+      }
+
+      setEvents(fetchedEvents)
+
+      // Also fetch upcoming events for countdown
+      try {
+        const upcomingRes = await resourcesAPI.getUpcomingEvents()
+        setUpcomingEvents(upcomingRes.data.events || [])
+      } catch (e) {
+        console.error('Failed to fetch upcoming events')
+      }
     } catch (err) {
       console.error('Failed to fetch calendar events:', err)
       setError('Failed to load economic events. Please try again.')
@@ -109,20 +177,85 @@ const CalendarPage = () => {
         </button>
       </div>
 
+      {/* Countdown Banner */}
+      {countdown && (
+        <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-xl rounded-xl border border-red-500/30 p-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-red-500/20 animate-pulse">
+                <Timer className="w-5 h-5 text-red-400" />
+              </div>
+              <div>
+                <p className="text-sm text-red-300">Next High-Impact Event</p>
+                <p className="text-white font-semibold">{countdown.event.event}</p>
+                <p className="text-xs text-gray-400">{countdown.event.currency} - {countdown.event.time}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-2xl font-bold text-white">{String(countdown.hours).padStart(2, '0')}</p>
+                <p className="text-xs text-gray-400">Hours</p>
+              </div>
+              <span className="text-white text-xl">:</span>
+              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-2xl font-bold text-white">{String(countdown.minutes).padStart(2, '0')}</p>
+                <p className="text-xs text-gray-400">Min</p>
+              </div>
+              <span className="text-white text-xl">:</span>
+              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-2xl font-bold text-red-400">{String(countdown.seconds).padStart(2, '0')}</p>
+                <p className="text-xs text-gray-400">Sec</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Date Navigation */}
       <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
+          {/* View Toggle */}
+          <div className="flex gap-1 bg-dark-200/30 rounded-lg p-1 border border-white/5">
+            <button
+              onClick={() => setViewMode('day')}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === 'day'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              title="Day View"
+            >
+              <List className="w-4 h-4" />
+            </button>
+            <button
+              onClick={() => setViewMode('week')}
+              className={`p-2 rounded-lg transition-all ${
+                viewMode === 'week'
+                  ? 'bg-primary-500 text-white'
+                  : 'text-gray-400 hover:text-white'
+              }`}
+              title="Week View"
+            >
+              <CalendarDays className="w-4 h-4" />
+            </button>
+          </div>
+
           <button
-            onClick={() => navigateDate(-1)}
+            onClick={() => navigateDate(viewMode === 'week' ? -7 : -1)}
             className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
           >
             <ChevronLeft className="text-gray-400" size={20} />
           </button>
           <div className="text-center min-w-[200px]">
-            <p className="font-semibold text-white">{formatDate(selectedDate)}</p>
+            <p className="font-semibold text-white">
+              {viewMode === 'week'
+                ? `${formatDate(selectedDate).split(',')[0]} - Week View`
+                : formatDate(selectedDate)
+              }
+            </p>
           </div>
           <button
-            onClick={() => navigateDate(1)}
+            onClick={() => navigateDate(viewMode === 'week' ? 7 : 1)}
             className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
           >
             <ChevronRight className="text-gray-400" size={20} />
@@ -216,6 +349,9 @@ const CalendarPage = () => {
               <table className="w-full">
                 <thead className="bg-dark-200/30 border-b border-white/5">
                   <tr className="text-xs text-gray-400 uppercase tracking-wider">
+                    {viewMode === 'week' && (
+                      <th className="px-4 py-3 text-left font-medium">Date</th>
+                    )}
                     <th className="px-4 py-3 text-left font-medium">Time</th>
                     <th className="px-4 py-3 text-left font-medium">Currency</th>
                     <th className="px-4 py-3 text-left font-medium">Event</th>
@@ -233,6 +369,13 @@ const CalendarPage = () => {
                         impactColors[event.impact]?.bg || 'bg-transparent'
                       }`}
                     >
+                      {viewMode === 'week' && (
+                        <td className="px-4 py-4">
+                          <span className="text-gray-400 text-sm">
+                            {event.displayDate ? new Date(event.displayDate).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' }) : event.date || '—'}
+                          </span>
+                        </td>
+                      )}
                       <td className="px-4 py-4">
                         <div className="flex items-center gap-2">
                           <Clock className="text-gray-500" size={14} />
