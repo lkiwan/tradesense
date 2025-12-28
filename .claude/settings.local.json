@@ -257,7 +257,27 @@
       "Bash(taskkill /F /PID 28724)",
       "Bash(wmic process:*)",
       "Bash(python scripts/seed_challenge_models.py:*)",
-      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2Njg1MjY4NywianRpIjoiOWEwZGU2NjMtYjkwOC00ZTAwLWE3OTUtMTA5NjgwNzllYjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE2IiwibmJmIjoxNzY2ODUyNjg3LCJjc3JmIjoiOTJlMDRiMjktNjIzZS00YThhLTk1ZjgtMTY2ODBiOGFmZjlmIiwiZXhwIjoxNzY2OTM5MDg3fQ.dsosHlzNjoMhDekOmoBAhBPbPPC5DUTkjV0EwHxMUNU\")"
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2Njg1MjY4NywianRpIjoiOWEwZGU2NjMtYjkwOC00ZTAwLWE3OTUtMTA5NjgwNzllYjAxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE2IiwibmJmIjoxNzY2ODUyNjg3LCJjc3JmIjoiOTJlMDRiMjktNjIzZS00YThhLTk1ZjgtMTY2ODBiOGFmZjlmIiwiZXhwIjoxNzY2OTM5MDg3fQ.dsosHlzNjoMhDekOmoBAhBPbPPC5DUTkjV0EwHxMUNU\")",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.african-markets.com)",
+      "WebFetch(domain:www.casablanca-bourse.com)",
+      "WebFetch(domain:www.jblanked.com)",
+      "WebFetch(domain:finnhub.io)",
+      "WebFetch(domain:eodhd.com)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMTA4NiwianRpIjoiMDA0MzIzYzctNzI3Ni00MzJjLWIwMTktOGJlOGQ4YTE5MmJiIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE3IiwibmJmIjoxNzY2OTExMDg2LCJjc3JmIjoiODI4NWNlMzMtOGU5Yi00NDM2LWEwNjUtYzZlOWNjODVhY2ZmIiwiZXhwIjoxNzY2OTk3NDg2fQ.zm9I46i8Jp8EDzQeCcAF5GvaB5mKqBd4nsVPTDXtAz0\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMTI5OCwianRpIjoiZjhkMGM5MDEtYzBmMi00Zjc2LThiNGItMDE0OGNjMzlmMTgzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE3IiwibmJmIjoxNzY2OTExMjk4LCJjc3JmIjoiZWJkNzg4MWUtN2YyMS00MzU5LTlkODMtZGVkZmYxYjNlYjIyIiwiZXhwIjoxNzY2OTk3Njk4fQ.RM2EglhD7H_ffysbG3hLywro-OeUOumnsgWwxUGuogg\":*)",
+      "Bash(timeout /t 8 /nobreak)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMTQ0MCwianRpIjoiZTRkN2QwYjYtNzFiMy00OGFhLWI1YmItMTJlMGFmNTY0YTdlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE3IiwibmJmIjoxNzY2OTExNDQwLCJjc3JmIjoiY2FhOGY0N2ItOTQ1MS00ZjU0LTlhYTQtZmQxODU5MTliNWRhIiwiZXhwIjoxNzY2OTk3ODQwfQ.-_kTcP6XtLmr7dDDFuEiBl2I7TxoGRcLQgO9AzsjFSg\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMTgxOCwianRpIjoiNjViNGU2NmUtNjEwMC00Njk1LWEzYmYtMDA4MDU3Y2Y2ZGI1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE3IiwibmJmIjoxNzY2OTExODE4LCJjc3JmIjoiYTE3NThhM2UtNmJiZC00ODU1LWEyYTctZmYwMzZhNjNkZDJmIiwiZXhwIjoxNzY2OTk4MjE4fQ.QAJGVnOgM-qDFk-HzFV1JmrM9IA5PTX_q6PDvdlfnmY\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMzAxNywianRpIjoiNGM5OGMzODUtZTFmNC00Y2M3LTk4ZjAtMzJjY2JlM2M0NDQxIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE4IiwibmJmIjoxNzY2OTEzMDE3LCJjc3JmIjoiZDdmOTkxOWQtNTNmZC00ZDViLWE3ODktNjc4NDE5MjA1MGRjIiwiZXhwIjoxNzY2OTk5NDE3fQ.JM-8Ly73QrlGQrspAGML4syJPba7C5FTCwYk2fBGR6w\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMzA1MywianRpIjoiNjZiMjliMmYtODZiNS00MWQ4LWE5NDUtMDZhN2JlMjk0MDExIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjE4IiwibmJmIjoxNzY2OTEzMDUzLCJjc3JmIjoiM2MzNzg1OTctYzEzZS00N2RlLWJmNTUtYTVjNGUxZGUzYWMwIiwiZXhwIjoxNzY2OTk5NDUzfQ.ApXFOSk4bEB6Ie-qi5wk3igVz-gsl2p2FjRsw4xxHFY\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NjkxMzY1NywianRpIjoiOGZmNjgyOWItNmUzNC00MDIzLTkyMDMtZTQ3YWRkMTM2MzFlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEzIiwibmJmIjoxNzY2OTEzNjU3LCJjc3JmIjoiNmI0MDg1OGMtZjI3ZS00OGI1LWJiZTUtZmVlMjhjM2FmNmQ5IiwiZXhwIjoxNzY3MDAwMDU3fQ.Awfii-PaiRtOVfb3yv3FVsQrF9ZTe5ZcqJ7ZqJuOR1Y\")",
+      "Bash(del \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\*.db-wal\")",
+      "Bash(del \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\*.db-shm\")",
+      "Bash(wmic process where \"name=''python.exe''\" get processid,commandline)",
+      "Bash(wmic process where \"name=''python.exe''\" delete)",
+      "Bash(git checkout:*)"
     ]
   }
 }

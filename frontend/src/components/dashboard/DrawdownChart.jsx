@@ -124,6 +124,14 @@ export default function DrawdownChart({
 
       {/* Chart */}
       <div className="h-56">
+        {data.length === 0 ? (
+          <div className="h-full flex items-center justify-center">
+            <div className="text-center">
+              <p className="text-gray-400 text-sm">No drawdown data yet</p>
+              <p className="text-gray-500 text-xs mt-1">Start trading to track your drawdown</p>
+            </div>
+          </div>
+        ) : (
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
             <defs>
@@ -184,6 +192,7 @@ export default function DrawdownChart({
             />
           </AreaChart>
         </ResponsiveContainer>
+        )}
       </div>
 
       {/* Progress bar showing drawdown vs limit */}
