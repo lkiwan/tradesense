@@ -3,20 +3,8 @@ import { cardVariants } from '../../utils/animations'
 import AnimatedCounter from './AnimatedCounter'
 
 /**
- * StatCard - Animated statistics card with hover effects
- *
- * @param {string} title - Card title
- * @param {number} value - Main value to display
- * @param {string} prefix - Value prefix (e.g., '$')
- * @param {string} suffix - Value suffix (e.g., '%')
- * @param {number} decimals - Decimal places
- * @param {React.Component} icon - Lucide icon component
- * @param {string} subValue - Secondary value/description
- * @param {number} trend - Trend percentage (positive or negative)
- * @param {string} variant - Color variant
- * @param {boolean} progress - Show progress bar
- * @param {number} progressValue - Progress percentage (0-100)
- * @param {string} progressColor - Progress bar color
+ * StatCard - Glass-morphism statistics card with mobile-first design
+ * Matches landing page style with gradient backgrounds and glow effects
  */
 export default function StatCard({
   title,
@@ -33,11 +21,9 @@ export default function StatCard({
   progressColor = 'green',
   className = ''
 }) {
-  // Trend arrow
   const getTrendIcon = () => {
     if (trend === undefined || trend === null) return null
     if (trend > 0) return '+'
-    if (trend < 0) return ''
     return ''
   }
 
@@ -47,7 +33,54 @@ export default function StatCard({
     return 'text-gray-400'
   }
 
-  // Progress bar colors
+  // Gradient backgrounds based on variant (matching landing page)
+  const variantStyles = {
+    default: {
+      gradient: 'from-dark-100/80 to-dark-200/80',
+      border: 'border-white/5 hover:border-primary-500/30',
+      iconBg: 'bg-gray-500/20',
+      iconColor: 'text-gray-400',
+      glow: 'hover:shadow-gray-500/10'
+    },
+    success: {
+      gradient: 'from-green-500/10 to-green-600/5',
+      border: 'border-green-500/20 hover:border-green-500/40',
+      iconBg: 'bg-green-500/20',
+      iconColor: 'text-green-400',
+      glow: 'hover:shadow-green-500/20'
+    },
+    danger: {
+      gradient: 'from-red-500/10 to-red-600/5',
+      border: 'border-red-500/20 hover:border-red-500/40',
+      iconBg: 'bg-red-500/20',
+      iconColor: 'text-red-400',
+      glow: 'hover:shadow-red-500/20'
+    },
+    warning: {
+      gradient: 'from-yellow-500/10 to-yellow-600/5',
+      border: 'border-yellow-500/20 hover:border-yellow-500/40',
+      iconBg: 'bg-yellow-500/20',
+      iconColor: 'text-yellow-400',
+      glow: 'hover:shadow-yellow-500/20'
+    },
+    info: {
+      gradient: 'from-blue-500/10 to-blue-600/5',
+      border: 'border-blue-500/20 hover:border-blue-500/40',
+      iconBg: 'bg-blue-500/20',
+      iconColor: 'text-blue-400',
+      glow: 'hover:shadow-blue-500/20'
+    },
+    purple: {
+      gradient: 'from-purple-500/10 to-purple-600/5',
+      border: 'border-purple-500/20 hover:border-purple-500/40',
+      iconBg: 'bg-purple-500/20',
+      iconColor: 'text-purple-400',
+      glow: 'hover:shadow-purple-500/20'
+    }
+  }
+
+  const style = variantStyles[variant] || variantStyles.default
+
   const progressColors = {
     green: 'from-green-500 to-green-400',
     red: 'from-red-500 to-red-400',
@@ -64,36 +97,41 @@ export default function StatCard({
       whileHover="hover"
       whileTap="tap"
       className={`
-        relative overflow-hidden
-        bg-gradient-to-br from-dark-100 to-dark-200
-        border border-dark-200 hover:border-dark-100
-        rounded-xl p-4
+        group relative overflow-hidden
+        bg-gradient-to-br ${style.gradient}
+        backdrop-blur-xl
+        border ${style.border}
+        rounded-xl sm:rounded-2xl
+        p-3 sm:p-4
         transition-all duration-300
-        hover:shadow-lg hover:shadow-green-500/10
+        hover:shadow-lg ${style.glow}
+        hover:scale-[1.02]
         cursor-default
+        touch-manipulation
         ${className}
       `}
     >
       {/* Background glow effect */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl sm:rounded-2xl" />
 
       {/* Content */}
       <div className="relative z-10">
         {/* Header with icon and title */}
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-gray-400 text-sm font-medium">{title}</span>
+        <div className="flex items-center justify-between mb-1.5 sm:mb-2">
+          <span className="text-gray-400 text-[10px] sm:text-xs font-medium uppercase tracking-wider">{title}</span>
           {Icon && (
             <motion.div
               whileHover={{ rotate: 15, scale: 1.1 }}
               transition={{ type: 'spring', stiffness: 300 }}
+              className={`w-6 h-6 sm:w-8 sm:h-8 ${style.iconBg} rounded-lg flex items-center justify-center`}
             >
-              <Icon className="w-5 h-5 text-gray-500" />
+              <Icon className={`w-3 h-3 sm:w-4 sm:h-4 ${style.iconColor}`} />
             </motion.div>
           )}
         </div>
 
         {/* Main value */}
-        <div className="flex items-baseline gap-2">
+        <div className="flex items-baseline gap-1 sm:gap-2">
           <AnimatedCounter
             value={value}
             prefix={prefix}
@@ -109,7 +147,7 @@ export default function StatCard({
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.5 }}
-              className={`text-sm font-medium ${getTrendColor()}`}
+              className={`text-[10px] sm:text-xs font-medium ${getTrendColor()}`}
             >
               {getTrendIcon()}{Math.abs(trend).toFixed(1)}%
             </motion.span>
@@ -122,7 +160,7 @@ export default function StatCard({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-gray-500 text-sm mt-1"
+            className="text-gray-500 text-[10px] sm:text-xs mt-0.5 sm:mt-1 truncate"
           >
             {subValue}
           </motion.p>
@@ -130,8 +168,8 @@ export default function StatCard({
 
         {/* Progress bar */}
         {progress && (
-          <div className="mt-3">
-            <div className="h-2 bg-dark-300 rounded-full overflow-hidden">
+          <div className="mt-2 sm:mt-3">
+            <div className="h-1.5 sm:h-2 bg-dark-300/50 rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(progressValue, 100)}%` }}
@@ -139,24 +177,9 @@ export default function StatCard({
                 className={`h-full bg-gradient-to-r ${progressColors[progressColor]} rounded-full`}
               />
             </div>
-            <div className="flex justify-between mt-1">
-              <span className="text-xs text-gray-500">0%</span>
-              <span className="text-xs text-gray-500">100%</span>
-            </div>
           </div>
         )}
       </div>
-
-      {/* Animated border gradient */}
-      <motion.div
-        className="absolute inset-0 rounded-xl pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileHover={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-        style={{
-          background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2) 0%, transparent 50%)',
-        }}
-      />
     </motion.div>
   )
 }

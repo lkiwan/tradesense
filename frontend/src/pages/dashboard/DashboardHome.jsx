@@ -357,25 +357,30 @@ const DashboardHome = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-dark-100 rounded-xl sm:rounded-2xl border border-dark-200 overflow-hidden"
+          className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-green-500/20 transition-all duration-300 shadow-lg hover:shadow-green-500/10"
         >
-          <div className="p-3 sm:p-4 border-b border-dark-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          {/* Background glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-green-500/5 to-transparent opacity-50 pointer-events-none" />
+
+          <div className="relative p-3 sm:p-4 border-b border-white/5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
-              <Activity size={18} className="text-green-500" />
+              <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
+                <Activity size={16} className="text-green-400" />
+              </div>
               <span className="font-semibold text-white text-sm sm:text-base">Open Positions</span>
-              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/10 text-green-500">
+              <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
                 {openTrades.length}
               </span>
             </div>
             {openPnLData && (
-              <span className={`text-sm font-bold ${openPnLData.total_unrealized_pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+              <span className={`text-sm font-bold ${openPnLData.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                 P&L: {openPnLData.total_unrealized_pnl >= 0 ? '+' : ''}${openPnLData.total_unrealized_pnl.toFixed(2)}
               </span>
             )}
           </div>
-          <div className="overflow-x-auto">
+          <div className="relative overflow-x-auto">
             <table className="w-full min-w-[700px]">
-              <thead className="bg-dark-200/50">
+              <thead className="bg-dark-300/30">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
@@ -445,24 +450,29 @@ const DashboardHome = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-dark-100 rounded-xl sm:rounded-2xl border border-dark-200 overflow-hidden"
+          className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg hover:shadow-primary-500/10"
         >
-          <div className="p-3 sm:p-4 border-b border-dark-200 flex items-center justify-between">
+          {/* Background glow */}
+          <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-30 pointer-events-none" />
+
+          <div className="relative p-3 sm:p-4 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Clock size={16} className="text-gray-400" />
+              <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
+                <Clock size={16} className="text-primary-400" />
+              </div>
               <span className="font-semibold text-white text-sm sm:text-base">Recent Trades</span>
-              <span className="text-[10px] sm:text-xs text-gray-500">({closedTrades.length})</span>
+              <span className="text-[10px] sm:text-xs text-gray-400">({closedTrades.length})</span>
             </div>
             <Link
               to="/trade-journal"
-              className="text-xs sm:text-sm text-primary-400 hover:text-primary-300 transition-colors"
+              className="text-xs sm:text-sm text-primary-400 hover:text-primary-300 transition-colors hover:underline"
             >
               View All
             </Link>
           </div>
-          <div className="overflow-x-auto">
+          <div className="relative overflow-x-auto">
             <table className="w-full min-w-[400px]">
-              <thead className="bg-dark-200/50">
+              <thead className="bg-dark-300/30">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>

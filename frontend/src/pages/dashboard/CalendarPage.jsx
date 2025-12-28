@@ -212,7 +212,7 @@ const CalendarPage = () => {
       )}
 
       {/* Date Navigation */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
+      <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
         {/* Row 1: Navigation */}
         <div className="flex items-center justify-between gap-2">
           {/* View Toggle */}
@@ -328,7 +328,7 @@ const CalendarPage = () => {
       </div>
 
       {/* Events Table */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg">
         {loading ? (
           <div className="p-12 text-center">
             <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto mb-4" />

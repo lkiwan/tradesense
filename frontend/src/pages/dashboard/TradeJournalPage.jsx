@@ -357,7 +357,7 @@ const TradeJournalPage = () => {
       </div>
 
       {/* Orders Table */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg">
         {orders.length === 0 ? (
           <div className="text-center py-12">
             <ShoppingCart className="mx-auto text-gray-600 mb-4" size={48} />
@@ -608,7 +608,7 @@ const TradeJournalPage = () => {
       {activeTab === 'entries' && (
         <>
           {/* Filters */}
-          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
+          <div className="bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 p-4 shadow-lg">
             <div className="grid grid-cols-2 md:grid-cols-6 gap-3">
               <input
                 type="text"
@@ -658,7 +658,7 @@ const TradeJournalPage = () => {
           </div>
 
           {/* Entries Table */}
-          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+          <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg">
             {loading ? (
               <div className="flex items-center justify-center py-16">
                 <div className="w-10 h-10 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
@@ -947,7 +947,7 @@ const TradeJournalPage = () => {
       </div>
 
       {/* Main Tabs */}
-      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
+      <div className="flex gap-2 bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-1.5 border border-white/5 overflow-x-auto shadow-lg">
         {mainTabs.map(tab => {
           const IconComponent = tab.icon
           return (

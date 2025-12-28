@@ -81,7 +81,7 @@ const SupportPage = () => {
       </div>
 
       {/* New Ticket */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 sm:p-6">
+      <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg p-4 sm:p-6">
         <h3 className="font-semibold text-white mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
           <div className="p-1.5 rounded-lg bg-primary-500/10">
             <Send size={16} className="text-primary-400" />
@@ -117,7 +117,7 @@ const SupportPage = () => {
       </div>
 
       {/* Previous Tickets */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+      <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300 shadow-lg">
         <div className="p-3 sm:p-4 border-b border-white/5">
           <h3 className="font-semibold text-white flex items-center gap-2 text-sm sm:text-base">
             <div className="p-1.5 rounded-lg bg-purple-500/10">
@@ -249,7 +249,7 @@ const SupportPage = () => {
       </div>
 
       {/* Main Tabs */}
-      <div className="flex gap-1 sm:gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1 sm:p-1.5 border border-white/5 overflow-x-auto">
+      <div className="flex gap-1 sm:gap-2 bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-1 sm:p-1.5 border border-white/5 overflow-x-auto shadow-lg">
         {mainTabs.map(tab => {
           const IconComponent = tab.icon
           return (

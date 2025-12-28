@@ -456,10 +456,12 @@ const AccountsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-gradient-to-br from-dark-100 to-dark-200 rounded-xl sm:rounded-2xl border border-white/5 overflow-hidden"
+        className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300 shadow-lg"
       >
+        {/* Background glow effect */}
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-pink-500/5 opacity-50 pointer-events-none" />
         {/* Account Header */}
-        <div className="p-4 sm:p-6 border-b border-white/5">
+        <div className="relative p-4 sm:p-6 border-b border-white/5">
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-3 sm:gap-4">
               <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center flex-shrink-0">
@@ -551,7 +553,7 @@ const AccountsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-3 sm:p-6"
+        className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg p-3 sm:p-6"
       >
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
@@ -579,7 +581,7 @@ const AccountsPage = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2 }}
-        className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-6"
+        className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300 shadow-lg p-4 sm:p-6"
       >
         <h3 className="text-sm sm:text-lg font-semibold text-white mb-4 sm:mb-6">Your Journey</h3>
         <div className="flex items-center justify-center overflow-x-auto pb-2">
@@ -728,7 +730,7 @@ const AccountsPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 overflow-hidden"
+            className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-green-500/20 transition-all duration-300 shadow-lg"
           >
             <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -792,7 +794,7 @@ const AccountsPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 overflow-hidden"
+          className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg"
         >
           <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2">

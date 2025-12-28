@@ -36,12 +36,12 @@ export default function AnimatedCounter({
     muted: 'text-gray-400'
   }
 
-  // Size variants
+  // Size variants - Mobile-first responsive sizes
   const sizeClasses = {
-    sm: 'text-lg',
-    md: 'text-2xl',
-    lg: 'text-3xl',
-    xl: 'text-4xl'
+    sm: 'text-sm sm:text-lg',
+    md: 'text-lg sm:text-2xl',
+    lg: 'text-xl sm:text-2xl md:text-3xl',
+    xl: 'text-2xl sm:text-3xl md:text-4xl'
   }
 
   // Determine color based on value if variant is 'auto'

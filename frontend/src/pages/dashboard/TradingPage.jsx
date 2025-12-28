@@ -285,7 +285,7 @@ const TradingPage = () => {
   return (
     <div className="flex flex-col gap-3 sm:gap-4 pb-8 px-2 sm:px-0">
       {/* Top Bar - Symbol Selection & Account Info */}
-      <div className="flex flex-col gap-3 bg-dark-100 rounded-xl p-3 sm:p-4 border border-dark-200">
+      <div className="relative overflow-hidden flex flex-col gap-3 bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/5 shadow-lg">
         {/* Row 1: Category tabs + Symbol selector */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
           {/* Category Tabs - Scrollable on mobile */}
@@ -384,9 +384,9 @@ const TradingPage = () => {
         {/* Chart & Positions Area */}
         <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4">
           {/* Chart */}
-          <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
+          <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg">
             {/* Chart Toolbar */}
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 border-b border-dark-200 gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 border-b border-white/5 gap-2">
               <div className="flex items-center gap-2">
                 <span className="font-semibold text-white text-sm sm:text-base">{selectedSymbol.name}</span>
                 <span className="text-[10px] sm:text-xs text-gray-500">({selectedSymbol.symbol})</span>
@@ -422,10 +422,12 @@ const TradingPage = () => {
           </div>
 
           {/* Open Positions Panel - Under Chart */}
-          <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b border-dark-200 gap-2">
+          <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-green-500/20 transition-all duration-300 shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b border-white/5 gap-2">
               <h3 className="font-semibold text-white flex items-center gap-2 text-sm sm:text-base">
-                <Activity size={14} className="text-primary-400" />
+                <div className="w-7 h-7 bg-green-500/20 rounded-lg flex items-center justify-center">
+                  <Activity size={12} className="text-green-400" />
+                </div>
                 Positions
                 {openPositions.length > 0 && (
                   <span className="px-1.5 sm:px-2 py-0.5 bg-primary-500/20 text-primary-400 text-[10px] sm:text-xs rounded-full">
@@ -540,7 +542,7 @@ const TradingPage = () => {
         {/* Trading Panel & Signals */}
         <div className="space-y-3 sm:space-y-4 lg:overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {/* Trade Type Selector */}
-          <div className="bg-dark-100 rounded-xl border border-dark-200 p-3 sm:p-4">
+          <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 p-3 sm:p-4 shadow-lg">
             <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
               <button
                 onClick={() => setTradeType('buy')}
