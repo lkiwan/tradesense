@@ -38,6 +38,40 @@ def get_all_pairs():
     }), 200
 
 
+@forex_bp.route('/rates', methods=['GET'])
+@jwt_required()
+def get_rates():
+    """
+    Get simplified exchange rates for all pairs.
+
+    Query params:
+        base: Base currency for rates (default: USD)
+    """
+    base = request.args.get('base', 'USD').upper()
+    provider = get_forex_provider()
+    all_pairs = provider.get_all_prices()
+
+    rates = {}
+    for pair in all_pairs:
+        symbol = pair['symbol']
+        base_currency = pair.get('base', symbol.split('/')[0])
+        quote_currency = pair.get('quote', symbol.split('/')[1])
+
+        # Add both directions for flexibility
+        if base_currency == base:
+            rates[quote_currency] = pair['price']
+        elif quote_currency == base:
+            rates[base_currency] = round(1 / pair['price'], 6) if pair['price'] else None
+
+    return jsonify({
+        'status': 'success',
+        'base': base,
+        'rates': rates,
+        'count': len(rates),
+        'timestamp': all_pairs[0]['timestamp'] if all_pairs else None
+    }), 200
+
+
 @forex_bp.route('/pair/<symbol>', methods=['GET'])
 @jwt_required()
 def get_pair(symbol):
