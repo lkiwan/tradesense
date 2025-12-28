@@ -22,11 +22,10 @@ api.interceptors.request.use(
     // Handle all variations: /api/, api/, /api, api
     if (config.url) {
       // Remove leading /api/ or api/ to prevent double /api/api/
-      config.url = config.url.replace(/^\/?api\//, '/')
-      // Ensure URL starts with / for proper concatenation
-      if (!config.url.startsWith('/') && !config.url.startsWith('http')) {
-        config.url = '/' + config.url
-      }
+      // Don't add leading / as it would ignore baseURL path in axios
+      config.url = config.url.replace(/^\/?api\//, '')
+      // Remove any leading slash to ensure proper baseURL concatenation
+      config.url = config.url.replace(/^\/+/, '')
     }
 
     const token = localStorage.getItem('access_token')
