@@ -67,7 +67,7 @@ def detailed_health():
 
     # Check Redis cache (if configured)
     try:
-        from services.cache_service import cache
+        from services.cache_service import cache, CacheService
         if hasattr(cache, 'cache') and hasattr(cache.cache, '_client'):
             cache.cache._client.ping()
             health['components']['cache'] = {
@@ -79,9 +79,33 @@ def detailed_health():
                 'status': 'healthy',
                 'type': 'simple'
             }
+
+        # Add cache stats
+        cache_stats = CacheService.get_stats()
+        health['components']['cache']['l1_hit_rate'] = cache_stats['l1_cache']['hit_rate']
     except Exception as e:
         health['components']['cache'] = {
             'status': 'degraded',
+            'error': str(e)
+        }
+
+    # Check circuit breakers
+    try:
+        from services.circuit_breaker import circuit_registry
+        breaker_stats = circuit_registry.get_all_stats()
+        open_circuits = [name for name, stats in breaker_stats.items() if stats['state'] == 'open']
+
+        health['components']['circuit_breakers'] = {
+            'status': 'healthy' if not open_circuits else 'degraded',
+            'total': len(breaker_stats),
+            'open': open_circuits
+        }
+
+        if open_circuits:
+            health['status'] = 'degraded'
+    except Exception as e:
+        health['components']['circuit_breakers'] = {
+            'status': 'unknown',
             'error': str(e)
         }
 
@@ -178,10 +202,97 @@ def get_error_metrics():
 @admin_required
 def get_cache_metrics():
     """Get cache performance metrics"""
+    from services.cache_service import CacheService
+
     return jsonify({
         'timestamp': datetime.utcnow().isoformat(),
-        'cache': metrics.get_cache_metrics()
+        'cache': metrics.get_cache_metrics(),
+        'multi_layer': CacheService.get_stats()
     })
+
+
+@monitoring_bp.route('/metrics/circuit-breakers', methods=['GET'])
+@admin_required
+def get_circuit_breaker_metrics():
+    """Get circuit breaker status and metrics"""
+    from services.circuit_breaker import circuit_registry
+
+    return jsonify({
+        'timestamp': datetime.utcnow().isoformat(),
+        'circuit_breakers': circuit_registry.get_all_stats()
+    })
+
+
+@monitoring_bp.route('/metrics/circuit-breakers/<name>/reset', methods=['POST'])
+@admin_required
+def reset_circuit_breaker(name):
+    """Reset a specific circuit breaker"""
+    from services.circuit_breaker import circuit_registry
+
+    breaker = circuit_registry.get(name)
+    if not breaker:
+        return jsonify({'error': f'Circuit breaker "{name}" not found'}), 404
+
+    breaker.reset()
+    return jsonify({
+        'message': f'Circuit breaker "{name}" reset successfully',
+        'stats': breaker.get_stats()
+    })
+
+
+@monitoring_bp.route('/health/services', methods=['GET'])
+def external_services_health():
+    """Check health of external services"""
+    services = {
+        'timestamp': datetime.utcnow().isoformat(),
+        'services': {}
+    }
+
+    # Check Yahoo Finance
+    try:
+        import yfinance as yf
+        ticker = yf.Ticker("AAPL")
+        hist = ticker.history(period='1d')
+        services['services']['yfinance'] = {
+            'status': 'healthy' if not hist.empty else 'degraded',
+            'response_time_ms': 0  # Would need timing
+        }
+    except Exception as e:
+        services['services']['yfinance'] = {
+            'status': 'unhealthy',
+            'error': str(e)[:100]
+        }
+
+    # Check Frankfurter API (Forex)
+    try:
+        import requests
+        start = time.time()
+        resp = requests.get('https://api.frankfurter.app/latest?from=USD', timeout=5)
+        elapsed = (time.time() - start) * 1000
+        services['services']['frankfurter'] = {
+            'status': 'healthy' if resp.status_code == 200 else 'degraded',
+            'response_time_ms': round(elapsed, 2)
+        }
+    except Exception as e:
+        services['services']['frankfurter'] = {
+            'status': 'unhealthy',
+            'error': str(e)[:100]
+        }
+
+    # Check circuit breaker states
+    try:
+        from services.circuit_breaker import circuit_registry
+        for name, stats in circuit_registry.get_all_stats().items():
+            if name not in services['services']:
+                services['services'][name] = {
+                    'status': 'healthy' if stats['state'] == 'closed' else stats['state'],
+                    'circuit_state': stats['state'],
+                    'failure_count': stats['failure_count']
+                }
+    except Exception:
+        pass
+
+    return jsonify(services)
 
 
 @monitoring_bp.route('/metrics/users', methods=['GET'])
