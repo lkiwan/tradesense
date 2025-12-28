@@ -145,66 +145,66 @@ const CalendarPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-start gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <div className="flex items-start gap-2 sm:gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group"
+            className="p-2 sm:p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group min-w-[40px] min-h-[40px] flex items-center justify-center"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+            <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
           </button>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-                <Calendar className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
+                <Calendar className="text-primary-400 w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6" />
               </div>
-              Economic Calendar
+              <span className="hidden xs:inline">Economic </span>Calendar
             </h1>
-            <p className="text-gray-400 mt-1 text-sm sm:text-base">
-              Live economic events from multiple sources
+            <p className="text-gray-400 mt-0.5 sm:mt-1 text-xs sm:text-sm md:text-base">
+              Live economic events
             </p>
           </div>
         </div>
         <button
           onClick={fetchEvents}
           disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
+          className="flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300 min-h-[40px] text-sm"
         >
           <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
+          <span className="hidden sm:inline">Refresh</span>
         </button>
       </div>
 
       {/* Countdown Banner */}
       {countdown && (
-        <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-xl rounded-xl border border-red-500/30 p-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-red-500/20 animate-pulse">
-                <Timer className="w-5 h-5 text-red-400" />
+        <div className="bg-gradient-to-r from-red-500/20 to-orange-500/20 backdrop-blur-xl rounded-xl border border-red-500/30 p-3 sm:p-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="p-1.5 sm:p-2 rounded-lg bg-red-500/20 animate-pulse flex-shrink-0">
+                <Timer className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" />
               </div>
-              <div>
-                <p className="text-sm text-red-300">Next High-Impact Event</p>
-                <p className="text-white font-semibold">{countdown.event.event}</p>
-                <p className="text-xs text-gray-400">{countdown.event.currency} - {countdown.event.time}</p>
+              <div className="min-w-0">
+                <p className="text-xs sm:text-sm text-red-300">Next High-Impact</p>
+                <p className="text-white font-semibold text-sm sm:text-base truncate">{countdown.event.event}</p>
+                <p className="text-[10px] sm:text-xs text-gray-400">{countdown.event.currency} - {countdown.event.time}</p>
               </div>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
-                <p className="text-2xl font-bold text-white">{String(countdown.hours).padStart(2, '0')}</p>
-                <p className="text-xs text-gray-400">Hours</p>
+            <div className="flex items-center gap-1 sm:gap-2 self-end sm:self-center">
+              <div className="text-center px-2 sm:px-3 py-1 sm:py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-lg sm:text-2xl font-bold text-white">{String(countdown.hours).padStart(2, '0')}</p>
+                <p className="text-[9px] sm:text-xs text-gray-400">H</p>
               </div>
-              <span className="text-white text-xl">:</span>
-              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
-                <p className="text-2xl font-bold text-white">{String(countdown.minutes).padStart(2, '0')}</p>
-                <p className="text-xs text-gray-400">Min</p>
+              <span className="text-white text-sm sm:text-xl">:</span>
+              <div className="text-center px-2 sm:px-3 py-1 sm:py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-lg sm:text-2xl font-bold text-white">{String(countdown.minutes).padStart(2, '0')}</p>
+                <p className="text-[9px] sm:text-xs text-gray-400">M</p>
               </div>
-              <span className="text-white text-xl">:</span>
-              <div className="text-center px-3 py-2 bg-dark-300/50 rounded-lg">
-                <p className="text-2xl font-bold text-red-400">{String(countdown.seconds).padStart(2, '0')}</p>
-                <p className="text-xs text-gray-400">Sec</p>
+              <span className="text-white text-sm sm:text-xl">:</span>
+              <div className="text-center px-2 sm:px-3 py-1 sm:py-2 bg-dark-300/50 rounded-lg">
+                <p className="text-lg sm:text-2xl font-bold text-red-400">{String(countdown.seconds).padStart(2, '0')}</p>
+                <p className="text-[9px] sm:text-xs text-gray-400">S</p>
               </div>
             </div>
           </div>
@@ -212,69 +212,74 @@ const CalendarPage = () => {
       )}
 
       {/* Date Navigation */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-3 sm:p-4 flex flex-col gap-3 sm:gap-4">
+        {/* Row 1: Navigation */}
+        <div className="flex items-center justify-between gap-2">
           {/* View Toggle */}
-          <div className="flex gap-1 bg-dark-200/30 rounded-lg p-1 border border-white/5">
+          <div className="flex gap-0.5 sm:gap-1 bg-dark-200/30 rounded-lg p-0.5 sm:p-1 border border-white/5">
             <button
               onClick={() => setViewMode('day')}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-1.5 sm:p-2 rounded-lg transition-all min-w-[32px] ${
                 viewMode === 'day'
                   ? 'bg-primary-500 text-white'
                   : 'text-gray-400 hover:text-white'
               }`}
               title="Day View"
             >
-              <List className="w-4 h-4" />
+              <List className="w-3 h-3 sm:w-4 sm:h-4" />
             </button>
             <button
               onClick={() => setViewMode('week')}
-              className={`p-2 rounded-lg transition-all ${
+              className={`p-1.5 sm:p-2 rounded-lg transition-all min-w-[32px] ${
                 viewMode === 'week'
                   ? 'bg-primary-500 text-white'
                   : 'text-gray-400 hover:text-white'
               }`}
               title="Week View"
             >
-              <CalendarDays className="w-4 h-4" />
+              <CalendarDays className="w-3 h-3 sm:w-4 sm:h-4" />
+            </button>
+          </div>
+
+          {/* Date Navigation */}
+          <div className="flex items-center gap-1 sm:gap-2">
+            <button
+              onClick={() => navigateDate(viewMode === 'week' ? -7 : -1)}
+              className="p-1.5 sm:p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-lg sm:rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300 min-w-[32px]"
+            >
+              <ChevronLeft className="text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+            </button>
+            <div className="text-center min-w-[80px] sm:min-w-[150px] md:min-w-[200px]">
+              <p className="font-semibold text-white text-xs sm:text-sm md:text-base truncate">
+                {viewMode === 'week'
+                  ? `Week`
+                  : formatDate(selectedDate).split(',').slice(0, 2).join(',')
+                }
+              </p>
+            </div>
+            <button
+              onClick={() => navigateDate(viewMode === 'week' ? 7 : 1)}
+              className="p-1.5 sm:p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-lg sm:rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300 min-w-[32px]"
+            >
+              <ChevronRight className="text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
             </button>
           </div>
 
           <button
-            onClick={() => navigateDate(viewMode === 'week' ? -7 : -1)}
-            className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
-          >
-            <ChevronLeft className="text-gray-400" size={20} />
-          </button>
-          <div className="text-center min-w-[200px]">
-            <p className="font-semibold text-white">
-              {viewMode === 'week'
-                ? `${formatDate(selectedDate).split(',')[0]} - Week View`
-                : formatDate(selectedDate)
-              }
-            </p>
-          </div>
-          <button
-            onClick={() => navigateDate(viewMode === 'week' ? 7 : 1)}
-            className="p-2.5 bg-dark-200/50 hover:bg-dark-200 rounded-xl border border-white/5 hover:border-primary-500/30 transition-all duration-300"
-          >
-            <ChevronRight className="text-gray-400" size={20} />
-          </button>
-          <button
             onClick={() => setSelectedDate(new Date())}
-            className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:scale-105"
+            className="px-2 sm:px-4 py-1.5 sm:py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg sm:rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 text-xs sm:text-sm min-h-[32px]"
           >
             Today
           </button>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-wrap items-center gap-3">
+        {/* Row 2: Filters */}
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           {/* Currency Filter */}
           <select
             value={currencyFilter}
             onChange={(e) => setCurrencyFilter(e.target.value)}
-            className="px-3 py-2 bg-dark-200/50 border border-white/5 rounded-xl text-white text-sm focus:outline-none focus:border-primary-500/50"
+            className="px-2 sm:px-3 py-1.5 sm:py-2 bg-dark-200/50 border border-white/5 rounded-lg sm:rounded-xl text-white text-xs sm:text-sm focus:outline-none focus:border-primary-500/50 min-h-[36px]"
           >
             {currencies.map(c => (
               <option key={c.code} value={c.code}>{c.name}</option>
@@ -282,23 +287,24 @@ const CalendarPage = () => {
           </select>
 
           {/* Impact Filter */}
-          <div className="flex gap-2 bg-dark-200/30 rounded-xl p-1.5 border border-white/5">
+          <div className="flex gap-1 sm:gap-2 bg-dark-200/30 rounded-lg sm:rounded-xl p-1 sm:p-1.5 border border-white/5">
             {[
               { key: 'all', label: 'All' },
-              { key: 'high', label: 'High' },
-              { key: 'medium', label: 'Med' },
-              { key: 'low', label: 'Low' }
+              { key: 'high', label: 'H' },
+              { key: 'medium', label: 'M' },
+              { key: 'low', label: 'L' }
             ].map(f => (
               <button
                 key={f.key}
                 onClick={() => setImpactFilter(f.key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-md sm:rounded-lg text-[10px] sm:text-sm font-medium transition-all duration-300 min-w-[28px] ${
                   impactFilter === f.key
                     ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
                     : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
                 }`}
               >
-                {f.label}
+                <span className="hidden sm:inline">{f.key === 'all' ? 'All' : f.key === 'high' ? 'High' : f.key === 'medium' ? 'Med' : 'Low'}</span>
+                <span className="sm:hidden">{f.label}</span>
               </button>
             ))}
           </div>
@@ -306,22 +312,18 @@ const CalendarPage = () => {
       </div>
 
       {/* Impact Legend */}
-      <div className="flex flex-wrap gap-4 text-sm">
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 rounded-lg border border-red-500/20">
-          <div className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
-          <span className="text-red-400 font-medium">High Impact</span>
+      <div className="flex flex-wrap gap-2 sm:gap-4 text-xs sm:text-sm">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-red-500/10 rounded-lg border border-red-500/20">
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-red-500 rounded-full animate-pulse" />
+          <span className="text-red-400 font-medium">High</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-          <div className="w-2.5 h-2.5 bg-yellow-500 rounded-full" />
-          <span className="text-yellow-400 font-medium">Medium Impact</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-yellow-500 rounded-full" />
+          <span className="text-yellow-400 font-medium">Med</span>
         </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 rounded-lg border border-green-500/20">
-          <div className="w-2.5 h-2.5 bg-green-500 rounded-full" />
-          <span className="text-green-400 font-medium">Low Impact</span>
-        </div>
-        <div className="flex items-center gap-2 px-3 py-1.5 bg-primary-500/10 rounded-lg border border-primary-500/20">
-          <Globe className="w-3.5 h-3.5 text-primary-400" />
-          <span className="text-primary-400 font-medium">Morocco</span>
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1 sm:py-1.5 bg-green-500/10 rounded-lg border border-green-500/20">
+          <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-green-500 rounded-full" />
+          <span className="text-green-400 font-medium">Low</span>
         </div>
       </div>
 
@@ -432,12 +434,12 @@ const CalendarPage = () => {
             </div>
 
             {events.length === 0 && (
-              <div className="p-12 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
-                  <Calendar className="text-gray-500" size={32} />
+              <div className="p-6 sm:p-12 text-center">
+                <div className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-3 sm:mb-4 rounded-xl sm:rounded-2xl bg-dark-200/50 border border-white/5 flex items-center justify-center">
+                  <Calendar className="text-gray-500 w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
-                <p className="text-gray-400 font-medium">No events scheduled for this date</p>
-                <p className="text-gray-500 text-sm mt-1">Try selecting a different date or adjusting filters</p>
+                <p className="text-gray-400 font-medium text-sm sm:text-base">No events for this date</p>
+                <p className="text-gray-500 text-xs sm:text-sm mt-1">Try a different date or filters</p>
               </div>
             )}
           </>
@@ -445,25 +447,24 @@ const CalendarPage = () => {
       </div>
 
       {/* Trading Tip */}
-      <div className="bg-yellow-500/10 backdrop-blur-xl rounded-xl border border-yellow-500/30 p-4">
-        <div className="flex items-start gap-3">
-          <div className="p-1.5 rounded-lg bg-yellow-500/20">
-            <AlertTriangle className="text-yellow-400" size={18} />
+      <div className="bg-yellow-500/10 backdrop-blur-xl rounded-xl border border-yellow-500/30 p-3 sm:p-4">
+        <div className="flex items-start gap-2 sm:gap-3">
+          <div className="p-1 sm:p-1.5 rounded-lg bg-yellow-500/20 flex-shrink-0">
+            <AlertTriangle className="text-yellow-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
           </div>
           <div>
-            <h4 className="font-medium text-white mb-1">Trading Tip</h4>
-            <p className="text-sm text-gray-400">
-              High-impact events can cause significant market volatility. Consider reducing position sizes or avoiding trades during these times,
-              especially around NFP, FOMC, ECB announcements, and Bank Al-Maghrib rate decisions.
+            <h4 className="font-medium text-white mb-0.5 sm:mb-1 text-sm sm:text-base">Trading Tip</h4>
+            <p className="text-xs sm:text-sm text-gray-400">
+              High-impact events cause significant volatility. Consider reducing positions during NFP, FOMC, and ECB announcements.
             </p>
           </div>
         </div>
       </div>
 
       {/* Data Sources */}
-      <div className="flex items-center gap-2 text-xs text-gray-500">
+      <div className="flex items-center gap-2 text-[10px] sm:text-xs text-gray-500">
         <Globe className="w-3 h-3" />
-        <span>Data sources: Investing.com, ForexFactory, Bank Al-Maghrib</span>
+        <span>Sources: Investing.com, ForexFactory</span>
       </div>
     </div>
   )

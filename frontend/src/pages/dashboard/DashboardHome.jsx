@@ -148,13 +148,13 @@ const DashboardHome = () => {
 
   if (loading) {
     return (
-      <div className="space-y-6">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
           {[1,2,3,4].map(i => <SkeletonChallengeCard key={i} />)}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <SkeletonChart height={300} />
-          <SkeletonChart height={300} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+          <SkeletonChart height={250} />
+          <SkeletonChart height={250} />
         </div>
       </div>
     )
@@ -162,21 +162,21 @@ const DashboardHome = () => {
 
   if (!challenge) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh] relative">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary-500/10 rounded-full blur-[150px]" />
-        <div className="relative bg-dark-100/80 backdrop-blur-xl rounded-2xl p-12 text-center max-w-md border border-white/5 shadow-2xl">
-          <div className="w-20 h-20 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-2xl flex items-center justify-center mx-auto mb-6 border border-yellow-500/30">
-            <AlertTriangle className="text-yellow-500" size={40} />
+      <div className="flex items-center justify-center min-h-[60vh] relative px-4">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 sm:w-96 h-64 sm:h-96 bg-primary-500/10 rounded-full blur-[150px]" />
+        <div className="relative bg-dark-100/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-6 sm:p-12 text-center max-w-md w-full border border-white/5 shadow-2xl">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-yellow-500/20 to-orange-500/20 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6 border border-yellow-500/30">
+            <AlertTriangle className="text-yellow-500 w-8 h-8 sm:w-10 sm:h-10" />
           </div>
-          <h2 className="text-2xl font-bold text-white mb-4">
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
             {t('dashboard.noActiveChallenge')}
           </h2>
-          <p className="text-gray-400 mb-8">
+          <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">
             {t('dashboard.purchaseChallenge')}
           </p>
           <Link
             to="/pricing"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02]"
+            className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] w-full sm:w-auto min-h-[48px]"
           >
             <DollarSign size={20} />
             Voir les Challenges
@@ -202,10 +202,10 @@ const DashboardHome = () => {
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="space-y-6"
+      className="space-y-4 sm:space-y-6 px-2 sm:px-0 pb-6"
     >
       {/* Row 1: Account Overview Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <StatCard
           title="Balance"
           value={stats.currentBalance}
@@ -253,7 +253,7 @@ const DashboardHome = () => {
       <PhaseProgress />
 
       {/* Row 3: Key Performance Metrics */}
-      <div className="grid grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
+      <div className="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
         <StatCard
           title="Win Rate"
           value={stats.winRate}
@@ -302,7 +302,7 @@ const DashboardHome = () => {
       </div>
 
       {/* Row 4: Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <BalanceHistoryChart
           data={balanceHistory}
           initialBalance={stats.initialBalance}
@@ -315,7 +315,7 @@ const DashboardHome = () => {
       </div>
 
       {/* Row 5: P&L and Risk Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <div className="lg:col-span-2">
           <PnLSummary
             daily={dailyPnl}
@@ -334,7 +334,7 @@ const DashboardHome = () => {
       </div>
 
       {/* Row 6: Trading Insights */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <TradingStreaks
           currentStreak={extendedStats?.streaks?.current || 0}
           maxWinStreak={extendedStats?.streaks?.max_win || 0}
@@ -357,36 +357,35 @@ const DashboardHome = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-dark-100 rounded-xl border border-dark-200"
+          className="bg-dark-100 rounded-xl sm:rounded-2xl border border-dark-200 overflow-hidden"
         >
-          <div className="p-4 border-b border-dark-200 flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-dark-200 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
             <div className="flex items-center gap-2">
               <Activity size={18} className="text-green-500" />
-              <span className="font-semibold text-white">Open Positions</span>
+              <span className="font-semibold text-white text-sm sm:text-base">Open Positions</span>
               <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/10 text-green-500">
                 {openTrades.length}
               </span>
             </div>
             {openPnLData && (
               <span className={`text-sm font-bold ${openPnLData.total_unrealized_pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                Total P&L: {openPnLData.total_unrealized_pnl >= 0 ? '+' : ''}${openPnLData.total_unrealized_pnl.toFixed(2)}
+                P&L: {openPnLData.total_unrealized_pnl >= 0 ? '+' : ''}${openPnLData.total_unrealized_pnl.toFixed(2)}
               </span>
             )}
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[700px]">
               <thead className="bg-dark-200/50">
-                <tr className="text-xs text-gray-500 uppercase">
-                  <th className="px-4 py-3 text-left font-medium">Symbol</th>
-                  <th className="px-4 py-3 text-left font-medium">Type</th>
-                  <th className="px-4 py-3 text-left font-medium">Size</th>
-                  <th className="px-4 py-3 text-left font-medium">Entry</th>
-                  <th className="px-4 py-3 text-left font-medium">Current</th>
-                  <th className="px-4 py-3 text-left font-medium">SL</th>
-                  <th className="px-4 py-3 text-left font-medium">TP</th>
-                  <th className="px-4 py-3 text-right font-medium">P&L</th>
-                  <th className="px-4 py-3 text-right font-medium">%</th>
-                  <th className="px-4 py-3 text-right font-medium">Action</th>
+                <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Size</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Entry</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Current</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">SL</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">TP</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">P&L</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">Action</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-200">
@@ -394,44 +393,39 @@ const DashboardHome = () => {
                   const pnlInfo = openPnLData?.trades?.find(t => t.trade_id === trade.id)
                   return (
                     <tr key={trade.id} className="hover:bg-dark-200/30 transition-colors">
-                      <td className="px-4 py-3">
+                      <td className="px-3 sm:px-4 py-2 sm:py-3">
                         <div className="flex items-center gap-2">
-                          <div className={`w-1 h-8 rounded-full ${trade.trade_type === 'buy' ? 'bg-green-500' : 'bg-red-500'}`} />
-                          <span className="font-medium text-white">{trade.symbol}</span>
+                          <div className={`w-1 h-6 sm:h-8 rounded-full ${trade.trade_type === 'buy' ? 'bg-green-500' : 'bg-red-500'}`} />
+                          <span className="font-medium text-white text-xs sm:text-sm">{trade.symbol}</span>
                         </div>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className={`text-xs px-2 py-1 rounded font-medium ${
+                      <td className="px-3 sm:px-4 py-2 sm:py-3">
+                        <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded font-medium ${
                           trade.trade_type === 'buy' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
                         }`}>
                           {trade.trade_type.toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-gray-400">{trade.quantity}</td>
-                      <td className="px-4 py-3 text-gray-400">${Number(trade.entry_price).toFixed(2)}</td>
-                      <td className="px-4 py-3 text-white font-medium">
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-400 text-xs sm:text-sm">{trade.quantity}</td>
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-400 text-xs sm:text-sm">${Number(trade.entry_price).toFixed(2)}</td>
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-white font-medium text-xs sm:text-sm">
                         ${pnlInfo?.current_price?.toFixed(2) || '-'}
                       </td>
-                      <td className="px-4 py-3 text-red-400">
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-red-400 text-xs sm:text-sm">
                         {trade.stop_loss ? `$${Number(trade.stop_loss).toFixed(2)}` : '-'}
                       </td>
-                      <td className="px-4 py-3 text-green-400">
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-green-400 text-xs sm:text-sm">
                         {trade.take_profit ? `$${Number(trade.take_profit).toFixed(2)}` : '-'}
                       </td>
-                      <td className={`px-4 py-3 text-right font-bold ${
+                      <td className={`px-3 sm:px-4 py-2 sm:py-3 text-right font-bold text-xs sm:text-sm ${
                         (pnlInfo?.unrealized_pnl || 0) >= 0 ? 'text-green-500' : 'text-red-500'
                       }`}>
-                        {pnlInfo ? `${pnlInfo.unrealized_pnl >= 0 ? '+' : ''}$${pnlInfo.unrealized_pnl.toFixed(2)}` : '-'}
+                        {pnlInfo ? `${pnlInfo.unrealized_pnl >= 0 ? '+' : ''}$${pnlInfo.unrealized_pnl.toFixed(0)}` : '-'}
                       </td>
-                      <td className={`px-4 py-3 text-right text-sm ${
-                        (pnlInfo?.pnl_percent || 0) >= 0 ? 'text-green-400' : 'text-red-400'
-                      }`}>
-                        {pnlInfo ? `${pnlInfo.pnl_percent >= 0 ? '+' : ''}${pnlInfo.pnl_percent.toFixed(2)}%` : '-'}
-                      </td>
-                      <td className="px-4 py-3 text-right">
+                      <td className="px-3 sm:px-4 py-2 sm:py-3 text-right">
                         <button
                           onClick={() => handleCloseTrade(trade.id)}
-                          className="px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all text-sm font-medium"
+                          className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all text-xs sm:text-sm font-medium min-w-[44px] min-h-[36px]"
                         >
                           Close
                         </button>
@@ -451,47 +445,47 @@ const DashboardHome = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-dark-100 rounded-xl border border-dark-200"
+          className="bg-dark-100 rounded-xl sm:rounded-2xl border border-dark-200 overflow-hidden"
         >
-          <div className="p-4 border-b border-dark-200 flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-dark-200 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Clock size={18} className="text-gray-400" />
-              <span className="font-semibold text-white">Recent Trades</span>
-              <span className="text-xs text-gray-500">({closedTrades.length} total)</span>
+              <Clock size={16} className="text-gray-400" />
+              <span className="font-semibold text-white text-sm sm:text-base">Recent Trades</span>
+              <span className="text-[10px] sm:text-xs text-gray-500">({closedTrades.length})</span>
             </div>
             <Link
               to="/trade-journal"
-              className="text-sm text-primary-400 hover:text-primary-300 transition-colors"
+              className="text-xs sm:text-sm text-primary-400 hover:text-primary-300 transition-colors"
             >
               View All
             </Link>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[400px]">
               <thead className="bg-dark-200/50">
-                <tr className="text-xs text-gray-500 uppercase">
-                  <th className="px-4 py-3 text-left font-medium">Symbol</th>
-                  <th className="px-4 py-3 text-left font-medium">Type</th>
-                  <th className="px-4 py-3 text-left font-medium">Entry</th>
-                  <th className="px-4 py-3 text-left font-medium">Exit</th>
-                  <th className="px-4 py-3 text-right font-medium">P&L</th>
+                <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Entry</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Exit</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">P&L</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-200">
                 {closedTrades.slice(0, 10).map(trade => (
                   <tr key={trade.id} className="hover:bg-dark-200/30 transition-colors">
-                    <td className="px-4 py-3 font-medium text-white">{trade.symbol}</td>
-                    <td className="px-4 py-3">
-                      <span className={`text-xs px-2 py-1 rounded ${
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 font-medium text-white text-xs sm:text-sm">{trade.symbol}</td>
+                    <td className="px-3 sm:px-4 py-2 sm:py-3">
+                      <span className={`text-[10px] sm:text-xs px-1.5 sm:px-2 py-0.5 sm:py-1 rounded ${
                         trade.trade_type === 'buy' ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
                       }`}>
                         {trade.trade_type === 'buy' ? 'LONG' : 'SHORT'}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-400">${Number(trade.entry_price).toFixed(2)}</td>
-                    <td className="px-4 py-3 text-gray-400">${Number(trade.exit_price).toFixed(2)}</td>
-                    <td className={`px-4 py-3 text-right font-bold ${trade.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {trade.pnl >= 0 ? '+' : ''}${trade.pnl?.toFixed(2)}
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-400 text-xs sm:text-sm">${Number(trade.entry_price).toFixed(2)}</td>
+                    <td className="px-3 sm:px-4 py-2 sm:py-3 text-gray-400 text-xs sm:text-sm">${Number(trade.exit_price).toFixed(2)}</td>
+                    <td className={`px-3 sm:px-4 py-2 sm:py-3 text-right font-bold text-xs sm:text-sm ${trade.pnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                      {trade.pnl >= 0 ? '+' : ''}${trade.pnl?.toFixed(0)}
                     </td>
                   </tr>
                 ))}
@@ -502,12 +496,12 @@ const DashboardHome = () => {
       )}
 
       {/* Quick Actions */}
-      <div className="flex justify-center">
+      <div className="flex justify-center px-2 sm:px-0">
         <Link
           to="/trading"
-          className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02]"
+          className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] w-full sm:w-auto min-h-[48px] text-sm sm:text-base"
         >
-          <LineChart size={20} />
+          <LineChart size={18} />
           Open Trading Platform
         </Link>
       </div>

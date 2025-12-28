@@ -283,12 +283,13 @@ const TradingPage = () => {
   const equity = balance + (openPnL?.total_unrealized_pnl || 0)
 
   return (
-    <div className="flex flex-col gap-4 pb-8">
+    <div className="flex flex-col gap-3 sm:gap-4 pb-8 px-2 sm:px-0">
       {/* Top Bar - Symbol Selection & Account Info */}
-      <div className="flex flex-wrap items-center justify-between gap-4 bg-dark-100 rounded-xl p-4 border border-dark-200">
-        {/* Symbol Selector */}
-        <div className="flex items-center gap-4">
-          <div className="flex gap-1 bg-dark-200 p-1 rounded-lg">
+      <div className="flex flex-col gap-3 bg-dark-100 rounded-xl p-3 sm:p-4 border border-dark-200">
+        {/* Row 1: Category tabs + Symbol selector */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          {/* Category Tabs - Scrollable on mobile */}
+          <div className="flex gap-1 bg-dark-200 p-1 rounded-lg overflow-x-auto w-full sm:w-auto">
             {Object.keys(SYMBOL_CATEGORIES).map(cat => (
               <button
                 key={cat}
@@ -296,7 +297,7 @@ const TradingPage = () => {
                   setSelectedCategory(cat)
                   setSelectedSymbol(SYMBOL_CATEGORIES[cat][0])
                 }}
-                className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all capitalize ${
+                className={`px-2 sm:px-3 py-1.5 text-[10px] sm:text-xs font-medium rounded-md transition-all capitalize whitespace-nowrap min-w-fit ${
                   selectedCategory === cat
                     ? 'bg-primary-500 text-white'
                     : 'text-gray-400 hover:text-white'
@@ -313,86 +314,89 @@ const TradingPage = () => {
               const sym = SYMBOL_CATEGORIES[selectedCategory].find(s => s.symbol === e.target.value)
               if (sym) setSelectedSymbol(sym)
             }}
-            className="bg-dark-200 border border-dark-300 text-white rounded-lg px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="bg-dark-200 border border-dark-300 text-white rounded-lg px-3 sm:px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 w-full sm:w-auto min-h-[44px]"
           >
             {SYMBOL_CATEGORIES[selectedCategory].map(sym => (
               <option key={sym.symbol} value={sym.symbol}>{sym.name}</option>
             ))}
           </select>
+        </div>
 
+        {/* Row 2: Price display + Account Info */}
+        <div className="flex flex-wrap items-center justify-between gap-3">
           {/* Current Price */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {priceLoading ? (
               <div className="flex items-center gap-2 text-gray-400">
-                <RefreshCw size={16} className="animate-spin" />
-                <span className="text-sm">Loading price...</span>
+                <RefreshCw size={14} className="animate-spin" />
+                <span className="text-xs sm:text-sm">Loading...</span>
               </div>
             ) : (
               <>
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-500 uppercase">Bid</p>
-                  <p className="text-lg font-bold text-red-400">
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">Bid</p>
+                  <p className="text-sm sm:text-lg font-bold text-red-400">
                     {currentPrice.bid >= 100 ? currentPrice.bid.toFixed(2) : currentPrice.bid.toFixed(5)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[10px] text-gray-500 uppercase">Ask</p>
-                  <p className="text-lg font-bold text-green-400">
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">Ask</p>
+                  <p className="text-sm sm:text-lg font-bold text-green-400">
                     {currentPrice.ask >= 100 ? currentPrice.ask.toFixed(2) : currentPrice.ask.toFixed(5)}
                   </p>
                 </div>
-                <div className="text-center">
+                <div className="text-center hidden sm:block">
                   <p className="text-[10px] text-gray-500 uppercase">Spread</p>
                   <p className="text-sm font-medium text-gray-400">
-                    {((currentPrice.ask - currentPrice.bid) / selectedSymbol.pip).toFixed(1)} pips
+                    {((currentPrice.ask - currentPrice.bid) / selectedSymbol.pip).toFixed(1)}p
                   </p>
                 </div>
               </>
             )}
           </div>
-        </div>
 
-        {/* Account Info */}
-        <div className="flex items-center gap-6">
-          <div className="text-right">
-            <p className="text-xs text-gray-500">Balance</p>
-            <p className="text-lg font-bold text-white">${balance.toLocaleString()}</p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs text-gray-500">Equity</p>
-            <p className={`text-lg font-bold ${equity >= balance ? 'text-green-400' : 'text-red-400'}`}>
-              ${equity.toLocaleString()}
-            </p>
-          </div>
-          {openPnL && (
+          {/* Account Info */}
+          <div className="flex items-center gap-3 sm:gap-6">
             <div className="text-right">
-              <p className="text-xs text-gray-500">Open P&L</p>
-              <p className={`text-lg font-bold ${openPnL.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(2)}
+              <p className="text-[9px] sm:text-xs text-gray-500">Balance</p>
+              <p className="text-sm sm:text-lg font-bold text-white">${balance.toLocaleString()}</p>
+            </div>
+            <div className="text-right">
+              <p className="text-[9px] sm:text-xs text-gray-500">Equity</p>
+              <p className={`text-sm sm:text-lg font-bold ${equity >= balance ? 'text-green-400' : 'text-red-400'}`}>
+                ${equity.toLocaleString()}
               </p>
             </div>
-          )}
+            {openPnL && (
+              <div className="text-right hidden sm:block">
+                <p className="text-xs text-gray-500">P&L</p>
+                <p className={`text-lg font-bold ${openPnL.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(0)}
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Chart & Positions Area */}
-        <div className="lg:col-span-3 flex flex-col gap-4">
+        <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4">
           {/* Chart */}
           <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
             {/* Chart Toolbar */}
-            <div className="flex items-center justify-between p-3 border-b border-dark-200">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between p-2 sm:p-3 border-b border-dark-200 gap-2">
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-white">{selectedSymbol.name}</span>
-                <span className="text-xs text-gray-500">({selectedSymbol.symbol})</span>
+                <span className="font-semibold text-white text-sm sm:text-base">{selectedSymbol.name}</span>
+                <span className="text-[10px] sm:text-xs text-gray-500">({selectedSymbol.symbol})</span>
               </div>
-              <div className="flex gap-1 bg-dark-200 p-0.5 rounded-lg">
+              <div className="flex gap-0.5 sm:gap-1 bg-dark-200 p-0.5 rounded-lg overflow-x-auto">
                 {['1', '5', '15', '30', '60', '240', 'D'].map(tf => (
                   <button
                     key={tf}
                     onClick={() => setChartInterval(tf)}
-                    className={`px-2 py-1 text-xs font-medium rounded transition-all ${
+                    className={`px-1.5 sm:px-2 py-1 text-[10px] sm:text-xs font-medium rounded transition-all whitespace-nowrap ${
                       chartInterval === tf
                         ? 'bg-primary-500 text-white'
                         : 'text-gray-400 hover:text-white'
@@ -404,8 +408,8 @@ const TradingPage = () => {
               </div>
             </div>
 
-            {/* TradingView Chart - Fixed height */}
-            <div style={{ height: '500px' }}>
+            {/* TradingView Chart - Responsive height */}
+            <div className="h-[300px] sm:h-[400px] lg:h-[500px]">
               <iframe
                 src={`https://s.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=${selectedSymbol.tvSymbol}&interval=${chartInterval}&hidesidetoolbar=0&symboledit=1&saveimage=1&toolbarbg=1a1a2e&studies=[]&theme=dark&style=1&timezone=exchange&withdateranges=1&showpopupbutton=1&studies_overrides={}&overrides={}&enabled_features=[]&disabled_features=[]&showactive=1&locale=en`}
                 style={{ width: '100%', height: '100%' }}
@@ -419,204 +423,167 @@ const TradingPage = () => {
 
           {/* Open Positions Panel - Under Chart */}
           <div className="bg-dark-100 rounded-xl border border-dark-200 overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-dark-200">
-              <h3 className="font-semibold text-white flex items-center gap-2">
-                <Activity size={16} className="text-primary-400" />
-                Open Positions
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between px-3 sm:px-4 py-2 sm:py-3 border-b border-dark-200 gap-2">
+              <h3 className="font-semibold text-white flex items-center gap-2 text-sm sm:text-base">
+                <Activity size={14} className="text-primary-400" />
+                Positions
                 {openPositions.length > 0 && (
-                  <span className="px-2 py-0.5 bg-primary-500/20 text-primary-400 text-xs rounded-full">
+                  <span className="px-1.5 sm:px-2 py-0.5 bg-primary-500/20 text-primary-400 text-[10px] sm:text-xs rounded-full">
                     {openPositions.length}
                   </span>
                 )}
               </h3>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 sm:gap-4">
                 {openPnL && (
-                  <div className="flex items-center gap-2 text-sm">
-                    <span className="text-gray-400">Total P&L:</span>
+                  <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
+                    <span className="text-gray-400 hidden sm:inline">P&L:</span>
                     <span className={`font-bold ${openPnL.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                      {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(2)}
+                      {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(0)}
                     </span>
                   </div>
                 )}
                 {openPositions.length > 0 && (
                   <button
                     onClick={closeAllPositions}
-                    className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-xs font-medium rounded-lg transition-all flex items-center gap-1"
+                    className="px-2 sm:px-3 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-[10px] sm:text-xs font-medium rounded-lg transition-all flex items-center gap-1 min-h-[32px]"
                   >
-                    <X size={12} />
-                    Close All
+                    <X size={10} />
+                    <span className="hidden sm:inline">Close All</span>
+                    <span className="sm:hidden">All</span>
                   </button>
                 )}
               </div>
             </div>
 
             {openPositions.length > 0 ? (
-              <div className="px-4 py-2">
+              <div className="overflow-x-auto">
                 {/* Price Error Warning */}
                 {openPnL?.price_errors && openPnL.price_errors.length > 0 && (
-                  <div className="mb-3 px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2">
-                    <AlertTriangle size={14} className="text-yellow-500 flex-shrink-0" />
-                    <span className="text-yellow-500 text-xs">
-                      Price unavailable for: {openPnL.price_errors.join(', ')} - showing entry price
+                  <div className="mx-3 my-2 px-2 sm:px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2">
+                    <AlertTriangle size={12} className="text-yellow-500 flex-shrink-0" />
+                    <span className="text-yellow-500 text-[10px] sm:text-xs truncate">
+                      Price unavailable: {openPnL.price_errors.join(', ')}
                     </span>
                   </div>
                 )}
 
-                {/* Table Header */}
-                <div className="grid grid-cols-10 gap-2 text-xs text-gray-400 uppercase tracking-wider py-3 border-b border-dark-300">
-                  <div>Symbol</div>
-                  <div className="text-center">Type</div>
-                  <div className="text-center">Size</div>
-                  <div className="text-right">Entry</div>
-                  <div className="text-right">Current</div>
-                  <div className="text-center">SL</div>
-                  <div className="text-center">TP</div>
-                  <div className="text-right">P&L</div>
-                  <div className="text-right">%</div>
-                  <div className="text-center">Action</div>
-                </div>
+                <table className="w-full min-w-[500px]">
+                  <thead className="bg-dark-200/30">
+                    <tr className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">
+                      <th className="px-2 sm:px-4 py-2 text-left">Symbol</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">Type</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">Size</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">Entry</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">Current</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">P&L</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-dark-200/30">
+                    {openPositions.map(pos => {
+                      const pnlInfo = openPnL?.trades?.find(t => t.trade_id === pos.id)
+                      const pnl = pnlInfo?.unrealized_pnl || 0
+                      const currentPriceVal = pnlInfo?.current_price || pos.entry_price
+                      const entryPrice = parseFloat(pos.entry_price)
+                      const priceAvailable = pnlInfo?.price_available !== false
+                      const formatPrice = (p) => p >= 100 ? p.toFixed(2) : p.toFixed(4)
 
-                {/* Table Rows */}
-                {openPositions.map(pos => {
-                  const pnlInfo = openPnL?.trades?.find(t => t.trade_id === pos.id)
-                  const pnl = pnlInfo?.unrealized_pnl || 0
-                  const pnlPercent = pnlInfo?.pnl_percent || 0
-                  const currentPriceVal = pnlInfo?.current_price || pos.entry_price
-                  const entryPrice = parseFloat(pos.entry_price)
-                  const priceAvailable = pnlInfo?.price_available !== false
-                  const formatPrice = (p) => p >= 100 ? p.toFixed(2) : p.toFixed(5)
-
-                  return (
-                    <div key={pos.id} className="grid grid-cols-10 gap-2 items-center py-3 border-b border-dark-200/30 hover:bg-dark-200/20 transition-colors">
-                      {/* Symbol */}
-                      <div className="flex items-center gap-2">
-                        <div className={`w-1 h-5 rounded-full flex-shrink-0 ${pos.trade_type === 'buy' ? 'bg-green-500' : 'bg-red-500'}`} />
-                        <span className="font-medium text-white text-sm">{pos.symbol}</span>
-                        {!priceAvailable && (
-                          <AlertTriangle size={12} className="text-yellow-500" title="Price unavailable" />
-                        )}
-                      </div>
-
-                      {/* Type */}
-                      <div className="text-center">
-                        <span className={`px-2 py-1 rounded text-xs font-bold ${
-                          pos.trade_type === 'buy'
-                            ? 'bg-green-500/20 text-green-400'
-                            : 'bg-red-500/20 text-red-400'
-                        }`}>
-                          {pos.trade_type.toUpperCase()}
-                        </span>
-                      </div>
-
-                      {/* Size */}
-                      <div className="text-center text-white text-sm">{pos.quantity}</div>
-
-                      {/* Entry */}
-                      <div className="text-right text-gray-300 text-sm">{formatPrice(entryPrice)}</div>
-
-                      {/* Current */}
-                      <div className={`text-right font-medium text-sm ${priceAvailable ? 'text-white' : 'text-yellow-500'}`}>
-                        {formatPrice(currentPriceVal)}
-                      </div>
-
-                      {/* SL */}
-                      <div className="text-center text-sm">
-                        {pos.stop_loss ? (
-                          <span className="text-red-400">{formatPrice(parseFloat(pos.stop_loss))}</span>
-                        ) : (
-                          <span className="text-gray-600">—</span>
-                        )}
-                      </div>
-
-                      {/* TP */}
-                      <div className="text-center text-sm">
-                        {pos.take_profit ? (
-                          <span className="text-green-400">{formatPrice(parseFloat(pos.take_profit))}</span>
-                        ) : (
-                          <span className="text-gray-600">—</span>
-                        )}
-                      </div>
-
-                      {/* P&L */}
-                      <div className={`text-right font-semibold text-sm ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {pnl >= 0 ? '+' : ''}${pnl.toFixed(2)}
-                      </div>
-
-                      {/* % */}
-                      <div className={`text-right font-medium text-sm ${pnlPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {pnlPercent >= 0 ? '+' : ''}{pnlPercent.toFixed(2)}%
-                      </div>
-
-                      {/* Action */}
-                      <div className="text-center">
-                        <button
-                          onClick={() => closeTrade(pos.id)}
-                          className="px-3 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-xs font-medium rounded transition-all"
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
+                      return (
+                        <tr key={pos.id} className="hover:bg-dark-200/20 transition-colors">
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            <div className="flex items-center gap-1.5">
+                              <div className={`w-0.5 sm:w-1 h-4 sm:h-5 rounded-full flex-shrink-0 ${pos.trade_type === 'buy' ? 'bg-green-500' : 'bg-red-500'}`} />
+                              <span className="font-medium text-white text-[11px] sm:text-sm">{pos.symbol}</span>
+                            </div>
+                          </td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
+                            <span className={`px-1.5 sm:px-2 py-0.5 rounded text-[9px] sm:text-xs font-bold ${
+                              pos.trade_type === 'buy'
+                                ? 'bg-green-500/20 text-green-400'
+                                : 'bg-red-500/20 text-red-400'
+                            }`}>
+                              {pos.trade_type === 'buy' ? 'BUY' : 'SELL'}
+                            </span>
+                          </td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-center text-white text-[11px] sm:text-sm">{pos.quantity}</td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-gray-300 text-[11px] sm:text-sm">{formatPrice(entryPrice)}</td>
+                          <td className={`px-2 sm:px-4 py-2 sm:py-3 text-right font-medium text-[11px] sm:text-sm ${priceAvailable ? 'text-white' : 'text-yellow-500'}`}>
+                            {formatPrice(currentPriceVal)}
+                          </td>
+                          <td className={`px-2 sm:px-4 py-2 sm:py-3 text-right font-semibold text-[11px] sm:text-sm ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {pnl >= 0 ? '+' : ''}${pnl.toFixed(0)}
+                          </td>
+                          <td className="px-2 sm:px-4 py-2 sm:py-3 text-center">
+                            <button
+                              onClick={() => closeTrade(pos.id)}
+                              className="px-2 sm:px-3 py-1 sm:py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-[10px] sm:text-xs font-medium rounded transition-all min-w-[40px] min-h-[28px]"
+                            >
+                              Close
+                            </button>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
               </div>
             ) : (
-              <div className="p-6 text-center">
-                <Activity size={28} className="mx-auto text-gray-600 mb-2" />
-                <p className="text-gray-500 text-sm">No open positions</p>
-                <p className="text-gray-600 text-xs mt-1">Your trades will appear here</p>
+              <div className="p-4 sm:p-6 text-center">
+                <Activity size={24} className="mx-auto text-gray-600 mb-2" />
+                <p className="text-gray-500 text-xs sm:text-sm">No open positions</p>
+                <p className="text-gray-600 text-[10px] sm:text-xs mt-1">Your trades will appear here</p>
               </div>
             )}
           </div>
         </div>
 
         {/* Trading Panel & Signals */}
-        <div className="space-y-4 overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        <div className="space-y-3 sm:space-y-4 lg:overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
           {/* Trade Type Selector */}
-          <div className="bg-dark-100 rounded-xl border border-dark-200 p-4">
-            <div className="grid grid-cols-2 gap-2 mb-4">
+          <div className="bg-dark-100 rounded-xl border border-dark-200 p-3 sm:p-4">
+            <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
               <button
                 onClick={() => setTradeType('buy')}
-                className={`py-3 rounded-lg font-bold text-sm transition-all ${
+                className={`py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all min-h-[44px] ${
                   tradeType === 'buy'
                     ? 'bg-green-500 text-white shadow-lg shadow-green-500/25'
                     : 'bg-dark-200 text-gray-400 hover:bg-green-500/20 hover:text-green-400'
                 }`}
               >
-                <TrendingUp size={16} className="inline mr-2" />
+                <TrendingUp size={14} className="inline mr-1 sm:mr-2" />
                 BUY
               </button>
               <button
                 onClick={() => setTradeType('sell')}
-                className={`py-3 rounded-lg font-bold text-sm transition-all ${
+                className={`py-2.5 sm:py-3 rounded-lg font-bold text-xs sm:text-sm transition-all min-h-[44px] ${
                   tradeType === 'sell'
                     ? 'bg-red-500 text-white shadow-lg shadow-red-500/25'
                     : 'bg-dark-200 text-gray-400 hover:bg-red-500/20 hover:text-red-400'
                 }`}
               >
-                <TrendingDown size={16} className="inline mr-2" />
+                <TrendingDown size={14} className="inline mr-1 sm:mr-2" />
                 SELL
               </button>
             </div>
 
             {/* Lot Size */}
-            <div className="mb-4">
-              <label className="text-xs text-gray-400 mb-1.5 block">Lot Size</label>
-              <div className="flex gap-2">
+            <div className="mb-3 sm:mb-4">
+              <label className="text-[10px] sm:text-xs text-gray-400 mb-1 sm:mb-1.5 block">Lot Size</label>
+              <div className="flex gap-1.5 sm:gap-2">
                 <input
                   type="number"
                   value={lotSize}
                   onChange={(e) => setLotSize(parseFloat(e.target.value) || 0.01)}
                   step="0.01"
                   min="0.01"
-                  className="flex-1 bg-dark-200 border border-dark-300 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+                  className="flex-1 bg-dark-200 border border-dark-300 rounded-lg px-2 sm:px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[40px]"
                 />
-                <div className="flex gap-1">
-                  {[0.01, 0.05, 0.1, 0.5].map(lot => (
+                <div className="flex gap-0.5 sm:gap-1">
+                  {[0.01, 0.1, 0.5].map(lot => (
                     <button
                       key={lot}
                       onClick={() => setLotSize(lot)}
-                      className={`px-2 py-1 text-xs rounded ${
+                      className={`px-1.5 sm:px-2 py-1 text-[10px] sm:text-xs rounded min-w-[32px] ${
                         lotSize === lot ? 'bg-primary-500 text-white' : 'bg-dark-200 text-gray-400'
                       }`}
                     >
