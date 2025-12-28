@@ -19,8 +19,14 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     // Remove /api prefix from URL since baseURL already includes /api
-    if (config.url && config.url.startsWith('/api/')) {
-      config.url = config.url.replace('/api/', '/')
+    // Handle all variations: /api/, api/, /api, api
+    if (config.url) {
+      // Remove leading /api/ or api/ to prevent double /api/api/
+      config.url = config.url.replace(/^\/?api\//, '/')
+      // Ensure URL starts with / for proper concatenation
+      if (!config.url.startsWith('/') && !config.url.startsWith('http')) {
+        config.url = '/' + config.url
+      }
     }
 
     const token = localStorage.getItem('access_token')
