@@ -78,10 +78,20 @@ def init_scheduler(app):
             misfire_grace_time=3600  # 1 hour grace period
         )
 
+        # Add job to monitor SL/TP every 10 seconds
+        scheduler.add_job(
+            func=check_stop_loss_take_profit,
+            trigger=IntervalTrigger(seconds=10),
+            id='check_sl_tp',
+            name='Monitor stop loss and take profit levels',
+            replace_existing=True,
+            misfire_grace_time=30
+        )
+
         # Start scheduler if not already running
         if not scheduler.running:
             scheduler.start()
-            print("APScheduler started - Trial auto-charge job running every hour")
+            print("APScheduler started - Trial auto-charge (hourly) + SL/TP monitor (10s)")
     else:
         print("Celery Beat handles scheduled tasks - APScheduler not started")
 
@@ -270,3 +280,99 @@ def run_trial_check_now():
     print("Manual trial check triggered...")
     process_expired_trials()
     print("Manual trial check completed")
+
+
+def check_stop_loss_take_profit():
+    """
+    Monitor open trades and automatically close them when SL/TP is hit.
+
+    This job runs every 10 seconds and:
+    1. Finds all open trades with stop_loss or take_profit set
+    2. Fetches current prices for each symbol
+    3. Closes trades that hit their SL or TP levels
+    """
+    if not _app:
+        return
+
+    with _app.app_context():
+        from models import db, Trade, UserChallenge
+        from services.yfinance_service import get_current_price
+        from services.challenge_engine import ChallengeEngine
+
+        # Get all open trades with SL or TP set
+        open_trades = Trade.query.filter(
+            Trade.status == 'open',
+            db.or_(
+                Trade.stop_loss.isnot(None),
+                Trade.take_profit.isnot(None)
+            )
+        ).all()
+
+        if not open_trades:
+            return
+
+        # Group trades by symbol to minimize API calls
+        symbol_trades = {}
+        for trade in open_trades:
+            if trade.symbol not in symbol_trades:
+                symbol_trades[trade.symbol] = []
+            symbol_trades[trade.symbol].append(trade)
+
+        trades_closed = 0
+        engine = ChallengeEngine()
+
+        for symbol, trades in symbol_trades.items():
+            current_price = get_current_price(symbol)
+            if current_price is None:
+                continue
+
+            for trade in trades:
+                should_close = False
+                close_reason = None
+
+                entry_price = float(trade.entry_price)
+                sl = float(trade.stop_loss) if trade.stop_loss else None
+                tp = float(trade.take_profit) if trade.take_profit else None
+
+                if trade.trade_type == 'buy':
+                    # For BUY: SL triggers when price falls below SL, TP triggers when price rises above TP
+                    if sl and current_price <= sl:
+                        should_close = True
+                        close_reason = 'stop_loss'
+                    elif tp and current_price >= tp:
+                        should_close = True
+                        close_reason = 'take_profit'
+                else:
+                    # For SELL: SL triggers when price rises above SL, TP triggers when price falls below TP
+                    if sl and current_price >= sl:
+                        should_close = True
+                        close_reason = 'stop_loss'
+                    elif tp and current_price <= tp:
+                        should_close = True
+                        close_reason = 'take_profit'
+
+                if should_close:
+                    try:
+                        # Close the trade
+                        pnl = trade.close_trade(current_price)
+
+                        # Update challenge balance
+                        challenge = UserChallenge.query.get(trade.challenge_id)
+                        if challenge:
+                            challenge.current_balance = challenge.current_balance + Decimal(str(pnl))
+                            if challenge.current_balance > challenge.highest_balance:
+                                challenge.highest_balance = challenge.current_balance
+
+                            # Evaluate challenge rules
+                            engine.evaluate_challenge(challenge)
+
+                        db.session.commit()
+                        trades_closed += 1
+                        logger.info(f"SL/TP Monitor: Closed {trade.symbol} trade #{trade.id} at {close_reason} (price: {current_price}, PnL: {pnl})")
+
+                    except Exception as e:
+                        logger.error(f"SL/TP Monitor: Error closing trade #{trade.id}: {e}")
+                        db.session.rollback()
+
+        if trades_closed > 0:
+            print(f"SL/TP Monitor: Closed {trades_closed} trade(s)")
