@@ -30,6 +30,32 @@ _cache_lock = threading.Lock()
 CACHE_DURATION = 3  # seconds (fast updates for real-time feel)
 PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
 
+# Fallback prices when yfinance is unavailable (updated periodically)
+FALLBACK_PRICES = {
+    'BTCUSD': 95000.00,
+    'BTC-USD': 95000.00,
+    'ETHUSD': 3400.00,
+    'ETH-USD': 3400.00,
+    'EURUSD': 1.04,
+    'EURUSD=X': 1.04,
+    'GBPUSD': 1.25,
+    'GBPUSD=X': 1.25,
+    'USDJPY': 157.0,
+    'USDJPY=X': 157.0,
+    'XAUUSD': 2650.00,
+    'GC=F': 2650.00,
+    'XAGUSD': 30.00,
+    'SI=F': 30.00,
+    'AAPL': 250.00,
+    'TSLA': 450.00,
+    'NVDA': 140.00,
+    'GOOGL': 195.00,
+    'MSFT': 430.00,
+    'US30': 43000.00,
+    'US500': 6000.00,
+    'NAS100': 21500.00,
+}
+
 
 def normalize_symbol(symbol: str) -> str:
     """
@@ -153,6 +179,7 @@ def get_current_price(symbol: str) -> float | None:
     """
     Get current price for a symbol
     Uses caching to avoid excessive API calls
+    Falls back to static prices if yfinance fails
     """
     original_symbol = symbol.upper()
     normalized = normalize_symbol(original_symbol)
@@ -177,6 +204,13 @@ def get_current_price(symbol: str) -> float | None:
     except Exception as e:
         logger.error(f"Price fetch error for {normalized}: {e}")
         price = None
+
+    # Use fallback price if yfinance failed
+    if price is None:
+        fallback = FALLBACK_PRICES.get(original_symbol) or FALLBACK_PRICES.get(normalized)
+        if fallback:
+            logger.info(f"Using fallback price for {original_symbol}: {fallback}")
+            price = fallback
 
     if price is not None:
         # Update cache
