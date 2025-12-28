@@ -367,3 +367,126 @@ def get_superadmin_stats():
             }
         }
     }), 200
+
+
+@admin_bp.route('/generate-test-trades/<int:challenge_id>', methods=['POST'])
+@superadmin_required
+def generate_test_trades(challenge_id):
+    """Generate test trades for a challenge (superadmin only)"""
+    import random
+    from decimal import Decimal
+
+    challenge = UserChallenge.query.get(challenge_id)
+    if not challenge:
+        return jsonify({'error': 'Challenge not found'}), 404
+
+    # Delete existing trades first (optional based on query param)
+    if request.args.get('clear', 'false').lower() == 'true':
+        Trade.query.filter_by(challenge_id=challenge_id).delete()
+        db.session.commit()
+
+    # Trading pairs with typical prices
+    symbols = [
+        ('EURUSD', 1.0850, 0.0050),
+        ('GBPUSD', 1.2650, 0.0080),
+        ('USDJPY', 149.50, 1.50),
+        ('XAUUSD', 2050.00, 25.00),
+        ('BTCUSD', 95000.00, 2000.00),
+        ('ETHUSD', 3400.00, 100.00),
+        ('US30', 43500.00, 300.00),
+        ('NAS100', 21500.00, 200.00),
+    ]
+
+    num_trades = request.json.get('num_trades', 50) if request.json else 50
+    win_rate = request.json.get('win_rate', 0.55) if request.json else 0.55
+
+    trades_created = []
+    balance = float(challenge.initial_balance)
+
+    for i in range(num_trades):
+        symbol, base_price, volatility = random.choice(symbols)
+        trade_type = random.choice(['buy', 'sell'])
+
+        # Random entry within volatility
+        entry_price = base_price + random.uniform(-volatility, volatility)
+
+        # Determine if this is a win or loss
+        is_win = random.random() < win_rate
+
+        # Calculate exit price
+        if trade_type == 'buy':
+            if is_win:
+                exit_price = entry_price + random.uniform(volatility * 0.2, volatility * 0.8)
+            else:
+                exit_price = entry_price - random.uniform(volatility * 0.1, volatility * 0.5)
+        else:
+            if is_win:
+                exit_price = entry_price - random.uniform(volatility * 0.2, volatility * 0.8)
+            else:
+                exit_price = entry_price + random.uniform(volatility * 0.1, volatility * 0.5)
+
+        # Calculate quantity based on risk (0.5-2% of balance)
+        risk_pct = random.uniform(0.005, 0.02)
+        point_value = 1 if 'USD' in symbol and symbol not in ['XAUUSD', 'BTCUSD', 'ETHUSD'] else 1
+        quantity = Decimal(str(round(balance * risk_pct / (abs(entry_price - exit_price) * 100 + 1), 2)))
+        quantity = max(Decimal('0.01'), min(quantity, Decimal('10.0')))
+
+        # Calculate P&L
+        if trade_type == 'buy':
+            pnl = float(quantity) * (exit_price - entry_price) * 100
+        else:
+            pnl = float(quantity) * (entry_price - exit_price) * 100
+
+        # Adjust for crypto/indices
+        if symbol in ['BTCUSD', 'ETHUSD']:
+            pnl = pnl / 100
+        elif symbol in ['US30', 'NAS100']:
+            pnl = pnl / 10
+
+        pnl = round(pnl, 2)
+        balance += pnl
+
+        # Random date in the last 30 days
+        days_ago = random.randint(0, 29)
+        hours_ago = random.randint(0, 23)
+        trade_time = datetime.utcnow() - timedelta(days=days_ago, hours=hours_ago)
+        close_time = trade_time + timedelta(minutes=random.randint(5, 480))
+
+        trade = Trade(
+            challenge_id=challenge_id,
+            symbol=symbol,
+            trade_type=trade_type,
+            entry_price=Decimal(str(round(entry_price, 5))),
+            exit_price=Decimal(str(round(exit_price, 5))),
+            quantity=quantity,
+            pnl=Decimal(str(pnl)),
+            status='closed',
+            opened_at=trade_time,
+            closed_at=close_time
+        )
+        db.session.add(trade)
+        trades_created.append({
+            'symbol': symbol,
+            'type': trade_type,
+            'pnl': pnl
+        })
+
+    # Update challenge balance
+    challenge.current_balance = Decimal(str(round(balance, 2)))
+    db.session.commit()
+
+    # Calculate stats
+    total_pnl = sum(t['pnl'] for t in trades_created)
+    wins = len([t for t in trades_created if t['pnl'] > 0])
+
+    return jsonify({
+        'message': f'Created {len(trades_created)} test trades',
+        'stats': {
+            'total_trades': len(trades_created),
+            'wins': wins,
+            'losses': len(trades_created) - wins,
+            'win_rate': round(wins / len(trades_created) * 100, 1),
+            'total_pnl': round(total_pnl, 2),
+            'new_balance': float(challenge.current_balance)
+        }
+    }), 201
