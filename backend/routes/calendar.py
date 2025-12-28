@@ -11,9 +11,8 @@ calendar_bp = Blueprint('calendar', __name__, url_prefix='/api/calendar')
 def get_calendar_service():
     """Lazy load calendar service with dependencies."""
     from services.calendar.calendar_service import get_calendar_service as get_service
-    from services.cache_service import cache_service
-    from extensions import db
-    return get_service(cache_service=cache_service, db=db)
+    from services.cache_service import cache
+    return get_service(cache_service=cache)
 
 
 @calendar_bp.route('/events', methods=['GET'])
