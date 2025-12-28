@@ -4,14 +4,9 @@ import { useTranslation } from 'react-i18next'
 import { challengesAPI, tradesAPI } from '../../services/api'
 import { useChallenge } from '../../context/ChallengeContext'
 import { useAuth } from '../../context/AuthContext'
-import PriceChart from '../../components/PriceChart'
-import SignalsPanel from '../../components/SignalsPanel'
-import TradeForm from '../../components/TradeForm'
 import PhaseProgress from '../../components/PhaseProgress'
 import { ResetModal, ExtendModal, UpgradeModal } from '../../components/challenge'
 import {
-  SkeletonChart,
-  SkeletonTradeForm,
   SkeletonChallengeCard,
   SkeletonPositionsTable,
 } from '../../components/ui/Skeleton'
@@ -24,13 +19,6 @@ import {
 } from 'lucide-react'
 import { showErrorToast, showSuccessToast } from '../../utils/errorHandler'
 
-const SYMBOL_CATEGORIES = {
-  popular: ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'BTC-USD', 'ETH-USD'],
-  stocks: ['AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'NFLX', 'AMD'],
-  crypto: ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'DOGE-USD', 'ADA-USD'],
-  moroccan: ['IAM', 'ATW', 'BCP', 'CIH', 'TAQA', 'MNG']
-}
-
 const AccountsPage = () => {
   const { t } = useTranslation()
   const { user } = useAuth()
@@ -38,8 +26,6 @@ const AccountsPage = () => {
   const [challenge, setChallenge] = useState(null)
   const [trades, setTrades] = useState([])
   const [openPnLData, setOpenPnLData] = useState(null)
-  const [selectedSymbol, setSelectedSymbol] = useState('AAPL')
-  const [selectedCategory, setSelectedCategory] = useState('popular')
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [copiedField, setCopiedField] = useState(null)
@@ -105,10 +91,6 @@ const AccountsPage = () => {
     }
   }
 
-  const handleTradeComplete = () => {
-    fetchData()
-  }
-
   const handleAddonSuccess = (result) => {
     showSuccessToast(result.message || 'Operation completed successfully!')
     fetchData()
@@ -167,15 +149,7 @@ const AccountsPage = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {[1,2,3].map(i => <SkeletonChallengeCard key={i} />)}
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2 space-y-6">
-            <SkeletonChart height={400} />
-            <SkeletonPositionsTable rows={3} />
-          </div>
-          <div className="space-y-6">
-            <SkeletonTradeForm />
-          </div>
-        </div>
+        <SkeletonPositionsTable rows={3} />
       </div>
     )
   }
@@ -502,56 +476,8 @@ const AccountsPage = () => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* Chart */}
-          <div className="bg-dark-100 rounded-lg sm:rounded-xl border border-dark-200 overflow-hidden">
-            <div className="p-3 sm:p-4 border-b border-dark-200">
-              <div className="flex items-center justify-between mb-2 sm:mb-3">
-                <div className="flex items-center gap-1.5 sm:gap-2">
-                  <CircleDot size={14} className="text-green-500 sm:w-4 sm:h-4" />
-                  <span className="font-semibold text-white text-sm sm:text-base">{selectedSymbol}</span>
-                </div>
-                <div className="flex gap-0.5 sm:gap-1 bg-dark-200 p-0.5 sm:p-1 rounded-lg overflow-x-auto">
-                  {Object.keys(SYMBOL_CATEGORIES).map(category => (
-                    <button
-                      key={category}
-                      onClick={() => {
-                        setSelectedCategory(category)
-                        setSelectedSymbol(SYMBOL_CATEGORIES[category][0])
-                      }}
-                      className={`px-2 sm:px-3 py-1 text-[10px] sm:text-xs font-medium rounded transition-all capitalize whitespace-nowrap ${
-                        selectedCategory === category
-                          ? 'bg-dark-100 text-white shadow-sm'
-                          : 'text-gray-400 hover:text-gray-300'
-                      }`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div className="flex flex-wrap gap-1 sm:gap-1.5">
-                {SYMBOL_CATEGORIES[selectedCategory].map(symbol => (
-                  <button
-                    key={symbol}
-                    onClick={() => setSelectedSymbol(symbol)}
-                    className={`px-2 sm:px-3 py-1 sm:py-1.5 text-[10px] sm:text-xs font-medium rounded-md sm:rounded-lg transition-all min-h-[28px] sm:min-h-[32px] touch-manipulation ${
-                      selectedSymbol === symbol
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-dark-200 text-gray-400 hover:bg-dark-300'
-                    }`}
-                  >
-                    {symbol}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <PriceChart symbol={selectedSymbol} height={300} className="sm:h-[400px]" />
-          </div>
-
-          {/* Open Positions */}
+      <div className="space-y-6">
+        {/* Open Positions */}
           {openTrades.length > 0 && (
             <div className="bg-dark-100 rounded-lg sm:rounded-xl border border-dark-200">
               <div className="p-3 sm:p-4 border-b border-dark-200 flex items-center justify-between">
@@ -658,13 +584,6 @@ const AccountsPage = () => {
               </div>
             </div>
           )}
-        </div>
-
-        {/* Sidebar */}
-        <div className="space-y-6">
-          <TradeForm challenge={challenge} onTradeComplete={handleTradeComplete} />
-          <SignalsPanel symbols={['AAPL', 'TSLA', 'NVDA', 'BTC-USD', 'ETH-USD', 'IAM', 'ATW']} />
-        </div>
       </div>
 
       {/* Add-on Modals */}
