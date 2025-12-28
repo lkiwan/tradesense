@@ -28,16 +28,49 @@ def get_current_price(symbol: str) -> float | None:
             if datetime.now() - cached_data['timestamp'] < timedelta(seconds=CACHE_DURATION):
                 return cached_data['price']
 
+    price = None
+
     try:
         ticker = yf.Ticker(symbol)
-        # Try to get the fast info first
-        price = ticker.fast_info.get('lastPrice')
 
+        # Method 1: Try fast_info (wrapped in try-except due to yfinance API changes)
+        try:
+            fast_info = ticker.fast_info
+            if hasattr(fast_info, 'last_price'):
+                price = fast_info.last_price
+            elif hasattr(fast_info, 'lastPrice'):
+                price = fast_info.lastPrice
+            elif isinstance(fast_info, dict):
+                price = fast_info.get('lastPrice') or fast_info.get('last_price')
+        except (KeyError, AttributeError, TypeError):
+            pass
+
+        # Method 2: Try regular info if fast_info failed
         if price is None:
-            # Fallback to history
-            hist = ticker.history(period='1d')
-            if not hist.empty:
-                price = hist['Close'].iloc[-1]
+            try:
+                info = ticker.info
+                if info:
+                    price = info.get('currentPrice') or info.get('regularMarketPrice') or info.get('previousClose')
+            except (KeyError, AttributeError, TypeError):
+                pass
+
+        # Method 3: Fallback to history
+        if price is None:
+            try:
+                hist = ticker.history(period='1d')
+                if not hist.empty:
+                    price = hist['Close'].iloc[-1]
+            except Exception:
+                pass
+
+        # Method 4: Try 5-day history if 1-day is empty
+        if price is None:
+            try:
+                hist = ticker.history(period='5d')
+                if not hist.empty:
+                    price = hist['Close'].iloc[-1]
+            except Exception:
+                pass
 
         if price is not None:
             # Update cache
@@ -54,6 +87,23 @@ def get_current_price(symbol: str) -> float | None:
     return None
 
 
+def _safe_get_info_value(info, *keys, default=0):
+    """Safely get a value from info dict/object trying multiple keys"""
+    for key in keys:
+        try:
+            if hasattr(info, key):
+                val = getattr(info, key)
+                if val is not None:
+                    return val
+            elif isinstance(info, dict) and key in info:
+                val = info[key]
+                if val is not None:
+                    return val
+        except (KeyError, AttributeError, TypeError):
+            continue
+    return default
+
+
 def get_stock_info(symbol: str) -> dict:
     """
     Get detailed stock information
@@ -62,30 +112,73 @@ def get_stock_info(symbol: str) -> dict:
 
     try:
         ticker = yf.Ticker(symbol)
-        info = ticker.fast_info
 
-        # Get price change
-        hist = ticker.history(period='2d')
-        if len(hist) >= 2:
-            prev_close = hist['Close'].iloc[-2]
-            current = hist['Close'].iloc[-1]
-            change = current - prev_close
-            change_percent = (change / prev_close) * 100
-        else:
-            change = 0
-            change_percent = 0
+        # Try to get info from multiple sources
+        price = 0
+        volume = 0
+        market_cap = 0
+        day_high = 0
+        day_low = 0
+        fifty_two_week_high = 0
+        fifty_two_week_low = 0
+
+        # Try fast_info first (with error handling for yfinance API changes)
+        try:
+            fast_info = ticker.fast_info
+            price = _safe_get_info_value(fast_info, 'last_price', 'lastPrice', default=0)
+            volume = _safe_get_info_value(fast_info, 'last_volume', 'lastVolume', default=0)
+            market_cap = _safe_get_info_value(fast_info, 'market_cap', 'marketCap', default=0)
+            day_high = _safe_get_info_value(fast_info, 'day_high', 'dayHigh', default=0)
+            day_low = _safe_get_info_value(fast_info, 'day_low', 'dayLow', default=0)
+            fifty_two_week_high = _safe_get_info_value(fast_info, 'fifty_two_week_high', 'fiftyTwoWeekHigh', 'year_high', default=0)
+            fifty_two_week_low = _safe_get_info_value(fast_info, 'fifty_two_week_low', 'fiftyTwoWeekLow', 'year_low', default=0)
+        except (KeyError, AttributeError, TypeError):
+            pass
+
+        # Fallback to regular info if fast_info failed
+        if price == 0:
+            try:
+                info = ticker.info
+                if info:
+                    price = info.get('currentPrice') or info.get('regularMarketPrice') or info.get('previousClose') or 0
+                    volume = info.get('volume') or info.get('regularMarketVolume') or 0
+                    market_cap = info.get('marketCap') or 0
+                    day_high = info.get('dayHigh') or info.get('regularMarketDayHigh') or 0
+                    day_low = info.get('dayLow') or info.get('regularMarketDayLow') or 0
+                    fifty_two_week_high = info.get('fiftyTwoWeekHigh') or 0
+                    fifty_two_week_low = info.get('fiftyTwoWeekLow') or 0
+            except (KeyError, AttributeError, TypeError):
+                pass
+
+        # Get price change from history
+        change = 0
+        change_percent = 0
+        try:
+            hist = ticker.history(period='2d')
+            if len(hist) >= 2:
+                prev_close = hist['Close'].iloc[-2]
+                current = hist['Close'].iloc[-1]
+                if price == 0:
+                    price = current
+                change = current - prev_close
+                change_percent = (change / prev_close) * 100 if prev_close != 0 else 0
+            elif len(hist) == 1:
+                if price == 0:
+                    price = hist['Close'].iloc[-1]
+        except Exception:
+            pass
 
         return {
             'symbol': symbol,
-            'price': info.get('lastPrice', 0),
+            'price': price,
             'change': round(change, 4),
             'change_percent': round(change_percent, 2),
-            'volume': info.get('lastVolume', 0),
-            'market_cap': info.get('marketCap', 0),
-            'day_high': info.get('dayHigh', 0),
-            'day_low': info.get('dayLow', 0),
-            'fifty_two_week_high': info.get('fiftyTwoWeekHigh', 0),
-            'fifty_two_week_low': info.get('fiftyTwoWeekLow', 0)
+            'volume': volume,
+            'market_cap': market_cap,
+            'day_high': day_high,
+            'day_low': day_low,
+            'fifty_two_week_high': fifty_two_week_high,
+            'fifty_two_week_low': fifty_two_week_low
         }
 
     except Exception as e:
