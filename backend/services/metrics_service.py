@@ -352,7 +352,27 @@ def setup_request_tracking(app):
 
     @app.errorhandler(Exception)
     def handle_exception(e):
-        from flask import request
+        from flask import request, jsonify
+        from werkzeug.exceptions import HTTPException
+        import logging
+
+        logger = logging.getLogger(__name__)
         endpoint = request.endpoint or request.path
         metrics.record_error(endpoint, type(e).__name__, str(e))
-        raise e
+
+        # Return proper response with CORS headers instead of re-raising
+        if isinstance(e, HTTPException):
+            response = jsonify({'error': e.description})
+            response.status_code = e.code
+        else:
+            logger.error(f"Unhandled exception at {endpoint}: {e}", exc_info=True)
+            response = jsonify({'error': 'Internal server error'})
+            response.status_code = 500
+
+        # Add CORS headers to error responses
+        origin = request.headers.get('Origin', '*')
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, X-Session-Token, Accept, Origin'
+        return response

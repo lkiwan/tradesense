@@ -86,26 +86,6 @@ def create_app(config_name=None):
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, X-Session-Token, Accept, Origin'
         return response
 
-    # Global error handler to ensure CORS headers on errors
-    @app.errorhandler(Exception)
-    def handle_exception(e):
-        """Handle all unhandled exceptions with CORS headers"""
-        from werkzeug.exceptions import HTTPException
-
-        if isinstance(e, HTTPException):
-            response = jsonify({'error': e.description})
-            response.status_code = e.code
-        else:
-            logger.error(f"Unhandled exception: {e}", exc_info=True)
-            response = jsonify({'error': 'Internal server error'})
-            response.status_code = 500
-
-        # Add CORS headers to error responses
-        origin = request.headers.get('Origin', '*')
-        response.headers['Access-Control-Allow-Origin'] = origin
-        response.headers['Access-Control-Allow-Credentials'] = 'true'
-        return response
-
     jwt = JWTManager(app)
 
     # Initialize Cache (Redis with SimpleCache fallback)
