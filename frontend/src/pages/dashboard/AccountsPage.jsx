@@ -2,6 +2,10 @@ import { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { motion, AnimatePresence } from 'framer-motion'
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer, ReferenceLine
+} from 'recharts'
 import { challengesAPI, tradesAPI } from '../../services/api'
 import { useChallenge } from '../../context/ChallengeContext'
 import { useAuth } from '../../context/AuthContext'
@@ -16,7 +20,7 @@ import {
   Award, Wallet, ChevronRight, Trophy,
   Copy, Check, ExternalLink, Monitor, Gift, Timer,
   Zap, Shield, ArrowRight, BarChart2, Percent,
-  CheckCircle2, Circle, Lock
+  CheckCircle2, Circle, Lock, LineChart
 } from 'lucide-react'
 import { showErrorToast, showSuccessToast } from '../../utils/errorHandler'
 
@@ -119,6 +123,129 @@ const StatCard = ({ icon: Icon, label, value, subvalue, color = 'white', delay =
     {subvalue && <p className="text-xs text-gray-500 mt-1">{subvalue}</p>}
   </motion.div>
 )
+
+// Equity Curve Chart Component
+const EquityCurveChart = ({ trades, initialBalance }) => {
+  const chartData = useMemo(() => {
+    if (!trades || trades.length === 0) return []
+
+    // Sort trades by closed_at date
+    const sortedTrades = [...trades]
+      .filter(t => t.status === 'closed' && t.closed_at)
+      .sort((a, b) => new Date(a.closed_at) - new Date(b.closed_at))
+
+    // Build equity curve starting from initial balance
+    let balance = initialBalance
+    const data = [
+      {
+        date: 'Start',
+        balance: initialBalance,
+        pnl: 0
+      }
+    ]
+
+    sortedTrades.forEach((trade, index) => {
+      balance += (trade.pnl || 0)
+      const date = new Date(trade.closed_at)
+      data.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        balance: Math.round(balance * 100) / 100,
+        pnl: trade.pnl || 0,
+        symbol: trade.symbol,
+        tradeIndex: index + 1
+      })
+    })
+
+    return data
+  }, [trades, initialBalance])
+
+  const isProfit = chartData.length > 1 && chartData[chartData.length - 1].balance >= initialBalance
+  const strokeColor = isProfit ? '#22c55e' : '#ef4444'
+  const gradientColor = isProfit ? '#22c55e' : '#ef4444'
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (active && payload && payload.length) {
+      const data = payload[0].payload
+      return (
+        <div className="bg-dark-200 border border-white/10 rounded-lg p-3 shadow-xl">
+          <p className="text-gray-400 text-xs mb-1">{label}</p>
+          <p className="text-white font-bold text-lg">
+            ${data.balance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+          </p>
+          {data.pnl !== 0 && (
+            <p className={`text-xs mt-1 ${data.pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+              {data.pnl >= 0 ? '+' : ''}${data.pnl?.toFixed(2)} {data.symbol && `(${data.symbol})`}
+            </p>
+          )}
+        </div>
+      )
+    }
+    return null
+  }
+
+  if (chartData.length < 2) {
+    return (
+      <div className="h-64 flex items-center justify-center">
+        <div className="text-center">
+          <LineChart className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <p className="text-gray-400">No trade history yet</p>
+          <p className="text-gray-500 text-sm">Complete trades to see your equity curve</p>
+        </div>
+      </div>
+    )
+  }
+
+  const minBalance = Math.min(...chartData.map(d => d.balance))
+  const maxBalance = Math.max(...chartData.map(d => d.balance))
+  const padding = (maxBalance - minBalance) * 0.1 || 1000
+
+  return (
+    <div className="h-64">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+          <defs>
+            <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={gradientColor} stopOpacity={0.3} />
+              <stop offset="100%" stopColor={gradientColor} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+          <XAxis
+            dataKey="date"
+            stroke="#6b7280"
+            tick={{ fill: '#9ca3af', fontSize: 11 }}
+            tickLine={false}
+            axisLine={false}
+          />
+          <YAxis
+            stroke="#6b7280"
+            tick={{ fill: '#9ca3af', fontSize: 11 }}
+            tickLine={false}
+            axisLine={false}
+            tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
+            domain={[minBalance - padding, maxBalance + padding]}
+          />
+          <Tooltip content={<CustomTooltip />} />
+          <ReferenceLine
+            y={initialBalance}
+            stroke="#6b7280"
+            strokeDasharray="5 5"
+            strokeWidth={1}
+          />
+          <Area
+            type="monotone"
+            dataKey="balance"
+            stroke={strokeColor}
+            strokeWidth={2}
+            fill="url(#equityGradient)"
+            animationDuration={1500}
+            animationEasing="ease-out"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
+  )
+}
 
 const AccountsPage = () => {
   const { t } = useTranslation()
@@ -420,6 +547,34 @@ const AccountsPage = () => {
             <p className="text-xs text-gray-500">Risk/Reward ratio</p>
           </div>
         </div>
+      </motion.div>
+
+      {/* Equity Curve Chart */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.15 }}
+        className="bg-dark-100 rounded-2xl border border-white/5 p-6"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <LineChart className="w-5 h-5 text-purple-400" />
+            <h3 className="text-lg font-semibold text-white">Account Development</h3>
+          </div>
+          <div className="flex items-center gap-4 text-sm">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full bg-gray-500" />
+              <span className="text-gray-400">Initial: ${stats.initialBalance?.toLocaleString()}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className={`w-3 h-3 rounded-full ${stats.currentBalance >= stats.initialBalance ? 'bg-green-500' : 'bg-red-500'}`} />
+              <span className={stats.currentBalance >= stats.initialBalance ? 'text-green-400' : 'text-red-400'}>
+                Current: ${stats.currentBalance?.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+              </span>
+            </div>
+          </div>
+        </div>
+        <EquityCurveChart trades={trades} initialBalance={stats.initialBalance} />
       </motion.div>
 
       {/* Phase Journey */}
