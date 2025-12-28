@@ -9,7 +9,7 @@ eventlet.monkey_patch()
 
 import os
 import logging
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
@@ -58,13 +58,33 @@ def create_app(config_name=None):
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)  # Flask-Migrate for database migrations
-    # Allow all origins with full CORS support
+
+    # CORS configuration - allow Vercel frontend and localhost
+    allowed_origins = [
+        "https://tradesense-mu.vercel.app",
+        "https://*.vercel.app",
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:5173",
+        "*"  # Fallback for development
+    ]
     CORS(app,
-         resources={r"/*": {"origins": "*"}},
+         resources={r"/*": {"origins": allowed_origins}},
          supports_credentials=True,
-         allow_headers=["Content-Type", "Authorization", "X-Requested-With", "X-Session-Token"],
+         allow_headers=["Content-Type", "Authorization", "X-Requested-With", "X-Session-Token", "Accept", "Origin"],
          methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-         expose_headers=["Content-Type", "Authorization", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"])
+         expose_headers=["Content-Type", "Authorization", "X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"],
+         max_age=86400)  # Cache preflight for 24 hours
+
+    # Handle OPTIONS requests explicitly
+    @app.after_request
+    def after_request(response):
+        origin = request.headers.get('Origin', '*')
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Credentials'] = 'true'
+        response.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, PATCH, OPTIONS'
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization, X-Requested-With, X-Session-Token, Accept, Origin'
+        return response
 
     jwt = JWTManager(app)
 
