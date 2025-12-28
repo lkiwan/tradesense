@@ -7,33 +7,101 @@ import yfinance as yf
 from functools import lru_cache
 from datetime import datetime, timedelta
 import threading
+import logging
+
+logger = logging.getLogger(__name__)
+
+# Check if eventlet is being used and get tpool for native thread execution
+try:
+    import eventlet
+    from eventlet import tpool
+    eventlet.monkey_patch(thread=False)  # Ensure threading works properly
+    USE_TPOOL = True
+except ImportError:
+    USE_TPOOL = False
+
+# Thread pool for timeout support
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeoutError
+_executor = ThreadPoolExecutor(max_workers=5)
 
 # Cache for prices (simple in-memory cache)
 _price_cache = {}
 _cache_lock = threading.Lock()
 CACHE_DURATION = 3  # seconds (fast updates for real-time feel)
+PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
 
 
-def get_current_price(symbol: str) -> float | None:
+def normalize_symbol(symbol: str) -> str:
     """
-    Get current price for a symbol
-    Uses caching to avoid excessive API calls
+    Convert symbol to Yahoo Finance format
     """
-    symbol = symbol.upper()
+    symbol = symbol.upper().strip()
 
-    # Check cache
-    with _cache_lock:
-        if symbol in _price_cache:
-            cached_data = _price_cache[symbol]
-            if datetime.now() - cached_data['timestamp'] < timedelta(seconds=CACHE_DURATION):
-                return cached_data['price']
+    # Gold, Silver, Oil - CHECK FIRST before forex
+    commodity_map = {
+        'XAUUSD': 'GC=F',      # Gold futures
+        'XAGUSD': 'SI=F',      # Silver futures
+        'USOIL': 'CL=F',       # WTI Crude Oil
+        'UKOIL': 'BZ=F',       # Brent Oil
+    }
+    if symbol in commodity_map:
+        return commodity_map[symbol]
 
+    # Crypto - CHECK BEFORE forex pattern
+    crypto_map = {
+        'BTC': 'BTC-USD', 'BTCUSD': 'BTC-USD',
+        'ETH': 'ETH-USD', 'ETHUSD': 'ETH-USD',
+        'XRP': 'XRP-USD', 'XRPUSD': 'XRP-USD',
+        'SOL': 'SOL-USD', 'SOLUSD': 'SOL-USD',
+        'BNB': 'BNB-USD', 'BNBUSD': 'BNB-USD',
+        'ADA': 'ADA-USD', 'ADAUSD': 'ADA-USD',
+        'DOGE': 'DOGE-USD', 'DOGEUSD': 'DOGE-USD',
+        'DOT': 'DOT-USD', 'DOTUSD': 'DOT-USD',
+    }
+    if symbol in crypto_map:
+        return crypto_map[symbol]
+
+    # Indices
+    index_map = {
+        'US30': 'YM=F',        # Dow Jones futures
+        'US500': 'ES=F',       # S&P 500 futures
+        'NAS100': 'NQ=F',      # Nasdaq futures
+        'GER40': '^GDAXI',     # DAX
+        'UK100': '^FTSE',      # FTSE 100
+    }
+    if symbol in index_map:
+        return index_map[symbol]
+
+    # Forex pairs - add =X suffix
+    forex_pairs = [
+        'EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD', 'NZDUSD',
+        'EURGBP', 'EURJPY', 'GBPJPY', 'EURCHF', 'GBPCHF', 'AUDCAD', 'AUDCHF',
+        'AUDJPY', 'AUDNZD', 'CADCHF', 'CADJPY', 'CHFJPY', 'EURAUD', 'EURCAD',
+        'EURNZD', 'GBPAUD', 'GBPCAD', 'GBPCHF', 'GBPNZD', 'NZDCAD', 'NZDCHF',
+        'NZDJPY', 'USDMAD', 'EURMAD', 'GBPMAD', 'MADCHF'
+    ]
+    if symbol in forex_pairs:
+        return f"{symbol}=X"
+
+    # Moroccan stocks (Casablanca) - Yahoo Finance uses .CS suffix
+    moroccan_stocks = ['IAM', 'ATW', 'BCP', 'BOA', 'CIH', 'CDM', 'LBV', 'CMA',
+                       'MNG', 'TQM', 'CSR', 'HPS', 'LHM', 'MSA', 'WAA', 'MASI']
+    if symbol in moroccan_stocks:
+        return f"{symbol}.CS"
+
+    return symbol
+
+
+def _fetch_price_from_yfinance(symbol: str) -> float | None:
+    """
+    Internal function to fetch price from Yahoo Finance.
+    This runs in a native thread when eventlet is active.
+    """
     price = None
-
     try:
         ticker = yf.Ticker(symbol)
 
-        # Method 1: Try fast_info (wrapped in try-except due to yfinance API changes)
+        # Method 1: Try fast_info
         try:
             fast_info = ticker.fast_info
             if hasattr(fast_info, 'last_price'):
@@ -73,16 +141,51 @@ def get_current_price(symbol: str) -> float | None:
                 pass
 
         if price is not None:
-            # Update cache
-            with _cache_lock:
-                _price_cache[symbol] = {
-                    'price': float(price),
-                    'timestamp': datetime.now()
-                }
             return float(price)
 
+    except Exception:
+        pass
+
+    return None
+
+
+def get_current_price(symbol: str) -> float | None:
+    """
+    Get current price for a symbol
+    Uses caching to avoid excessive API calls
+    """
+    original_symbol = symbol.upper()
+    normalized = normalize_symbol(original_symbol)
+
+    # Check cache (use original symbol as key)
+    with _cache_lock:
+        if original_symbol in _price_cache:
+            cached_data = _price_cache[original_symbol]
+            if datetime.now() - cached_data['timestamp'] < timedelta(seconds=CACHE_DURATION):
+                logger.debug(f"Cache hit for {original_symbol}")
+                return cached_data['price']
+
+    # Fetch price with timeout using ThreadPoolExecutor
+    price = None
+    try:
+        future = _executor.submit(_fetch_price_from_yfinance, normalized)
+        price = future.result(timeout=PRICE_FETCH_TIMEOUT)
+        logger.info(f"Price fetched for {normalized}: {price}")
+    except FuturesTimeoutError:
+        logger.warning(f"Price fetch timeout for {normalized} after {PRICE_FETCH_TIMEOUT}s")
+        price = None
     except Exception as e:
-        print(f"Error fetching price for {symbol}: {e}")
+        logger.error(f"Price fetch error for {normalized}: {e}")
+        price = None
+
+    if price is not None:
+        # Update cache
+        with _cache_lock:
+            _price_cache[original_symbol] = {
+                'price': float(price),
+                'timestamp': datetime.now()
+            }
+        return float(price)
 
     return None
 
@@ -108,7 +211,8 @@ def get_stock_info(symbol: str) -> dict:
     """
     Get detailed stock information
     """
-    symbol = symbol.upper()
+    original_symbol = symbol.upper()
+    symbol = normalize_symbol(original_symbol)
 
     try:
         ticker = yf.Ticker(symbol)
@@ -169,7 +273,7 @@ def get_stock_info(symbol: str) -> dict:
             pass
 
         return {
-            'symbol': symbol,
+            'symbol': original_symbol,
             'price': price,
             'change': round(change, 4),
             'change_percent': round(change_percent, 2),
@@ -182,10 +286,10 @@ def get_stock_info(symbol: str) -> dict:
         }
 
     except Exception as e:
-        print(f"Error fetching info for {symbol}: {e}")
+        print(f"Error fetching info for {symbol} (original: {original_symbol}): {e}")
         return {
-            'symbol': symbol,
-            'price': get_current_price(symbol) or 0,
+            'symbol': original_symbol,
+            'price': get_current_price(original_symbol) or 0,
             'change': 0,
             'change_percent': 0
         }
@@ -197,7 +301,8 @@ def get_historical_data(symbol: str, period: str = '1mo', interval: str = '1d') 
     period: 1d, 5d, 1mo, 3mo, 6mo, 1y, 2y, 5y, max
     interval: 1m, 2m, 5m, 15m, 30m, 60m, 90m, 1h, 1d, 5d, 1wk, 1mo
     """
-    symbol = symbol.upper()
+    original_symbol = symbol.upper()
+    symbol = normalize_symbol(original_symbol)
 
     try:
         ticker = yf.Ticker(symbol)

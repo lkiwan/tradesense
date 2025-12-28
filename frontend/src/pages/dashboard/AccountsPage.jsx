@@ -242,11 +242,11 @@ const AccountsPage = () => {
             </div>
             <div className="flex gap-3">
               <Link
-                to="/plans"
+                to="/trading"
                 className="inline-flex items-center justify-center gap-2 px-4 md:px-5 py-3 md:py-2.5 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium transition-all backdrop-blur-sm min-h-[44px] w-full md:w-auto"
               >
-                <Rocket size={18} />
-                Start Challenge
+                <Activity size={18} />
+                Go to Trading
               </Link>
             </div>
           </div>

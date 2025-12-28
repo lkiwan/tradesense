@@ -68,9 +68,12 @@ def open_trade():
 
     # Get current price
     symbol = data['symbol']
+    logger.info(f"Fetching price for symbol: {symbol}")
     current_price = get_current_price(symbol)
+    logger.info(f"Price result for {symbol}: {current_price}")
 
     if current_price is None:
+        logger.error(f"Failed to get price for symbol: {symbol}")
         return jsonify({'error': f'Could not get price for {symbol}'}), 400
 
     quantity = Decimal(str(data['quantity']))
@@ -91,6 +94,8 @@ def open_trade():
         trade_type=data['trade_type'],
         quantity=quantity,
         entry_price=Decimal(str(current_price)),
+        stop_loss=Decimal(str(data['stop_loss'])) if data.get('stop_loss') else None,
+        take_profit=Decimal(str(data['take_profit'])) if data.get('take_profit') else None,
         status='open'
     )
 
@@ -145,8 +150,8 @@ def close_trade(trade_id):
     # Close trade and calculate PnL
     pnl = trade.close_trade(current_price)
 
-    # Update challenge balance
-    challenge.current_balance = Decimal(str(float(challenge.current_balance) + pnl))
+    # Update challenge balance (preserve decimal precision)
+    challenge.current_balance = challenge.current_balance + Decimal(str(pnl))
 
     # Update highest balance if applicable
     if challenge.current_balance > challenge.highest_balance:
@@ -239,38 +244,52 @@ def get_open_trades_pnl():
     trades_pnl = []
     total_unrealized_pnl = 0
     total_value = 0
+    price_errors = []
 
     for trade in open_trades:
         current_price = get_current_price(trade.symbol)
-        if current_price:
-            # Calculate unrealized PnL
-            if trade.trade_type == 'buy':
-                unrealized_pnl = (current_price - float(trade.entry_price)) * float(trade.quantity)
-            else:
-                unrealized_pnl = (float(trade.entry_price) - current_price) * float(trade.quantity)
+        price_available = current_price is not None
 
-            pnl_percent = (unrealized_pnl / (float(trade.entry_price) * float(trade.quantity))) * 100
-            current_value = current_price * float(trade.quantity)
+        # IMPORTANT: Always include trade, use entry price as fallback
+        if not price_available:
+            current_price = float(trade.entry_price)
+            price_errors.append(trade.symbol)
+            logger.warning(f"Price unavailable for {trade.symbol}, using entry price as fallback")
 
-            trades_pnl.append({
-                'trade_id': trade.id,
-                'symbol': trade.symbol,
-                'trade_type': trade.trade_type,
-                'quantity': float(trade.quantity),
-                'entry_price': float(trade.entry_price),
-                'current_price': current_price,
-                'unrealized_pnl': round(unrealized_pnl, 2),
-                'pnl_percent': round(pnl_percent, 2),
-                'current_value': round(current_value, 2)
-            })
+        # Calculate unrealized PnL
+        entry_price = float(trade.entry_price)
+        quantity = float(trade.quantity)
 
-            total_unrealized_pnl += unrealized_pnl
-            total_value += current_value
+        if trade.trade_type == 'buy':
+            unrealized_pnl = (current_price - entry_price) * quantity
+        else:
+            unrealized_pnl = (entry_price - current_price) * quantity
+
+        trade_value = entry_price * quantity
+        pnl_percent = (unrealized_pnl / trade_value) * 100 if trade_value > 0 else 0
+        current_value = current_price * quantity
+
+        trades_pnl.append({
+            'trade_id': trade.id,
+            'symbol': trade.symbol,
+            'trade_type': trade.trade_type,
+            'quantity': quantity,
+            'entry_price': entry_price,
+            'current_price': current_price,
+            'unrealized_pnl': round(unrealized_pnl, 2),
+            'pnl_percent': round(pnl_percent, 2),
+            'current_value': round(current_value, 2),
+            'price_available': price_available
+        })
+
+        total_unrealized_pnl += unrealized_pnl
+        total_value += current_value
 
     return jsonify({
         'trades': trades_pnl,
         'total_unrealized_pnl': round(total_unrealized_pnl, 2),
         'total_value': round(total_value, 2),
         'current_balance': float(challenge.current_balance),
-        'effective_balance': round(float(challenge.current_balance) + total_unrealized_pnl, 2)
+        'effective_balance': round(float(challenge.current_balance) + total_unrealized_pnl, 2),
+        'price_errors': price_errors if price_errors else None
     }), 200

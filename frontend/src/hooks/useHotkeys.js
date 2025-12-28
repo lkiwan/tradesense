@@ -81,23 +81,29 @@ export const useTradingHotkeys = ({
   const lastKeyRef = useRef(null);
   const lastKeyTimeRef = useRef(0);
 
+  // Safely get hotkey values with defaults
+  const buyKey = (hotkeys.buy || 'B').toUpperCase();
+  const sellKey = (hotkeys.sell || 'S').toUpperCase();
+  const closeAllKey = (hotkeys.closeAll || 'X').toUpperCase();
+  const cancelOrdersKey = (hotkeys.cancelOrders || 'C').toUpperCase();
+
   const keyMap = {
-    [hotkeys.buy.toUpperCase()]: () => {
+    [buyKey]: () => {
       if (onBuy) onBuy();
       lastKeyRef.current = 'BUY';
       lastKeyTimeRef.current = Date.now();
     },
-    [hotkeys.sell.toUpperCase()]: () => {
+    [sellKey]: () => {
       if (onSell) onSell();
       lastKeyRef.current = 'SELL';
       lastKeyTimeRef.current = Date.now();
     },
-    [hotkeys.closeAll.toUpperCase()]: () => {
+    [closeAllKey]: () => {
       if (onCloseAll) onCloseAll();
       lastKeyRef.current = 'CLOSE_ALL';
       lastKeyTimeRef.current = Date.now();
     },
-    [hotkeys.cancelOrders.toUpperCase()]: () => {
+    [cancelOrdersKey]: () => {
       if (onCancelOrders) onCancelOrders();
       lastKeyRef.current = 'CANCEL';
       lastKeyTimeRef.current = Date.now();
@@ -117,9 +123,10 @@ export const useTradingHotkeys = ({
  */
 export const useDoubleTap = (key, callback, delay = 300, enabled = true) => {
   const lastPressRef = useRef(0);
+  const safeKey = (key || '').toUpperCase();
 
   const keyMap = {
-    [key.toUpperCase()]: () => {
+    [safeKey]: () => {
       const now = Date.now();
       if (now - lastPressRef.current < delay) {
         callback();

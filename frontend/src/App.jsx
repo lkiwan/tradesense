@@ -135,6 +135,7 @@ import {
   PointsHistoryPage,
   PointsRewardsPage,
   // Trading Tools
+  TradingPage,
   AdvancedOrdersPage,
   QuickTradingPage,
   OrderTemplatesPage,
@@ -152,10 +153,21 @@ import {
   CalendarPage,
   NewsFeedPage,
   ForexPage,
+  ResourcesPage,
+  TradingRulesPage,
+  SupportPage,
   // Market Overview
   MarketOverviewPage,
-  // Legacy compatibility
-  SignalsPage
+  // Financial
+  PayoutsPage,
+  TransactionsPage,
+  // Signals
+  SignalsPage,
+  // Points & Competitions
+  PointsPage,
+  CompetitionsPage,
+  OffersPage,
+  CalculatorPage
 } from './pages/dashboard'
 
 /**
@@ -393,7 +405,8 @@ const USER_DASHBOARD_ROUTES = [
   '/infinity-points', '/utilities', '/calendar', '/settings', '/sessions', '/dashboard', '/kyc',
   '/subscriptions', '/infinity-points/rewards', '/advanced-orders', '/quick-trading', '/order-templates',
   '/trade-journal', '/mt-connection', '/charts', '/my-profile', '/followers', '/copy-trading', '/trading-ideas',
-  '/challenge-checkout', '/forex', '/markets'
+  '/challenge-checkout', '/forex', '/markets', '/news', '/signals', '/resources', '/payouts', '/transactions',
+  '/trading-rules', '/support', '/points', '/competitions', '/offers', '/calculator', '/trading', '/charts-markets'
 ]
 
 // Admin routes - use AdminLayout (hide main Navbar/Footer completely)
@@ -431,9 +444,10 @@ function App() {
             {/* Anyone can access these */}
             <Route path="/pricing" element={<Pricing />} />
             <Route path="/leaderboard" element={<LeaderboardPage />} />
-            <Route path="/news" element={<News />} />
+            {/* Public news/calendar moved to /public/* to avoid conflict with dashboard routes */}
+            <Route path="/public/news" element={<News />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
-            <Route path="/calendar" element={<EconomicCalendar />} />
+            <Route path="/public/calendar" element={<EconomicCalendar />} />
             <Route path="/academy" element={<Academy />} />
             <Route path="/partners" element={<Affiliate />} />
             <Route path="/hall-of-fame" element={<HallOfFame />} />
@@ -719,6 +733,15 @@ function App() {
               </ProtectedRoute>
             } />
 
+            {/* Trading Terminal - Pro Trading Page */}
+            <Route path="/trading" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <TradingPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
             {/* Quick Trading / One-Click Trading */}
             <Route path="/quick-trading" element={
               <ProtectedRoute requiresChallenge redirectTo="/plans">
@@ -853,6 +876,96 @@ function App() {
               <ProtectedRoute requiresChallenge redirectTo="/plans">
                 <DashboardLayout>
                   <MarketOverviewPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Signals */}
+            <Route path="/signals" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <SignalsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Resources */}
+            <Route path="/resources" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <ResourcesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Trading Rules */}
+            <Route path="/trading-rules" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <TradingRulesPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Support */}
+            <Route path="/support" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <SupportPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Financial - Payouts */}
+            <Route path="/payouts" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PayoutsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Financial - Transactions */}
+            <Route path="/transactions" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <TransactionsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Points Main Page */}
+            <Route path="/points" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <PointsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Competitions */}
+            <Route path="/competitions" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CompetitionsPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Offers */}
+            <Route path="/offers" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <OffersPage />
+                </DashboardLayout>
+              </ProtectedRoute>
+            } />
+
+            {/* Calculator */}
+            <Route path="/calculator" element={
+              <ProtectedRoute requiresChallenge redirectTo="/plans">
+                <DashboardLayout>
+                  <CalculatorPage />
                 </DashboardLayout>
               </ProtectedRoute>
             } />

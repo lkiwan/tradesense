@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react'
 import {
   Plus, Search, Star, Edit3, Trash2, TrendingUp, TrendingDown,
   Calendar, BarChart3, Download, RefreshCw, Brain, Activity,
-  Trophy, AlertTriangle, CheckCircle, XCircle, X, ChevronDown
+  Trophy, AlertTriangle, CheckCircle, XCircle, X, ChevronDown,
+  FileText, Copy, Clock, DollarSign, Target, Percent, ShoppingCart
 } from 'lucide-react'
 import api from '../../services/api'
 import { showSuccessToast, showErrorToast } from '../../utils/errorHandler'
@@ -24,7 +25,10 @@ const COMMON_TAGS = [
 ]
 
 const TradeJournalPage = () => {
-  // State
+  // Main tab state
+  const [mainTab, setMainTab] = useState('journal')
+
+  // Journal State
   const [entries, setEntries] = useState([])
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('entries')
@@ -42,6 +46,27 @@ const TradeJournalPage = () => {
     isWin: '',
     setupQuality: ''
   })
+
+  // Orders State
+  const [orders, setOrders] = useState([
+    { id: 1, symbol: 'EURUSD', type: 'buy_limit', price: 1.0850, lot: 0.5, sl: 1.0800, tp: 1.0950, status: 'pending', created: '2024-01-25 10:30' },
+    { id: 2, symbol: 'GBPUSD', type: 'sell_stop', price: 1.2700, lot: 1.0, sl: 1.2800, tp: 1.2550, status: 'pending', created: '2024-01-25 09:15' },
+    { id: 3, symbol: 'USDJPY', type: 'buy_limit', price: 147.50, lot: 0.3, sl: 146.80, tp: 148.50, status: 'triggered', created: '2024-01-24 14:00' },
+  ])
+
+  // Templates State
+  const [templates, setTemplates] = useState([
+    { id: 1, name: 'Breakout Setup', symbol: 'EURUSD', type: 'buy', riskPercent: 1.5, rr: 2, description: 'Enter on confirmed breakout above resistance with volume' },
+    { id: 2, name: 'Pullback Entry', symbol: 'Any', type: 'any', riskPercent: 2, rr: 3, description: 'Wait for pullback to key level, enter on confirmation candle' },
+    { id: 3, name: 'Scalp London', symbol: 'GBPUSD', type: 'any', riskPercent: 0.5, rr: 1.5, description: 'Quick trades during London open volatility' },
+  ])
+
+  // Main tabs definition
+  const mainTabs = [
+    { id: 'orders', label: 'Pending Orders', icon: ShoppingCart },
+    { id: 'templates', label: 'Trade Templates', icon: Copy },
+    { id: 'journal', label: 'Journal', icon: Brain }
+  ]
 
   // Form state
   const [formData, setFormData] = useState({
@@ -82,9 +107,11 @@ const TradeJournalPage = () => {
   })
 
   useEffect(() => {
-    loadEntries()
-    loadAnalytics()
-  }, [page, rowsPerPage, filters])
+    if (mainTab === 'journal') {
+      loadEntries()
+      loadAnalytics()
+    }
+  }, [mainTab, page, rowsPerPage, filters])
 
   const loadEntries = async () => {
     try {
@@ -251,37 +278,269 @@ const TradeJournalPage = () => {
     setFilters({ symbol: '', startDate: '', endDate: '', isWin: '', setupQuality: '' })
   }
 
+  const handleCancelOrder = (orderId) => {
+    setOrders(orders.filter(o => o.id !== orderId))
+    showSuccessToast('Order cancelled')
+  }
+
+  const handleDeleteTemplate = (templateId) => {
+    setTemplates(templates.filter(t => t.id !== templateId))
+    showSuccessToast('Template deleted')
+  }
+
+  const handleUseTemplate = (template) => {
+    showSuccessToast(`Template "${template.name}" applied to new order`)
+  }
+
   const totalPages = Math.ceil(totalEntries / rowsPerPage)
 
-  return (
+  // ============ RENDER ORDERS TAB ============
+  const renderOrdersTab = () => (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
-            <Brain className="text-purple-400" size={24} />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold text-white">Trade Journal</h1>
-            <p className="text-gray-400 text-sm">Document, analyze, and learn from your trades</p>
+      {/* Orders Header */}
+      <div className="flex items-center justify-between">
+        <p className="text-gray-400 text-sm">Manage your pending limit and stop orders</p>
+        <button
+          className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
+        >
+          <Plus size={18} />
+          New Order
+        </button>
+      </div>
+
+      {/* Orders Stats */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-blue-500/10">
+              <ShoppingCart size={18} className="text-blue-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">{orders.filter(o => o.status === 'pending').length}</p>
+              <p className="text-xs text-gray-400">Pending Orders</p>
+            </div>
           </div>
         </div>
-        <div className="flex gap-2">
-          <button
-            onClick={handleExportCSV}
-            className="flex items-center gap-2 px-4 py-2.5 bg-dark-100 hover:bg-dark-200 text-white rounded-xl font-medium border border-dark-200 transition-all"
-          >
-            <Download size={18} />
-            Export
-          </button>
-          <button
-            onClick={() => handleOpenDialog()}
-            className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
-          >
-            <Plus size={18} />
-            New Entry
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-green-500/10">
+              <TrendingUp size={18} className="text-green-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">{orders.filter(o => o.type.includes('buy')).length}</p>
+              <p className="text-xs text-gray-400">Buy Orders</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-red-500/10">
+              <TrendingDown size={18} className="text-red-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">{orders.filter(o => o.type.includes('sell')).length}</p>
+              <p className="text-xs text-gray-400">Sell Orders</p>
+            </div>
+          </div>
+        </div>
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-yellow-500/10">
+              <DollarSign size={18} className="text-yellow-400" />
+            </div>
+            <div>
+              <p className="text-2xl font-bold text-white">{orders.reduce((acc, o) => acc + o.lot, 0).toFixed(2)}</p>
+              <p className="text-xs text-gray-400">Total Lots</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Orders Table */}
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
+        {orders.length === 0 ? (
+          <div className="text-center py-12">
+            <ShoppingCart className="mx-auto text-gray-600 mb-4" size={48} />
+            <h3 className="text-lg font-semibold text-white mb-2">No pending orders</h3>
+            <p className="text-gray-400 mb-4">Create a limit or stop order to get started</p>
+            <button className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors">
+              Create Order
+            </button>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-dark-200/50 border-b border-dark-200">
+                <tr className="text-xs text-gray-500 uppercase">
+                  <th className="px-4 py-3 text-left font-medium">Symbol</th>
+                  <th className="px-4 py-3 text-left font-medium">Type</th>
+                  <th className="px-4 py-3 text-right font-medium">Price</th>
+                  <th className="px-4 py-3 text-right font-medium">Lot</th>
+                  <th className="px-4 py-3 text-right font-medium">SL</th>
+                  <th className="px-4 py-3 text-right font-medium">TP</th>
+                  <th className="px-4 py-3 text-left font-medium">Status</th>
+                  <th className="px-4 py-3 text-left font-medium">Created</th>
+                  <th className="px-4 py-3 text-right font-medium">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-dark-200">
+                {orders.map((order) => (
+                  <tr key={order.id} className="hover:bg-dark-200/30 transition-colors">
+                    <td className="px-4 py-3 font-medium text-white">{order.symbol}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1 px-2 py-1 rounded text-xs font-medium ${
+                        order.type.includes('buy')
+                          ? 'bg-green-500/10 text-green-400'
+                          : 'bg-red-500/10 text-red-400'
+                      }`}>
+                        {order.type.includes('buy') ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+                        {order.type.replace('_', ' ').toUpperCase()}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right text-white font-medium">{order.price}</td>
+                    <td className="px-4 py-3 text-right text-gray-300">{order.lot}</td>
+                    <td className="px-4 py-3 text-right text-red-400">{order.sl}</td>
+                    <td className="px-4 py-3 text-right text-green-400">{order.tp}</td>
+                    <td className="px-4 py-3">
+                      <span className={`px-2 py-1 rounded text-xs font-medium ${
+                        order.status === 'pending'
+                          ? 'bg-yellow-500/10 text-yellow-400'
+                          : 'bg-green-500/10 text-green-400'
+                      }`}>
+                        {order.status}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-sm text-gray-400">{order.created}</td>
+                    <td className="px-4 py-3 text-right">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-white transition-colors"
+                        >
+                          <Edit3 size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleCancelOrder(order.id)}
+                          className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-red-400 transition-colors"
+                        >
+                          <XCircle size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+
+  // ============ RENDER TEMPLATES TAB ============
+  const renderTemplatesTab = () => (
+    <div className="space-y-6">
+      {/* Templates Header */}
+      <div className="flex items-center justify-between">
+        <p className="text-gray-400 text-sm">Save and reuse your favorite trade setups</p>
+        <button
+          className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
+        >
+          <Plus size={18} />
+          New Template
+        </button>
+      </div>
+
+      {/* Templates Grid */}
+      {templates.length === 0 ? (
+        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 text-center py-12">
+          <Copy className="mx-auto text-gray-600 mb-4" size={48} />
+          <h3 className="text-lg font-semibold text-white mb-2">No templates yet</h3>
+          <p className="text-gray-400 mb-4">Create templates for your favorite trade setups</p>
+          <button className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors">
+            Create First Template
           </button>
         </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {templates.map((template) => (
+            <div key={template.id} className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-5 hover:border-primary-500/30 transition-all duration-300 group">
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`p-2.5 rounded-xl ${
+                    template.type === 'buy' ? 'bg-green-500/10 border border-green-500/30' :
+                    template.type === 'sell' ? 'bg-red-500/10 border border-red-500/30' :
+                    'bg-primary-500/10 border border-primary-500/30'
+                  }`}>
+                    <FileText size={20} className={
+                      template.type === 'buy' ? 'text-green-400' :
+                      template.type === 'sell' ? 'text-red-400' :
+                      'text-primary-400'
+                    } />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-white group-hover:text-primary-400 transition-colors">{template.name}</h3>
+                    <p className="text-xs text-gray-400">{template.symbol}</p>
+                  </div>
+                </div>
+                <div className="flex gap-1">
+                  <button className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-white transition-colors">
+                    <Edit3 size={14} />
+                  </button>
+                  <button
+                    onClick={() => handleDeleteTemplate(template.id)}
+                    className="p-1.5 rounded-lg hover:bg-dark-200 text-gray-400 hover:text-red-400 transition-colors"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-sm text-gray-400 mb-4 line-clamp-2">{template.description}</p>
+
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center gap-1.5 text-sm">
+                  <Percent size={14} className="text-yellow-400" />
+                  <span className="text-gray-300">{template.riskPercent}% risk</span>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm">
+                  <Target size={14} className="text-blue-400" />
+                  <span className="text-gray-300">1:{template.rr} R:R</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => handleUseTemplate(template)}
+                className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-dark-200/50 hover:bg-primary-500/20 text-gray-300 hover:text-primary-400 rounded-lg border border-white/5 hover:border-primary-500/30 transition-all duration-300"
+              >
+                <Copy size={16} />
+                Use Template
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+
+  // ============ RENDER JOURNAL TAB ============
+  const renderJournalTab = () => (
+    <div className="space-y-6">
+      {/* Journal Actions */}
+      <div className="flex justify-end gap-2">
+        <button
+          onClick={handleExportCSV}
+          className="flex items-center gap-2 px-4 py-2.5 bg-dark-100 hover:bg-dark-200 text-white rounded-xl font-medium border border-dark-200 transition-all"
+        >
+          <Download size={18} />
+          Export
+        </button>
+        <button
+          onClick={() => handleOpenDialog()}
+          className="flex items-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
+        >
+          <Plus size={18} />
+          New Entry
+        </button>
       </div>
 
       {/* Analytics Cards */}
@@ -319,7 +578,7 @@ const TradeJournalPage = () => {
         </div>
       )}
 
-      {/* Tabs */}
+      {/* Sub-tabs for Journal */}
       <div className="flex bg-dark-100/80 rounded-lg p-1 border border-dark-200">
         <button
           onClick={() => setActiveTab('entries')}
@@ -330,7 +589,7 @@ const TradeJournalPage = () => {
           }`}
         >
           <Activity size={18} />
-          Journal Entries
+          Entries
         </button>
         <button
           onClick={() => setActiveTab('analytics')}
@@ -345,7 +604,7 @@ const TradeJournalPage = () => {
         </button>
       </div>
 
-      {/* Journal Entries Tab */}
+      {/* Journal Entries Sub-Tab */}
       {activeTab === 'entries' && (
         <>
           {/* Filters */}
@@ -575,7 +834,7 @@ const TradeJournalPage = () => {
         </>
       )}
 
-      {/* Analytics Tab */}
+      {/* Analytics Sub-Tab */}
       {activeTab === 'analytics' && analytics && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Performance by Setup Quality */}
@@ -671,6 +930,47 @@ const TradeJournalPage = () => {
           </div>
         </div>
       )}
+    </div>
+  )
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex items-center gap-3">
+        <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 border border-purple-500/30">
+          <Brain className="text-purple-400" size={24} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-white">Trade Journal</h1>
+          <p className="text-gray-400 text-sm">Document, analyze, and learn from your trades</p>
+        </div>
+      </div>
+
+      {/* Main Tabs */}
+      <div className="flex gap-2 bg-dark-100/80 backdrop-blur-xl rounded-xl p-1.5 border border-white/5 overflow-x-auto">
+        {mainTabs.map(tab => {
+          const IconComponent = tab.icon
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setMainTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-lg whitespace-nowrap transition-all duration-300 ${
+                mainTab === tab.id
+                  ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
+                  : 'text-gray-400 hover:text-white hover:bg-dark-200/50'
+              }`}
+            >
+              <IconComponent size={16} />
+              <span className="font-medium">{tab.label}</span>
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Tab Content */}
+      {mainTab === 'orders' && renderOrdersTab()}
+      {mainTab === 'templates' && renderTemplatesTab()}
+      {mainTab === 'journal' && renderJournalTab()}
 
       {/* Create/Edit Modal */}
       {dialogOpen && (
@@ -846,70 +1146,6 @@ const TradeJournalPage = () => {
                 </div>
               </div>
 
-              {/* Psychology */}
-              <div className="pt-4 border-t border-dark-200">
-                <h4 className="text-sm font-medium text-primary-400 mb-3">Psychology</h4>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Emotion Before</label>
-                    <select
-                      value={formData.emotion_before}
-                      onChange={(e) => setFormData({ ...formData, emotion_before: e.target.value })}
-                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
-                    >
-                      <option value="">-</option>
-                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Emotion During</label>
-                    <select
-                      value={formData.emotion_during}
-                      onChange={(e) => setFormData({ ...formData, emotion_during: e.target.value })}
-                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
-                    >
-                      <option value="">-</option>
-                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">Emotion After</label>
-                    <select
-                      value={formData.emotion_after}
-                      onChange={(e) => setFormData({ ...formData, emotion_after: e.target.value })}
-                      className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 capitalize"
-                    >
-                      <option value="">-</option>
-                      {EMOTIONS.map(e => <option key={e} value={e} className="capitalize">{e}</option>)}
-                    </select>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-2">Confidence Level: {formData.confidence_level}</label>
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      value={formData.confidence_level}
-                      onChange={(e) => setFormData({ ...formData, confidence_level: parseInt(e.target.value) })}
-                      className="w-full accent-primary-500"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-2">Stress Level: {formData.stress_level}</label>
-                    <input
-                      type="range"
-                      min="1"
-                      max="10"
-                      value={formData.stress_level}
-                      onChange={(e) => setFormData({ ...formData, stress_level: parseInt(e.target.value) })}
-                      className="w-full accent-primary-500"
-                    />
-                  </div>
-                </div>
-              </div>
-
               {/* Tags & Rating */}
               <div className="pt-4 border-t border-dark-200">
                 <h4 className="text-sm font-medium text-primary-400 mb-3">Tags & Rating</h4>
@@ -956,15 +1192,6 @@ const TradeJournalPage = () => {
                       className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
                     />
                   </div>
-                </div>
-                <div className="mt-4">
-                  <label className="block text-xs text-gray-400 mb-1">Notes</label>
-                  <textarea
-                    value={formData.notes}
-                    onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                    rows={2}
-                    className="w-full bg-dark-200 border border-dark-200 rounded-lg px-3 py-2 text-white text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none"
-                  />
                 </div>
                 <div className="flex items-center justify-between mt-4">
                   <div>

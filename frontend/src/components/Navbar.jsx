@@ -613,30 +613,6 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Price Ticker Bar */}
-        <div className="bg-dark-300 dark:bg-dark-300 border-b border-dark-200 py-2 overflow-hidden">
-          <div className="animate-marquee whitespace-nowrap">
-            {/* First set of items */}
-            {TICKER_SYMBOLS.map(symbol => (
-              <TickerItem
-                key={symbol}
-                symbol={symbol}
-                price={livePrices[symbol]?.price}
-                changePercent={livePrices[symbol]?.changePercent}
-              />
-            ))}
-            {/* Duplicate for seamless loop */}
-            {TICKER_SYMBOLS.map(symbol => (
-              <TickerItem
-                key={`${symbol}-dup`}
-                symbol={symbol}
-                price={livePrices[symbol]?.price}
-                changePercent={livePrices[symbol]?.changePercent}
-              />
-            ))}
-          </div>
-        </div>
-
         {/* Mobile menu */}
         {isMenuOpen && (
           <div className="lg:hidden bg-white dark:bg-dark-200 border-b border-gray-200 dark:border-dark-100 max-h-[80vh] overflow-y-auto">

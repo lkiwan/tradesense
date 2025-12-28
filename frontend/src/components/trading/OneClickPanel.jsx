@@ -96,9 +96,18 @@ const OneClickPanel = ({ symbol = 'EURUSD', currentPrice = 1.0850, challengeId }
   const loadFavorites = async () => {
     try {
       const response = await api.get('/quick-trading/favorites');
-      setFavorites(response.data || []);
+      // Ensure favorites is always an array
+      const data = response.data;
+      if (Array.isArray(data)) {
+        setFavorites(data);
+      } else if (data && Array.isArray(data.favorites)) {
+        setFavorites(data.favorites);
+      } else {
+        setFavorites([]);
+      }
     } catch (error) {
       console.error('Failed to load favorites:', error);
+      setFavorites([]);
     }
   };
 
@@ -237,12 +246,13 @@ const OneClickPanel = ({ symbol = 'EURUSD', currentPrice = 1.0850, challengeId }
 
   const toggleFavorite = async () => {
     try {
-      if (favorites.includes(symbol)) {
-        await api.delete(`/api/quick-trading/favorites/${symbol}`);
-        setFavorites(favorites.filter(s => s !== symbol));
+      const favList = Array.isArray(favorites) ? favorites : [];
+      if (favList.includes(symbol)) {
+        await api.delete(`/quick-trading/favorites/${symbol}`);
+        setFavorites(favList.filter(s => s !== symbol));
       } else {
         await api.post('/quick-trading/favorites', { symbol });
-        setFavorites([...favorites, symbol]);
+        setFavorites([...favList, symbol]);
       }
     } catch (error) {
       console.error('Failed to toggle favorite:', error);
@@ -293,7 +303,7 @@ const OneClickPanel = ({ symbol = 'EURUSD', currentPrice = 1.0850, challengeId }
             One-Click Trading
           </Typography>
           <IconButton size="small" onClick={toggleFavorite}>
-            {favorites.includes(symbol) ? (
+            {Array.isArray(favorites) && favorites.includes(symbol) ? (
               <Star sx={{ color: '#ffd700' }} />
             ) : (
               <StarBorder sx={{ color: 'grey.500' }} />

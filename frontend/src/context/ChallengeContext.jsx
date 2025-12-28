@@ -45,6 +45,16 @@ export const ChallengeProvider = ({ children }) => {
     return fetchChallenge()
   }, [fetchChallenge])
 
+  // Update balance directly (for immediate feedback after trade close)
+  const updateBalance = useCallback((newBalance) => {
+    if (challenge) {
+      setChallenge(prev => ({
+        ...prev,
+        current_balance: newBalance
+      }))
+    }
+  }, [challenge])
+
   // Computed values
   const hasActiveChallenge = !!challenge && ['active', 'funded'].includes(challenge.status)
   const isFunded = challenge?.is_funded || challenge?.phase === 'funded'
@@ -111,7 +121,8 @@ export const ChallengeProvider = ({ children }) => {
     canAccessTrading,
 
     // Actions
-    refetch
+    refetch,
+    updateBalance
   }
 
   return (

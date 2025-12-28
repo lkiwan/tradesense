@@ -18,6 +18,8 @@ class Trade(db.Model):
     quantity = db.Column(db.Numeric(15, 8), nullable=False)
     entry_price = db.Column(db.Numeric(15, 4), nullable=False)
     exit_price = db.Column(db.Numeric(15, 4), default=None)
+    stop_loss = db.Column(db.Numeric(15, 5), nullable=True)
+    take_profit = db.Column(db.Numeric(15, 5), nullable=True)
     pnl = db.Column(db.Numeric(15, 2), default=None)
     status = db.Column(db.String(20), default='open', index=True)  # open, closed
     opened_at = db.Column(db.DateTime, default=datetime.utcnow)
@@ -52,6 +54,8 @@ class Trade(db.Model):
             'quantity': float(self.quantity),
             'entry_price': float(self.entry_price),
             'exit_price': float(self.exit_price) if self.exit_price else None,
+            'stop_loss': float(self.stop_loss) if self.stop_loss else None,
+            'take_profit': float(self.take_profit) if self.take_profit else None,
             'pnl': float(self.pnl) if self.pnl else None,
             'status': self.status,
             'trade_value': self.trade_value,
