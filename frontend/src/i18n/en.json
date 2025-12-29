@@ -11,7 +11,60 @@
     "register": "Register",
     "logout": "Logout",
     "admin": "Admin",
-    "superadmin": "Super Admin"
+    "superadmin": "Super Admin",
+    "menu": {
+      "challenges": "Challenges",
+      "trading": "Trading",
+      "learn": "Learn",
+      "community": "Community",
+      "about": "About"
+    },
+    "submenu": {
+      "pricing": "Pricing",
+      "pricingDesc": "View all challenge plans",
+      "freeTrial": "Free Trial",
+      "freeTrialDesc": "7-day trial with $5,000",
+      "howItWorks": "How It Works",
+      "howItWorksDesc": "Learn the challenge process",
+      "dashboard": "Dashboard",
+      "dashboardDesc": "Your trading dashboard",
+      "leaderboard": "Leaderboard",
+      "leaderboardDesc": "Top traders ranking",
+      "calendar": "Economic Calendar",
+      "calendarDesc": "Important market events",
+      "masterclass": "MasterClass",
+      "masterclassDesc": "Trading courses & tutorials",
+      "marketNews": "Market News",
+      "marketNewsDesc": "Latest trading insights",
+      "academy": "Academy",
+      "academyDesc": "Trading guides & resources",
+      "forum": "Forum",
+      "forumDesc": "Join trader discussions",
+      "affiliate": "Affiliate Program",
+      "affiliateDesc": "Earn by referring traders",
+      "hallOfFame": "Hall of Fame",
+      "hallOfFameDesc": "Our successful traders",
+      "aboutUs": "About Us",
+      "aboutUsDesc": "Our story & mission",
+      "faq": "FAQ",
+      "faqDesc": "Frequently asked questions",
+      "contact": "Contact",
+      "contactDesc": "Get in touch with us"
+    },
+    "phase": {
+      "trial": "Trial",
+      "phase1": "Phase 1",
+      "phase2": "Phase 2",
+      "funded": "Funded"
+    },
+    "buyChallenge": "Buy a Challenge",
+    "startChallenge": "Start Challenge",
+    "lockedMessage": "Buy a challenge to access",
+    "free": "FREE",
+    "theme": {
+      "light": "Light",
+      "dark": "Dark"
+    }
   },
   "landing": {
     "hero": {

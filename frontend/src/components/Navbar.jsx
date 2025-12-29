@@ -118,52 +118,52 @@ const Navbar = () => {
   const navStructure = [
     {
       id: 'challenges',
-      label: 'Challenges',
+      label: t('nav.menu.challenges'),
       icon: Target,
       items: [
-        { path: '/pricing', label: 'Pricing', icon: DollarSign, description: 'View all challenge plans' },
-        { path: '/free-trial', label: 'Free Trial', icon: Gift, description: '7-day trial with $5,000', highlight: true, hideIfChallenge: true },
-        { path: '/how-it-works', label: 'How It Works', icon: Play, description: 'Learn the challenge process' },
+        { path: '/pricing', label: t('nav.submenu.pricing'), icon: DollarSign, description: t('nav.submenu.pricingDesc') },
+        { path: '/free-trial', label: t('nav.submenu.freeTrial'), icon: Gift, description: t('nav.submenu.freeTrialDesc'), highlight: true, hideIfChallenge: true },
+        { path: '/how-it-works', label: t('nav.submenu.howItWorks'), icon: Play, description: t('nav.submenu.howItWorksDesc') },
       ]
     },
     {
       id: 'trading',
-      label: 'Trading',
+      label: t('nav.menu.trading'),
       icon: TrendingUp,
       items: [
-        { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, description: 'Your trading dashboard', requiresChallenge: true },
-        { path: '/leaderboard', label: 'Leaderboard', icon: Trophy, description: 'Top traders ranking' },
-        { path: '/calendar', label: 'Economic Calendar', icon: Calendar, description: 'Important market events' },
+        { path: '/dashboard', label: t('nav.submenu.dashboard'), icon: LayoutDashboard, description: t('nav.submenu.dashboardDesc'), requiresChallenge: true },
+        { path: '/leaderboard', label: t('nav.submenu.leaderboard'), icon: Trophy, description: t('nav.submenu.leaderboardDesc') },
+        { path: '/calendar', label: t('nav.submenu.calendar'), icon: Calendar, description: t('nav.submenu.calendarDesc') },
       ]
     },
     {
       id: 'learn',
-      label: 'Learn',
+      label: t('nav.menu.learn'),
       icon: GraduationCap,
       items: [
-        { path: '/masterclass', label: 'MasterClass', icon: GraduationCap, description: 'Trading courses & tutorials', requiresAuth: true },
-        { path: '/news', label: 'Market News', icon: Newspaper, description: 'Latest trading insights' },
-        { path: '/academy', label: 'Academy', icon: BookOpen, description: 'Trading guides & resources' },
+        { path: '/masterclass', label: t('nav.submenu.masterclass'), icon: GraduationCap, description: t('nav.submenu.masterclassDesc'), requiresAuth: true },
+        { path: '/news', label: t('nav.submenu.marketNews'), icon: Newspaper, description: t('nav.submenu.marketNewsDesc') },
+        { path: '/academy', label: t('nav.submenu.academy'), icon: BookOpen, description: t('nav.submenu.academyDesc') },
       ]
     },
     {
       id: 'community',
-      label: 'Community',
+      label: t('nav.menu.community'),
       icon: Users,
       items: [
-        { path: '/community', label: 'Forum', icon: MessageCircle, description: 'Join trader discussions', requiresAuth: true },
-        { path: '/partners', label: 'Affiliate Program', icon: Gift, description: 'Earn by referring traders' },
-        { path: '/hall-of-fame', label: 'Hall of Fame', icon: Award, description: 'Our successful traders' },
+        { path: '/community', label: t('nav.submenu.forum'), icon: MessageCircle, description: t('nav.submenu.forumDesc'), requiresAuth: true },
+        { path: '/partners', label: t('nav.submenu.affiliate'), icon: Gift, description: t('nav.submenu.affiliateDesc') },
+        { path: '/hall-of-fame', label: t('nav.submenu.hallOfFame'), icon: Award, description: t('nav.submenu.hallOfFameDesc') },
       ]
     },
     {
       id: 'about',
-      label: 'About',
+      label: t('nav.menu.about'),
       icon: Info,
       items: [
-        { path: '/about', label: 'About Us', icon: Building2, description: 'Our story & mission' },
-        { path: '/faq', label: 'FAQ', icon: HelpCircle, description: 'Frequently asked questions' },
-        { path: '/contact', label: 'Contact', icon: Mail, description: 'Get in touch with us' },
+        { path: '/about', label: t('nav.submenu.aboutUs'), icon: Building2, description: t('nav.submenu.aboutUsDesc') },
+        { path: '/faq', label: t('nav.submenu.faq'), icon: HelpCircle, description: t('nav.submenu.faqDesc') },
+        { path: '/contact', label: t('nav.submenu.contact'), icon: Mail, description: t('nav.submenu.contactDesc') },
       ]
     },
   ]
@@ -175,10 +175,10 @@ const Navbar = () => {
     if (!hasActiveChallenge) return null
 
     const badges = {
-      trial: { label: 'Essai', color: 'blue', icon: Clock },
-      evaluation: { label: 'Phase 1', color: 'purple', icon: Target },
-      verification: { label: 'Phase 2', color: 'orange', icon: TrendingUp },
-      funded: { label: 'Fundé', color: 'green', icon: Star }
+      trial: { label: t('nav.phase.trial'), color: 'blue', icon: Clock },
+      evaluation: { label: t('nav.phase.phase1'), color: 'purple', icon: Target },
+      verification: { label: t('nav.phase.phase2'), color: 'orange', icon: TrendingUp },
+      funded: { label: t('nav.phase.funded'), color: 'green', icon: Star }
     }
 
     return badges[currentPhase] || badges.evaluation
@@ -217,7 +217,7 @@ const Navbar = () => {
         <div
           key={item.path}
           className="flex items-start gap-3 px-4 py-3 text-gray-400 dark:text-gray-600 cursor-not-allowed"
-          title="Achetez un challenge pour accéder"
+          title={t('nav.lockedMessage')}
         >
           <div className="p-2 bg-gray-100 dark:bg-dark-100 rounded-lg">
             <Icon size={18} />
@@ -280,7 +280,7 @@ const Navbar = () => {
             </span>
             {item.highlight && (
               <span className="px-2 py-0.5 text-[10px] font-bold bg-gradient-to-r from-primary-500 to-blue-500 text-white rounded-full">
-                FREE
+                {t('nav.free')}
               </span>
             )}
           </div>
@@ -363,7 +363,7 @@ const Navbar = () => {
         {access === 'login-required' && <Lock size={14} className="text-gray-400" />}
         {item.highlight && (
           <span className="px-2 py-0.5 text-[10px] font-bold bg-gradient-to-r from-primary-500 to-blue-500 text-white rounded-full">
-            FREE
+            {t('nav.free')}
           </span>
         )}
       </Link>
@@ -503,7 +503,7 @@ const Navbar = () => {
                           className="flex items-center gap-2 px-4 py-2 text-sm text-primary-500 hover:bg-gray-100 dark:hover:bg-dark-200"
                         >
                           <DollarSign size={16} />
-                          Acheter un Challenge
+                          {t('nav.buyChallenge')}
                         </Link>
                       )}
 
@@ -568,7 +568,7 @@ const Navbar = () => {
                   className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-primary-500/25 ml-2 whitespace-nowrap"
                 >
                   <Zap size={16} />
-                  Start Challenge
+                  {t('nav.startChallenge')}
                 </Link>
               )}
             </div>
@@ -660,7 +660,7 @@ const Navbar = () => {
                     className="flex-1 flex items-center justify-center gap-2 p-3 rounded-lg bg-gray-100 dark:bg-dark-100 text-gray-700 dark:text-gray-300 transition-colors min-h-[48px] touch-manipulation"
                   >
                     {isDark ? <Sun size={20} /> : <Moon size={20} />}
-                    <span className="text-sm font-medium">{isDark ? 'Clair' : 'Sombre'}</span>
+                    <span className="text-sm font-medium">{isDark ? t('nav.theme.light') : t('nav.theme.dark')}</span>
                   </button>
 
                   {/* Language Selector */}

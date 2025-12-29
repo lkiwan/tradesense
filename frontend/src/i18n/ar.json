@@ -11,7 +11,60 @@
     "register": "التسجيل",
     "logout": "تسجيل الخروج",
     "admin": "الإدارة",
-    "superadmin": "المدير العام"
+    "superadmin": "المدير العام",
+    "menu": {
+      "challenges": "التحديات",
+      "trading": "التداول",
+      "learn": "تعلّم",
+      "community": "المجتمع",
+      "about": "حول"
+    },
+    "submenu": {
+      "pricing": "الأسعار",
+      "pricingDesc": "عرض جميع خطط التحدي",
+      "freeTrial": "تجربة مجانية",
+      "freeTrialDesc": "7 أيام تجريبية بمبلغ 5,000$",
+      "howItWorks": "كيف يعمل",
+      "howItWorksDesc": "تعرف على عملية التحدي",
+      "dashboard": "لوحة التحكم",
+      "dashboardDesc": "لوحة التداول الخاصة بك",
+      "leaderboard": "الترتيب",
+      "leaderboardDesc": "ترتيب أفضل المتداولين",
+      "calendar": "التقويم الاقتصادي",
+      "calendarDesc": "أحداث السوق المهمة",
+      "masterclass": "ماستر كلاس",
+      "masterclassDesc": "دورات ودروس التداول",
+      "marketNews": "أخبار السوق",
+      "marketNewsDesc": "أحدث رؤى التداول",
+      "academy": "الأكاديمية",
+      "academyDesc": "أدلة وموارد التداول",
+      "forum": "المنتدى",
+      "forumDesc": "انضم إلى مناقشات المتداولين",
+      "affiliate": "برنامج الشراكة",
+      "affiliateDesc": "اكسب من إحالة المتداولين",
+      "hallOfFame": "قاعة الشهرة",
+      "hallOfFameDesc": "متداولونا الناجحون",
+      "aboutUs": "من نحن",
+      "aboutUsDesc": "قصتنا ومهمتنا",
+      "faq": "الأسئلة الشائعة",
+      "faqDesc": "الأسئلة المتكررة",
+      "contact": "اتصل بنا",
+      "contactDesc": "تواصل معنا"
+    },
+    "phase": {
+      "trial": "تجريبي",
+      "phase1": "المرحلة 1",
+      "phase2": "المرحلة 2",
+      "funded": "ممول"
+    },
+    "buyChallenge": "شراء تحدي",
+    "startChallenge": "ابدأ التحدي",
+    "lockedMessage": "اشترِ تحديًا للوصول",
+    "free": "مجاني",
+    "theme": {
+      "light": "فاتح",
+      "dark": "داكن"
+    }
   },
   "landing": {
     "hero": {
