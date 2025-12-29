@@ -9,6 +9,8 @@ import { signalsAPI } from '../../services/api'
 
 const SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'MSFT', 'AMZN', 'META', 'BTC-USD', 'ETH-USD', 'SOL-USD', 'IAM', 'ATW']
 
+const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
+
 const SignalsPage = () => {
   const navigate = useNavigate()
   const [filter, setFilter] = useState('all')
@@ -21,9 +23,31 @@ const SignalsPage = () => {
   const [selectedSymbol, setSelectedSymbol] = useState(null)
   const [symbolAnalysis, setSymbolAnalysis] = useState(null)
   const [loadingAnalysis, setLoadingAnalysis] = useState(false)
+  const [nextRefresh, setNextRefresh] = useState(AUTO_REFRESH_INTERVAL / 1000) // countdown in seconds
+  const [lastUpdated, setLastUpdated] = useState(new Date())
 
+  // Initial data fetch
   useEffect(() => {
     fetchData()
+  }, [timeframe])
+
+  // Auto-refresh every 5 minutes
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      fetchData()
+      setLastUpdated(new Date())
+      setNextRefresh(AUTO_REFRESH_INTERVAL / 1000)
+    }, AUTO_REFRESH_INTERVAL)
+
+    // Countdown timer - update every second
+    const countdownInterval = setInterval(() => {
+      setNextRefresh(prev => (prev > 0 ? prev - 1 : AUTO_REFRESH_INTERVAL / 1000))
+    }, 1000)
+
+    return () => {
+      clearInterval(refreshInterval)
+      clearInterval(countdownInterval)
+    }
   }, [timeframe])
 
   const fetchData = async () => {
@@ -49,6 +73,15 @@ const SignalsPage = () => {
     setRefreshing(true)
     await fetchData()
     setRefreshing(false)
+    setLastUpdated(new Date())
+    setNextRefresh(AUTO_REFRESH_INTERVAL / 1000) // Reset countdown after manual refresh
+  }
+
+  // Format countdown time
+  const formatCountdown = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
   }
 
   const fetchSymbolAnalysis = async (symbol) => {
@@ -161,10 +194,15 @@ const SignalsPage = () => {
             <Zap size={16} className="text-green-400" />
             <span className="text-sm text-green-400 font-medium">AI Active</span>
           </div>
+          <div className="flex items-center gap-2 px-3 py-2 bg-primary-500/10 rounded-xl border border-primary-500/30">
+            <Clock size={14} className="text-primary-400" />
+            <span className="text-xs text-primary-400 font-mono">{formatCountdown(nextRefresh)}</span>
+          </div>
           <button
             onClick={refreshData}
             disabled={refreshing}
             className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
+            title={`Last updated: ${lastUpdated.toLocaleTimeString()}`}
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
             Refresh

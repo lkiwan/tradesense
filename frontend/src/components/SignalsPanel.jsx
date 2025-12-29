@@ -1,20 +1,46 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { marketAPI } from '../services/api'
-import { TrendingUp, TrendingDown, Minus, Sparkles, RefreshCw } from 'lucide-react'
+import { TrendingUp, TrendingDown, Minus, Sparkles, RefreshCw, Clock } from 'lucide-react'
 import { Skeleton } from './ui/Skeleton'
+
+const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
 
 const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) => {
   const { t } = useTranslation()
   const [signals, setSignals] = useState([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
+  const [nextRefresh, setNextRefresh] = useState(AUTO_REFRESH_INTERVAL / 1000) // countdown in seconds
 
+  // Initial fetch
   useEffect(() => {
     fetchSignals()
-    const interval = setInterval(fetchSignals, 30000) // Refresh every 30s
-    return () => clearInterval(interval)
   }, [symbols])
+
+  // Auto-refresh every 5 minutes with countdown
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      fetchSignals()
+      setNextRefresh(AUTO_REFRESH_INTERVAL / 1000)
+    }, AUTO_REFRESH_INTERVAL)
+
+    const countdownInterval = setInterval(() => {
+      setNextRefresh(prev => (prev > 0 ? prev - 1 : AUTO_REFRESH_INTERVAL / 1000))
+    }, 1000)
+
+    return () => {
+      clearInterval(refreshInterval)
+      clearInterval(countdownInterval)
+    }
+  }, [symbols])
+
+  // Format countdown time
+  const formatCountdown = (seconds) => {
+    const mins = Math.floor(seconds / 60)
+    const secs = seconds % 60
+    return `${mins}:${secs.toString().padStart(2, '0')}`
+  }
 
   const fetchSignals = async () => {
     try {
@@ -114,7 +140,7 @@ const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) =
           <Skeleton width="32px" height="32px" rounded="lg" />
         </div>
         <div className="space-y-4">
-          {[1, 2, 3, 4, 5].map(i => (
+          {[1, 2, 3, 4].map(i => (
             <SignalSkeleton key={i} />
           ))}
         </div>
@@ -131,17 +157,30 @@ const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) =
             {t('signals.title')}
           </h2>
         </div>
-        <button
-          onClick={fetchSignals}
-          disabled={refreshing}
-          className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
-        >
-          <RefreshCw size={18} className={`text-gray-500 ${refreshing ? 'animate-spin' : ''}`} />
-        </button>
+        <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 px-2 py-1 bg-primary-500/10 rounded-lg">
+            <Clock size={12} className="text-primary-500" />
+            <span className="text-xs text-primary-500 font-mono">{formatCountdown(nextRefresh)}</span>
+          </div>
+          <button
+            onClick={() => {
+              fetchSignals()
+              setNextRefresh(AUTO_REFRESH_INTERVAL / 1000)
+            }}
+            disabled={refreshing}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-dark-200 transition-colors"
+          >
+            <RefreshCw size={18} className={`text-gray-500 ${refreshing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
       </div>
 
       <div className="space-y-4">
-        {signals.map((item, index) => (
+        {/* Show only top 4 signals sorted by confidence */}
+        {signals
+          .sort((a, b) => (b.signal?.confidence || 0) - (a.signal?.confidence || 0))
+          .slice(0, 4)
+          .map((item, index) => (
           <div
             key={item.symbol}
             className="p-4 rounded-lg bg-gray-50 dark:bg-dark-200 animate-fadeIn"

@@ -54,7 +54,7 @@ const AnimatedCounter = ({ end, duration = 2000, suffix = '' }) => {
   return <span ref={countRef}>{count.toLocaleString()}{suffix}</span>
 }
 
-// Typing animation component
+// Typing animation component - Optimized for performance
 const TypingText = ({ texts, className = '' }) => {
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [displayedText, setDisplayedText] = useState('')
@@ -67,7 +67,7 @@ const TypingText = ({ texts, className = '' }) => {
         if (displayedText.length < currentText.length) {
           setDisplayedText(currentText.slice(0, displayedText.length + 1))
         } else {
-          setTimeout(() => setIsDeleting(true), 2000)
+          setTimeout(() => setIsDeleting(true), 3000) // Hold text longer
         }
       } else {
         if (displayedText.length > 0) {
@@ -77,7 +77,7 @@ const TypingText = ({ texts, className = '' }) => {
           setCurrentTextIndex((prev) => (prev + 1) % texts.length)
         }
       }
-    }, isDeleting ? 50 : 100)
+    }, isDeleting ? 80 : 150) // Slower typing speed
 
     return () => clearTimeout(timeout)
   }, [displayedText, isDeleting, currentTextIndex, texts])
@@ -632,17 +632,17 @@ const LandingPage = () => {
           {/* Grid Pattern Overlay */}
           <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.03)_1px,transparent_1px)] bg-[size:60px_60px]" />
 
-          {/* Floating Particles */}
+          {/* Floating Particles - Reduced for performance */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(20)].map((_, i) => (
+            {[10, 25, 40, 55, 70, 85].map((left, i) => (
               <div
                 key={i}
                 className="absolute w-1 h-1 bg-primary-500/30 rounded-full animate-float"
                 style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animationDelay: `${Math.random() * 5}s`,
-                  animationDuration: `${5 + Math.random() * 5}s`,
+                  left: `${left}%`,
+                  top: `${20 + (i * 12)}%`,
+                  animationDelay: `${i * 0.8}s`,
+                  animationDuration: `${6 + i}s`,
                 }}
               />
             ))}
@@ -652,7 +652,7 @@ const LandingPage = () => {
         <div className={`relative z-10 w-full max-w-7xl mx-auto px-6 sm:px-8 lg:px-8 transition-all duration-1000 ${heroVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             {/* Left Content */}
-            <div className="text-center lg:text-left pt-16 sm:pt-20">
+            <div className="text-center lg:text-left pt-24 sm:pt-28">
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-card mb-6 sm:mb-8 animate-float hover:scale-105 transition-transform cursor-default">
                 <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
@@ -1605,16 +1605,16 @@ const LandingPage = () => {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-primary-500/10 rounded-full blur-[150px]" />
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
 
-          {/* Floating Particles */}
+          {/* Floating Particles - Reduced for performance */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            {[...Array(10)].map((_, i) => (
+            {[15, 35, 55, 75].map((left, i) => (
               <div
                 key={i}
                 className="absolute w-2 h-2 bg-primary-500/20 rounded-full animate-float"
                 style={{
-                  left: `${10 + i * 10}%`,
-                  top: `${20 + (i % 3) * 20}%`,
-                  animationDelay: `${i * 0.5}s`,
+                  left: `${left}%`,
+                  top: `${25 + (i * 15)}%`,
+                  animationDelay: `${i * 1.2}s`,
                 }}
               />
             ))}

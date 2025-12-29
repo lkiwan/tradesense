@@ -376,11 +376,11 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2">
+            <Link to="/" className="flex items-center gap-2 flex-shrink-0">
               <div className="w-10 h-10 flex items-center justify-center">
                 <img src="/logo.svg" alt="TradeSense AI Logo" className="w-full h-full object-contain" />
               </div>
-              <span className="text-xl font-bold">
+              <span className="text-xl font-bold whitespace-nowrap">
                 <span className="text-gray-900 dark:text-white">Trade</span>
                 <span className="text-primary-500">Sense</span>
               </span>
@@ -771,8 +771,33 @@ const Navbar = () => {
         .animate-fadeIn {
           animation: fadeIn 0.2s ease-out;
         }
+        @keyframes scroll-left {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .animate-scroll-left {
+          animation: scroll-left 30s linear infinite;
+        }
       `}</style>
       </nav>
+
+      {/* Market Ticker Bar */}
+      <div className="fixed top-16 left-0 right-0 z-40 bg-dark-300/95 backdrop-blur-sm border-b border-dark-100 overflow-hidden">
+        <div className="flex animate-scroll-left whitespace-nowrap py-1.5">
+          {/* Duplicate the ticker items for seamless loop */}
+          {[...TICKER_SYMBOLS, ...TICKER_SYMBOLS].map((symbol, index) => {
+            const priceData = livePrices[symbol]
+            return (
+              <TickerItem
+                key={`${symbol}-${index}`}
+                symbol={symbol}
+                price={priceData?.price}
+                changePercent={priceData?.changePercent || priceData?.change_percent || 0}
+              />
+            )
+          })}
+        </div>
+      </div>
     </>
   )
 }

@@ -540,7 +540,7 @@ const TradingPage = () => {
         </div>
 
         {/* Trading Panel & Signals */}
-        <div className="space-y-3 sm:space-y-4 lg:overflow-y-auto" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        <div className="space-y-3 sm:space-y-4">
           {/* Trade Type Selector */}
           <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 p-3 sm:p-4 shadow-lg">
             <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
