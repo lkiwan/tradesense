@@ -667,15 +667,12 @@ const LandingPage = () => {
 
               {/* Title with Gradient Animation */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-4 sm:mb-6 leading-tight">
-                <span className="whitespace-nowrap">
-                  Devenez Trader{' '}
-                  <span className="gradient-text-animated">
-                    <TypingText
-                      texts={['Rentable', 'Pro', 'Expert']}
-                    />
-                  </span>
+                <span className="block">Devenez Trader</span>
+                <span className="gradient-text-animated block">
+                  <TypingText
+                    texts={['Rentable', 'Pro', 'Expert']}
+                  />
                 </span>
-                <br />
                 <span className="text-glow block mt-1 sm:mt-2 text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">avec l'Intelligence Artificielle</span>
               </h1>
 
