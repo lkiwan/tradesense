@@ -297,19 +297,19 @@ const Navbar = () => {
     const hasActiveChild = menu.items.some(item => isActive(item.path))
 
     return (
-      <div key={menu.id} className="relative">
+      <div key={menu.id} className="relative flex-shrink-0">
         <button
           onClick={() => setActiveDropdown(isOpen ? null : menu.id)}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${hasActiveChild || isOpen
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${hasActiveChild || isOpen
             ? 'text-primary-500 bg-primary-500/10'
             : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100'
             }`}
         >
-          <Icon size={18} />
+          <Icon size={18} className="flex-shrink-0" />
           {menu.label}
           <ChevronDown
             size={14}
-            className={`transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+            className={`flex-shrink-0 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
           />
         </button>
 
@@ -418,14 +418,14 @@ const Navbar = () => {
               </button>
 
               {/* Language Selector */}
-              <div className="relative">
+              <div className="relative flex-shrink-0">
                 <button
                   onClick={() => setIsLangOpen(!isLangOpen)}
-                  className="flex items-center gap-1 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 transition-colors"
+                  className="flex items-center gap-1 p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-dark-100 transition-colors whitespace-nowrap"
                 >
-                  <Globe size={20} />
+                  <Globe size={20} className="flex-shrink-0" />
                   <span className="text-sm font-medium">{language.toUpperCase()}</span>
-                  <ChevronDown size={16} />
+                  <ChevronDown size={16} className="flex-shrink-0" />
                 </button>
 
                 {isLangOpen && (
@@ -548,13 +548,13 @@ const Navbar = () => {
                 <div className="flex items-center gap-2">
                   <Link
                     to="/login"
-                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors"
+                    className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-primary-500 transition-colors whitespace-nowrap"
                   >
                     {t('nav.login')}
                   </Link>
                   <Link
                     to="/register"
-                    className="px-4 py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors"
+                    className="px-4 py-2 text-sm font-medium bg-primary-500 hover:bg-primary-600 text-white rounded-lg transition-colors whitespace-nowrap"
                   >
                     {t('nav.register')}
                   </Link>
@@ -565,7 +565,7 @@ const Navbar = () => {
               {!hasActiveChallenge && (
                 <Link
                   to="/pricing"
-                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-primary-500/25 ml-2"
+                  className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-primary-500 to-blue-500 hover:from-primary-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all shadow-lg shadow-primary-500/25 ml-2 whitespace-nowrap"
                 >
                   <Zap size={16} />
                   Start Challenge
