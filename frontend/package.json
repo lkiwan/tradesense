@@ -20,9 +20,13 @@
     "apexcharts": "^5.3.6",
     "axios": "^1.6.2",
     "date-fns": "^4.1.0",
+    "exceljs": "^4.4.0",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.23.26",
     "i18next": "^23.7.6",
     "i18next-browser-languagedetector": "^7.2.0",
+    "jspdf": "^3.0.4",
+    "jspdf-autotable": "^5.0.2",
     "lightweight-charts": "^4.2.3",
     "lucide-react": "^0.294.0",
     "react": "^18.2.0",
@@ -32,7 +36,8 @@
     "react-i18next": "^13.5.0",
     "react-router-dom": "^6.20.0",
     "recharts": "^3.6.0",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/react": "^18.2.37",

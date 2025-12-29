@@ -43,10 +43,10 @@ const DataTable = ({
   const isAllSelected = data.length > 0 && selectedRows.length === data.length
 
   const TableHeader = () => (
-    <thead>
+    <thead className="bg-dark-200/50">
       <tr className="border-b border-dark-200">
         {selectable && (
-          <th className="px-4 py-3 text-left">
+          <th className="px-3 sm:px-4 py-3 text-left w-12">
             <input
               type="checkbox"
               checked={isAllSelected}
@@ -58,7 +58,7 @@ const DataTable = ({
         {columns.map((column) => (
           <th
             key={column.key}
-            className={`px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider ${
+            className={`px-3 sm:px-4 py-3 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap ${
               column.sortable ? 'cursor-pointer hover:text-white' : ''
             } ${column.className || ''}`}
             onClick={() => column.sortable && handleSort(column.key)}
@@ -89,7 +89,7 @@ const DataTable = ({
           }`}
         >
           {selectable && (
-            <td className="px-4 py-3">
+            <td className="px-3 sm:px-4 py-3 w-12">
               <input
                 type="checkbox"
                 checked={selectedRows.includes(row.id)}
@@ -99,7 +99,7 @@ const DataTable = ({
             </td>
           )}
           {columns.map((column) => (
-            <td key={column.key} className={`px-4 py-3 ${column.cellClassName || ''}`}>
+            <td key={column.key} className={`px-3 sm:px-4 py-3 whitespace-nowrap ${column.cellClassName || ''}`}>
               {column.render ? column.render(row[column.key], row) : row[column.key]}
             </td>
           ))}
@@ -113,12 +113,12 @@ const DataTable = ({
       {[...Array(5)].map((_, index) => (
         <tr key={index} className="border-b border-dark-200">
           {selectable && (
-            <td className="px-4 py-3">
+            <td className="px-3 sm:px-4 py-3">
               <div className="w-4 h-4 bg-dark-200 rounded animate-pulse"></div>
             </td>
           )}
           {columns.map((column) => (
-            <td key={column.key} className="px-4 py-3">
+            <td key={column.key} className="px-3 sm:px-4 py-3">
               <div className="h-4 bg-dark-200 rounded animate-pulse w-3/4"></div>
             </td>
           ))}
@@ -148,43 +148,43 @@ const DataTable = ({
     const end = Math.min(page * perPage, total)
 
     return (
-      <div className="flex items-center justify-between px-4 py-3 border-t border-dark-200">
-        <div className="text-sm text-gray-500">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 px-3 sm:px-4 py-3 border-t border-dark-200">
+        <div className="text-xs sm:text-sm text-gray-500 text-center sm:text-left">
           Showing <span className="font-medium text-white">{start}</span> to{' '}
           <span className="font-medium text-white">{end}</span> of{' '}
-          <span className="font-medium text-white">{total}</span> results
+          <span className="font-medium text-white">{total}</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1 sm:gap-2">
           <button
             onClick={() => onPageChange(1)}
             disabled={page === 1}
-            className="p-1.5 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white"
+            className="p-1.5 sm:p-2 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center touch-manipulation"
           >
-            <ChevronsLeft size={18} />
+            <ChevronsLeft size={16} />
           </button>
           <button
             onClick={() => onPageChange(page - 1)}
             disabled={page === 1}
-            className="p-1.5 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white"
+            className="p-1.5 sm:p-2 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center touch-manipulation"
           >
-            <ChevronLeft size={18} />
+            <ChevronLeft size={16} />
           </button>
-          <span className="px-3 py-1 text-sm text-white">
-            Page {page} of {totalPages}
+          <span className="px-2 sm:px-3 py-1 text-xs sm:text-sm text-white whitespace-nowrap">
+            {page} / {totalPages}
           </span>
           <button
             onClick={() => onPageChange(page + 1)}
             disabled={page === totalPages}
-            className="p-1.5 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white"
+            className="p-1.5 sm:p-2 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center touch-manipulation"
           >
-            <ChevronRight size={18} />
+            <ChevronRight size={16} />
           </button>
           <button
             onClick={() => onPageChange(totalPages)}
             disabled={page === totalPages}
-            className="p-1.5 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white"
+            className="p-1.5 sm:p-2 rounded hover:bg-dark-200 disabled:opacity-50 disabled:cursor-not-allowed text-gray-400 hover:text-white min-h-[36px] min-w-[36px] flex items-center justify-center touch-manipulation"
           >
-            <ChevronsRight size={18} />
+            <ChevronsRight size={16} />
           </button>
         </div>
       </div>
@@ -195,37 +195,37 @@ const DataTable = ({
     <div className={`bg-dark-100 rounded-xl border border-dark-200 overflow-hidden ${className}`}>
       {/* Toolbar */}
       {(searchable || actions) && (
-        <div className="flex items-center justify-between p-4 border-b border-dark-200">
-          <div className="flex items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-3 sm:p-4 border-b border-dark-200">
+          <div className="flex items-center gap-3 w-full sm:w-auto">
             {searchable && (
-              <div className="flex items-center gap-2 px-3 py-2 bg-dark-200 rounded-lg">
-                <Search size={16} className="text-gray-500" />
+              <div className="flex items-center gap-2 px-3 py-2 bg-dark-200 rounded-lg flex-1 sm:flex-none">
+                <Search size={16} className="text-gray-500 flex-shrink-0" />
                 <input
                   type="text"
                   placeholder={searchPlaceholder}
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-48"
+                  className="bg-transparent text-sm text-white placeholder-gray-500 outline-none w-full sm:w-48"
                 />
               </div>
             )}
             {selectable && selectedRows.length > 0 && (
-              <span className="text-sm text-gray-400">
+              <span className="text-sm text-gray-400 whitespace-nowrap">
                 {selectedRows.length} selected
               </span>
             )}
           </div>
           {actions && (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
               {actions}
             </div>
           )}
         </div>
       )}
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full">
+      {/* Table with horizontal scroll */}
+      <div className="overflow-x-auto scrollbar-hide">
+        <table className="w-full min-w-[600px]">
           <TableHeader />
           {loading ? <LoadingSkeleton /> : data.length === 0 ? <EmptyState /> : <TableBody />}
         </table>
@@ -269,7 +269,7 @@ export const StatusBadge = ({ status, type = 'default' }) => {
   const style = statusStyles[status?.toLowerCase()] || statusStyles.default
 
   return (
-    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${style}`}>
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border whitespace-nowrap ${style}`}>
       {status}
     </span>
   )
@@ -285,14 +285,14 @@ export const ActionButton = ({ icon: Icon, label, onClick, variant = 'default', 
   }
 
   const sizes = {
-    sm: 'p-1.5',
-    md: 'p-2',
+    sm: 'p-1.5 min-h-[36px] min-w-[36px]',
+    md: 'p-2 min-h-[40px] min-w-[40px]',
   }
 
   return (
     <button
       onClick={onClick}
-      className={`rounded-lg transition-colors ${variants[variant]} ${sizes[size]}`}
+      className={`rounded-lg transition-colors flex items-center justify-center touch-manipulation ${variants[variant]} ${sizes[size]}`}
       title={label}
     >
       <Icon size={size === 'sm' ? 16 : 18} />

@@ -53,7 +53,7 @@ const generateData = (symbol, timeframe) => {
 }
 
 // Single Chart Component
-const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeight }) => {
+const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeight, isMobile }) => {
   const containerRef = useRef(null)
   const chartRef = useRef(null)
   const seriesRef = useRef(null)
@@ -69,9 +69,10 @@ const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeig
       chartRef.current = null
     }
 
+    const toolbarHeight = isMobile ? 80 : 50 // Taller toolbar on mobile for stacked layout
     const chart = createChart(containerRef.current, {
       width: containerRef.current.clientWidth,
-      height: chartHeight - 50, // Account for toolbar
+      height: chartHeight - toolbarHeight, // Account for toolbar
       layout: {
         background: { type: ColorType.Solid, color: '#1a1a2e' },
         textColor: '#d1d5db',
@@ -127,15 +128,15 @@ const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeig
   }, [data, chartHeight])
 
   return (
-    <div className="flex flex-col h-full bg-slate-900 rounded-lg overflow-hidden">
+    <div className="flex flex-col h-full bg-slate-900 rounded-lg sm:rounded-xl overflow-hidden">
       {/* Toolbar */}
-      <div className="flex items-center justify-between px-3 py-2 bg-slate-800 border-b border-slate-700">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-2 sm:px-3 py-2 bg-slate-800 border-b border-slate-700 gap-2 sm:gap-0">
+        <div className="flex items-center gap-2 flex-wrap">
           {/* Symbol selector */}
           <select
             value={symbol}
             onChange={(e) => onSymbolChange(e.target.value)}
-            className="bg-slate-700 text-white text-sm rounded px-2 py-1 border-none focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="bg-slate-700 text-white text-xs sm:text-sm rounded px-2 py-1.5 sm:py-1 border-none focus:outline-none focus:ring-1 focus:ring-cyan-500 min-h-[36px] sm:min-h-0 touch-manipulation"
           >
             {symbols.map(s => (
               <option key={s} value={s}>{s}</option>
@@ -148,7 +149,7 @@ const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeig
               <button
                 key={tf}
                 onClick={() => onTimeframeChange(tf)}
-                className={`px-2 py-1 text-xs font-medium transition-colors ${
+                className={`px-1.5 sm:px-2 py-1.5 sm:py-1 text-[10px] sm:text-xs font-medium transition-colors min-w-[28px] sm:min-w-0 touch-manipulation ${
                   timeframe === tf
                     ? 'bg-cyan-500 text-white'
                     : 'text-slate-400 hover:text-white hover:bg-slate-600'
@@ -161,8 +162,8 @@ const Chart = ({ symbol, timeframe, onSymbolChange, onTimeframeChange, chartHeig
         </div>
 
         {/* Price display */}
-        <div className="text-sm">
-          <span className="text-slate-400 mr-2">{symbol}</span>
+        <div className="text-xs sm:text-sm flex items-center justify-end">
+          <span className="text-slate-400 mr-2 hidden sm:inline">{symbol}</span>
           <span className={`font-medium ${data[data.length - 1]?.close > data[data.length - 2]?.close ? 'text-green-400' : 'text-red-400'}`}>
             {data[data.length - 1]?.close?.toFixed(symbol.includes('JPY') ? 3 : 5)}
           </span>
@@ -181,18 +182,23 @@ const ChartsPage = () => {
     { id: 1, symbol: 'EURUSD', timeframe: '1H' }
   ])
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640)
   const containerRef = useRef(null)
 
   // Calculate chart height based on layout
   const getChartHeight = () => {
-    const availableHeight = window.innerHeight - 200 // Account for headers/toolbars
+    const isMobileView = window.innerWidth < 640
+    const availableHeight = window.innerHeight - (isMobileView ? 160 : 200) // Less padding on mobile
     return Math.floor(availableHeight / currentLayout.rows)
   }
 
   const [chartHeight, setChartHeight] = useState(getChartHeight())
 
   useEffect(() => {
-    const handleResize = () => setChartHeight(getChartHeight())
+    const handleResize = () => {
+      setChartHeight(getChartHeight())
+      setIsMobile(window.innerWidth < 640)
+    }
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [currentLayout])
@@ -239,29 +245,29 @@ const ChartsPage = () => {
   }
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-slate-950 p-4">
+    <div ref={containerRef} className="min-h-screen bg-slate-950 p-2 sm:p-4">
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4">
-          <h1 className="text-xl font-bold text-white flex items-center gap-2">
-            <BarChart2 className="w-6 h-6 text-cyan-400" />
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3 sm:mb-4 gap-3 sm:gap-0">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <h1 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
+            <BarChart2 className="w-5 h-5 sm:w-6 sm:h-6 text-cyan-400" />
             Advanced Charts
           </h1>
 
           {/* Layout selector */}
-          <div className="flex bg-slate-800 rounded-lg overflow-hidden">
+          <div className="flex bg-slate-800 rounded-lg overflow-hidden w-fit">
             {layouts.map(layout => (
               <button
                 key={layout.id}
                 onClick={() => handleLayoutChange(layout)}
-                className={`flex items-center gap-1.5 px-3 py-2 text-sm transition-colors ${
+                className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 text-xs sm:text-sm transition-colors touch-manipulation ${
                   currentLayout.id === layout.id
                     ? 'bg-cyan-500 text-white'
                     : 'text-slate-400 hover:text-white hover:bg-slate-700'
                 }`}
               >
-                <layout.icon className="w-4 h-4" />
-                {layout.label}
+                <layout.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">{layout.label}</span>
               </button>
             ))}
           </div>
@@ -270,20 +276,22 @@ const ChartsPage = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={toggleFullscreen}
-            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors"
+            className="p-2 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300 transition-colors touch-manipulation min-h-[40px] min-w-[40px] flex items-center justify-center"
             title={isFullscreen ? 'Exit Fullscreen' : 'Fullscreen'}
           >
-            {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+            {isFullscreen ? <Minimize2 className="w-4 h-4 sm:w-5 sm:h-5" /> : <Maximize2 className="w-4 h-4 sm:w-5 sm:h-5" />}
           </button>
         </div>
       </div>
 
       {/* Charts Grid */}
       <div
-        className="grid gap-2"
+        className="grid gap-1.5 sm:gap-2"
         style={{
-          gridTemplateColumns: `repeat(${currentLayout.cols}, 1fr)`,
-          gridTemplateRows: `repeat(${currentLayout.rows}, ${chartHeight}px)`,
+          gridTemplateColumns: isMobile ? '1fr' : `repeat(${currentLayout.cols}, 1fr)`,
+          gridTemplateRows: isMobile
+            ? `repeat(${charts.length}, ${chartHeight}px)`
+            : `repeat(${currentLayout.rows}, ${chartHeight}px)`,
         }}
       >
         {charts.map(chart => (
@@ -294,18 +302,22 @@ const ChartsPage = () => {
             onSymbolChange={(symbol) => updateChart(chart.id, { symbol })}
             onTimeframeChange={(timeframe) => updateChart(chart.id, { timeframe })}
             chartHeight={chartHeight}
+            isMobile={isMobile}
           />
         ))}
       </div>
 
       {/* Info bar */}
-      <div className="mt-4 flex items-center justify-between text-sm text-slate-400">
-        <div className="flex items-center gap-4">
+      <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between text-xs sm:text-sm text-slate-400 gap-2 sm:gap-0">
+        <div className="flex items-center gap-3 sm:gap-4">
           <span>Layout: {currentLayout.label}</span>
           <span>Charts: {charts.length}</span>
         </div>
-        <div>
+        <div className="hidden sm:block">
           Click on a chart to interact • Use symbol dropdown to change pair • Select timeframe from toolbar
+        </div>
+        <div className="sm:hidden text-[10px] text-slate-500">
+          Tap chart to interact • Use dropdown for symbols
         </div>
       </div>
     </div>

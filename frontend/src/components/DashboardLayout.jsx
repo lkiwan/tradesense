@@ -111,9 +111,21 @@ const DashboardLayout = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [sidebarHovered, setSidebarHovered] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
 
   // Sidebar expands on hover
   const isSidebarExpanded = sidebarOpen || sidebarHovered
+
+  // Close user menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (userMenuOpen && !event.target.closest('.user-menu-container')) {
+        setUserMenuOpen(false)
+      }
+    }
+    document.addEventListener('click', handleClickOutside)
+    return () => document.removeEventListener('click', handleClickOutside)
+  }, [userMenuOpen])
 
   // Determine active category based on current path
   const getActiveCategory = () => {
@@ -214,10 +226,10 @@ const DashboardLayout = ({ children }) => {
   }
 
   return (
-    <div className="min-h-screen bg-dark-300 flex flex-col">
+    <div className="min-h-screen bg-dark-300 flex flex-col overflow-x-hidden max-w-[100vw]">
       {/* Top Header with Category Tabs */}
-      <header className="fixed top-0 left-0 right-0 h-16 bg-dark-100 border-b border-dark-200 z-50">
-        <div className="flex items-center justify-between h-full px-4 lg:px-6">
+      <header className="fixed top-0 left-0 right-0 h-16 bg-dark-100 border-b border-dark-200 z-50 max-w-[100vw]">
+        <div className="flex items-center justify-between h-full px-4 lg:px-6 max-w-[100vw]">
           {/* Logo */}
           <Link to="/accounts" className="flex items-center gap-3 flex-shrink-0">
             <img src="/logo.svg" alt="TradeSense" className="w-10 h-10 object-contain" />
@@ -259,8 +271,11 @@ const DashboardLayout = ({ children }) => {
             <NotificationBell />
 
             {/* User Dropdown */}
-            <div className="relative group">
-              <button className="flex items-center gap-3 p-2 rounded-lg hover:bg-dark-200/50 transition-colors">
+            <div className="relative user-menu-container">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className="flex items-center gap-2 sm:gap-3 p-2 rounded-lg hover:bg-dark-200/50 transition-colors min-h-[44px] touch-manipulation"
+              >
                 <div className="w-8 h-8 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center">
                   <span className="text-white font-semibold text-sm">
                     {user?.username?.charAt(0).toUpperCase() || 'U'}
@@ -270,36 +285,43 @@ const DashboardLayout = ({ children }) => {
                   <p className="text-sm font-medium text-white">{user?.username || 'User'}</p>
                   <p className="text-xs text-gray-500">{user?.email || ''}</p>
                 </div>
-                <ChevronDown size={16} className="text-gray-400 hidden md:block" />
+                <ChevronDown size={16} className={`text-gray-400 transition-transform duration-200 ${userMenuOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Dropdown Menu */}
-              <div className="absolute right-0 top-full mt-2 w-48 bg-dark-100 rounded-xl border border-dark-200 shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <div className="py-2">
-                  <Link
-                    to="/profile/default"
-                    className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors"
-                  >
-                    <User size={16} />
-                    <span>My Profile</span>
-                  </Link>
-                  <Link
-                    to="/settings"
-                    className="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors"
-                  >
-                    <Settings size={16} />
-                    <span>Settings</span>
-                  </Link>
-                  <hr className="my-2 border-dark-200" />
-                  <button
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-4 py-2 text-red-400 hover:text-red-300 hover:bg-dark-200 transition-colors"
-                  >
-                    <LogOut size={16} />
-                    <span>Logout</span>
-                  </button>
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full mt-2 w-52 bg-dark-100 rounded-xl border border-dark-200 shadow-2xl z-[100] animate-fadeIn">
+                  <div className="py-2">
+                    <Link
+                      to="/profile/default"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
+                    >
+                      <User size={18} />
+                      <span className="font-medium">My Profile</span>
+                    </Link>
+                    <Link
+                      to="/settings"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
+                    >
+                      <Settings size={18} />
+                      <span className="font-medium">Settings</span>
+                    </Link>
+                    <hr className="my-2 border-dark-200" />
+                    <button
+                      onClick={() => {
+                        setUserMenuOpen(false)
+                        handleLogout()
+                      }}
+                      className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:text-red-300 hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
+                    >
+                      <LogOut size={18} />
+                      <span className="font-medium">Logout</span>
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -314,8 +336,8 @@ const DashboardLayout = ({ children }) => {
       </header>
 
       {/* Mobile Category Tabs */}
-      <div className="lg:hidden fixed top-16 left-0 right-0 bg-dark-100 border-b border-dark-200 z-40 overflow-x-auto">
-        <div className="flex items-center gap-1 p-2 min-w-max">
+      <div className="lg:hidden fixed top-16 left-0 right-0 bg-dark-100 border-b border-dark-200 z-40 overflow-x-auto scrollbar-hide max-w-[100vw]">
+        <div className="flex items-center gap-1 p-2 w-max">
           {CATEGORIES.map(category => (
             <CategoryTab
               key={category.id}
@@ -412,12 +434,12 @@ const DashboardLayout = ({ children }) => {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 transition-all duration-300 lg:ml-16 mt-12 lg:mt-0">
+        <main className="flex-1 transition-all duration-300 lg:ml-16 mt-12 lg:mt-0 overflow-x-hidden max-w-[100vw] lg:max-w-[calc(100vw-64px)]">
           {/* Email Verification Banner */}
           <EmailVerificationBanner />
 
           {/* Page Content */}
-          <div className="p-4 lg:p-8">
+          <div className="p-4 lg:p-8 overflow-x-hidden w-full">
             {children}
           </div>
         </main>

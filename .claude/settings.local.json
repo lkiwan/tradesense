@@ -277,7 +277,21 @@
       "Bash(del \"C:\\\\Users\\\\arhou\\\\OneDrive\\\\Bureau\\\\Projet telhaoui\\\\backend\\\\*.db-shm\")",
       "Bash(wmic process where \"name=''python.exe''\" get processid,commandline)",
       "Bash(wmic process where \"name=''python.exe''\" delete)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(grep:*)",
+      "Bash(for file in *.jsx)",
+      "Bash(do)",
+      "Bash(if grep -q \"md:\\\\|lg:\\\\|sm:\" \"$file\")",
+      "Bash(then)",
+      "Bash(echo:*)",
+      "Bash(else)",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(find:*)",
+      "Bash(venvScriptsactivate)",
+      "Bash(\"venv\\\\Scripts\\\\python.exe\" app.py)",
+      "Bash(npx vite build:*)",
+      "Bash(node:*)"
     ]
   }
 }

@@ -429,12 +429,12 @@ const AccountsPage = () => {
   }
 
   return (
-    <div className="space-y-4 sm:space-y-6 pb-6 sm:pb-8 px-2 sm:px-0">
+    <div className="space-y-4 sm:space-y-6 pb-6 sm:pb-8 px-2 sm:px-0 overflow-x-hidden">
       {/* Header Section */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex flex-col gap-3 sm:gap-4"
+        className="flex flex-col gap-3 sm:gap-4 text-center sm:text-left"
       >
         <div>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
@@ -444,7 +444,7 @@ const AccountsPage = () => {
         </div>
         <Link
           to="/trading"
-          className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20 w-full sm:w-auto min-h-[48px] touch-manipulation"
+          className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20 w-full sm:w-auto min-h-[48px] touch-manipulation mx-auto sm:mx-0"
         >
           <Activity size={18} />
           Start Trading
@@ -555,7 +555,7 @@ const AccountsPage = () => {
         transition={{ delay: 0.15 }}
         className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg p-3 sm:p-6"
       >
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3 sm:mb-4">
+        <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
             <LineChart className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             <h3 className="text-sm sm:text-lg font-semibold text-white">Account Development</h3>
@@ -583,7 +583,7 @@ const AccountsPage = () => {
         transition={{ delay: 0.2 }}
         className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300 shadow-lg p-4 sm:p-6"
       >
-        <h3 className="text-sm sm:text-lg font-semibold text-white mb-4 sm:mb-6">Your Journey</h3>
+        <h3 className="text-sm sm:text-lg font-semibold text-white mb-4 sm:mb-6 text-center sm:text-left">Your Journey</h3>
         <div className="flex items-center justify-center overflow-x-auto pb-2">
           <PhaseStep phase="trial" label="Trial" isActive={challenge.phase === 'trial'} isCompleted={currentPhaseIndex > 0} />
           <PhaseStep phase="evaluation" label="Phase 1" isActive={challenge.phase === 'evaluation'} isCompleted={currentPhaseIndex > 1} />
@@ -611,7 +611,7 @@ const AccountsPage = () => {
           transition={{ delay: 0.3 }}
           className="lg:col-span-2 bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-6"
         >
-          <div className="flex items-center gap-2 mb-3 sm:mb-4">
+          <div className="flex items-center justify-center sm:justify-start gap-2 mb-3 sm:mb-4">
             <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
             <h3 className="text-sm sm:text-lg font-semibold text-white">Trading Credentials</h3>
           </div>
@@ -639,15 +639,17 @@ const AccountsPage = () => {
               </div>
             ))}
           </div>
-          <a
-            href="https://www.metatrader5.com/en/download"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-3 sm:mt-4 inline-flex items-center gap-2 px-4 py-2.5 bg-dark-200/50 hover:bg-dark-300 rounded-lg text-sm text-gray-300 hover:text-white transition-all min-h-[44px] touch-manipulation"
-          >
-            <ExternalLink size={14} />
-            Download MT5
-          </a>
+          <div className="flex justify-center sm:justify-start mt-3 sm:mt-4">
+            <a
+              href="https://www.metatrader5.com/en/download"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 bg-dark-200/50 hover:bg-dark-300 rounded-lg text-sm text-gray-300 hover:text-white transition-all min-h-[44px] touch-manipulation"
+            >
+              <ExternalLink size={14} />
+              Download MT5
+            </a>
+          </div>
         </motion.div>
 
         {/* Quick Actions */}
@@ -659,7 +661,7 @@ const AccountsPage = () => {
         >
           {/* Plan Info */}
           <div className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-5">
-            <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4">Account Details</h4>
+            <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 text-center sm:text-left">Account Details</h4>
             <div className="space-y-2 sm:space-y-3 text-sm">
               <div className="flex justify-between items-center">
                 <span className="text-gray-400">Plan Type</span>
@@ -679,7 +681,7 @@ const AccountsPage = () => {
           {/* Add-ons */}
           {challenge.phase !== 'trial' && (
             <div className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-5">
-              <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 flex items-center gap-2">
+              <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 flex items-center justify-center sm:justify-start gap-2">
                 <Zap size={14} className="text-yellow-400" />
                 Add-ons
               </h4>
@@ -707,14 +709,14 @@ const AccountsPage = () => {
 
           {/* Promo */}
           <div className="bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-xl sm:rounded-2xl border border-purple-500/30 p-4 sm:p-5">
-            <div className="flex items-start gap-3">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-3 text-center sm:text-left">
               <div className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                 <Gift size={18} className="text-white" />
               </div>
               <div>
                 <h4 className="font-semibold text-white text-sm sm:text-base mb-1">Special Offer</h4>
                 <p className="text-xs sm:text-sm text-gray-300 mb-2 sm:mb-3">20% off with code TRADER20</p>
-                <Link to="/my-offers" className="text-xs sm:text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center gap-1">
+                <Link to="/my-offers" className="text-xs sm:text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center justify-center sm:justify-start gap-1 w-full sm:w-auto">
                   View Offers <ArrowRight size={14} />
                 </Link>
               </div>
@@ -732,7 +734,7 @@ const AccountsPage = () => {
             exit={{ opacity: 0, y: -20 }}
             className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-green-500/20 transition-all duration-300 shadow-lg"
           >
-            <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between">
+            <div className="p-3 sm:p-4 border-b border-white/5 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-0">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
                 <span className="font-semibold text-white text-sm sm:text-base">Open Positions</span>
@@ -796,7 +798,7 @@ const AccountsPage = () => {
           transition={{ delay: 0.5 }}
           className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-primary-500/20 transition-all duration-300 shadow-lg"
         >
-          <div className="p-3 sm:p-4 border-b border-white/5 flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-white/5 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-0">
             <div className="flex items-center gap-2">
               <Clock size={16} className="text-gray-400" />
               <span className="font-semibold text-white text-sm sm:text-base">History</span>
@@ -806,8 +808,8 @@ const AccountsPage = () => {
               {stats.totalPnl >= 0 ? '+' : ''}${stats.totalPnl.toFixed(0)}
             </span>
           </div>
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[400px]">
+          <div className="overflow-x-auto scrollbar-hide">
+            <table className="w-full min-w-[320px]">
               <thead className="bg-dark-200/50">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
                   <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>

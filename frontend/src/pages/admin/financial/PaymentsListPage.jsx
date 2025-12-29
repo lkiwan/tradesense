@@ -1,17 +1,33 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 import {
   Search, Filter, CreditCard, DollarSign, Calendar, Eye,
-  MoreVertical, RefreshCw, Download, CheckCircle, XCircle, Clock,
+  MoreVertical, RefreshCw, CheckCircle, XCircle, Clock,
   ArrowUpRight, ArrowDownRight
 } from 'lucide-react'
 import { AdminLayout, DataTable, StatusBadge } from '../../../components/admin'
 import adminApi from '../../../services/adminApi'
+import ExportDropdown from '../../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addPaymentsSummaryStats,
+  addTotalRevenueCard,
+  addPaymentsTable,
+  addPaymentMethodBreakdown
+} from '../../../utils/exports/pdfExport'
+import { exportPaymentsListToExcel } from '../../../utils/exports/excelExport'
 
 const PaymentsListPage = () => {
   const navigate = useNavigate()
   const [payments, setPayments] = useState([])
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [stats, setStats] = useState({
     total: 0,
     completed: 0,
@@ -131,6 +147,63 @@ const PaymentsListPage = () => {
       bank: '🏦'
     }
     return icons[method] || '💰'
+  }
+
+  // Export handlers
+  const handleExportPDF = async () => {
+    setExporting(true)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Page 1: Header and Summary
+      yPosition = addHeader(doc, 'Payments Report', `${stats.total} Total Payments`)
+      yPosition += 10
+
+      yPosition = addSectionTitle(doc, 'Payment Statistics', yPosition)
+      yPosition = addPaymentsSummaryStats(doc, stats, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Total Revenue', yPosition)
+      yPosition = addTotalRevenueCard(doc, stats.totalAmount, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Payment Method Breakdown', yPosition)
+      yPosition = addPaymentMethodBreakdown(doc, payments, yPosition)
+
+      // Page 2: Payments Table
+      doc.addPage()
+      yPosition = 20
+
+      yPosition = addSectionTitle(doc, 'Payments List', yPosition)
+      yPosition = addPaymentsTable(doc, payments, yPosition)
+
+      // Add footer to all pages
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        addFooter(doc, i, pageCount)
+      }
+
+      savePDF(doc, generateFileName('PaymentsList', 'pdf'))
+      toast.success('PDF exported successfully!')
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+      toast.error('Failed to export PDF')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExporting(true)
+    try {
+      await exportPaymentsListToExcel(payments, stats)
+      toast.success('Excel exported successfully!')
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+      toast.error('Failed to export Excel')
+    } finally {
+      setExporting(false)
+    }
   }
 
   const columns = [
@@ -348,12 +421,12 @@ const PaymentsListPage = () => {
             >
               <RefreshCw size={18} />
             </button>
-            <button
-              className="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white hover:bg-dark-300 transition-colors"
-              title="Export"
-            >
-              <Download size={18} />
-            </button>
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportExcel={handleExportExcel}
+              loading={exporting}
+              disabled={loading}
+            />
           </div>
         </div>
       </div>

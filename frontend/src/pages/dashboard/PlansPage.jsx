@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Target, TrendingDown, Calendar, Clock, RefreshCw,
-  Flame, Award, ArrowRight, Info,
+  Flame, Award, ArrowRight, Info, ChevronDown,
   Cpu, Brain, Zap, Shield, BarChart3, TrendingUp,
   Sparkles, Crown, Rocket, Star, CheckCircle2
 } from 'lucide-react'
@@ -152,6 +152,7 @@ const PlansPage = () => {
   const [selectedModel, setSelectedModel] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showNumbers, setShowNumbers] = useState(true)
+  const [expandedCard, setExpandedCard] = useState(null) // For mobile expandable cards
 
   useEffect(() => {
     fetchModels()
@@ -184,8 +185,8 @@ const PlansPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="animate-spin w-10 h-10 border-3 border-primary-500 border-t-transparent rounded-full"></div>
+      <div className="flex items-center justify-center min-h-[60vh] px-4">
+        <div className="animate-spin w-8 h-8 sm:w-10 sm:h-10 border-2 sm:border-3 border-primary-500 border-t-transparent rounded-full"></div>
       </div>
     )
   }
@@ -194,28 +195,28 @@ const PlansPage = () => {
   const sortedSizes = selectedModel?.account_sizes?.slice().sort((a, b) => b.balance - a.balance) || []
 
   return (
-    <div className="space-y-6 md:space-y-8 -m-4 md:-m-6">
+    <div className="space-y-4 sm:space-y-6 md:space-y-8 -m-2 sm:-m-4 md:-m-6 overflow-x-hidden">
       {/* Hero Section */}
-      <section className="relative py-10 md:py-16 overflow-hidden rounded-2xl mx-4 md:mx-6">
+      <section className="relative py-8 sm:py-10 md:py-16 overflow-hidden rounded-xl sm:rounded-2xl mx-2 sm:mx-4 md:mx-6">
         {/* Background Effects */}
         <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/15 rounded-full blur-[150px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-blue-500/10 rounded-full blur-[120px]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary-500/5 rounded-full blur-[200px]" />
-          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:50px_50px]" />
+          <div className="absolute top-1/4 left-1/4 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-purple-500/15 rounded-full blur-[100px] sm:blur-[150px]" />
+          <div className="absolute bottom-1/4 right-1/4 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-blue-500/10 rounded-full blur-[80px] sm:blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] sm:w-[450px] md:w-[600px] h-[300px] sm:h-[450px] md:h-[600px] bg-primary-500/5 rounded-full blur-[150px] sm:blur-[200px]" />
+          <div className="absolute inset-0 bg-[linear-gradient(rgba(34,197,94,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(34,197,94,0.02)_1px,transparent_1px)] bg-[size:30px_30px] sm:bg-[size:50px_50px]" />
         </div>
 
-        <div className="relative max-w-5xl mx-auto px-3 md:px-4 text-center">
+        <div className="relative max-w-5xl mx-auto px-3 sm:px-4 md:px-6 text-center">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-4 md:px-5 py-2 md:py-2.5 glass-card rounded-full mb-6 md:mb-8">
-            <Brain className="text-purple-400" size={18} />
-            <span className="text-purple-300 text-xs md:text-sm font-medium">Propulse par l'Intelligence Artificielle</span>
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 glass-card rounded-full mb-4 sm:mb-6 md:mb-8">
+            <Brain className="text-purple-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
+            <span className="text-purple-300 text-[10px] sm:text-xs md:text-sm font-medium">Propulse par l'Intelligence Artificielle</span>
           </div>
 
-          <h1 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight px-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight px-1 sm:px-2">
             Tradez avec une <span className="gradient-text-animated">IA Predictive</span>
           </h1>
-          <p className="text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-2">
+          <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10 leading-relaxed px-2">
             Notre intelligence artificielle analyse des millions de donnees en temps reel pour predire les mouvements du marche.
           </p>
 
@@ -254,19 +255,19 @@ const PlansPage = () => {
 
       {/* Active Challenge Notice */}
       {hasActiveChallenge && (
-        <div className="mx-4 md:mx-6 bg-blue-500/10 border border-blue-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-          <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
-            <TrendingUp className="text-white" size={20} />
+        <div className="mx-2 sm:mx-4 md:mx-6 bg-blue-500/10 border border-blue-500/30 rounded-lg sm:rounded-xl p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
+            <TrendingUp className="text-white w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white">Vous avez un challenge actif</h3>
-            <p className="text-sm text-gray-400 break-words">
+            <h3 className="font-semibold text-white text-sm sm:text-base">Vous avez un challenge actif</h3>
+            <p className="text-xs sm:text-sm text-gray-400 break-words">
               Actuellement en {challenge?.phase} avec ${challenge?.current_balance?.toLocaleString()} de solde
             </p>
           </div>
           <Link
             to="/accounts"
-            className="px-4 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors min-h-[44px] w-full sm:w-auto text-center"
+            className="px-4 py-2.5 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors min-h-[44px] w-full sm:w-auto text-center text-sm sm:text-base touch-manipulation active:scale-95"
           >
             Voir le Dashboard
           </Link>
@@ -275,189 +276,186 @@ const PlansPage = () => {
 
       {/* Pricing Section */}
       {selectedModel && sortedSizes.length > 0 && (
-        <section className="relative py-6 md:py-8 bg-dark-300/30 rounded-2xl mx-4 md:mx-6">
-          <div className="relative px-3 md:px-4 lg:px-6">
+        <section className="relative py-4 sm:py-6 md:py-8 bg-dark-300/30 rounded-xl sm:rounded-2xl mx-2 sm:mx-4 md:mx-6">
+          <div className="relative px-2 sm:px-3 md:px-4 lg:px-6">
             {/* Toggle - Desktop only */}
             <div className="hidden sm:flex justify-end mb-4 md:mb-6">
-              <label className="flex items-center gap-3 cursor-pointer glass-card px-3 md:px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
+              <label className="flex items-center gap-2 sm:gap-3 cursor-pointer glass-card px-3 md:px-4 py-2 rounded-full hover:border-primary-500/30 transition-all duration-300">
                 <div
                   onClick={() => setShowNumbers(!showNumbers)}
-                  className={`relative w-12 h-6 rounded-full transition-all duration-300 min-w-[48px] ${
+                  className={`relative w-10 sm:w-12 h-5 sm:h-6 rounded-full transition-all duration-300 min-w-[40px] sm:min-w-[48px] ${
                     showNumbers ? 'bg-primary-500 shadow-glow' : 'bg-dark-100'
                   }`}
                 >
-                  <div className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${
-                    showNumbers ? 'left-7' : 'left-1'
+                  <div className={`absolute top-0.5 sm:top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${
+                    showNumbers ? 'left-5 sm:left-7' : 'left-0.5 sm:left-1'
                   }`} />
                 </div>
                 <span className="text-gray-300 text-xs md:text-sm font-medium whitespace-nowrap">Afficher les chiffres</span>
               </label>
             </div>
 
-            {/* Mobile Swipeable Slides */}
-            <div className="sm:hidden">
-              {/* Slide indicators */}
-              <div className="flex items-center justify-center gap-2 mb-4">
-                {sortedSizes.map((size, idx) => (
+            {/* Mobile Vertical Cards */}
+            <div className="sm:hidden space-y-3">
+              {/* Section title */}
+              <div className="text-center mb-4">
+                <h2 className="text-lg font-bold text-white mb-1">Choisissez votre compte</h2>
+                <p className="text-gray-400 text-xs">Appuyez sur un plan pour voir les détails</p>
+              </div>
+
+              {/* Compact vertical cards */}
+              {sortedSizes.map((size) => {
+                const aiTierKey = getAiTierForBalance(size.balance)
+                const aiTier = AI_TIERS[aiTierKey]
+                const AiIcon = aiTier.icon
+                const hasDiscount = size.is_on_sale && size.sale_price
+                const isBestValue = size.balance === 100000
+                const isExpanded = expandedCard === size.id
+
+                const phase1Target = (size.balance * (selectedModel?.phase1_profit_target || 10)) / 100
+                const phase2Target = (size.balance * (selectedModel?.phase2_profit_target || 5)) / 100
+                const dailyLoss = (size.balance * (selectedModel?.max_daily_loss || 5)) / 100
+                const maxLoss = (size.balance * (selectedModel?.max_total_loss || 10)) / 100
+
+                return (
                   <div
                     key={size.id}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      size.balance === 100000 ? 'bg-orange-500 w-4' : 'bg-gray-600'
+                    className={`rounded-xl overflow-hidden transition-all duration-300 ${
+                      isBestValue
+                        ? 'ring-2 ring-orange-500 bg-gradient-to-r from-orange-500/10 to-dark-100'
+                        : 'ring-1 ring-white/10 bg-dark-100'
                     }`}
-                  />
-                ))}
-              </div>
+                  >
+                    {/* Best Value Badge */}
+                    {isBestValue && (
+                      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[10px] font-bold py-1 text-center">
+                        <div className="flex items-center justify-center gap-1">
+                          <Flame size={10} />
+                          <span>MEILLEUR CHOIX</span>
+                        </div>
+                      </div>
+                    )}
 
-              {/* Swipe hint */}
-              <div className="flex items-center justify-center gap-2 mb-4 text-gray-500 text-xs">
-                <span>←</span>
-                <span>Glissez pour changer</span>
-                <span>→</span>
-              </div>
-
-              {/* Full-width slides container */}
-              <div className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                {sortedSizes.map((size) => {
-                  const aiTierKey = getAiTierForBalance(size.balance)
-                  const aiTier = AI_TIERS[aiTierKey]
-                  const AiIcon = aiTier.icon
-                  const hasDiscount = size.is_on_sale && size.sale_price
-                  const isBestValue = size.balance === 100000
-
-                  const phase1Target = (size.balance * (selectedModel?.phase1_profit_target || 10)) / 100
-                  const phase2Target = (size.balance * (selectedModel?.phase2_profit_target || 5)) / 100
-                  const dailyLoss = (size.balance * (selectedModel?.max_daily_loss || 5)) / 100
-                  const maxLoss = (size.balance * (selectedModel?.max_total_loss || 10)) / 100
-
-                  return (
+                    {/* Compact Card Header - Always visible */}
                     <div
-                      key={size.id}
-                      className="flex-shrink-0 w-full snap-center px-2"
-                      style={{ minWidth: '100%' }}
+                      className="p-3 cursor-pointer touch-manipulation"
+                      onClick={() => setExpandedCard(isExpanded ? null : size.id)}
                     >
-                      <div className={`rounded-2xl overflow-hidden mx-auto max-w-sm ${
-                        isBestValue
-                          ? 'ring-2 ring-orange-500 shadow-[0_0_30px_rgba(249,115,22,0.3)]'
-                          : 'ring-1 ring-white/10'
-                      }`}>
-                      {/* Best Value Badge */}
-                      {isBestValue && (
-                        <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold py-2 text-center">
-                          <div className="flex items-center justify-center gap-1">
-                            <Flame size={14} />
-                            <span>Meilleur choix</span>
+                      <div className="flex items-center justify-between gap-3">
+                        {/* Left: Balance + AI */}
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${aiTier.bgColor}`}>
+                            <AiIcon size={20} className={aiTier.color} />
                           </div>
-                        </div>
-                      )}
-
-                      <div className="bg-gradient-to-b from-dark-100 to-dark-200 p-5">
-                        {/* Header */}
-                        <div className="text-center mb-4">
-                          <p className="text-gray-400 text-xs mb-1">Compte</p>
-                          <p className="text-3xl font-bold text-white">{formatCurrency(size.balance)}</p>
-                        </div>
-
-                        {/* AI Tier */}
-                        <div className="flex items-center justify-center gap-3 mb-4 py-3 bg-dark-300/50 rounded-xl">
-                          <div className={`p-2 rounded-lg ${aiTier.bgColor}`}>
-                            <AiIcon size={24} className={aiTier.color} />
-                          </div>
-                          <div>
-                            <p className={`font-bold ${aiTier.color}`}>{aiTier.name}</p>
-                            <p className="text-xs text-gray-400">{aiTier.description}</p>
-                          </div>
-                        </div>
-
-                        {/* Stats Grid */}
-                        <div className="grid grid-cols-2 gap-3 mb-4">
-                          <div className="bg-dark-300/30 rounded-lg p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-green-500 mb-1">
-                              <Target size={14} />
-                              <span className="text-xs">Précision</span>
+                          <div className="min-w-0">
+                            <p className="text-lg font-bold text-white">{formatCurrency(size.balance)}</p>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-xs font-medium ${aiTier.color}`}>{aiTier.name}</span>
+                              <span className="text-gray-500 text-[10px]">•</span>
+                              <span className="text-green-400 text-xs font-medium">{aiTier.accuracy}</span>
                             </div>
-                            <p className={`text-lg font-bold ${aiTier.color}`}>{aiTier.accuracy}</p>
                           </div>
-                          <div className="bg-dark-300/30 rounded-lg p-3 text-center">
-                            <div className="flex items-center justify-center gap-1 text-blue-500 mb-1">
-                              <BarChart3 size={14} />
-                              <span className="text-xs">Signaux/j</span>
+                        </div>
+
+                        {/* Right: Price + Expand */}
+                        <div className="flex items-center gap-2 flex-shrink-0">
+                          <div className="text-right">
+                            {hasDiscount ? (
+                              <>
+                                <p className="text-lg font-bold text-orange-500">€{size.sale_price}</p>
+                                <p className="text-gray-500 line-through text-[10px]">€{size.price}</p>
+                              </>
+                            ) : (
+                              <p className="text-lg font-bold text-white">€{size.price}</p>
+                            )}
+                          </div>
+                          <ChevronDown
+                            size={18}
+                            className={`text-gray-400 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Quick stats row */}
+                      <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/5">
+                        <div className="flex items-center gap-1">
+                          <BarChart3 size={10} className="text-blue-400" />
+                          <span className="text-[10px] text-gray-400">{aiTier.signals} signaux/j</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <TrendingUp size={10} className="text-green-400" />
+                          <span className="text-[10px] text-gray-400">+{selectedModel?.phase1_profit_target || 10}% obj.</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Star size={10} className="text-yellow-400" />
+                          <span className="text-[10px] text-gray-400">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')} réc.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Expandable Details */}
+                    <div className={`overflow-hidden transition-all duration-300 ${isExpanded ? 'max-h-[500px]' : 'max-h-0'}`}>
+                      <div className="px-3 pb-3 space-y-3">
+                        {/* Divider */}
+                        <div className="h-px bg-white/10" />
+
+                        {/* Stats in 2x2 grid */}
+                        <div className="grid grid-cols-2 gap-2">
+                          <div className="bg-dark-200/50 rounded-lg p-2.5">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <TrendingUp size={12} className="text-primary-500" />
+                              <span className="text-[10px] text-gray-400">Objectif Ét.1</span>
                             </div>
-                            <p className="text-lg font-bold text-white">{aiTier.signals}</p>
+                            <p className="text-sm font-bold text-white">{formatCurrency(phase1Target)}</p>
                           </div>
-                        </div>
-
-                        {/* Details */}
-                        <div className="space-y-2 mb-4">
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <TrendingUp size={14} className="text-primary-500" />
-                              Objectif Étape 1
-                            </span>
-                            <span className="text-white font-semibold">{formatCurrency(phase1Target)}</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <TrendingUp size={14} className="text-primary-500" />
-                              Objectif Étape 2
-                            </span>
-                            <span className="text-white font-semibold">{formatCurrency(phase2Target)}</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <TrendingDown size={14} className="text-orange-500" />
-                              Perte Max/Jour
-                            </span>
-                            <span className="text-white font-semibold">{formatCurrency(dailyLoss)}</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <TrendingDown size={14} className="text-red-500" />
-                              Perte Max Totale
-                            </span>
-                            <span className="text-white font-semibold">{formatCurrency(maxLoss)}</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <Calendar size={14} className="text-gray-400" />
-                              Min. Jours Trading
-                            </span>
-                            <span className="text-white font-semibold">{selectedModel?.min_trading_days || 4} jours</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2 border-b border-dark-300/50">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <Clock size={14} className="text-gray-400" />
-                              Période
-                            </span>
-                            <span className="text-white font-semibold">Illimitée</span>
-                          </div>
-                          <div className="flex justify-between items-center py-2">
-                            <span className="text-gray-400 text-sm flex items-center gap-2">
-                              <RefreshCw size={14} className="text-green-500" />
-                              Remboursement
-                            </span>
-                            <span className="text-green-400 font-semibold">100%</span>
-                          </div>
-                        </div>
-
-                        {/* Price */}
-                        <div className="text-center py-4 border-t border-dark-300/50">
-                          {hasDiscount ? (
-                            <div>
-                              <div className="flex items-center justify-center gap-2">
-                                <Flame size={18} className="text-orange-500" />
-                                <span className="text-3xl font-bold text-orange-500">€{size.sale_price.toLocaleString('fr-FR')}</span>
-                              </div>
-                              <span className="text-gray-500 line-through">€{size.price.toLocaleString('fr-FR')}</span>
+                          <div className="bg-dark-200/50 rounded-lg p-2.5">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <TrendingUp size={12} className="text-primary-500" />
+                              <span className="text-[10px] text-gray-400">Objectif Ét.2</span>
                             </div>
-                          ) : (
-                            <span className="text-3xl font-bold text-white">€{size.price.toLocaleString('fr-FR')}</span>
-                          )}
+                            <p className="text-sm font-bold text-white">{formatCurrency(phase2Target)}</p>
+                          </div>
+                          <div className="bg-dark-200/50 rounded-lg p-2.5">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <TrendingDown size={12} className="text-orange-500" />
+                              <span className="text-[10px] text-gray-400">Perte Max/Jour</span>
+                            </div>
+                            <p className="text-sm font-bold text-white">{formatCurrency(dailyLoss)}</p>
+                          </div>
+                          <div className="bg-dark-200/50 rounded-lg p-2.5">
+                            <div className="flex items-center gap-1.5 mb-1">
+                              <TrendingDown size={12} className="text-red-500" />
+                              <span className="text-[10px] text-gray-400">Perte Max Totale</span>
+                            </div>
+                            <p className="text-sm font-bold text-white">{formatCurrency(maxLoss)}</p>
+                          </div>
                         </div>
 
-                        {/* CTA */}
+                        {/* Additional info row */}
+                        <div className="flex items-center justify-between text-xs bg-dark-200/30 rounded-lg p-2.5">
+                          <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-1">
+                              <Calendar size={12} className="text-gray-400" />
+                              <span className="text-gray-400">{selectedModel?.min_trading_days || 4}j min</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Clock size={12} className="text-gray-400" />
+                              <span className="text-gray-400">Illimité</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <RefreshCw size={12} className="text-green-500" />
+                            <span className="text-green-400 font-medium">100% remb.</span>
+                          </div>
+                        </div>
+
+                        {/* CTA Button */}
                         <button
-                          onClick={() => handleSelect(size)}
-                          className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 flex items-center justify-center gap-2 active:scale-95 min-h-[56px] touch-manipulation ${
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            handleSelect(size)
+                          }}
+                          className={`w-full py-3.5 rounded-lg font-bold text-white text-sm transition-all flex items-center justify-center gap-2 active:scale-[0.98] min-h-[52px] touch-manipulation ${
                             isBestValue
                               ? 'bg-gradient-to-r from-orange-500 to-orange-600 shadow-lg shadow-orange-500/30'
                               : 'bg-gradient-to-r from-primary-500 to-primary-600 shadow-lg shadow-primary-500/30'
@@ -465,21 +463,26 @@ const PlansPage = () => {
                         >
                           <Rocket size={18} />
                           Commencer le Challenge
+                          <ArrowRight size={16} />
                         </button>
-
-                        {/* Avg Reward */}
-                        <div className="mt-4 py-3 glass-card rounded-xl text-center">
-                          <div className="flex items-center justify-center gap-2">
-                            <Star size={16} className="text-yellow-500" />
-                            <span className="text-white font-bold">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
-                            <span className="text-gray-400 text-sm">récompense moy.</span>
-                          </div>
-                        </div>
-                      </div>
                       </div>
                     </div>
-                  )
-                })}
+                  </div>
+                )
+              })}
+
+              {/* Common info footer */}
+              <div className="mt-4 p-3 bg-dark-200/30 rounded-lg">
+                <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500">
+                  <div className="flex items-center gap-1">
+                    <Shield size={10} className="text-green-500" />
+                    <span>Paiement sécurisé</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Zap size={10} className="text-yellow-500" />
+                    <span>Activation instantanée</span>
+                  </div>
+                </div>
               </div>
             </div>
 

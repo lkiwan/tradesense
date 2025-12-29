@@ -7,9 +7,26 @@ import {
 import { AdminLayout, StatCard } from '../../../components/admin'
 import superAdminApi from '../../../services/superAdminApi'
 import toast from 'react-hot-toast'
+import ExportDropdown from '../../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName as generatePdfFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addStatsCards,
+  addRetentionMatrix,
+  addRetentionCurve,
+  addChannelRetention,
+  addUserSegments,
+  addLegend
+} from '../../../utils/exports/pdfExport'
+import { exportCohortAnalysisToExcel } from '../../../utils/exports/excelExport'
 
 const UserCohortsPage = () => {
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [cohortType, setCohortType] = useState('monthly')
   const [metric, setMetric] = useState('retention')
 
@@ -121,6 +138,99 @@ const UserCohortsPage = () => {
     return 'text-red-400'
   }
 
+  // Export to PDF
+  const handleExportPDF = async () => {
+    if (!cohortData || !retentionData || !segmentData) {
+      toast.error('No data to export')
+      return
+    }
+
+    setExporting(true)
+    try {
+      const doc = createPDF('portrait')
+      let y = addHeader(doc, 'Cohort Analysis Report', 'User retention and segment analysis')
+
+      // Summary Stats
+      y = addStatsCards(doc, [
+        { label: 'Total Cohorts', value: cohortData.summary.totalCohorts },
+        { label: 'Avg. Retention', value: `${cohortData.summary.avgRetention}%`, trend: 3.2 },
+        { label: 'Best Cohort', value: cohortData.summary.bestCohort },
+        { label: 'Average LTV', value: formatCurrency(cohortData.summary.avgLTV), trend: 12.5 },
+      ], y)
+
+      // Cohort Retention Matrix
+      y = addSectionTitle(doc, 'Cohort Retention Matrix', y)
+      y = addRetentionMatrix(doc, cohortData.cohorts, y)
+      y = addLegend(doc, y)
+
+      // Check if we need a new page
+      if (y > 650) {
+        doc.addPage()
+        y = 40
+      }
+
+      // Retention Curve
+      y = addSectionTitle(doc, 'Overall Retention Curve', y)
+      y = addRetentionCurve(doc, retentionData.overall, y)
+
+      // Check if we need a new page
+      if (y > 550) {
+        doc.addPage()
+        y = 40
+      }
+
+      // Channel Retention
+      y = addSectionTitle(doc, 'Retention by Acquisition Channel', y)
+      y = addChannelRetention(doc, retentionData.byChannel, y)
+
+      // Check if we need a new page
+      if (y > 600) {
+        doc.addPage()
+        y = 40
+      }
+
+      // User Segments
+      y = addSectionTitle(doc, 'User Segments', y)
+      y = addUserSegments(doc, segmentData.segments, y)
+
+      // Add footers to all pages
+      const totalPages = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= totalPages; i++) {
+        doc.setPage(i)
+        addFooter(doc, i, totalPages)
+      }
+
+      // Save PDF
+      const filename = generatePdfFileName('CohortAnalysis')
+      savePDF(doc, filename)
+      toast.success('PDF exported successfully!')
+    } catch (error) {
+      console.error('PDF export error:', error)
+      toast.error('Failed to export PDF')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  // Export to Excel
+  const handleExportExcel = async () => {
+    if (!cohortData || !retentionData || !segmentData) {
+      toast.error('No data to export')
+      return
+    }
+
+    setExporting(true)
+    try {
+      const filename = await exportCohortAnalysisToExcel(cohortData, retentionData, segmentData)
+      toast.success(`Excel exported successfully!`)
+    } catch (error) {
+      console.error('Excel export error:', error)
+      toast.error('Failed to export Excel: ' + error.message)
+    } finally {
+      setExporting(false)
+    }
+  }
+
   return (
     <AdminLayout
       title="User Cohorts"
@@ -131,47 +241,49 @@ const UserCohortsPage = () => {
       ]}
     >
       {/* Controls */}
-      <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+        <div className="flex flex-wrap gap-2">
           <select
             value={cohortType}
             onChange={(e) => setCohortType(e.target.value)}
-            className="bg-dark-200 text-white rounded-lg px-4 py-2 border border-dark-300 focus:border-primary focus:outline-none"
+            className="bg-dark-200 text-white text-sm rounded-lg px-3 py-2 border border-dark-300 focus:border-primary focus:outline-none min-h-[40px] touch-manipulation"
           >
-            <option value="weekly">Weekly Cohorts</option>
-            <option value="monthly">Monthly Cohorts</option>
-            <option value="quarterly">Quarterly Cohorts</option>
+            <option value="weekly">Weekly</option>
+            <option value="monthly">Monthly</option>
+            <option value="quarterly">Quarterly</option>
           </select>
 
           <select
             value={metric}
             onChange={(e) => setMetric(e.target.value)}
-            className="bg-dark-200 text-white rounded-lg px-4 py-2 border border-dark-300 focus:border-primary focus:outline-none"
+            className="bg-dark-200 text-white text-sm rounded-lg px-3 py-2 border border-dark-300 focus:border-primary focus:outline-none min-h-[40px] touch-manipulation"
           >
-            <option value="retention">Retention Rate</option>
+            <option value="retention">Retention</option>
             <option value="revenue">Revenue</option>
             <option value="activity">Activity</option>
           </select>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <button
             onClick={fetchCohortData}
-            className="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white transition-colors"
+            className="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white transition-colors min-h-[40px] min-w-[40px] flex items-center justify-center touch-manipulation"
           >
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
 
-          <button className="flex items-center gap-2 px-4 py-2 bg-dark-200 text-gray-400 rounded-lg hover:text-white transition-colors">
-            <Download size={18} />
-            Export
-          </button>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportExcel={handleExportExcel}
+            loading={exporting}
+            disabled={!cohortData || loading}
+          />
         </div>
       </div>
 
       {/* Summary Stats */}
       {cohortData && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-4 sm:mb-6">
           <StatCard
             title="Total Cohorts"
             value={cohortData.summary.totalCohorts}
@@ -247,24 +359,24 @@ const UserCohortsPage = () => {
           </table>
 
           {/* Legend */}
-          <div className="flex items-center gap-6 mt-4 pt-4 border-t border-dark-300">
-            <span className="text-gray-500 text-sm">Retention:</span>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-green-500/20" />
-                <span className="text-green-400 text-sm">60%+</span>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-6 mt-4 pt-4 border-t border-dark-300">
+            <span className="text-gray-500 text-sm whitespace-nowrap">Retention:</span>
+            <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-green-500/20" />
+                <span className="text-green-400 text-xs sm:text-sm whitespace-nowrap">60%+</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-blue-500/20" />
-                <span className="text-blue-400 text-sm">40-59%</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-blue-500/20" />
+                <span className="text-blue-400 text-xs sm:text-sm whitespace-nowrap">40-59%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-yellow-500/20" />
-                <span className="text-yellow-400 text-sm">25-39%</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-yellow-500/20" />
+                <span className="text-yellow-400 text-xs sm:text-sm whitespace-nowrap">25-39%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded bg-red-500/20" />
-                <span className="text-red-400 text-sm">&lt;25%</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 sm:w-4 sm:h-4 rounded bg-red-500/20" />
+                <span className="text-red-400 text-xs sm:text-sm whitespace-nowrap">&lt;25%</span>
               </div>
             </div>
           </div>
@@ -341,39 +453,64 @@ const UserCohortsPage = () => {
 
         {/* Retention Curve */}
         {retentionData && (
-          <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
+          <div className="bg-dark-100 rounded-xl border border-dark-200 p-4 sm:p-6">
             <h3 className="text-white font-semibold mb-4 flex items-center gap-2">
               <Activity size={20} className="text-primary" />
               Overall Retention Curve
             </h3>
-            <div className="h-64 flex items-end gap-4">
-              {Object.entries(retentionData.overall).map(([day, value], index) => {
-                const labels = { day1: 'Day 1', day7: 'Day 7', day14: 'Day 14', day30: 'Day 30', day60: 'Day 60', day90: 'Day 90' }
-                return (
-                  <div key={index} className="flex-1 flex flex-col items-center">
+            {/* Chart Container */}
+            <div className="relative pl-8 sm:pl-10">
+              {/* Y-axis labels */}
+              <div className="absolute left-0 top-0 bottom-6 flex flex-col justify-between text-[10px] sm:text-xs text-gray-500">
+                <span>100%</span>
+                <span>75%</span>
+                <span>50%</span>
+                <span>25%</span>
+                <span>0%</span>
+              </div>
+
+              {/* Bars Container */}
+              <div className="flex items-end justify-around gap-2 sm:gap-4" style={{ height: '200px' }}>
+                {[
+                  { key: 'day1', label: 'Day 1', value: retentionData.overall.day1 },
+                  { key: 'day7', label: 'Day 7', value: retentionData.overall.day7 },
+                  { key: 'day14', label: 'Day 14', value: retentionData.overall.day14 },
+                  { key: 'day30', label: 'Day 30', value: retentionData.overall.day30 },
+                  { key: 'day60', label: 'Day 60', value: retentionData.overall.day60 },
+                  { key: 'day90', label: 'Day 90', value: retentionData.overall.day90 }
+                ].map((item, index) => (
+                  <div key={index} className="flex-1 flex flex-col items-center max-w-[60px] sm:max-w-[80px]">
+                    {/* Value label */}
+                    <span className="text-white font-semibold text-[10px] sm:text-xs mb-1">{item.value}%</span>
+                    {/* Bar - using pixel height calculated from percentage */}
                     <div
-                      className="w-full bg-gradient-to-t from-primary to-blue-500 rounded-t transition-all hover:opacity-80"
-                      style={{ height: `${value}%` }}
+                      className="w-full rounded-t-md bg-gradient-to-t from-primary via-primary to-blue-400 transition-all hover:opacity-80"
+                      style={{ height: `${(item.value / 100) * 180}px` }}
                     />
-                    <p className="text-gray-500 text-xs mt-2">{labels[day]}</p>
-                    <p className="text-white font-medium text-sm">{value}%</p>
                   </div>
-                )
-              })}
+                ))}
+              </div>
+
+              {/* X-axis labels */}
+              <div className="flex justify-around gap-2 sm:gap-4 mt-2">
+                {['Day 1', 'Day 7', 'Day 14', 'Day 30', 'Day 60', 'Day 90'].map((label, index) => (
+                  <span key={index} className="flex-1 text-center text-gray-400 text-[9px] sm:text-xs max-w-[60px] sm:max-w-[80px]">{label}</span>
+                ))}
+              </div>
             </div>
 
             {/* Retention Trends */}
             <div className="mt-6 pt-4 border-t border-dark-300">
               <h4 className="text-gray-400 text-sm mb-3">Retention Trends</h4>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-2 sm:gap-4">
                 {retentionData.trends.map((trend, index) => (
                   <div key={index} className="text-center">
-                    <p className="text-gray-500 text-xs">{trend.period}</p>
-                    <p className="text-white font-semibold text-lg">{trend.retention}%</p>
-                    <p className={`text-sm flex items-center justify-center gap-1 ${
+                    <p className="text-gray-500 text-[10px] sm:text-xs">{trend.period}</p>
+                    <p className="text-white font-semibold text-base sm:text-lg">{trend.retention}%</p>
+                    <p className={`text-xs sm:text-sm flex items-center justify-center gap-1 ${
                       trend.change >= 0 ? 'text-green-400' : 'text-red-400'
                     }`}>
-                      {trend.change >= 0 ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {trend.change >= 0 ? <ChevronUp size={12} /> : <ChevronDown size={12} />}
                       {Math.abs(trend.change)}%
                     </p>
                   </div>

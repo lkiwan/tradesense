@@ -5,13 +5,12 @@ import {
   LayoutDashboard, Users, Trophy, CreditCard, Wallet, HelpCircle,
   Settings, Shield, BarChart3, Bell, ChevronDown, ChevronRight,
   Activity, FileText, Lock, Server, Sliders, UserCog, AlertTriangle,
-  TrendingUp, PieChart, Send, Ban, Database, Globe, Key
+  TrendingUp, PieChart, Send, Ban, Database, Globe, Key, X
 } from 'lucide-react'
 
 const AdminSidebar = ({ isOpen = true, onClose }) => {
   const location = useLocation()
   const { user } = useAuth()
-  // Derive isSuperAdmin from user role instead of prop
   const isSuperAdmin = user?.role === 'superadmin'
   const [expandedSections, setExpandedSections] = useState({
     users: true,
@@ -90,14 +89,14 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
   const NavItem = ({ item }) => (
     <Link
       to={item.path}
-      className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200 ${
+      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 min-h-[48px] touch-manipulation ${
         isActive(item.path)
           ? 'bg-primary text-white'
           : 'text-gray-400 hover:text-white hover:bg-dark-200'
       }`}
       onClick={() => onClose && onClose()}
     >
-      <item.icon size={18} />
+      <item.icon size={18} className="flex-shrink-0" />
       <span className="text-sm font-medium">{item.label}</span>
       {item.badge && (
         <span className={`ml-auto px-2 py-0.5 text-xs rounded-full ${item.badgeColor || 'bg-primary'} text-white`}>
@@ -111,7 +110,7 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
     <div className="mb-4">
       <button
         onClick={() => toggleSection(sectionKey)}
-        className="w-full flex items-center justify-between px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-400"
+        className="w-full flex items-center justify-between px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider hover:text-gray-400 min-h-[40px] touch-manipulation"
       >
         <div className="flex items-center gap-2">
           {Icon && <Icon size={14} />}
@@ -131,14 +130,14 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
 
   return (
     <aside
-      className={`fixed left-0 top-0 h-full bg-dark-100 border-r border-dark-200 transition-all duration-300 z-50 ${
-        isOpen ? 'w-64' : 'w-0 overflow-hidden'
+      className={`fixed left-0 top-0 h-full bg-dark-100 border-r border-dark-200 z-50 transition-transform duration-300 ease-in-out w-64 ${
+        isOpen ? 'translate-x-0' : '-translate-x-full'
       }`}
     >
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-4 border-b border-dark-200">
-          <Link to="/" className="flex items-center gap-2">
+        <div className="flex items-center justify-between px-4 py-4 border-b border-dark-200 flex-shrink-0">
+          <Link to="/" className="flex items-center gap-2" onClick={onClose}>
             <img src="/logo.svg" alt="TradeSense" className="w-8 h-8 object-contain" />
             <div>
               <span className="text-white font-bold text-lg">Trade<span className="text-primary-500">Sense</span></span>
@@ -147,10 +146,17 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
               </span>
             </div>
           </Link>
+          {/* Close button for mobile */}
+          <button
+            onClick={onClose}
+            className="lg:hidden p-2 text-gray-400 hover:text-white hover:bg-dark-200 rounded-lg transition-colors min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+          >
+            <X size={20} />
+          </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 overflow-y-auto py-4 px-2">
+        <nav className="flex-1 overflow-y-auto py-4 px-2 scrollbar-hide">
           {/* Main Dashboard */}
           <div className="mb-4 space-y-1">
             {adminNavItems.map((item) => (
@@ -245,9 +251,9 @@ const AdminSidebar = ({ isOpen = true, onClose }) => {
         </nav>
 
         {/* User Info */}
-        <div className="p-4 border-t border-dark-200">
+        <div className="p-4 border-t border-dark-200 flex-shrink-0">
           <div className="flex items-center gap-3">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${isSuperAdmin ? 'bg-purple-500' : 'bg-primary'}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0 ${isSuperAdmin ? 'bg-purple-500' : 'bg-primary'}`}>
               <span className="text-white font-semibold">
                 {user?.username?.charAt(0).toUpperCase() || 'A'}
               </span>

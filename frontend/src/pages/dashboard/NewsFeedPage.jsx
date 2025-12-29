@@ -146,36 +146,38 @@ const NewsFeedPage = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6 overflow-x-hidden">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group"
-          >
-            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
-          </button>
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-                <Newspaper className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
-              </div>
-              Market News
-            </h1>
-            <p className="text-gray-400 mt-1 text-sm sm:text-base">
-              Live financial news from multiple sources
-            </p>
+      <div className="flex flex-col gap-3 sm:gap-4">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-start gap-2 sm:gap-3 min-w-0 flex-1">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 sm:p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group flex-shrink-0 min-h-[40px] min-w-[40px] flex items-center justify-center touch-manipulation"
+            >
+              <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+            </button>
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-xl md:text-2xl font-bold text-white flex items-center gap-2 sm:gap-3 flex-wrap">
+                <div className="p-1.5 sm:p-2 rounded-lg sm:rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30 flex-shrink-0">
+                  <Newspaper className="text-primary-400 w-4 h-4 sm:w-5 sm:h-5" />
+                </div>
+                <span>Market News</span>
+              </h1>
+              <p className="text-gray-400 mt-1 text-xs sm:text-sm md:text-base">
+                Live financial news from multiple sources
+              </p>
+            </div>
           </div>
+          <button
+            onClick={() => fetchNews(true)}
+            disabled={loading}
+            className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300 flex-shrink-0 min-h-[40px] touch-manipulation text-xs sm:text-sm"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 sm:w-4 sm:h-4 ${loading ? 'animate-spin' : ''}`} />
+            <span className="hidden xs:inline">Refresh</span>
+          </button>
         </div>
-        <button
-          onClick={() => fetchNews(true)}
-          disabled={loading}
-          className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
-        >
-          <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-          Refresh
-        </button>
       </div>
 
       {/* Market Sentiment Summary */}
@@ -220,40 +222,44 @@ const NewsFeedPage = () => {
       )}
 
       {/* Filters */}
-      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-3 sm:p-4 overflow-hidden">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {/* Market Filter */}
-          <div className="flex items-center gap-2">
-            <Filter className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-400">Market:</span>
-            <div className="flex flex-wrap gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <Filter className="w-4 h-4 text-gray-400" />
+              <span className="text-sm text-gray-400 whitespace-nowrap">Market:</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2">
               {markets.map(m => (
                 <button
                   key={m.id}
                   onClick={() => setMarketFilter(m.id)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 min-h-[36px] touch-manipulation ${
                     marketFilter === m.id
                       ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/25'
                       : 'bg-dark-200/50 text-gray-400 hover:text-white hover:bg-dark-200'
                   }`}
                 >
                   {m.icon ? <m.icon className="w-3.5 h-3.5" /> : <span>{m.flag}</span>}
-                  <span className="hidden sm:inline">{m.name}</span>
+                  <span className="hidden xs:inline sm:inline">{m.id === 'all' ? '' : m.id.toUpperCase()}</span>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Sentiment Filter */}
-          <div className="flex items-center gap-2 md:ml-auto">
-            <BarChart3 className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-400">Sentiment:</span>
-            <div className="flex gap-2 bg-dark-200/30 rounded-xl p-1.5 border border-white/5">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:ml-0 md:ml-auto">
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <BarChart3 className="w-4 h-4 text-gray-400" />
+              <span className="text-sm text-gray-400 whitespace-nowrap">Sentiment:</span>
+            </div>
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 bg-dark-200/30 rounded-xl p-1 sm:p-1.5 border border-white/5">
               {sentiments.map(s => (
                 <button
                   key={s.id}
                   onClick={() => setSentimentFilter(s.id)}
-                  className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                  className={`flex items-center gap-1 px-2 sm:px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all duration-300 min-h-[32px] touch-manipulation ${
                     sentimentFilter === s.id
                       ? s.id === 'positive' ? 'bg-green-500 text-white'
                         : s.id === 'negative' ? 'bg-red-500 text-white'
@@ -263,7 +269,7 @@ const NewsFeedPage = () => {
                   }`}
                 >
                   {s.icon && <s.icon className="w-3 h-3" />}
-                  {s.name}
+                  <span>{s.name}</span>
                 </button>
               ))}
             </div>
@@ -430,9 +436,9 @@ const NewsFeedPage = () => {
       </div>
 
       {/* Data Sources */}
-      <div className="flex items-center gap-2 text-xs text-gray-500">
-        <Globe className="w-3 h-3" />
-        <span>Sources: Finnhub, Medias24, BourseNews, Le Matin, La Vie Eco</span>
+      <div className="flex items-center gap-2 text-xs text-gray-500 flex-wrap">
+        <Globe className="w-3 h-3 flex-shrink-0" />
+        <span className="break-words">Sources: Finnhub, Medias24, BourseNews, Le Matin, La Vie Eco</span>
       </div>
     </div>
   )

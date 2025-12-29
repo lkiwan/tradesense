@@ -8,10 +8,25 @@ import {
 import Chart from 'react-apexcharts'
 import { AdminLayout, StatCard } from '../../../components/admin'
 import adminApi from '../../../services/adminApi'
+import ExportDropdown from '../../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addFinancialStats,
+  addRevenueTrendTable,
+  addRevenueBySourceTable,
+  addTransactionsTable
+} from '../../../utils/exports/pdfExport'
+import { exportFinancialOverviewToExcel } from '../../../utils/exports/excelExport'
 
 const FinancialOverviewPage = () => {
   const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [dateRange, setDateRange] = useState('30d')
   const [stats, setStats] = useState({
     totalRevenue: 0,
@@ -73,6 +88,74 @@ const FinancialOverviewPage = () => {
       ])
     } finally {
       setLoading(false)
+    }
+  }
+
+  const handleExportPDF = async () => {
+    setExporting(true)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Add header
+      yPosition = addHeader(doc, 'Financial Overview Report', dateRangeOptions.find(o => o.value === dateRange)?.label || dateRange)
+      yPosition += 10
+
+      // Add stats section
+      yPosition = addSectionTitle(doc, 'Financial Summary', yPosition)
+      yPosition = addFinancialStats(doc, stats, yPosition)
+      yPosition += 10
+
+      // Add revenue trend table
+      yPosition = addSectionTitle(doc, 'Revenue Trend', yPosition)
+      yPosition = addRevenueTrendTable(doc, revenueData, yPosition)
+
+      // Check if we need a new page
+      if (yPosition > 200) {
+        doc.addPage()
+        yPosition = 20
+      }
+
+      // Add revenue by source table
+      yPosition = addSectionTitle(doc, 'Revenue by Source', yPosition)
+      yPosition = addRevenueBySourceTable(doc, revenueBySource, yPosition)
+
+      // Check if we need a new page
+      if (yPosition > 200) {
+        doc.addPage()
+        yPosition = 20
+      }
+
+      // Add recent transactions table
+      yPosition = addSectionTitle(doc, 'Recent Transactions', yPosition)
+      yPosition = addTransactionsTable(doc, recentTransactions, yPosition)
+
+      // Add footer
+      addFooter(doc)
+
+      // Save PDF
+      savePDF(doc, generateFileName('FinancialOverview', 'pdf'))
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExporting(true)
+    try {
+      await exportFinancialOverviewToExcel(
+        stats,
+        revenueData,
+        revenueBySource,
+        recentTransactions,
+        dateRangeOptions.find(o => o.value === dateRange)?.label || dateRange
+      )
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -191,10 +274,12 @@ const FinancialOverviewPage = () => {
           >
             <RefreshCw size={18} />
           </button>
-          <button className="flex items-center gap-2 px-4 py-2 bg-dark-200 text-gray-400 hover:text-white hover:bg-dark-300 rounded-lg transition-colors">
-            <Download size={18} />
-            Export
-          </button>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportExcel={handleExportExcel}
+            loading={exporting}
+            disabled={loading}
+          />
         </div>
       </div>
 
@@ -318,9 +403,13 @@ const FinancialOverviewPage = () => {
               <Wallet size={20} className="text-green-500" />
               <span className="text-white">Manage Payouts</span>
             </button>
-            <button className="w-full flex items-center gap-3 p-3 bg-dark-200 rounded-lg hover:bg-dark-300 transition-colors">
+            <button
+              onClick={handleExportPDF}
+              disabled={exporting || loading}
+              className="w-full flex items-center gap-3 p-3 bg-dark-200 rounded-lg hover:bg-dark-300 transition-colors disabled:opacity-50"
+            >
               <Download size={20} className="text-purple-500" />
-              <span className="text-white">Export Reports</span>
+              <span className="text-white">{exporting ? 'Exporting...' : 'Export Reports'}</span>
             </button>
           </div>
         </div>

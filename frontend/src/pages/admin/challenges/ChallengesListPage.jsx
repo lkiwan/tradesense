@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'react-hot-toast'
 import {
   Search, Filter, TrendingUp, TrendingDown, Clock, CheckCircle,
   XCircle, AlertTriangle, Eye, MoreVertical, RefreshCw, Download,
@@ -7,11 +8,25 @@ import {
 } from 'lucide-react'
 import { AdminLayout, DataTable, StatusBadge } from '../../../components/admin'
 import adminApi from '../../../services/adminApi'
+import ExportDropdown from '../../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addChallengesSummaryStats,
+  addChallengesTable,
+  addChallengeStatusBreakdown
+} from '../../../utils/exports/pdfExport'
+import { exportChallengesListToExcel } from '../../../utils/exports/excelExport'
 
 const ChallengesListPage = () => {
   const navigate = useNavigate()
   const [challenges, setChallenges] = useState([])
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [stats, setStats] = useState({
     total: 0,
     active: 0,
@@ -144,6 +159,60 @@ const ChallengesListPage = () => {
       pending: { color: 'yellow', icon: AlertTriangle, label: 'Pending' }
     }
     return configs[status] || configs.pending
+  }
+
+  // Export handlers
+  const handleExportPDF = async () => {
+    setExporting(true)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Page 1: Header and Summary
+      yPosition = addHeader(doc, 'Challenge Management Report', `${stats.total} Total Challenges`)
+      yPosition += 10
+
+      yPosition = addSectionTitle(doc, 'Challenge Statistics', yPosition)
+      yPosition = addChallengesSummaryStats(doc, stats, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Status Breakdown', yPosition)
+      yPosition = addChallengeStatusBreakdown(doc, stats, yPosition)
+
+      // Page 2: Challenges Table
+      doc.addPage()
+      yPosition = 20
+
+      yPosition = addSectionTitle(doc, 'Challenges List', yPosition)
+      yPosition = addChallengesTable(doc, challenges, yPosition)
+
+      // Add footer to all pages
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        addFooter(doc, i, pageCount)
+      }
+
+      savePDF(doc, generateFileName('ChallengesList', 'pdf'))
+      toast.success('PDF exported successfully!')
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+      toast.error('Failed to export PDF')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExporting(true)
+    try {
+      await exportChallengesListToExcel(challenges, stats)
+      toast.success('Excel exported successfully!')
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+      toast.error('Failed to export Excel')
+    } finally {
+      setExporting(false)
+    }
   }
 
   const columns = [
@@ -358,12 +427,12 @@ const ChallengesListPage = () => {
             >
               <RefreshCw size={18} />
             </button>
-            <button
-              className="p-2 rounded-lg bg-dark-200 text-gray-400 hover:text-white hover:bg-dark-300 transition-colors"
-              title="Export"
-            >
-              <Download size={18} />
-            </button>
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportExcel={handleExportExcel}
+              loading={exporting}
+              disabled={loading}
+            />
           </div>
         </div>
       </div>

@@ -8,12 +8,28 @@ import {
   HelpCircle, AlertTriangle, ArrowRight, Activity
 } from 'lucide-react'
 import { adminStatsAPI } from '../../services/adminApi'
+import ExportDropdown from '../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addAdminDashboardKPIs,
+  addAdminUserGrowthTable,
+  addAdminRevenueTable,
+  addChallengeStatusSummary,
+  addTradeStatsSummary
+} from '../../utils/exports/pdfExport'
+import { exportAdminDashboardToExcel } from '../../utils/exports/excelExport'
 
 const AdminDashboard = () => {
   const [stats, setStats] = useState(null)
   const [loading, setLoading] = useState(true)
   const [userGrowthData, setUserGrowthData] = useState([])
   const [revenueData, setRevenueData] = useState([])
+  const [exporting, setExporting] = useState(false)
 
   useEffect(() => {
     loadDashboardData()
@@ -176,6 +192,66 @@ const AdminDashboard = () => {
     }
   }
 
+  // Export handlers
+  const handleExportPDF = async () => {
+    setExporting(true)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Page 1: Header and KPIs
+      yPosition = addHeader(doc, 'Admin Dashboard Report', 'Platform Performance Overview')
+      yPosition += 10
+
+      yPosition = addSectionTitle(doc, 'Key Performance Indicators', yPosition)
+      yPosition = addAdminDashboardKPIs(doc, stats, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Challenge Status', yPosition)
+      yPosition = addChallengeStatusSummary(doc, stats?.challenges, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Trade Statistics', yPosition)
+      yPosition = addTradeStatsSummary(doc, stats?.trades, yPosition)
+
+      // Page 2: Charts data
+      doc.addPage()
+      yPosition = 20
+
+      yPosition = addSectionTitle(doc, 'User Growth (Last 14 Days)', yPosition)
+      yPosition = addAdminUserGrowthTable(doc, userGrowthData, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Revenue Trend (Last 14 Days)', yPosition)
+      yPosition = addAdminRevenueTable(doc, revenueData, yPosition)
+
+      // Add footer to all pages
+      const pageCount = doc.internal.getNumberOfPages()
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i)
+        addFooter(doc, i, pageCount)
+      }
+
+      savePDF(doc, generateFileName('AdminDashboard', 'pdf'))
+      toast.success('PDF exported successfully!')
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+      toast.error('Failed to export PDF')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExporting(true)
+    try {
+      await exportAdminDashboardToExcel(stats, userGrowthData, revenueData)
+      toast.success('Excel exported successfully!')
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+      toast.error('Failed to export Excel')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const QuickActionCard = ({ icon: Icon, title, description, to, color }) => (
     <Link
       to={to}
@@ -205,12 +281,20 @@ const AdminDashboard = () => {
             <h1 className="text-2xl font-bold text-white">Admin Dashboard</h1>
             <p className="text-gray-400 mt-1">Overview of platform performance</p>
           </div>
-          <button
-            onClick={loadDashboardData}
-            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
-          >
-            Refresh Data
-          </button>
+          <div className="flex items-center gap-3">
+            <ExportDropdown
+              onExportPDF={handleExportPDF}
+              onExportExcel={handleExportExcel}
+              loading={exporting}
+              disabled={loading}
+            />
+            <button
+              onClick={loadDashboardData}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              Refresh Data
+            </button>
+          </div>
         </div>
 
         {/* Stats Grid */}

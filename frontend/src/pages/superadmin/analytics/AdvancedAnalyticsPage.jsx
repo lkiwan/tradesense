@@ -7,9 +7,30 @@ import {
 import { AdminLayout, StatCard } from '../../../components/admin'
 import superAdminApi from '../../../services/superAdminApi'
 import toast from 'react-hot-toast'
+import ExportDropdown from '../../../components/common/ExportDropdown'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addRevenueAnalyticsStats,
+  addRevenueBySourceAnalytics,
+  addTopProductsTable,
+  addConversionFunnelTable,
+  addConversionRatesSummary,
+  addLTVAnalyticsStats,
+  addLTVSegmentsTable,
+  addPredictionsSummary,
+  addChurnRiskTable,
+  addRecommendationsTable
+} from '../../../utils/exports/pdfExport'
+import { exportAdvancedAnalyticsToExcel } from '../../../utils/exports/excelExport'
 
 const AdvancedAnalyticsPage = () => {
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [dateRange, setDateRange] = useState('30d')
   const [activeTab, setActiveTab] = useState('revenue')
 
@@ -126,6 +147,94 @@ const AdvancedAnalyticsPage = () => {
     }).format(amount)
   }
 
+  const dateRangeLabels = {
+    '7d': 'Last 7 days',
+    '30d': 'Last 30 days',
+    '90d': 'Last 90 days',
+    '1y': 'Last year'
+  }
+
+  const handleExportPDF = async () => {
+    if (!revenueData || !conversionData || !ltfData || !predictionData) return
+
+    setExporting(true)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Add header
+      yPosition = addHeader(doc, 'Advanced Analytics Report', dateRangeLabels[dateRange] || dateRange)
+      yPosition += 10
+
+      // Page 1: Revenue Analytics
+      yPosition = addSectionTitle(doc, 'Revenue Analytics', yPosition)
+      yPosition = addRevenueAnalyticsStats(doc, revenueData, yPosition)
+      yPosition = addSectionTitle(doc, 'Revenue by Source', yPosition)
+      yPosition = addRevenueBySourceAnalytics(doc, revenueData.bySource, yPosition)
+      yPosition = addSectionTitle(doc, 'Top Revenue Products', yPosition)
+      yPosition = addTopProductsTable(doc, revenueData.topProducts, yPosition)
+
+      // Page 2: Conversion Funnel
+      doc.addPage()
+      yPosition = 20
+      yPosition = addSectionTitle(doc, 'Conversion Funnel Analysis', yPosition)
+      yPosition = addConversionRatesSummary(doc, conversionData.conversionRates, yPosition)
+      yPosition = addSectionTitle(doc, 'Detailed Funnel', yPosition)
+      yPosition = addConversionFunnelTable(doc, conversionData.funnel, yPosition)
+
+      // Page 3: LTV Analysis
+      doc.addPage()
+      yPosition = 20
+      yPosition = addSectionTitle(doc, 'LTV Analysis', yPosition)
+      yPosition = addLTVAnalyticsStats(doc, ltfData, yPosition)
+      yPosition = addSectionTitle(doc, 'Customer Segments by LTV', yPosition)
+      yPosition = addLTVSegmentsTable(doc, ltfData.bySegment, yPosition)
+
+      // Page 4: AI Predictions
+      doc.addPage()
+      yPosition = 20
+      yPosition = addSectionTitle(doc, 'AI-Powered Predictions', yPosition)
+      yPosition = addPredictionsSummary(doc, predictionData, yPosition)
+      yPosition = addSectionTitle(doc, 'Churn Risk Distribution', yPosition)
+      yPosition = addChurnRiskTable(doc, predictionData.churnRisk, yPosition)
+      yPosition = addSectionTitle(doc, 'AI Recommendations', yPosition)
+      yPosition = addRecommendationsTable(doc, predictionData.recommendations, yPosition)
+
+      // Add footer to all pages
+      addFooter(doc)
+
+      // Save PDF
+      savePDF(doc, generateFileName('AdvancedAnalytics', 'pdf'))
+      toast.success('PDF exported successfully!')
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+      toast.error('Failed to export PDF')
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    if (!revenueData || !conversionData || !ltfData || !predictionData) return
+
+    setExporting(true)
+    try {
+      await exportAdvancedAnalyticsToExcel(
+        revenueData,
+        conversionData,
+        ltfData,
+        predictionData,
+        dateRangeLabels[dateRange] || dateRange
+      )
+      toast.success('Excel exported successfully!')
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+      toast.error('Failed to export Excel')
+    } finally {
+      setExporting(false)
+    }
+  }
+
   const tabs = [
     { id: 'revenue', label: 'Revenue Analytics', icon: DollarSign },
     { id: 'conversion', label: 'Conversion Funnel', icon: Target },
@@ -180,10 +289,12 @@ const AdvancedAnalyticsPage = () => {
             <RefreshCw size={18} className={loading ? 'animate-spin' : ''} />
           </button>
 
-          <button className="flex items-center gap-2 px-4 py-2 bg-dark-200 text-gray-400 rounded-lg hover:text-white transition-colors">
-            <Download size={18} />
-            Export
-          </button>
+          <ExportDropdown
+            onExportPDF={handleExportPDF}
+            onExportExcel={handleExportExcel}
+            loading={exporting}
+            disabled={loading || !revenueData}
+          />
         </div>
       </div>
 

@@ -10,8 +10,26 @@ import {
   ChartPieIcon,
   ClockIcon,
   CpuChipIcon,
-  SignalIcon
+  SignalIcon,
+  ArrowDownTrayIcon
 } from '@heroicons/react/24/outline'
+import {
+  createPDF,
+  savePDF,
+  generateFileName,
+  addHeader,
+  addFooter,
+  addSectionTitle,
+  addDashboardOverviewStats,
+  addSystemHealthTable,
+  addRequestPerformanceStats,
+  addUserGrowthTable,
+  addDashboardRevenueTable,
+  addChallengeDistributionTable,
+  addPopularEndpointsTable,
+  addUptimeInfo
+} from '../../utils/exports/pdfExport'
+import { exportAnalyticsDashboardToExcel } from '../../utils/exports/excelExport'
 
 // Stat Card Component
 const StatCard = ({ title, value, subtitle, icon: Icon, trend, color = 'blue' }) => {
@@ -347,9 +365,11 @@ export default function AnalyticsDashboardPage() {
   const [challengeDistribution, setChallengeDistribution] = useState({})
   const [metrics, setMetrics] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [exporting, setExporting] = useState(false)
   const [error, setError] = useState(null)
   const [lastRefresh, setLastRefresh] = useState(null)
   const [autoRefresh, setAutoRefresh] = useState(true)
+  const [exportDropdownOpen, setExportDropdownOpen] = useState(false)
 
   const fetchData = useCallback(async () => {
     try {
@@ -390,6 +410,80 @@ export default function AnalyticsDashboardPage() {
       if (interval) clearInterval(interval)
     }
   }, [fetchData, autoRefresh])
+
+  const handleExportPDF = async () => {
+    setExporting(true)
+    setExportDropdownOpen(false)
+    try {
+      const doc = createPDF()
+      let yPosition = 20
+
+      // Add header
+      yPosition = addHeader(doc, 'Analytics Dashboard Report', 'Real-time System & Business Metrics')
+      yPosition += 10
+
+      // Page 1: Overview & System Health
+      yPosition = addSectionTitle(doc, 'Overview', yPosition)
+      yPosition = addDashboardOverviewStats(doc, overview, yPosition)
+
+      yPosition = addSectionTitle(doc, 'System Health', yPosition)
+      yPosition = addSystemHealthTable(doc, metrics?.system || {}, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Request Performance', yPosition)
+      yPosition = addRequestPerformanceStats(doc, overview?.performance || {}, yPosition)
+
+      // Page 2: Growth & Revenue
+      doc.addPage()
+      yPosition = 20
+
+      yPosition = addSectionTitle(doc, 'User Growth (Last 14 Days)', yPosition)
+      yPosition = addUserGrowthTable(doc, userGrowth, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Revenue (Last 14 Days)', yPosition)
+      yPosition = addDashboardRevenueTable(doc, revenueData, yPosition)
+
+      // Page 3: Challenges & Endpoints
+      doc.addPage()
+      yPosition = 20
+
+      yPosition = addSectionTitle(doc, 'Challenge Distribution', yPosition)
+      yPosition = addChallengeDistributionTable(doc, challengeDistribution, yPosition)
+
+      yPosition = addSectionTitle(doc, 'Top Endpoints', yPosition)
+      yPosition = addPopularEndpointsTable(doc, metrics?.endpoints || [], yPosition)
+
+      yPosition = addSectionTitle(doc, 'System Uptime', yPosition)
+      yPosition = addUptimeInfo(doc, metrics?.uptime || {}, yPosition)
+
+      // Add footer to all pages
+      addFooter(doc)
+
+      // Save PDF
+      savePDF(doc, generateFileName('AnalyticsDashboard', 'pdf'))
+    } catch (error) {
+      console.error('Error exporting PDF:', error)
+    } finally {
+      setExporting(false)
+    }
+  }
+
+  const handleExportExcel = async () => {
+    setExporting(true)
+    setExportDropdownOpen(false)
+    try {
+      await exportAnalyticsDashboardToExcel(
+        overview,
+        userGrowth,
+        revenueData,
+        challengeDistribution,
+        metrics
+      )
+    } catch (error) {
+      console.error('Error exporting Excel:', error)
+    } finally {
+      setExporting(false)
+    }
+  }
 
   if (loading) {
     return (
@@ -436,6 +530,35 @@ export default function AnalyticsDashboardPage() {
             <ArrowPathIcon className="w-4 h-4" />
             Refresh
           </button>
+          {/* Export Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setExportDropdownOpen(!exportDropdownOpen)}
+              disabled={exporting || loading}
+              className="flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition disabled:opacity-50"
+            >
+              <ArrowDownTrayIcon className="w-4 h-4" />
+              {exporting ? 'Exporting...' : 'Export'}
+            </button>
+            {exportDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-2 z-50">
+                <button
+                  onClick={handleExportPDF}
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <span className="text-red-500">PDF</span>
+                  Export as PDF
+                </button>
+                <button
+                  onClick={handleExportExcel}
+                  className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <span className="text-green-500">XLS</span>
+                  Export as Excel
+                </button>
+              </div>
+            )}
+          </div>
           {lastRefresh && (
             <span className="text-xs text-gray-500">
               Last: {lastRefresh.toLocaleTimeString()}
