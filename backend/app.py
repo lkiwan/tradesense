@@ -289,14 +289,17 @@ def create_app(config_name=None):
 import sys
 if 'pytest' not in sys.modules:
     app = create_app()
+
+    # Start the yfinance price updater for live prices (every 15s)
+    # This runs for both gunicorn (production) and flask dev server
+    from services.yfinance_service import start_price_updater
+    start_price_updater()
+    print("Live price updater started (15s interval)")
 else:
     app = None
 
 
 if __name__ == '__main__':
-    # Start the price updater background task
-    # price_updater.start()
-
+    # Price updater already started above when app was created
     # Run with SocketIO instead of Flask's default server
-    # Disable reloader to ensure price updater runs consistently
     socketio.run(app, debug=True, host='0.0.0.0', port=5000, use_reloader=False, allow_unsafe_werkzeug=True)
