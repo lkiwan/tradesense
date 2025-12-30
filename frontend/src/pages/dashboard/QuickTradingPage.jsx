@@ -1,24 +1,52 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Zap, TrendingUp, TrendingDown, Clock, BarChart3,
-  RefreshCw, Keyboard, ChevronDown, Activity
+  RefreshCw, Keyboard, ChevronDown, Activity, Globe,
+  Bitcoin, DollarSign, Building2
 } from 'lucide-react'
 import { OneClickPanel } from '../../components/trading'
 import api from '../../services/api'
+import { io } from 'socket.io-client'
 
-const SYMBOLS = [
-  { name: 'EURUSD', type: 'forex' },
-  { name: 'GBPUSD', type: 'forex' },
-  { name: 'USDJPY', type: 'forex' },
-  { name: 'XAUUSD', type: 'commodity' },
-  { name: 'BTCUSD', type: 'crypto' },
-  { name: 'US30', type: 'index' },
-  { name: 'NAS100', type: 'index' }
-]
+const SYMBOL_CATEGORIES = {
+  forex: {
+    name: 'Forex',
+    icon: DollarSign,
+    symbols: ['EURUSD', 'GBPUSD', 'USDJPY', 'USDCHF', 'AUDUSD', 'USDCAD', 'NZDUSD', 'EURGBP']
+  },
+  crypto: {
+    name: 'Crypto',
+    icon: Bitcoin,
+    symbols: ['BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'ADA-USD', 'DOGE-USD']
+  },
+  stocks: {
+    name: 'US Stocks',
+    icon: Globe,
+    symbols: ['AAPL', 'TSLA', 'NVDA', 'GOOGL', 'MSFT', 'AMZN', 'META']
+  },
+  morocco: {
+    name: 'Morocco',
+    icon: Building2,
+    symbols: ['IAM', 'ATW', 'BCP', 'BOA', 'CIH', 'HPS', 'TAQA', 'LBV']
+  },
+  indices: {
+    name: 'Indices',
+    icon: BarChart3,
+    symbols: ['US30', 'NAS100', 'US500']
+  },
+  commodities: {
+    name: 'Commodities',
+    icon: Activity,
+    symbols: ['XAUUSD', 'XAGUSD']
+  }
+}
 
 const QuickTradingPage = () => {
+  const { t } = useTranslation()
+  const [selectedCategory, setSelectedCategory] = useState('forex')
   const [selectedSymbol, setSelectedSymbol] = useState('EURUSD')
-  const [currentPrice, setCurrentPrice] = useState(1.0850)
+  const [prices, setPrices] = useState({})
   const [challenges, setChallenges] = useState([])
   const [selectedChallenge, setSelectedChallenge] = useState(null)
   const [executionHistory, setExecutionHistory] = useState([])
@@ -34,17 +62,63 @@ const QuickTradingPage = () => {
     loadChallenges()
     loadExecutionHistory()
     loadStats()
+    loadPrices()
 
-    // Simulate price updates (would be WebSocket in production)
-    const priceInterval = setInterval(() => {
-      setCurrentPrice(prev => {
-        const change = (Math.random() - 0.5) * 0.0010
-        return parseFloat((prev + change).toFixed(5))
-      })
-    }, 1000)
+    // Connect to WebSocket for real-time prices
+    const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'
+    const socket = io(API_URL, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    })
 
-    return () => clearInterval(priceInterval)
+    socket.on('connect', () => {
+      console.log('Connected to price feed')
+      // Subscribe to all symbols
+      const allSymbols = Object.values(SYMBOL_CATEGORIES).flatMap(cat => cat.symbols)
+      socket.emit('subscribe', { symbols: allSymbols })
+    })
+
+    socket.on('price_update', (data) => {
+      if (data && data.symbol) {
+        setPrices(prev => ({
+          ...prev,
+          [data.symbol]: {
+            price: data.price,
+            change_percent: data.change_percent || 0
+          }
+        }))
+      }
+    })
+
+    // Also poll for prices every 10 seconds as backup
+    const priceInterval = setInterval(loadPrices, 10000)
+
+    return () => {
+      socket.disconnect()
+      clearInterval(priceInterval)
+    }
   }, [])
+
+  const loadPrices = async () => {
+    try {
+      const allSymbols = Object.values(SYMBOL_CATEGORIES).flatMap(cat => cat.symbols)
+      const response = await api.get('/market/signals', {
+        params: { symbols: allSymbols.join(',') }
+      })
+      if (response.data?.signals) {
+        const priceMap = {}
+        response.data.signals.forEach(s => {
+          priceMap[s.symbol] = {
+            price: s.price,
+            change_percent: s.change_percent || 0
+          }
+        })
+        setPrices(priceMap)
+      }
+    } catch (error) {
+      console.error('Failed to load prices:', error)
+    }
+  }
 
   const loadChallenges = async () => {
     try {
@@ -97,6 +171,23 @@ const QuickTradingPage = () => {
     return new Date(dateStr).toLocaleString()
   }
 
+  const formatPrice = (symbol, price) => {
+    if (!price) return '---'
+    // Moroccan stocks use MAD, crypto use different decimals
+    if (SYMBOL_CATEGORIES.morocco.symbols.includes(symbol)) {
+      return `${price.toFixed(2)} MAD`
+    }
+    if (SYMBOL_CATEGORIES.crypto.symbols.includes(symbol)) {
+      return price >= 100 ? `$${price.toFixed(2)}` : `$${price.toFixed(4)}`
+    }
+    if (symbol.includes('JPY')) {
+      return price.toFixed(3)
+    }
+    return price.toFixed(5)
+  }
+
+  const currentPrice = prices[selectedSymbol]?.price || 0
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -111,29 +202,13 @@ const QuickTradingPage = () => {
           </div>
         </div>
         <div className="flex gap-3">
-          {/* Symbol Selector */}
-          <div className="relative">
-            <select
-              value={selectedSymbol}
-              onChange={(e) => setSelectedSymbol(e.target.value)}
-              className="appearance-none bg-dark-100 border border-dark-200 text-white rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer hover:bg-dark-200 transition-colors"
-            >
-              {SYMBOLS.map(s => (
-                <option key={s.name} value={s.name}>
-                  {s.name}
-                </option>
-              ))}
-            </select>
-            <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={16} />
-          </div>
-
           {/* Account Selector */}
           {challenges.length > 0 && (
             <div className="relative">
               <select
                 value={selectedChallenge || ''}
                 onChange={(e) => setSelectedChallenge(e.target.value)}
-                className="appearance-none bg-dark-100 border border-dark-200 text-white rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer hover:bg-dark-200 transition-colors"
+                className="appearance-none bg-dark-100 border border-dark-200 text-white rounded-lg px-4 py-2.5 pr-10 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary/50 cursor-pointer hover:bg-dark-200 transition-colors"
               >
                 {challenges.map(c => (
                   <option key={c.id} value={c.id}>
@@ -153,13 +228,75 @@ const QuickTradingPage = () => {
           <Keyboard className="text-blue-400" size={18} />
         </div>
         <div>
-          <h4 className="font-medium text-white mb-1">Hotkeys</h4>
+          <h4 className="font-medium text-white mb-1">Keyboard Shortcuts</h4>
           <p className="text-sm text-gray-300">
             Press <span className="px-2 py-0.5 bg-dark-200 rounded text-white font-mono text-xs mx-1">B</span> to Buy,
             <span className="px-2 py-0.5 bg-dark-200 rounded text-white font-mono text-xs mx-1">S</span> to Sell,
             <span className="px-2 py-0.5 bg-dark-200 rounded text-white font-mono text-xs mx-1">X</span> to Close All.
             Enable One-Click Trading to activate hotkeys.
           </p>
+        </div>
+      </div>
+
+      {/* Symbol Categories */}
+      <div className="flex flex-wrap gap-2">
+        {Object.entries(SYMBOL_CATEGORIES).map(([key, category]) => {
+          const Icon = category.icon
+          return (
+            <button
+              key={key}
+              onClick={() => {
+                setSelectedCategory(key)
+                setSelectedSymbol(category.symbols[0])
+              }}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                selectedCategory === key
+                  ? 'bg-primary text-black'
+                  : 'bg-dark-100 text-gray-400 hover:bg-dark-200 hover:text-white border border-dark-200'
+              }`}
+            >
+              <Icon size={16} />
+              {category.name}
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Symbol Selector */}
+      <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
+        <h3 className="text-sm font-medium text-gray-400 mb-3 uppercase tracking-wider">Select Symbol</h3>
+        <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
+          {SYMBOL_CATEGORIES[selectedCategory].symbols.map(symbol => {
+            const priceData = prices[symbol]
+            const isSelected = selectedSymbol === symbol
+            return (
+              <button
+                key={symbol}
+                onClick={() => setSelectedSymbol(symbol)}
+                className={`p-3 rounded-lg text-center transition-all ${
+                  isSelected
+                    ? 'bg-primary/20 border-2 border-primary'
+                    : 'bg-dark-200/50 border border-dark-300 hover:border-gray-500'
+                }`}
+              >
+                <div className={`font-medium text-sm ${isSelected ? 'text-primary' : 'text-white'}`}>
+                  {symbol}
+                </div>
+                {priceData && (
+                  <>
+                    <div className="text-xs text-gray-400 mt-1 font-mono">
+                      {formatPrice(symbol, priceData.price)}
+                    </div>
+                    <div className={`text-xs mt-0.5 ${
+                      priceData.change_percent >= 0 ? 'text-green-400' : 'text-red-400'
+                    }`}>
+                      {priceData.change_percent >= 0 ? '+' : ''}{priceData.change_percent?.toFixed(2)}%
+                    </div>
+                  </>
+                )}
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -224,7 +361,7 @@ const QuickTradingPage = () => {
 
             {loading ? (
               <div className="flex items-center justify-center py-12">
-                <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+                <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin" />
               </div>
             ) : executionHistory.length > 0 ? (
               <div className="overflow-x-auto">
@@ -296,28 +433,28 @@ const QuickTradingPage = () => {
 
           {/* Tips */}
           <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-5">
-            <h3 className="font-semibold text-primary-400 mb-3 flex items-center gap-2">
+            <h3 className="font-semibold text-primary mb-3 flex items-center gap-2">
               <BarChart3 size={18} />
               Pro Tips
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <p className="text-sm text-gray-400 flex items-start gap-2">
-                  <span className="text-primary-500">•</span>
+                  <span className="text-primary">•</span>
                   Enable one-click trading for instant order execution
                 </p>
                 <p className="text-sm text-gray-400 flex items-start gap-2">
-                  <span className="text-primary-500">•</span>
+                  <span className="text-primary">•</span>
                   Configure default SL/TP in settings to auto-apply risk management
                 </p>
               </div>
               <div className="space-y-2">
                 <p className="text-sm text-gray-400 flex items-start gap-2">
-                  <span className="text-primary-500">•</span>
+                  <span className="text-primary">•</span>
                   Use hotkeys for fastest execution during volatile markets
                 </p>
                 <p className="text-sm text-gray-400 flex items-start gap-2">
-                  <span className="text-primary-500">•</span>
+                  <span className="text-primary">•</span>
                   Quick lot buttons let you switch position sizes instantly
                 </p>
               </div>
