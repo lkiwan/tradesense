@@ -20,19 +20,19 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   const categories = [
-    { value: 'general', label: 'General Inquiry' },
-    { value: 'support', label: 'Technical Support' },
-    { value: 'billing', label: 'Billing & Payments' },
-    { value: 'partnership', label: 'Partnership Inquiry' },
-    { value: 'feedback', label: 'Feedback & Suggestions' }
+    { value: 'general', labelKey: 'contact.categories.general' },
+    { value: 'support', labelKey: 'contact.categories.support' },
+    { value: 'billing', labelKey: 'contact.categories.billing' },
+    { value: 'partnership', labelKey: 'contact.categories.partnership' },
+    { value: 'feedback', labelKey: 'contact.categories.feedback' }
   ]
 
   const contactMethods = [
     {
       icon: Mail,
-      title: 'Email Us',
-      description: 'Get a response within 24 hours',
-      value: 'support@tradesense.com',
+      titleKey: 'contact.methods.email.title',
+      descKey: 'contact.methods.email.description',
+      valueKey: 'contact.methods.email.value',
       action: 'mailto:support@tradesense.com',
       color: 'text-blue-400',
       bg: 'bg-blue-500/20',
@@ -41,9 +41,9 @@ const Contact = () => {
     },
     {
       icon: MessageCircle,
-      title: 'Live Chat',
-      description: 'Available 24/7',
-      value: 'Start a conversation',
+      titleKey: 'contact.methods.chat.title',
+      descKey: 'contact.methods.chat.description',
+      valueKey: 'contact.methods.chat.value',
       action: '#',
       color: 'text-green-400',
       bg: 'bg-green-500/20',
@@ -52,9 +52,9 @@ const Contact = () => {
     },
     {
       icon: Phone,
-      title: 'Call Us',
-      description: 'Mon-Fri, 9am-6pm CET',
-      value: '+212 XXX XXX XXX',
+      titleKey: 'contact.methods.phone.title',
+      descKey: 'contact.methods.phone.description',
+      valueKey: 'contact.methods.phone.value',
       action: 'tel:+212000000000',
       color: 'text-purple-400',
       bg: 'bg-purple-500/20',
@@ -65,15 +65,15 @@ const Contact = () => {
 
   const offices = [
     {
-      city: 'Casablanca',
-      country: 'Morocco',
-      address: 'Twin Center, Boulevard Zerktouni',
+      cityKey: 'contact.offices.casablanca.city',
+      countryKey: 'contact.offices.casablanca.country',
+      addressKey: 'contact.offices.casablanca.address',
       flag: '🇲🇦'
     },
     {
-      city: 'Dubai',
-      country: 'UAE',
-      address: 'Dubai Marina, JBR',
+      cityKey: 'contact.offices.dubai.city',
+      countryKey: 'contact.offices.dubai.country',
+      addressKey: 'contact.offices.dubai.address',
       flag: '🇦🇪'
     }
   ]
@@ -116,14 +116,14 @@ const Contact = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <Mail className="text-primary-400" size={18} />
-            <span className="text-primary-300 text-sm font-medium">Contact Us</span>
+            <span className="text-primary-300 text-sm font-medium">{t('contact.badge')}</span>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Get in <span className="gradient-text-animated">Touch</span>
+            {t('contact.title')} <span className="gradient-text-animated">{t('contact.titleHighlight')}</span>
           </h1>
           <p className="text-gray-400 text-xl max-w-2xl mx-auto leading-relaxed">
-            Have a question or need assistance? We're here to help. Choose your preferred contact method below.
+            {t('contact.subtitle')}
           </p>
         </div>
       </section>
@@ -144,13 +144,13 @@ const Contact = () => {
                     <Icon size={28} className={method.color} />
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-2 group-hover:text-primary-400 transition-colors">
-                    {method.title}
+                    {t(method.titleKey)}
                   </h3>
                   <p className="text-gray-500 text-sm mb-3">
-                    {method.description}
+                    {t(method.descKey)}
                   </p>
                   <p className={`${method.color} font-medium`}>
-                    {method.value}
+                    {t(method.valueKey)}
                   </p>
                 </a>
               )
@@ -171,8 +171,8 @@ const Contact = () => {
                     <Send size={24} className="text-primary-400" />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">Send us a Message</h2>
-                    <p className="text-gray-500 text-sm">We'll get back to you within 24 hours</p>
+                    <h2 className="text-2xl font-bold text-white">{t('contact.form.title')}</h2>
+                    <p className="text-gray-500 text-sm">{t('contact.form.subtitle')}</p>
                   </div>
                 </div>
 
@@ -180,7 +180,7 @@ const Contact = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Your Name *
+                        {t('contact.form.name')} *
                       </label>
                       <input
                         type="text"
@@ -188,13 +188,13 @@ const Contact = () => {
                         value={formData.name}
                         onChange={handleChange}
                         required
-                        placeholder="John Doe"
+                        placeholder={t('contact.form.namePlaceholder')}
                         className="w-full px-5 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                       />
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Email Address *
+                        {t('contact.form.email')} *
                       </label>
                       <input
                         type="email"
@@ -202,7 +202,7 @@ const Contact = () => {
                         value={formData.email}
                         onChange={handleChange}
                         required
-                        placeholder="john@example.com"
+                        placeholder={t('contact.form.emailPlaceholder')}
                         className="w-full px-5 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                       />
                     </div>
@@ -211,7 +211,7 @@ const Contact = () => {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Category
+                        {t('contact.form.category')}
                       </label>
                       <select
                         name="category"
@@ -221,14 +221,14 @@ const Contact = () => {
                       >
                         {categories.map((cat) => (
                           <option key={cat.value} value={cat.value} className="bg-dark-300">
-                            {cat.label}
+                            {t(cat.labelKey)}
                           </option>
                         ))}
                       </select>
                     </div>
                     <div>
                       <label className="block text-sm font-medium text-gray-300 mb-2">
-                        Subject *
+                        {t('contact.form.subject')} *
                       </label>
                       <input
                         type="text"
@@ -236,7 +236,7 @@ const Contact = () => {
                         value={formData.subject}
                         onChange={handleChange}
                         required
-                        placeholder="How can we help?"
+                        placeholder={t('contact.form.subjectPlaceholder')}
                         className="w-full px-5 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300"
                       />
                     </div>
@@ -244,7 +244,7 @@ const Contact = () => {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-300 mb-2">
-                      Message *
+                      {t('contact.form.message')} *
                     </label>
                     <textarea
                       name="message"
@@ -252,7 +252,7 @@ const Contact = () => {
                       onChange={handleChange}
                       required
                       rows={6}
-                      placeholder="Describe your question or issue in detail..."
+                      placeholder={t('contact.form.messagePlaceholder')}
                       className="w-full px-5 py-4 bg-dark-300/50 rounded-xl text-white placeholder-gray-500 border border-white/5 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 resize-none"
                     />
                   </div>
@@ -265,12 +265,12 @@ const Contact = () => {
                     {isSubmitting ? (
                       <>
                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                        Sending...
+                        {t('contact.form.sending')}
                       </>
                     ) : (
                       <>
                         <Send size={20} />
-                        Send Message
+                        {t('contact.form.submit')}
                         <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
                       </>
                     )}
@@ -287,7 +287,7 @@ const Contact = () => {
                   <div className="w-10 h-10 bg-orange-500/20 rounded-xl flex items-center justify-center">
                     <Globe size={20} className="text-orange-400" />
                   </div>
-                  Our Offices
+                  {t('contact.offices.title')}
                 </h3>
                 <div className="space-y-4">
                   {offices.map((office, index) => (
@@ -298,11 +298,11 @@ const Contact = () => {
                       <div className="flex items-center gap-2 mb-1">
                         <span className="text-xl">{office.flag}</span>
                         <span className="font-medium text-white">
-                          {office.city}, {office.country}
+                          {t(office.cityKey)}, {t(office.countryKey)}
                         </span>
                       </div>
                       <p className="text-sm text-gray-400 ml-8">
-                        {office.address}
+                        {t(office.addressKey)}
                       </p>
                     </div>
                   ))}
@@ -315,20 +315,20 @@ const Contact = () => {
                   <div className="w-10 h-10 bg-cyan-500/20 rounded-xl flex items-center justify-center">
                     <Clock size={20} className="text-cyan-400" />
                   </div>
-                  Support Hours
+                  {t('contact.supportHours.title')}
                 </h3>
                 <div className="space-y-4">
                   <div className="flex justify-between items-center p-3 bg-dark-300/50 rounded-xl">
-                    <span className="text-gray-400">Live Chat</span>
+                    <span className="text-gray-400">{t('contact.supportHours.liveChat')}</span>
                     <span className="px-3 py-1 bg-green-500/20 text-green-400 text-sm font-medium rounded-full">24/7</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-dark-300/50 rounded-xl">
-                    <span className="text-gray-400">Email Support</span>
-                    <span className="text-white font-medium">24h response</span>
+                    <span className="text-gray-400">{t('contact.supportHours.emailSupport')}</span>
+                    <span className="text-white font-medium">{t('contact.supportHours.emailResponse')}</span>
                   </div>
                   <div className="flex justify-between items-center p-3 bg-dark-300/50 rounded-xl">
-                    <span className="text-gray-400">Phone Support</span>
-                    <span className="text-white font-medium">Mon-Fri, 9-18h</span>
+                    <span className="text-gray-400">{t('contact.supportHours.phoneSupport')}</span>
+                    <span className="text-white font-medium">{t('contact.supportHours.phoneHours')}</span>
                   </div>
                 </div>
               </div>
@@ -339,7 +339,7 @@ const Contact = () => {
                   <div className="w-10 h-10 bg-purple-500/20 rounded-xl flex items-center justify-center">
                     <Sparkles size={20} className="text-purple-400" />
                   </div>
-                  Quick Links
+                  {t('contact.quickLinks.title')}
                 </h3>
                 <div className="space-y-2">
                   <Link
@@ -348,7 +348,7 @@ const Contact = () => {
                   >
                     <HelpCircle size={20} className="text-gray-500 group-hover:text-primary-400 transition-colors" />
                     <span className="text-gray-300 group-hover:text-primary-400 transition-colors">
-                      Frequently Asked Questions
+                      {t('contact.quickLinks.faq')}
                     </span>
                     <ArrowRight size={16} className="ml-auto text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
                   </Link>
@@ -358,7 +358,7 @@ const Contact = () => {
                   >
                     <FileText size={20} className="text-gray-500 group-hover:text-primary-400 transition-colors" />
                     <span className="text-gray-300 group-hover:text-primary-400 transition-colors">
-                      How It Works
+                      {t('contact.quickLinks.howItWorks')}
                     </span>
                     <ArrowRight size={16} className="ml-auto text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
                   </Link>
@@ -368,7 +368,7 @@ const Contact = () => {
                   >
                     <Users size={20} className="text-gray-500 group-hover:text-primary-400 transition-colors" />
                     <span className="text-gray-300 group-hover:text-primary-400 transition-colors">
-                      Community Forum
+                      {t('contact.quickLinks.community')}
                     </span>
                     <ArrowRight size={16} className="ml-auto text-gray-600 group-hover:text-primary-400 group-hover:translate-x-1 transition-all" />
                   </Link>
@@ -384,11 +384,10 @@ const Contact = () => {
                   </div>
                   <div>
                     <h4 className="font-semibold text-white mb-2">
-                      We Respond Fast
+                      {t('contact.responseTime.title')}
                     </h4>
                     <p className="text-sm text-gray-400 leading-relaxed">
-                      Our average response time is under 2 hours during business hours.
-                      We're committed to helping you succeed.
+                      {t('contact.responseTime.description')}
                     </p>
                   </div>
                 </div>
@@ -406,10 +405,10 @@ const Contact = () => {
           <div className="text-center mb-10">
             <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-orange-400 text-sm font-medium mb-4">
               <MapPin size={16} />
-              Locations
+              {t('contact.map.badge')}
             </span>
             <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-white">
-              Find Us <span className="gradient-text-animated">Worldwide</span>
+              {t('contact.map.title')} <span className="gradient-text-animated">{t('contact.map.titleHighlight')}</span>
             </h2>
           </div>
 
@@ -417,8 +416,8 @@ const Contact = () => {
             <div className="aspect-[21/9] bg-dark-200 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <MapPin size={48} className="text-gray-600 mx-auto mb-4" />
-                <p className="text-gray-500">Interactive map coming soon</p>
-                <p className="text-gray-600 text-sm mt-1">Casablanca, Morocco | Dubai, UAE</p>
+                <p className="text-gray-500">{t('contact.map.comingSoon')}</p>
+                <p className="text-gray-600 text-sm mt-1">{t('contact.map.locations')}</p>
               </div>
             </div>
           </div>

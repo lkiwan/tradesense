@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useChallenge } from '../../context/ChallengeContext'
 import { tradesAPI, challengesAPI, marketAPI } from '../../services/api'
 import { showErrorToast, showSuccessToast } from '../../utils/errorHandler'
@@ -65,6 +66,7 @@ const SYMBOL_CATEGORIES = {
 }
 
 const TradingPage = () => {
+  const { t } = useTranslation()
   const { challenge, refetch, updateBalance } = useChallenge()
 
   // Symbol & Category state
@@ -329,24 +331,24 @@ const TradingPage = () => {
             {priceLoading ? (
               <div className="flex items-center gap-2 text-gray-400">
                 <RefreshCw size={14} className="animate-spin" />
-                <span className="text-xs sm:text-sm">Loading...</span>
+                <span className="text-xs sm:text-sm">{t('trading.loading')}</span>
               </div>
             ) : (
               <>
                 <div className="text-center">
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">Bid</p>
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">{t('trading.bid')}</p>
                   <p className="text-sm sm:text-lg font-bold text-red-400">
                     {currentPrice.bid >= 100 ? currentPrice.bid.toFixed(2) : currentPrice.bid.toFixed(5)}
                   </p>
                 </div>
                 <div className="text-center">
-                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">Ask</p>
+                  <p className="text-[9px] sm:text-[10px] text-gray-500 uppercase">{t('trading.ask')}</p>
                   <p className="text-sm sm:text-lg font-bold text-green-400">
                     {currentPrice.ask >= 100 ? currentPrice.ask.toFixed(2) : currentPrice.ask.toFixed(5)}
                   </p>
                 </div>
                 <div className="text-center hidden sm:block">
-                  <p className="text-[10px] text-gray-500 uppercase">Spread</p>
+                  <p className="text-[10px] text-gray-500 uppercase">{t('trading.spread')}</p>
                   <p className="text-sm font-medium text-gray-400">
                     {((currentPrice.ask - currentPrice.bid) / selectedSymbol.pip).toFixed(1)}p
                   </p>
@@ -358,18 +360,18 @@ const TradingPage = () => {
           {/* Account Info */}
           <div className="flex items-center gap-3 sm:gap-6">
             <div className="text-right">
-              <p className="text-[9px] sm:text-xs text-gray-500">Balance</p>
+              <p className="text-[9px] sm:text-xs text-gray-500">{t('trading.balance')}</p>
               <p className="text-sm sm:text-lg font-bold text-white">${balance.toLocaleString()}</p>
             </div>
             <div className="text-right">
-              <p className="text-[9px] sm:text-xs text-gray-500">Equity</p>
+              <p className="text-[9px] sm:text-xs text-gray-500">{t('trading.equity')}</p>
               <p className={`text-sm sm:text-lg font-bold ${equity >= balance ? 'text-green-400' : 'text-red-400'}`}>
                 ${equity.toLocaleString()}
               </p>
             </div>
             {openPnL && (
               <div className="text-right hidden sm:block">
-                <p className="text-xs text-gray-500">P&L</p>
+                <p className="text-xs text-gray-500">{t('trading.pnl')}</p>
                 <p className={`text-lg font-bold ${openPnL.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                   {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(0)}
                 </p>
@@ -428,7 +430,7 @@ const TradingPage = () => {
                 <div className="w-7 h-7 bg-green-500/20 rounded-lg flex items-center justify-center">
                   <Activity size={12} className="text-green-400" />
                 </div>
-                Positions
+                {t('trading.positions')}
                 {openPositions.length > 0 && (
                   <span className="px-1.5 sm:px-2 py-0.5 bg-primary-500/20 text-primary-400 text-[10px] sm:text-xs rounded-full">
                     {openPositions.length}
@@ -438,7 +440,7 @@ const TradingPage = () => {
               <div className="flex items-center gap-2 sm:gap-4">
                 {openPnL && (
                   <div className="flex items-center gap-1 sm:gap-2 text-xs sm:text-sm">
-                    <span className="text-gray-400 hidden sm:inline">P&L:</span>
+                    <span className="text-gray-400 hidden sm:inline">{t('trading.pnl')}:</span>
                     <span className={`font-bold ${openPnL.total_unrealized_pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                       {openPnL.total_unrealized_pnl >= 0 ? '+' : ''}${openPnL.total_unrealized_pnl.toFixed(0)}
                     </span>
@@ -450,8 +452,8 @@ const TradingPage = () => {
                     className="px-2 sm:px-3 py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-[10px] sm:text-xs font-medium rounded-lg transition-all flex items-center gap-1 min-h-[32px]"
                   >
                     <X size={10} />
-                    <span className="hidden sm:inline">Close All</span>
-                    <span className="sm:hidden">All</span>
+                    <span className="hidden sm:inline">{t('trading.closeAll')}</span>
+                    <span className="sm:hidden">{t('trading.close')}</span>
                   </button>
                 )}
               </div>
@@ -464,7 +466,7 @@ const TradingPage = () => {
                   <div className="mx-3 my-2 px-2 sm:px-3 py-2 bg-yellow-500/10 border border-yellow-500/30 rounded-lg flex items-center gap-2">
                     <AlertTriangle size={12} className="text-yellow-500 flex-shrink-0" />
                     <span className="text-yellow-500 text-[10px] sm:text-xs truncate">
-                      Price unavailable: {openPnL.price_errors.join(', ')}
+                      {t('trading.priceUnavailable')} {openPnL.price_errors.join(', ')}
                     </span>
                   </div>
                 )}
@@ -472,13 +474,13 @@ const TradingPage = () => {
                 <table className="w-full min-w-[500px]">
                   <thead className="bg-dark-200/30">
                     <tr className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">
-                      <th className="px-2 sm:px-4 py-2 text-left">Symbol</th>
-                      <th className="px-2 sm:px-4 py-2 text-center">Type</th>
-                      <th className="px-2 sm:px-4 py-2 text-center">Size</th>
-                      <th className="px-2 sm:px-4 py-2 text-right">Entry</th>
-                      <th className="px-2 sm:px-4 py-2 text-right">Current</th>
-                      <th className="px-2 sm:px-4 py-2 text-right">P&L</th>
-                      <th className="px-2 sm:px-4 py-2 text-center">Action</th>
+                      <th className="px-2 sm:px-4 py-2 text-left">{t('trading.symbol')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">{t('trading.type')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">{t('trading.size')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">{t('trading.entry')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">{t('trading.current')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-right">{t('trading.pnl')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">{t('trading.action')}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-dark-200/30">
@@ -504,7 +506,7 @@ const TradingPage = () => {
                                 ? 'bg-green-500/20 text-green-400'
                                 : 'bg-red-500/20 text-red-400'
                             }`}>
-                              {pos.trade_type === 'buy' ? 'BUY' : 'SELL'}
+                              {pos.trade_type === 'buy' ? t('trading.buy') : t('trading.sell')}
                             </span>
                           </td>
                           <td className="px-2 sm:px-4 py-2 sm:py-3 text-center text-white text-[11px] sm:text-sm">{pos.quantity}</td>
@@ -520,7 +522,7 @@ const TradingPage = () => {
                               onClick={() => closeTrade(pos.id)}
                               className="px-2 sm:px-3 py-1 sm:py-1.5 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-[10px] sm:text-xs font-medium rounded transition-all min-w-[40px] min-h-[28px]"
                             >
-                              Close
+                              {t('trading.close')}
                             </button>
                           </td>
                         </tr>
@@ -532,8 +534,8 @@ const TradingPage = () => {
             ) : (
               <div className="p-4 sm:p-6 text-center">
                 <Activity size={24} className="mx-auto text-gray-600 mb-2" />
-                <p className="text-gray-500 text-xs sm:text-sm">No open positions</p>
-                <p className="text-gray-600 text-[10px] sm:text-xs mt-1">Your trades will appear here</p>
+                <p className="text-gray-500 text-xs sm:text-sm">{t('trading.noOpenPositions')}</p>
+                <p className="text-gray-600 text-[10px] sm:text-xs mt-1">{t('trading.tradesWillAppear')}</p>
               </div>
             )}
           </div>
@@ -553,7 +555,7 @@ const TradingPage = () => {
                 }`}
               >
                 <TrendingUp size={14} className="inline mr-1 sm:mr-2" />
-                BUY
+                {t('trading.buy')}
               </button>
               <button
                 onClick={() => setTradeType('sell')}
@@ -564,13 +566,13 @@ const TradingPage = () => {
                 }`}
               >
                 <TrendingDown size={14} className="inline mr-1 sm:mr-2" />
-                SELL
+                {t('trading.sell')}
               </button>
             </div>
 
             {/* Lot Size */}
             <div className="mb-3 sm:mb-4">
-              <label className="text-[10px] sm:text-xs text-gray-400 mb-1 sm:mb-1.5 block">Lot Size</label>
+              <label className="text-[10px] sm:text-xs text-gray-400 mb-1 sm:mb-1.5 block">{t('trading.lotSize')}</label>
               <div className="flex gap-1.5 sm:gap-2">
                 <input
                   type="number"
@@ -598,12 +600,12 @@ const TradingPage = () => {
 
             {/* SL/TP Mode Toggle */}
             <div className="flex items-center justify-between mb-3">
-              <span className="text-xs text-gray-400">Stop Loss / Take Profit</span>
+              <span className="text-xs text-gray-400">{t('trading.slTp')}</span>
               <button
                 onClick={() => setUsePrice(!usePrice)}
                 className="text-xs text-primary-400 hover:text-primary-300"
               >
-                {usePrice ? 'Use Pips' : 'Use Price'}
+                {usePrice ? t('trading.usePips') : t('trading.usePrice')}
               </button>
             </div>
 
@@ -612,7 +614,7 @@ const TradingPage = () => {
               <div>
                 <label className="text-[10px] text-red-400 mb-1 flex items-center gap-1">
                   <Shield size={10} />
-                  Stop Loss {usePrice ? '(Price)' : '(Pips)'}
+                  {usePrice ? t('trading.stopLossPrice') : t('trading.stopLossPips')}
                 </label>
                 <input
                   type="number"
@@ -624,7 +626,7 @@ const TradingPage = () => {
               <div>
                 <label className="text-[10px] text-green-400 mb-1 flex items-center gap-1">
                   <Target size={10} />
-                  Take Profit {usePrice ? '(Price)' : '(Pips)'}
+                  {usePrice ? t('trading.takeProfitPrice') : t('trading.takeProfitPips')}
                 </label>
                 <input
                   type="number"
@@ -655,13 +657,13 @@ const TradingPage = () => {
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-gray-400 flex items-center gap-1">
                   <Calculator size={12} />
-                  Risk Calculator
+                  {t('trading.riskCalculator')}
                 </span>
               </div>
 
               <div className="grid grid-cols-2 gap-2 mb-2">
                 <div>
-                  <label className="text-[10px] text-gray-500">Risk %</label>
+                  <label className="text-[10px] text-gray-500">{t('trading.riskPercent')}</label>
                   <input
                     type="number"
                     value={riskPercent}
@@ -673,7 +675,7 @@ const TradingPage = () => {
                   />
                 </div>
                 <div>
-                  <label className="text-[10px] text-gray-500">Risk $</label>
+                  <label className="text-[10px] text-gray-500">{t('trading.riskDollar')}</label>
                   <p className="bg-dark-300 border border-dark-200 rounded px-2 py-1 text-yellow-400 text-xs font-medium">
                     ${riskAmount.toFixed(2)}
                   </p>
@@ -682,13 +684,13 @@ const TradingPage = () => {
 
               <div className="grid grid-cols-2 gap-2 text-center">
                 <div className="bg-dark-300 rounded p-2">
-                  <p className="text-[10px] text-gray-500">R:R Ratio</p>
+                  <p className="text-[10px] text-gray-500">{t('trading.rrRatio')}</p>
                   <p className={`text-sm font-bold ${parseFloat(riskReward) >= 2 ? 'text-green-400' : parseFloat(riskReward) >= 1 ? 'text-yellow-400' : 'text-red-400'}`}>
                     1:{riskReward}
                   </p>
                 </div>
                 <div className="bg-dark-300 rounded p-2">
-                  <p className="text-[10px] text-gray-500">Potential</p>
+                  <p className="text-[10px] text-gray-500">{t('trading.potential')}</p>
                   <p className="text-sm font-bold text-green-400">+${potentialProfit}</p>
                 </div>
               </div>
@@ -707,17 +709,17 @@ const TradingPage = () => {
               {executing ? (
                 <>
                   <RefreshCw size={20} className="animate-spin" />
-                  Executing...
+                  {t('trading.executing')}
                 </>
               ) : priceLoading || currentPrice.bid === 0 ? (
                 <>
                   <RefreshCw size={20} className="animate-spin" />
-                  Loading Price...
+                  {t('trading.loadingPrice')}
                 </>
               ) : (
                 <>
                   <Play size={20} />
-                  {tradeType === 'buy' ? 'BUY' : 'SELL'} {selectedSymbol.symbol}
+                  {tradeType === 'buy' ? t('trading.buy') : t('trading.sell')} {selectedSymbol.symbol}
                 </>
               )}
             </button>
@@ -725,7 +727,7 @@ const TradingPage = () => {
             {/* Price Info */}
             <p className="text-center text-xs text-gray-500 mt-2">
               {priceLoading || currentPrice.bid === 0 ? (
-                'Fetching price...'
+                t('trading.fetchingPrice')
               ) : (
                 `@ ${(() => {
                   const price = tradeType === 'buy' ? currentPrice.ask : currentPrice.bid

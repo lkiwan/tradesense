@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Receipt, ArrowUpRight, ArrowDownRight, Filter, Download, Search, Calendar } from 'lucide-react'
 
 const TransactionsPage = () => {
+  const { t, i18n } = useTranslation()
   const [filter, setFilter] = useState('all')
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -39,10 +41,10 @@ const TransactionsPage = () => {
 
   const getTypeLabel = (type) => {
     switch (type) {
-      case 'deposit': return 'Depot'
-      case 'withdrawal': return 'Retrait'
-      case 'trade': return 'Trade'
-      case 'fee': return 'Frais'
+      case 'deposit': return t('transactions.types.deposit')
+      case 'withdrawal': return t('transactions.types.withdrawal')
+      case 'trade': return t('transactions.types.trade')
+      case 'fee': return t('transactions.types.fee')
       default: return type
     }
   }
@@ -56,32 +58,32 @@ const TransactionsPage = () => {
             <div className="p-2.5 rounded-xl bg-gradient-to-br from-purple-500/20 to-purple-600/20 border border-purple-500/30">
               <Receipt className="text-purple-400" size={24} />
             </div>
-            Transactions
+            {t('transactions.title')}
           </h1>
-          <p className="text-gray-400 mt-1">Historique de toutes vos transactions</p>
+          <p className="text-gray-400 mt-1">{t('transactions.subtitle')}</p>
         </div>
         <button className="flex items-center gap-2 px-4 py-2.5 bg-dark-100/80 backdrop-blur-xl border border-white/5 rounded-xl text-gray-400 hover:text-white hover:border-primary-500/30 transition-all duration-300">
           <Download size={18} />
-          Exporter
+          {t('transactions.export')}
         </button>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Depots</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t('transactions.stats.totalDeposits')}</p>
           <p className="text-2xl font-bold text-green-400">${totalDeposits.toLocaleString()}</p>
         </div>
         <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Profits Trading</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t('transactions.stats.tradingProfits')}</p>
           <p className="text-2xl font-bold text-green-400">+${totalProfits.toLocaleString()}</p>
         </div>
         <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-red-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Pertes Trading</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t('transactions.stats.tradingLosses')}</p>
           <p className="text-2xl font-bold text-red-400">-${totalLosses.toLocaleString()}</p>
         </div>
         <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300 group">
-          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">Total Retraits</p>
+          <p className="text-xs text-gray-400 uppercase tracking-wider mb-1">{t('transactions.stats.totalWithdrawals')}</p>
           <p className="text-2xl font-bold text-blue-400">${totalWithdrawals.toLocaleString()}</p>
         </div>
       </div>
@@ -92,7 +94,7 @@ const TransactionsPage = () => {
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
           <input
             type="text"
-            placeholder="Rechercher une transaction..."
+            placeholder={t('transactions.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full bg-dark-100/80 backdrop-blur-xl border border-white/5 rounded-xl px-11 py-2.5 text-white focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all duration-300"
@@ -110,7 +112,7 @@ const TransactionsPage = () => {
                   : 'bg-dark-100/80 text-gray-400 hover:text-white border border-white/5 hover:border-primary-500/30'
               }`}
             >
-              {f === 'all' ? 'Tous' : getTypeLabel(f)}
+              {f === 'all' ? t('transactions.filters.all') : getTypeLabel(f)}
             </button>
           ))}
         </div>
@@ -122,11 +124,11 @@ const TransactionsPage = () => {
           <table className="w-full">
             <thead className="bg-dark-200/50">
               <tr className="text-xs text-gray-500 uppercase">
-                <th className="px-6 py-4 text-left font-medium">Type</th>
-                <th className="px-6 py-4 text-left font-medium">Description</th>
-                <th className="px-6 py-4 text-left font-medium">Date</th>
-                <th className="px-6 py-4 text-left font-medium">Statut</th>
-                <th className="px-6 py-4 text-right font-medium">Montant</th>
+                <th className="px-6 py-4 text-left font-medium">{t('transactions.table.type')}</th>
+                <th className="px-6 py-4 text-left font-medium">{t('transactions.table.description')}</th>
+                <th className="px-6 py-4 text-left font-medium">{t('transactions.table.date')}</th>
+                <th className="px-6 py-4 text-left font-medium">{t('transactions.table.status')}</th>
+                <th className="px-6 py-4 text-right font-medium">{t('transactions.table.amount')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-white/5">
@@ -146,14 +148,14 @@ const TransactionsPage = () => {
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2 text-gray-400">
                       <Calendar size={14} />
-                      <span className="text-sm">{new Date(transaction.date).toLocaleDateString('fr-FR')}</span>
+                      <span className="text-sm">{new Date(transaction.date).toLocaleDateString(i18n.language === 'ar' ? 'ar-MA' : i18n.language === 'en' ? 'en-US' : 'fr-FR')}</span>
                     </div>
                   </td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-xs font-medium ${
                       transaction.status === 'completed' ? 'bg-green-500/10 text-green-400' : 'bg-yellow-500/10 text-yellow-400'
                     }`}>
-                      {transaction.status === 'completed' ? 'Complete' : 'En cours'}
+                      {transaction.status === 'completed' ? t('transactions.status.completed') : t('transactions.status.pending')}
                     </span>
                   </td>
                   <td className={`px-6 py-4 text-right font-bold ${

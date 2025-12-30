@@ -30,19 +30,19 @@ const Login = () => {
     e.preventDefault()
 
     if (!email || !password) {
-      toast.error('Please fill in all fields')
+      toast.error(t('auth.login.fillAllFields'))
       return
     }
 
     // Check if CAPTCHA is required but not verified
     if (requiresCaptcha && !captchaToken) {
-      toast.error('Please complete the CAPTCHA verification')
+      toast.error(t('auth.login.completeCaptcha'))
       return
     }
 
     // Check if rate limited
     if (isLimited) {
-      toast.error(`Please wait ${formattedCountdown} before trying again`)
+      toast.error(t('auth.login.pleaseWait', { time: formattedCountdown }))
       return
     }
 
@@ -57,7 +57,7 @@ const Login = () => {
         setFailedAttempts(0)
         setRequiresCaptcha(false)
         setCaptchaToken(null)
-        toast.success('Welcome back!')
+        toast.success(t('auth.login.welcomeBack'))
 
         // Redirect based on user role
         const userRole = result.user?.role
@@ -103,7 +103,7 @@ const Login = () => {
       // Handle rate limit error
       if (error.response?.status === 429) {
         const retryAfter = error.response.data?.retry_after || 60
-        toast.error(`Too many attempts. Please wait ${retryAfter} seconds.`)
+        toast.error(t('auth.login.pleaseWait', { time: `${retryAfter}s` }))
         return
       }
 
@@ -114,7 +114,7 @@ const Login = () => {
         setFailedAttempts(error.response.data.failed_attempts || failedAttempts + 1)
       }
 
-      toast.error(error.response?.data?.error || 'Login failed')
+      toast.error(error.response?.data?.error || t('auth.login.loginFailed'))
     }
   }
 
@@ -157,7 +157,7 @@ const Login = () => {
               {t('auth.login.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400">
-              Connectez-vous pour accéder à votre dashboard
+              {t('auth.login.subtitle')}
             </p>
           </div>
 
@@ -169,14 +169,14 @@ const Login = () => {
                   <Ban className="text-red-500" size={20} />
                 </div>
                 <div>
-                  <p className="text-red-400 font-semibold">This account has been banned</p>
+                  <p className="text-red-400 font-semibold">{t('auth.login.banned.title')}</p>
                   {banReason && (
                     <p className="text-red-400/70 text-sm mt-1">
-                      Reason: {banReason}
+                      {t('auth.login.banned.reason', { reason: banReason })}
                     </p>
                   )}
                   <p className="text-gray-500 text-sm mt-2">
-                    If you believe this is a mistake, please contact support.
+                    {t('auth.login.banned.contactSupport')}
                   </p>
                 </div>
               </div>
@@ -249,11 +249,11 @@ const Login = () => {
                   </div>
                 </div>
                 <span className="text-sm text-gray-400 group-hover:text-gray-300 transition-colors">
-                  Se souvenir de moi
+                  {t('auth.login.rememberMe')}
                 </span>
               </label>
               <Link to="/forgot-password" className="text-sm text-primary-400 hover:text-primary-300 transition-colors min-h-[44px] flex items-center">
-                Mot de passe oublié?
+                {t('auth.login.forgotPassword')}
               </Link>
             </div>
 
@@ -265,10 +265,10 @@ const Login = () => {
                     <AlertTriangle className="text-yellow-400" size={20} />
                   </div>
                   <div>
-                    <p className="text-yellow-400 font-medium">Too many attempts</p>
+                    <p className="text-yellow-400 font-medium">{t('auth.login.tooManyAttempts')}</p>
                     <p className="text-sm text-gray-400 flex items-center gap-1 mt-1">
                       <Clock size={14} />
-                      Please wait {formattedCountdown} before trying again
+                      {t('auth.login.pleaseWait', { time: formattedCountdown })}
                     </p>
                   </div>
                 </div>
@@ -297,7 +297,7 @@ const Login = () => {
               ) : isLimited ? (
                 <>
                   <Clock size={20} />
-                  Wait {formattedCountdown}
+                  {t('auth.login.wait', { time: formattedCountdown })}
                 </>
               ) : (
                 <>
@@ -315,7 +315,7 @@ const Login = () => {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">ou continuer avec</span>
+              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">{t('auth.login.orContinueWith')}</span>
             </div>
           </div>
 
@@ -328,7 +328,7 @@ const Login = () => {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">demo</span>
+              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">{t('auth.login.demo')}</span>
             </div>
           </div>
 
@@ -340,7 +340,7 @@ const Login = () => {
             }}
             className="w-full py-4 bg-dark-300/50 hover:bg-dark-300 text-gray-300 rounded-xl font-medium transition-all duration-300 border border-white/5 hover:border-white/10"
           >
-            Utiliser le compte demo
+            {t('auth.login.useDemoAccount')}
           </button>
 
           {/* Register Link */}
@@ -356,7 +356,7 @@ const Login = () => {
         <div className="mt-6 sm:mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
           <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full text-gray-400 text-xs sm:text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
             <Sparkles size={14} className="text-primary-400 animate-pulse flex-shrink-0" />
-            <span>Secure login with 2FA support</span>
+            <span>{t('auth.login.secureLogin')}</span>
             <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse flex-shrink-0" />
           </div>
         </div>

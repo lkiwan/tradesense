@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useChallenge } from '../context/ChallengeContext'
 import EmailVerificationBanner from './EmailVerificationBanner'
@@ -14,46 +15,46 @@ import {
   Newspaper, DollarSign, Briefcase, LineChart, PieChart, Headphones
 } from 'lucide-react'
 
-// Category definitions
+// Category definitions - using i18n keys
 const CATEGORIES = [
-  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'trading', label: 'Trading', icon: TrendingUp },
-  { id: 'financials', label: 'Financials', icon: DollarSign },
-  { id: 'rewards', label: 'Rewards', icon: Gift },
-  { id: 'resources', label: 'Resources', icon: BookOpen }
+  { id: 'dashboard', labelKey: 'sidebar.categories.dashboard', icon: LayoutDashboard },
+  { id: 'trading', labelKey: 'sidebar.categories.trading', icon: TrendingUp },
+  { id: 'financials', labelKey: 'sidebar.categories.financials', icon: DollarSign },
+  { id: 'rewards', labelKey: 'sidebar.categories.rewards', icon: Gift },
+  { id: 'resources', labelKey: 'sidebar.categories.resources', icon: BookOpen }
 ]
 
-// Navigation items per category
+// Navigation items per category - using i18n keys
 const CATEGORY_NAV_ITEMS = {
   dashboard: [
-    { path: '/accounts', icon: LayoutDashboard, label: 'Accounts' },
-    { path: '/notifications', icon: Bell, label: 'Notifications', badge: '3' },
-    { path: '/profile/default', icon: User, label: 'Profile' },
-    { path: '/settings', icon: Settings, label: 'Settings' }
+    { path: '/accounts', icon: LayoutDashboard, labelKey: 'sidebar.items.accounts' },
+    { path: '/notifications', icon: Bell, labelKey: 'sidebar.items.notifications', badge: '3' },
+    { path: '/profile/default', icon: User, labelKey: 'sidebar.items.profile' },
+    { path: '/settings', icon: Settings, labelKey: 'sidebar.items.settings' }
   ],
   trading: [
-    { path: '/trading', icon: LineChart, label: 'Trading', badge: 'PRO', badgeColor: 'bg-primary-500' },
-    { path: '/quick-trading', icon: MousePointer2, label: 'Quick Trading', badge: 'NEW', badgeColor: 'bg-green-500' },
-    { path: '/trade-journal', icon: BookOpen, label: 'Trade Journal', badge: 'NEW', badgeColor: 'bg-orange-500' },
-    { path: '/charts-markets', icon: BarChart2, label: 'Charts & Markets', badge: 'NEW', badgeColor: 'bg-indigo-500' },
-    { path: '/copy-trading', icon: Copy, label: 'Copy Trading', badge: 'NEW', badgeColor: 'bg-purple-500' },
-    { path: '/mt-connection', icon: Monitor, label: 'MT4/MT5 Connect', badge: 'NEW', badgeColor: 'bg-cyan-500' }
+    { path: '/trading', icon: LineChart, labelKey: 'sidebar.items.trading', badge: 'PRO', badgeColor: 'bg-primary-500' },
+    { path: '/quick-trading', icon: MousePointer2, labelKey: 'sidebar.items.quickTrading', badge: 'NEW', badgeColor: 'bg-green-500' },
+    { path: '/trade-journal', icon: BookOpen, labelKey: 'sidebar.items.tradeJournal', badge: 'NEW', badgeColor: 'bg-orange-500' },
+    { path: '/charts-markets', icon: BarChart2, labelKey: 'sidebar.items.chartsMarkets', badge: 'NEW', badgeColor: 'bg-indigo-500' },
+    { path: '/copy-trading', icon: Copy, labelKey: 'sidebar.items.copyTrading', badge: 'NEW', badgeColor: 'bg-purple-500' },
+    { path: '/mt-connection', icon: Monitor, labelKey: 'sidebar.items.mtConnection', badge: 'NEW', badgeColor: 'bg-cyan-500' }
   ],
   financials: [
-    { path: '/plans', icon: CreditCard, label: 'Plans' },
-    { path: '/transactions', icon: Receipt, label: 'Transactions' },
-    { path: '/calculator', icon: Calculator, label: 'Calculator' }
+    { path: '/plans', icon: CreditCard, labelKey: 'sidebar.items.plans' },
+    { path: '/transactions', icon: Receipt, labelKey: 'sidebar.items.transactions' },
+    { path: '/calculator', icon: Calculator, labelKey: 'sidebar.items.calculator' }
   ],
   rewards: [
-    { path: '/infinity-points', icon: Coins, label: 'Infinity Points', badge: 'NEW', badgeColor: 'bg-yellow-500' },
-    { path: '/refer-and-earn', icon: Users, label: 'Refer & Earn', badge: 'NEW', badgeColor: 'bg-green-500' },
-    { path: '/competitions', icon: Trophy, label: 'Competitions' },
-    { path: '/certificates', icon: Award, label: 'Certificates' }
+    { path: '/infinity-points', icon: Coins, labelKey: 'sidebar.items.infinityPoints', badge: 'NEW', badgeColor: 'bg-yellow-500' },
+    { path: '/refer-and-earn', icon: Users, labelKey: 'sidebar.items.referEarn', badge: 'NEW', badgeColor: 'bg-green-500' },
+    { path: '/competitions', icon: Trophy, labelKey: 'sidebar.items.competitions' },
+    { path: '/certificates', icon: Award, labelKey: 'sidebar.items.certificates' }
   ],
   resources: [
-    { path: '/news', icon: Newspaper, label: 'Market News', badge: 'NEW', badgeColor: 'bg-blue-500' },
-    { path: '/trading-rules', icon: FileText, label: 'Trading Rules' },
-    { path: '/support', icon: Headphones, label: 'Support' }
+    { path: '/news', icon: Newspaper, labelKey: 'sidebar.items.marketNews', badge: 'NEW', badgeColor: 'bg-blue-500' },
+    { path: '/trading-rules', icon: FileText, labelKey: 'sidebar.items.tradingRules' },
+    { path: '/support', icon: Headphones, labelKey: 'sidebar.items.support' }
   ]
 }
 
@@ -104,6 +105,7 @@ const PATH_TO_CATEGORY = {
 }
 
 const DashboardLayout = ({ children }) => {
+  const { t } = useTranslation()
   const location = useLocation()
   const navigate = useNavigate()
   const { user, logout } = useAuth()
@@ -176,7 +178,7 @@ const DashboardLayout = ({ children }) => {
           <item.icon size={20} className="flex-shrink-0 text-gray-500 group-hover:text-primary-400 transition-colors duration-300" />
           <span className={`flex-1 font-medium whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden ${
             collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
-          }`}>{item.label}</span>
+          }`}>{t(item.labelKey)}</span>
           <ExternalLink size={14} className={`flex-shrink-0 text-gray-500 transition-all duration-300 ${collapsed ? 'opacity-0 w-0' : 'opacity-100'}`} />
         </a>
       )
@@ -195,7 +197,7 @@ const DashboardLayout = ({ children }) => {
         <item.icon size={20} className={`flex-shrink-0 transition-colors duration-300 ${isActive ? 'text-white' : 'text-gray-500 group-hover:text-primary-400'}`} />
         <span className={`flex-1 font-medium whitespace-nowrap transition-all duration-300 ease-in-out overflow-hidden ${
           collapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'
-        }`}>{item.label}</span>
+        }`}>{t(item.labelKey)}</span>
         {item.badge && (
           <span className={`flex-shrink-0 px-2 py-0.5 ${item.badgeColor || 'bg-primary-500/20'} ${item.badgeColor ? 'text-white' : 'text-primary-400'} text-xs font-bold rounded-full transition-all duration-300 ${
             collapsed ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
@@ -220,7 +222,7 @@ const DashboardLayout = ({ children }) => {
         } ${isMobile ? 'flex-1 justify-center' : ''}`}
       >
         <IconComponent size={18} className={isActive ? 'text-white' : 'text-gray-500'} />
-        <span className={`font-medium ${isMobile ? 'text-sm' : ''}`}>{category.label}</span>
+        <span className={`font-medium ${isMobile ? 'text-sm' : ''}`}>{t(category.labelKey)}</span>
       </button>
     )
   }
@@ -259,7 +261,7 @@ const DashboardLayout = ({ children }) => {
                   activeChallenge.phase === 'funded' ? 'bg-green-500' : 'bg-primary-500'
                 } animate-pulse`} />
                 <span className="text-sm text-gray-400">
-                  {activeChallenge.phase === 'funded' ? 'Funded' : `Phase ${activeChallenge.phase}`}
+                  {activeChallenge.phase === 'funded' ? t('sidebar.challenge.funded') : `${t('sidebar.challenge.phase')} ${activeChallenge.phase}`}
                 </span>
                 <span className="text-sm font-semibold text-white">
                   ${activeChallenge.balance?.toLocaleString()}
@@ -298,7 +300,7 @@ const DashboardLayout = ({ children }) => {
                       className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
                     >
                       <User size={18} />
-                      <span className="font-medium">My Profile</span>
+                      <span className="font-medium">{t('sidebar.userMenu.myProfile')}</span>
                     </Link>
                     <Link
                       to="/settings"
@@ -306,7 +308,7 @@ const DashboardLayout = ({ children }) => {
                       className="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
                     >
                       <Settings size={18} />
-                      <span className="font-medium">Settings</span>
+                      <span className="font-medium">{t('sidebar.userMenu.settings')}</span>
                     </Link>
                     <hr className="my-2 border-dark-200" />
                     <button
@@ -317,7 +319,7 @@ const DashboardLayout = ({ children }) => {
                       className="flex items-center gap-3 w-full px-4 py-3 text-red-400 hover:text-red-300 hover:bg-dark-200 transition-colors min-h-[48px] touch-manipulation"
                     >
                       <LogOut size={18} />
-                      <span className="font-medium">Logout</span>
+                      <span className="font-medium">{t('sidebar.userMenu.logout')}</span>
                     </button>
                   </div>
                 </div>
@@ -364,7 +366,7 @@ const DashboardLayout = ({ children }) => {
             isSidebarExpanded ? 'py-4 opacity-100 max-h-20' : 'py-0 opacity-0 max-h-0'
           }`}>
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider whitespace-nowrap">
-              {CATEGORIES.find(c => c.id === activeCategory)?.label}
+              {t(CATEGORIES.find(c => c.id === activeCategory)?.labelKey)}
             </h2>
           </div>
 
@@ -389,7 +391,7 @@ const DashboardLayout = ({ children }) => {
               <span className={`whitespace-nowrap transition-all duration-500 ease-in-out overflow-hidden ${
                 isSidebarExpanded ? 'w-auto opacity-100' : 'w-0 opacity-0'
               }`}>
-                {hasActiveChallenge ? 'Go Trading' : 'Start Challenge'}
+                {hasActiveChallenge ? t('sidebar.actions.goTrading') : t('sidebar.actions.startChallenge')}
               </span>
             </Link>
           </div>
@@ -409,7 +411,7 @@ const DashboardLayout = ({ children }) => {
           {/* Category Title */}
           <div className="px-4 py-4 border-b border-dark-200">
             <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">
-              {CATEGORIES.find(c => c.id === activeCategory)?.label}
+              {t(CATEGORIES.find(c => c.id === activeCategory)?.labelKey)}
             </h2>
           </div>
 
@@ -428,7 +430,7 @@ const DashboardLayout = ({ children }) => {
               onClick={() => setMobileMenuOpen(false)}
             >
               {hasActiveChallenge ? <TrendingUp size={18} /> : <Rocket size={18} />}
-              <span>{hasActiveChallenge ? 'Go Trading' : 'Start Challenge'}</span>
+              <span>{hasActiveChallenge ? t('sidebar.actions.goTrading') : t('sidebar.actions.startChallenge')}</span>
             </Link>
           </div>
         </aside>

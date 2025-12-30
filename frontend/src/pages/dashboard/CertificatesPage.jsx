@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Award, Download, Share2, CheckCircle, Trophy, Star, ExternalLink } from 'lucide-react'
 import api from '../../services/api'
 import { showSuccessToast, showErrorToast } from '../../utils/errorHandler'
 
 const CertificatesPage = () => {
+  const { t } = useTranslation()
   const [certificates, setCertificates] = useState([])
   const [loading, setLoading] = useState(true)
 
@@ -37,9 +39,9 @@ const CertificatesPage = () => {
       document.body.appendChild(link)
       link.click()
       link.remove()
-      showSuccessToast('Certificate downloaded successfully')
+      showSuccessToast(t('certificates.downloadSuccess'))
     } catch (error) {
-      showErrorToast('Failed to download certificate')
+      showErrorToast(t('certificates.downloadError'))
     }
   }
 
@@ -48,12 +50,12 @@ const CertificatesPage = () => {
       if (navigator.share) {
         await navigator.share({
           title: certificate.title,
-          text: `Check out my trading certificate: ${certificate.title}`,
+          text: `${t('certificates.shareText')} ${certificate.title}`,
           url: window.location.href
         })
       } else {
         await navigator.clipboard.writeText(window.location.href)
-        showSuccessToast('Link copied to clipboard!')
+        showSuccessToast(t('certificates.linkCopied'))
       }
     } catch (error) {
       console.error('Error sharing:', error)
@@ -94,8 +96,8 @@ const CertificatesPage = () => {
           <Award className="text-purple-400" size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">Certificats</h1>
-          <p className="text-gray-400 text-sm">Vos certificats de reussite et accomplissements</p>
+          <h1 className="text-2xl font-bold text-white">{t('certificates.title')}</h1>
+          <p className="text-gray-400 text-sm">{t('certificates.subtitle')}</p>
         </div>
       </div>
 
@@ -108,21 +110,21 @@ const CertificatesPage = () => {
               <CheckCircle className="text-green-400" size={24} />
             </div>
             <p className="text-3xl font-bold text-white">{certificates.filter(c => c.type === 'phase1').length}</p>
-            <p className="text-sm text-gray-400">Phase 1 Completees</p>
+            <p className="text-sm text-gray-400">{t('certificates.phase1Completed')}</p>
           </div>
           <div className="text-center">
             <div className="w-12 h-12 mx-auto mb-3 bg-yellow-500/20 rounded-xl flex items-center justify-center">
               <Star className="text-yellow-400" size={24} />
             </div>
             <p className="text-3xl font-bold text-white">{certificates.filter(c => c.type === 'phase2').length}</p>
-            <p className="text-sm text-gray-400">Phase 2 Completees</p>
+            <p className="text-sm text-gray-400">{t('certificates.phase2Completed')}</p>
           </div>
           <div className="text-center">
             <div className="w-12 h-12 mx-auto mb-3 bg-primary-500/20 rounded-xl flex items-center justify-center">
               <Trophy className="text-primary-400" size={24} />
             </div>
             <p className="text-3xl font-bold text-white">{certificates.filter(c => c.type === 'funded').length}</p>
-            <p className="text-sm text-gray-400">Comptes Fundes</p>
+            <p className="text-sm text-gray-400">{t('certificates.fundedAccounts')}</p>
           </div>
         </div>
       </div>
@@ -137,9 +139,9 @@ const CertificatesPage = () => {
           <div className="w-20 h-20 mx-auto mb-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-2xl flex items-center justify-center">
             <Award className="text-gray-500" size={40} />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2">Aucun certificat</h3>
+          <h3 className="text-xl font-bold text-white mb-2">{t('certificates.noCertificates')}</h3>
           <p className="text-gray-400 max-w-md mx-auto">
-            Completez un challenge pour obtenir votre premier certificat. Chaque etape reussie vous rapproche de devenir un trader funde!
+            {t('certificates.noCertificatesDesc')}
           </p>
         </div>
       ) : (
@@ -162,12 +164,12 @@ const CertificatesPage = () => {
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="text-green-400" size={20} />
-                    <span className="text-xs text-green-400 font-medium">Verifie</span>
+                    <span className="text-xs text-green-400 font-medium">{t('certificates.verified')}</span>
                   </div>
                 </div>
 
                 <h3 className="text-lg font-bold text-white mb-1">{cert.title}</h3>
-                <p className="text-sm text-gray-400 mb-4">Obtenu le {cert.date}</p>
+                <p className="text-sm text-gray-400 mb-4">{t('certificates.obtainedOn')} {cert.date}</p>
 
                 {/* Certificate Preview (mock) */}
                 <div className="bg-white/5 backdrop-blur-sm rounded-xl p-4 mb-4 border border-white/10">
@@ -176,7 +178,7 @@ const CertificatesPage = () => {
                       <Award className="text-primary-400" size={20} />
                     </div>
                     <div>
-                      <p className="text-xs text-gray-500 uppercase tracking-wide">Certificat</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide">{t('certificates.certificate')}</p>
                       <p className="text-sm text-white font-medium">{cert.title}</p>
                     </div>
                   </div>
@@ -189,7 +191,7 @@ const CertificatesPage = () => {
                     className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all hover:shadow-lg hover:shadow-primary-500/25"
                   >
                     <Download size={16} />
-                    Telecharger
+                    {t('certificates.download')}
                   </button>
                   <button
                     onClick={() => handleShare(cert)}
@@ -215,10 +217,9 @@ const CertificatesPage = () => {
           <Award className="text-blue-400" size={20} />
         </div>
         <div>
-          <h4 className="font-medium text-white mb-1">A propos des certificats</h4>
+          <h4 className="font-medium text-white mb-1">{t('certificates.aboutCertificates')}</h4>
           <p className="text-sm text-gray-300">
-            Chaque certificat est une preuve verifiable de vos accomplissements. Vous pouvez les telecharger en format PDF
-            et les partager sur les reseaux sociaux pour mettre en valeur vos competences de trading.
+            {t('certificates.aboutCertificatesDesc')}
           </p>
         </div>
       </div>

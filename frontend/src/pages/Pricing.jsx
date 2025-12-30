@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import {
   Target, TrendingDown, Calendar, Clock, RefreshCw,
@@ -11,49 +12,49 @@ import {
 // AI Tiers Configuration
 const AI_TIERS = {
   starter: {
-    name: 'IA Starter',
+    nameKey: 'pricingPage.aiTiers.starter.name',
     icon: Cpu,
     color: 'text-gray-400',
     bgColor: 'bg-gray-500/20',
     accuracy: '72%',
     signals: '5-10',
-    description: 'Algorithme de base'
+    descriptionKey: 'pricingPage.aiTiers.starter.description'
   },
   basic: {
-    name: 'IA Basic',
+    nameKey: 'pricingPage.aiTiers.basic.name',
     icon: Zap,
     color: 'text-blue-400',
     bgColor: 'bg-blue-500/20',
     accuracy: '78%',
     signals: '10-15',
-    description: 'Analyse technique avancée'
+    descriptionKey: 'pricingPage.aiTiers.basic.description'
   },
   advanced: {
-    name: 'IA Advanced',
+    nameKey: 'pricingPage.aiTiers.advanced.name',
     icon: Brain,
     color: 'text-purple-400',
     bgColor: 'bg-purple-500/20',
     accuracy: '85%',
     signals: '15-25',
-    description: 'Machine Learning optimisé'
+    descriptionKey: 'pricingPage.aiTiers.advanced.description'
   },
   pro: {
-    name: 'IA Pro',
+    nameKey: 'pricingPage.aiTiers.pro.name',
     icon: Sparkles,
     color: 'text-orange-400',
     bgColor: 'bg-orange-500/20',
     accuracy: '91%',
     signals: '25-40',
-    description: 'Deep Learning + Sentiment'
+    descriptionKey: 'pricingPage.aiTiers.pro.description'
   },
   elite: {
-    name: 'IA Elite',
+    nameKey: 'pricingPage.aiTiers.elite.name',
     icon: Crown,
     color: 'text-yellow-400',
     bgColor: 'bg-yellow-500/20',
     accuracy: '96%',
-    signals: 'Illimité',
-    description: 'Neural Network Quantique'
+    signalsKey: 'pricingPage.table.unlimited',
+    descriptionKey: 'pricingPage.aiTiers.elite.description'
   }
 }
 
@@ -65,7 +66,7 @@ const ACCOUNT_SIZES = [
     salePrice: 899,
     avgReward: 12233,
     aiTier: 'elite',
-    features: ['Tous les marchés', 'Signaux temps réel', 'Support VIP 24/7', 'Analyse institutionnelle', 'Accès API complet']
+    featureKeys: ['pricingPage.features.allMarkets', 'pricingPage.features.realTimeSignals', 'pricingPage.features.vipSupport', 'pricingPage.features.institutionalAnalysis', 'pricingPage.features.fullApiAccess']
   },
   {
     balance: 100000,
@@ -74,7 +75,7 @@ const ACCOUNT_SIZES = [
     avgReward: 5957,
     isBestValue: true,
     aiTier: 'pro',
-    features: ['Forex + Crypto + Indices', 'Alertes instantanées', 'Support prioritaire', 'Analyse de sentiment']
+    featureKeys: ['pricingPage.features.forexCryptoIndices', 'pricingPage.features.instantAlerts', 'pricingPage.features.prioritySupport', 'pricingPage.features.sentimentAnalysis']
   },
   {
     balance: 50000,
@@ -82,7 +83,7 @@ const ACCOUNT_SIZES = [
     salePrice: null,
     avgReward: 2805,
     aiTier: 'advanced',
-    features: ['Forex + Crypto', 'Alertes par email', 'Support dédié', 'Backtesting inclus']
+    featureKeys: ['pricingPage.features.forexCrypto', 'pricingPage.features.emailAlerts', 'pricingPage.features.dedicatedSupport', 'pricingPage.features.backtesting']
   },
   {
     balance: 25000,
@@ -90,7 +91,7 @@ const ACCOUNT_SIZES = [
     salePrice: null,
     avgReward: 1431,
     aiTier: 'basic',
-    features: ['Forex majeurs', 'Alertes quotidiennes', 'Support standard']
+    featureKeys: ['pricingPage.features.majorForex', 'pricingPage.features.dailyAlerts', 'pricingPage.features.standardSupport']
   },
   {
     balance: 10000,
@@ -98,7 +99,7 @@ const ACCOUNT_SIZES = [
     salePrice: null,
     avgReward: 680,
     aiTier: 'starter',
-    features: ['EUR/USD + GBP/USD', 'Signaux basiques', 'Support email']
+    featureKeys: ['pricingPage.features.eurGbp', 'pricingPage.features.basicSignals', 'pricingPage.features.emailSupport']
   },
 ]
 
@@ -121,19 +122,19 @@ const formatCurrency = (amount, currency = '$') => {
 
 // Row labels configuration
 const ROW_LABELS = [
-  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', label: 'Intelligence Artificielle' },
-  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', label: 'Précision IA' },
-  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', label: 'Signaux / jour' },
-  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', label: 'Objectif de Profit' },
-  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', label: 'Perte Max Journalière' },
-  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', label: 'Perte Max.' },
-  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', label: 'Jours de Trading Min.' },
-  { key: 'period', icon: Clock, iconColor: 'text-gray-400', label: 'Période de Trading' },
-  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', label: 'Remboursement' },
+  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', labelKey: 'pricingPage.rowLabels.ai' },
+  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', labelKey: 'pricingPage.rowLabels.accuracy' },
+  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', labelKey: 'pricingPage.rowLabels.signals' },
+  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', labelKey: 'pricingPage.rowLabels.profit' },
+  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', labelKey: 'pricingPage.rowLabels.dailyLoss' },
+  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', labelKey: 'pricingPage.rowLabels.maxLoss' },
+  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', labelKey: 'pricingPage.rowLabels.minDays' },
+  { key: 'period', icon: Clock, iconColor: 'text-gray-400', labelKey: 'pricingPage.rowLabels.period' },
+  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', labelKey: 'pricingPage.rowLabels.refund' },
 ]
 
 // Get cell value for matrix
-const getCellValue = (account, rowKey, showNumbers) => {
+const getCellValue = (account, rowKey, showNumbers, t) => {
   const rules = getRules(account.balance)
   const aiTier = AI_TIERS[account.aiTier]
   const AiIcon = aiTier.icon
@@ -145,7 +146,7 @@ const getCellValue = (account, rowKey, showNumbers) => {
           <div className={`p-1.5 rounded-lg ${aiTier.bgColor}`}>
             <AiIcon size={16} className={aiTier.color} />
           </div>
-          <span className={`text-xs font-bold ${aiTier.color}`}>{aiTier.name}</span>
+          <span className={`text-xs font-bold ${aiTier.color}`}>{t(aiTier.nameKey)}</span>
         </div>
       )
     case 'accuracy':
@@ -155,16 +156,16 @@ const getCellValue = (account, rowKey, showNumbers) => {
         </div>
       )
     case 'signals':
-      return <span className="text-white font-semibold">{aiTier.signals}</span>
+      return <span className="text-white font-semibold">{aiTier.signalsKey ? t(aiTier.signalsKey) : aiTier.signals}</span>
     case 'profit':
       return (
         <div className="text-xs">
           <div className="text-white">
-            <span className="text-gray-500">ÉTAPE 1</span>{' '}
+            <span className="text-gray-500">{t('pricingPage.table.step1')}</span>{' '}
             <span className="font-semibold">{showNumbers ? formatCurrency(rules.phase1Target) : '10%'}</span>
           </div>
           <div className="text-white">
-            <span className="text-gray-500">ÉTAPE 2</span>{' '}
+            <span className="text-gray-500">{t('pricingPage.table.step2')}</span>{' '}
             <span className="font-semibold">{showNumbers ? formatCurrency(rules.phase2Target) : '5%'}</span>
           </div>
         </div>
@@ -174,13 +175,13 @@ const getCellValue = (account, rowKey, showNumbers) => {
     case 'maxLoss':
       return <span className="text-white font-semibold text-sm">{showNumbers ? formatCurrency(rules.maxLoss) : '10%'}</span>
     case 'minDays':
-      return <span className="text-white font-semibold text-sm">4 jours</span>
+      return <span className="text-white font-semibold text-sm">4 {t('pricingPage.table.days')}</span>
     case 'period':
-      return <span className="text-white font-semibold text-sm">Illimité</span>
+      return <span className="text-white font-semibold text-sm">{t('pricingPage.table.unlimited')}</span>
     case 'refund':
       return (
         <div className="flex items-center justify-center gap-1">
-          <span className="text-white font-semibold text-sm">Oui</span>
+          <span className="text-white font-semibold text-sm">{t('pricingPage.table.yes')}</span>
           <span className="px-1.5 py-0.5 bg-green-500/20 text-green-400 text-xs font-bold rounded">100%</span>
         </div>
       )
@@ -191,6 +192,7 @@ const getCellValue = (account, rowKey, showNumbers) => {
 
 const Pricing = () => {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { isAuthenticated } = useAuth()
   const [showNumbers, setShowNumbers] = useState(true)
 
@@ -218,15 +220,14 @@ const Pricing = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <Brain className="text-purple-400" size={18} />
-            <span className="text-purple-300 text-sm font-medium">Propulsé par l'Intelligence Artificielle</span>
+            <span className="text-purple-300 text-sm font-medium">{t('pricingPage.hero.badge')}</span>
           </div>
 
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Tradez avec une <span className="gradient-text-animated">IA Prédictive</span>
+            {t('pricingPage.hero.title')} <span className="gradient-text-animated">{t('pricingPage.hero.titleHighlight')}</span>
           </h1>
           <p className="text-gray-400 text-xl max-w-3xl mx-auto mb-10 leading-relaxed">
-            Notre intelligence artificielle analyse des millions de données en temps réel pour prédire les mouvements du marché.
-            Plus votre plan est élevé, plus l'IA est puissante et précise.
+            {t('pricingPage.hero.description')}
           </p>
 
           {/* AI Stats */}
@@ -236,8 +237,8 @@ const Pricing = () => {
                 <Brain className="w-4 h-4 sm:w-6 sm:h-6 text-purple-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">5 Niveaux</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">d'Intelligence IA</p>
+                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">{t('pricingPage.aiStats.levels')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">{t('pricingPage.aiStats.levelsDesc')}</p>
               </div>
             </div>
             <div className="group flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 md:gap-4 glass-card px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
@@ -245,8 +246,8 @@ const Pricing = () => {
                 <Target className="w-4 h-4 sm:w-6 sm:h-6 text-green-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">96%</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">de Precision</p>
+                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">{t('pricingPage.aiStats.accuracy')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">{t('pricingPage.aiStats.accuracyDesc')}</p>
               </div>
             </div>
             <div className="group flex flex-col sm:flex-row items-center gap-1.5 sm:gap-3 md:gap-4 glass-card px-2 sm:px-4 md:px-6 py-2 sm:py-3 md:py-4 rounded-xl sm:rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
@@ -254,8 +255,8 @@ const Pricing = () => {
                 <BarChart3 className="w-4 h-4 sm:w-6 sm:h-6 text-blue-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">+40</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">Signaux/jour</p>
+                <p className="text-sm sm:text-xl md:text-2xl font-bold text-white">{t('pricingPage.aiStats.signals')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs md:text-sm">{t('pricingPage.aiStats.signalsDesc')}</p>
               </div>
             </div>
           </div>
@@ -271,7 +272,7 @@ const Pricing = () => {
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-xs font-bold text-primary-500 uppercase tracking-[0.3em] mb-6">
-            Niveaux d'Intelligence
+            {t('pricingPage.aiTiers.title')}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 md:gap-4 lg:gap-6 px-4">
             {Object.entries(AI_TIERS).reverse().map(([key, tier], index) => {
@@ -287,8 +288,8 @@ const Pricing = () => {
                     <TierIcon size={20} className={tier.color} />
                   </div>
                   <div>
-                    <p className={`text-sm font-bold ${tier.color}`}>{tier.name}</p>
-                    <p className="text-xs text-gray-500">{tier.description}</p>
+                    <p className={`text-sm font-bold ${tier.color}`}>{t(tier.nameKey)}</p>
+                    <p className="text-xs text-gray-500">{t(tier.descriptionKey)}</p>
                   </div>
                 </div>
               )
@@ -319,7 +320,7 @@ const Pricing = () => {
                   showNumbers ? 'left-7' : 'left-1'
                 }`} />
               </div>
-              <span className="text-gray-300 text-sm font-medium">Afficher les chiffres</span>
+              <span className="text-gray-300 text-sm font-medium">{t('pricingPage.table.showNumbers')}</span>
             </label>
           </div>
 
@@ -340,7 +341,7 @@ const Pricing = () => {
                       className={`flex items-center gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
                     >
                       <IconComponent size={16} className={row.iconColor} />
-                      <span className="text-gray-300 text-sm font-medium">{row.label}</span>
+                      <span className="text-gray-300 text-sm font-medium">{t(row.labelKey)}</span>
                     </div>
                   )
                 })}
@@ -348,7 +349,7 @@ const Pricing = () => {
                 {/* Payment note */}
                 <div className="pt-6 pr-4">
                   <p className="text-xs text-gray-500 leading-relaxed">
-                    Tous les prix sont des paiements uniques.
+                    {t('pricingPage.table.paymentNote')}
                   </p>
                 </div>
               </div>
@@ -380,14 +381,14 @@ const Pricing = () => {
                           {account.isBestValue && (
                             <div className="flex items-center justify-center gap-1">
                               <Flame size={12} />
-                              <span>Meilleur rapport</span>
+                              <span>{t('pricingPage.table.bestValue')}</span>
                             </div>
                           )}
                         </div>
 
                         {/* Header - Account Size */}
                         <div className="text-center py-3 h-[60px] flex flex-col justify-center">
-                          <p className="text-gray-400 text-xs mb-1">Compte</p>
+                          <p className="text-gray-400 text-xs mb-1">{t('pricingPage.table.account')}</p>
                           <p className="text-xl lg:text-2xl font-bold text-white">
                             {formatCurrency(account.balance)}
                           </p>
@@ -399,7 +400,7 @@ const Pricing = () => {
                             key={row.key}
                             className={`flex items-center justify-center text-center px-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
                           >
-                            {getCellValue(account, row.key, showNumbers)}
+                            {getCellValue(account, row.key, showNumbers, t)}
                           </div>
                         ))}
 
@@ -435,7 +436,7 @@ const Pricing = () => {
                             }`}
                           >
                             <Rocket size={14} className="transition-transform duration-300 group-hover:-rotate-12" />
-                            Commencer
+                            {t('pricingPage.table.start')}
                           </button>
                         </div>
                       </div>
@@ -447,7 +448,7 @@ const Pricing = () => {
                           <span className="text-white font-bold text-sm">€{account.avgReward.toLocaleString('fr-FR')}</span>
                         </div>
                         <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-1">
-                          <span>Récompense moy.</span>
+                          <span>{t('pricingPage.table.avgReward')}</span>
                           <Info size={10} className="hover:text-primary-400 cursor-help transition-colors" />
                         </div>
                       </div>
@@ -473,13 +474,13 @@ const Pricing = () => {
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-purple-400 text-sm font-medium mb-6 animate-float">
               <Brain size={16} />
-              Technologie Avancée
+              {t('pricingPage.aiFeatures.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
-              Comment notre <span className="gradient-text-animated">IA</span> predit le marche
+              {t('pricingPage.aiFeatures.title')} <span className="gradient-text-animated">{t('pricingPage.aiFeatures.titleHighlight')}</span> {t('pricingPage.aiFeatures.titleEnd')}
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
+              {t('pricingPage.aiFeatures.description')}
             </p>
           </div>
 
@@ -488,32 +489,32 @@ const Pricing = () => {
               <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-purple-500/20">
                 <Brain className="text-purple-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Réseaux de neurones profonds analysant les patterns historiques sur 20 ans de données.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-purple-400 transition-colors">{t('pricingPage.aiFeatures.deepLearning.title')}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{t('pricingPage.aiFeatures.deepLearning.description')}</p>
             </div>
 
             <div className="group glass-card p-6 rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(59,130,246,0.15)] cursor-pointer">
               <div className="w-16 h-16 bg-blue-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-blue-500/20">
                 <BarChart3 className="text-blue-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Plus de 150 indicateurs techniques calculés en temps réel sur tous les timeframes.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-blue-400 transition-colors">{t('pricingPage.aiFeatures.technicalAnalysis.title')}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{t('pricingPage.aiFeatures.technicalAnalysis.description')}</p>
             </div>
 
             <div className="group glass-card p-6 rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(34,197,94,0.15)] cursor-pointer">
               <div className="w-16 h-16 bg-green-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-green-500/20">
                 <TrendingUp className="text-green-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-green-400 transition-colors">Sentiment Analysis</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Analyse du sentiment des news, réseaux sociaux et rapports économiques.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-green-400 transition-colors">{t('pricingPage.aiFeatures.sentimentAnalysis.title')}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{t('pricingPage.aiFeatures.sentimentAnalysis.description')}</p>
             </div>
 
             <div className="group glass-card p-6 rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out hover:scale-105 hover:-translate-y-3 hover:shadow-[0_20px_50px_rgba(249,115,22,0.15)] cursor-pointer">
               <div className="w-16 h-16 bg-orange-500/20 rounded-2xl flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110 group-hover:rotate-6 group-hover:shadow-lg group-hover:shadow-orange-500/20">
                 <Zap className="text-orange-400" size={32} />
               </div>
-              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-orange-400 transition-colors">Exécution Rapide</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">Signaux générés en millisecondes pour capturer les meilleures opportunités.</p>
+              <h3 className="text-white font-semibold text-lg mb-3 group-hover:text-orange-400 transition-colors">{t('pricingPage.aiFeatures.fastExecution.title')}</h3>
+              <p className="text-gray-400 text-sm leading-relaxed">{t('pricingPage.aiFeatures.fastExecution.description')}</p>
             </div>
           </div>
         </div>
@@ -530,10 +531,10 @@ const Pricing = () => {
           <div className="text-center mb-14">
             <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-yellow-400 text-sm font-medium mb-6">
               <Award size={16} />
-              Comparaison
+              {t('pricingPage.comparison.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
-              Pourquoi choisir un <span className="gradient-text-animated">plan superieur</span>?
+              {t('pricingPage.comparison.title')} <span className="gradient-text-animated">{t('pricingPage.comparison.titleHighlight')}</span>?
             </h2>
           </div>
 
@@ -545,27 +546,17 @@ const Pricing = () => {
                   <Cpu size={24} className="text-gray-400" />
                 </div>
                 <div>
-                  <h3 className="text-white font-semibold text-lg">IA Starter</h3>
-                  <p className="text-gray-500 text-xs">Niveau débutant</p>
+                  <h3 className="text-white font-semibold text-lg">{t('pricingPage.comparison.starter.title')}</h3>
+                  <p className="text-gray-500 text-xs">{t('pricingPage.comparison.starter.level')}</p>
                 </div>
               </div>
               <ul className="space-y-4 text-sm">
-                <li className="flex items-center gap-3 text-gray-400">
-                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
-                  Analyse basique EUR/USD, GBP/USD
-                </li>
-                <li className="flex items-center gap-3 text-gray-400">
-                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
-                  5-10 signaux par jour
-                </li>
-                <li className="flex items-center gap-3 text-gray-400">
-                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
-                  Précision de 72%
-                </li>
-                <li className="flex items-center gap-3 text-gray-400">
-                  <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
-                  Indicateurs techniques de base
-                </li>
+                {t('pricingPage.comparison.starter.features', { returnObjects: true }).map((feature, index) => (
+                  <li key={index} className="flex items-center gap-3 text-gray-400">
+                    <CheckCircle2 size={18} className="text-gray-500 flex-shrink-0" />
+                    {feature}
+                  </li>
+                ))}
               </ul>
             </div>
 
@@ -580,29 +571,19 @@ const Pricing = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <h3 className="text-white font-semibold text-lg">IA Elite</h3>
-                    <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full animate-pulse">PREMIUM</span>
+                    <h3 className="text-white font-semibold text-lg">{t('pricingPage.comparison.elite.title')}</h3>
+                    <span className="px-2 py-0.5 bg-yellow-500/20 text-yellow-400 text-xs font-bold rounded-full animate-pulse">{t('pricingPage.comparison.elite.premium')}</span>
                   </div>
-                  <p className="text-yellow-500/70 text-xs">Niveau expert</p>
+                  <p className="text-yellow-500/70 text-xs">{t('pricingPage.comparison.elite.level')}</p>
                 </div>
               </div>
               <ul className="relative space-y-4 text-sm">
-                <li className="flex items-center gap-3 text-white">
-                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
-                  Tous les marchés (Forex, Crypto, Indices, Commodités)
-                </li>
-                <li className="flex items-center gap-3 text-white">
-                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
-                  Signaux illimités en temps réel
-                </li>
-                <li className="flex items-center gap-3 text-white">
-                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
-                  Précision de 96% avec Neural Network Quantique
-                </li>
-                <li className="flex items-center gap-3 text-white">
-                  <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
-                  Analyse institutionnelle + Sentiment + API
-                </li>
+                {t('pricingPage.comparison.elite.features', { returnObjects: true }).map((feature, index) => (
+                  <li key={index} className="flex items-center gap-3 text-white">
+                    <CheckCircle2 size={18} className="text-yellow-500 flex-shrink-0" />
+                    {feature}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
@@ -621,32 +602,15 @@ const Pricing = () => {
           <div className="text-center mb-14">
             <span className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-primary-400 text-sm font-medium mb-6">
               <Info size={16} />
-              FAQ
+              {t('pricingPage.faq.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-4">
-              Questions <span className="gradient-text-animated">Frequentes</span>
+              {t('pricingPage.faq.title')} <span className="gradient-text-animated">{t('pricingPage.faq.titleHighlight')}</span>
             </h2>
           </div>
 
           <div className="space-y-4">
-            {[
-              {
-                q: 'Comment fonctionne l\'IA de trading?',
-                a: 'Notre IA utilise des algorithmes de Deep Learning et Machine Learning pour analyser des millions de points de données en temps réel. Elle détecte des patterns invisibles à l\'œil humain et génère des signaux de trading avec une précision allant jusqu\'à 96%.'
-              },
-              {
-                q: 'Quelle est la différence entre les niveaux d\'IA?',
-                a: 'Chaque niveau offre des algorithmes plus sophistiqués. L\'IA Starter utilise l\'analyse technique de base, tandis que l\'IA Elite combine Deep Learning, analyse de sentiment et données institutionnelles pour des prédictions ultra-précises.'
-              },
-              {
-                q: 'Les signaux sont-ils garantis?',
-                a: 'Aucun signal n\'est garanti à 100%. Cependant, notre IA Elite affiche un taux de réussite de 96% sur les 12 derniers mois. Le trading comporte toujours des risques.'
-              },
-              {
-                q: 'Puis-je upgrader mon plan?',
-                a: 'Oui! Vous pouvez upgrader votre plan à tout moment pour accéder à une IA plus puissante. La différence de prix sera calculée au prorata.'
-              }
-            ].map((faq, index) => (
+            {t('pricingPage.faq.items', { returnObjects: true }).map((faq, index) => (
               <details key={index} className="group glass-card rounded-2xl overflow-hidden transition-all duration-500 hover:shadow-[0_10px_40px_rgba(34,197,94,0.1)] hover:border-primary-500/30">
                 <summary className="flex items-center justify-between p-6 cursor-pointer list-none transition-colors duration-300">
                   <span className="text-white font-medium group-hover:text-primary-400 transition-colors duration-300 pr-4">{faq.q}</span>
@@ -677,15 +641,15 @@ const Pricing = () => {
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
             <Sparkles className="text-yellow-400 animate-pulse" size={18} />
-            <span className="text-white text-sm font-medium">Offre limitée - Économisez jusqu'à 20%</span>
+            <span className="text-white text-sm font-medium">{t('pricingPage.cta.badge')}</span>
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Pret a trader avec <span className="gradient-text-animated">l'IA</span>?
+            {t('pricingPage.cta.title')} <span className="gradient-text-animated">{t('pricingPage.cta.titleHighlight')}</span>?
           </h2>
 
           <p className="text-white/80 mb-10 text-lg max-w-2xl mx-auto leading-relaxed">
-            Rejoignez plus de 10,000 traders qui utilisent déjà notre IA pour maximiser leurs profits.
+            {t('pricingPage.cta.description')}
           </p>
 
           {/* CTA Button with pulse ring */}
@@ -696,7 +660,7 @@ const Pricing = () => {
               className="relative group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-white text-dark-400 rounded-2xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl text-base md:text-lg hover:scale-105 hover:shadow-[0_20px_60px_rgba(255,255,255,0.3)] active:scale-95"
             >
               <Brain size={24} className="transition-transform duration-300 group-hover:rotate-12" />
-              Commencer avec l'IA Pro
+              {t('pricingPage.cta.button')}
               <ArrowRight size={22} className="transition-transform duration-300 group-hover:translate-x-2" />
             </button>
           </div>
@@ -705,15 +669,15 @@ const Pricing = () => {
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6 mt-12 pt-8 border-t border-white/10">
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <Shield size={16} className="text-green-400" />
-              <span>Paiement securise</span>
+              <span>{t('pricingPage.cta.securePayment')}</span>
             </div>
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <RefreshCw size={16} className="text-blue-400" />
-              <span>Remboursement 100%</span>
+              <span>{t('pricingPage.cta.fullRefund')}</span>
             </div>
             <div className="flex items-center gap-2 text-white/60 text-sm">
               <Zap size={16} className="text-yellow-400" />
-              <span>Activation instantanee</span>
+              <span>{t('pricingPage.cta.instantActivation')}</span>
             </div>
           </div>
         </div>

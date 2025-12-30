@@ -55,73 +55,73 @@ const About = () => {
   const values = [
     {
       icon: Shield,
-      title: 'Transparency',
-      description: 'Clear rules, fair evaluation, and honest communication. No hidden fees or surprise conditions.',
+      titleKey: 'about.values.transparency.title',
+      descKey: 'about.values.transparency.description',
       color: 'text-green-500',
       bg: 'bg-green-500/10'
     },
     {
       icon: Users,
-      title: 'Community',
-      description: 'We build a supportive community where traders help each other grow and succeed.',
+      titleKey: 'about.values.community.title',
+      descKey: 'about.values.community.description',
       color: 'text-blue-500',
       bg: 'bg-blue-500/10'
     },
     {
       icon: Target,
-      title: 'Excellence',
-      description: 'We set high standards for ourselves and our traders, pushing everyone to be their best.',
+      titleKey: 'about.values.excellence.title',
+      descKey: 'about.values.excellence.description',
       color: 'text-purple-500',
       bg: 'bg-purple-500/10'
     },
     {
       icon: Heart,
-      title: 'Trader First',
-      description: 'Every decision we make is focused on providing the best experience for our traders.',
+      titleKey: 'about.values.traderFirst.title',
+      descKey: 'about.values.traderFirst.description',
       color: 'text-red-500',
       bg: 'bg-red-500/10'
     }
   ]
 
   const stats = [
-    { value: 500, suffix: '+', label: 'Funded Traders', icon: Users },
-    { value: 2.5, suffix: 'M+', label: 'Payouts Made', icon: TrendingUp, prefix: '$' },
-    { value: 15, suffix: 'K+', label: 'Active Users', icon: Globe },
-    { value: 24, suffix: '/7', label: 'Support Available', icon: Zap }
+    { value: 500, suffix: '+', labelKey: 'about.stats.fundedTraders', icon: Users },
+    { value: 2.5, suffix: 'M+', labelKey: 'about.stats.payoutsMade', icon: TrendingUp, prefix: '$' },
+    { value: 15, suffix: 'K+', labelKey: 'about.stats.activeUsers', icon: Globe },
+    { value: 24, suffix: '/7', labelKey: 'about.stats.supportAvailable', icon: Zap }
   ]
 
   const team = [
     {
       name: 'Karim Benali',
-      role: 'CEO & Founder',
-      bio: 'Former institutional trader with 15+ years of experience in forex and commodities.',
+      roleKey: 'about.team.ceo.role',
+      bioKey: 'about.team.ceo.bio',
       gradient: 'from-green-500 to-emerald-600'
     },
     {
       name: 'Sofia Martinez',
-      role: 'Head of Trading',
-      bio: 'Risk management expert who previously worked at major investment banks.',
+      roleKey: 'about.team.headTrading.role',
+      bioKey: 'about.team.headTrading.bio',
       gradient: 'from-blue-500 to-cyan-600'
     },
     {
       name: 'Ahmed Hassan',
-      role: 'CTO',
-      bio: 'Tech visionary responsible for building our cutting-edge trading platform.',
+      roleKey: 'about.team.cto.role',
+      bioKey: 'about.team.cto.bio',
       gradient: 'from-purple-500 to-pink-600'
     },
     {
       name: 'Marie Dubois',
-      role: 'Head of Support',
-      bio: 'Dedicated to ensuring every trader receives the help they need, when they need it.',
+      roleKey: 'about.team.headSupport.role',
+      bioKey: 'about.team.headSupport.bio',
       gradient: 'from-orange-500 to-red-600'
     }
   ]
 
   const milestones = [
-    { year: '2022', event: 'TradeSense founded with a mission to democratize prop trading', icon: Rocket },
-    { year: '2023', event: 'Launched challenge programs and funded first 100 traders', icon: Award },
-    { year: '2024', event: 'Reached $1M in total payouts, expanded to 50+ countries', icon: Globe },
-    { year: '2025', event: 'Introduced free trial program and AI trading signals', icon: Sparkles }
+    { year: '2022', eventKey: 'about.milestones.2022', icon: Rocket },
+    { year: '2023', eventKey: 'about.milestones.2023', icon: Award },
+    { year: '2024', eventKey: 'about.milestones.2024', icon: Globe },
+    { year: '2025', eventKey: 'about.milestones.2025', icon: Sparkles }
   ]
 
   return (
@@ -140,18 +140,17 @@ const About = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
               <Building2 size={18} className="text-primary-500" />
-              <span className="text-sm font-medium text-primary-400">About TradeSense</span>
+              <span className="text-sm font-medium text-primary-400">{t('about.badge')}</span>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-              Empowering Traders to{' '}
+              {t('about.heroTitle')}{' '}
               <span className="gradient-text-animated">
-                Achieve Their Dreams
+                {t('about.heroTitleHighlight')}
               </span>
             </h1>
             <p className="text-xl text-gray-400 leading-relaxed">
-              We believe talented traders shouldn't be held back by lack of capital.
-              Our mission is to identify, fund, and support skilled traders worldwide.
+              {t('about.heroSubtitle')}
             </p>
           </div>
         </div>
@@ -178,7 +177,7 @@ const About = () => {
                   <div className="text-lg sm:text-3xl md:text-4xl font-bold text-white mb-1 sm:mb-2">
                     {stat.prefix}<AnimatedCounter end={stat.value} suffix={stat.suffix} />
                   </div>
-                  <div className="text-gray-400 text-[10px] sm:text-sm">{stat.label}</div>
+                  <div className="text-gray-400 text-[10px] sm:text-sm">{t(stat.labelKey)}</div>
                 </div>
               )
             })}
@@ -195,32 +194,22 @@ const About = () => {
             <div>
               <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
                 <Sparkles size={14} />
-                Our Story
+                {t('about.story.badge')}
               </span>
               <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
-                From Vision to <span className="text-primary-500">Reality</span>
+                {t('about.story.title')} <span className="text-primary-500">{t('about.story.titleHighlight')}</span>
               </h2>
               <div className="space-y-4 text-gray-400 text-lg leading-relaxed">
-                <p>
-                  TradeSense was born from a simple observation: many talented traders around the world
-                  lack the capital to trade professionally. We set out to change that.
-                </p>
-                <p>
-                  Founded by a team of experienced traders and fintech professionals, we built a platform
-                  that gives skilled traders access to significant trading capital without risking their
-                  own money.
-                </p>
-                <p>
-                  Today, we've funded hundreds of traders from over 50 countries, paying out millions
-                  in profits. But we're just getting started.
-                </p>
+                <p>{t('about.story.paragraph1')}</p>
+                <p>{t('about.story.paragraph2')}</p>
+                <p>{t('about.story.paragraph3')}</p>
               </div>
               <div className="mt-8">
                 <Link
                   to="/pricing"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105"
                 >
-                  Start Your Journey
+                  {t('about.story.cta')}
                   <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
@@ -232,23 +221,22 @@ const About = () => {
                 <div className="w-16 h-16 bg-primary-500/20 rounded-2xl flex items-center justify-center mb-6">
                   <Globe size={32} className="text-primary-500" />
                 </div>
-                <h3 className="text-2xl font-bold text-white mb-4">Global Reach</h3>
+                <h3 className="text-2xl font-bold text-white mb-4">{t('about.globalReach.title')}</h3>
                 <p className="text-gray-400 mb-8">
-                  We support traders from around the world, with localized support in French,
-                  English, and Arabic.
+                  {t('about.globalReach.description')}
                 </p>
                 <div className="grid grid-cols-3 gap-4">
                   <div className="glass-card rounded-xl p-4 text-center">
                     <div className="text-2xl font-bold text-primary-500">50+</div>
-                    <div className="text-xs text-gray-500">Countries</div>
+                    <div className="text-xs text-gray-500">{t('about.globalReach.countries')}</div>
                   </div>
                   <div className="glass-card rounded-xl p-4 text-center">
                     <div className="text-2xl font-bold text-primary-500">3</div>
-                    <div className="text-xs text-gray-500">Languages</div>
+                    <div className="text-xs text-gray-500">{t('about.globalReach.languages')}</div>
                   </div>
                   <div className="glass-card rounded-xl p-4 text-center">
                     <div className="text-2xl font-bold text-primary-500">24/7</div>
-                    <div className="text-xs text-gray-500">Support</div>
+                    <div className="text-xs text-gray-500">{t('about.globalReach.support')}</div>
                   </div>
                 </div>
               </div>
@@ -259,7 +247,7 @@ const About = () => {
                   <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                     <CheckCircle2 size={16} className="text-green-500" />
                   </div>
-                  <span className="text-sm font-semibold text-white">Verified</span>
+                  <span className="text-sm font-semibold text-white">{t('about.globalReach.verified')}</span>
                 </div>
               </div>
             </div>
@@ -277,13 +265,13 @@ const About = () => {
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Heart size={14} />
-              Our Values
+              {t('about.values.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              The Principles That <span className="gradient-text-animated">Guide Us</span>
+              {t('about.values.title')} <span className="gradient-text-animated">{t('about.values.titleHighlight')}</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              Everything we do is driven by these core values
+              {t('about.values.subtitle')}
             </p>
           </div>
 
@@ -299,10 +287,10 @@ const About = () => {
                     <Icon className={`w-5 h-5 sm:w-7 sm:h-7 ${value.color}`} />
                   </div>
                   <h3 className="text-sm sm:text-xl font-semibold text-white mb-1 sm:mb-3 group-hover:text-primary-400 transition-colors">
-                    {value.title}
+                    {t(value.titleKey)}
                   </h3>
                   <p className="text-gray-400 text-[10px] sm:text-base leading-relaxed hidden sm:block">
-                    {value.description}
+                    {t(value.descKey)}
                   </p>
                 </div>
               )
@@ -319,10 +307,10 @@ const About = () => {
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Rocket size={14} />
-              Our Journey
+              {t('about.journey.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              Milestones Along the <span className="gradient-text-animated">Way</span>
+              {t('about.journey.title')} <span className="gradient-text-animated">{t('about.journey.titleHighlight')}</span>
             </h2>
           </div>
 
@@ -347,7 +335,7 @@ const About = () => {
                           <span className="text-2xl font-bold text-primary-500">{milestone.year}</span>
                           {index % 2 === 0 && <Icon size={20} className="text-primary-500" />}
                         </div>
-                        <p className="text-gray-400">{milestone.event}</p>
+                        <p className="text-gray-400">{t(milestone.eventKey)}</p>
                       </div>
                     </div>
 
@@ -373,13 +361,13 @@ const About = () => {
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Users size={14} />
-              Our Team
+              {t('about.team.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              Meet the <span className="gradient-text-animated">People</span>
+              {t('about.team.title')} <span className="gradient-text-animated">{t('about.team.titleHighlight')}</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              Experienced professionals dedicated to your trading success
+              {t('about.team.subtitle')}
             </p>
           </div>
 
@@ -395,8 +383,8 @@ const About = () => {
                 <h3 className="text-xs sm:text-lg font-semibold text-white mb-0.5 sm:mb-1 group-hover:text-primary-400 transition-colors">
                   {member.name}
                 </h3>
-                <p className="text-primary-500 text-[10px] sm:text-sm font-medium mb-1 sm:mb-3">{member.role}</p>
-                <p className="text-[10px] sm:text-sm text-gray-400 leading-relaxed hidden sm:block">{member.bio}</p>
+                <p className="text-primary-500 text-[10px] sm:text-sm font-medium mb-1 sm:mb-3">{t(member.roleKey)}</p>
+                <p className="text-[10px] sm:text-sm text-gray-400 leading-relaxed hidden sm:block">{t(member.bioKey)}</p>
               </div>
             ))}
           </div>
@@ -411,30 +399,30 @@ const About = () => {
               <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-primary-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <MapPin className="w-4 h-4 sm:w-6 sm:h-6 text-primary-500" />
               </div>
-              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Location</h3>
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">{t('about.contact.location')}</h3>
               <p className="text-gray-400 text-[10px] sm:text-base">
-                <span className="hidden sm:inline">Casablanca, Morocco<br />Dubai, UAE</span>
-                <span className="sm:hidden">Morocco<br />UAE</span>
+                <span className="hidden sm:inline">{t('about.contact.locationDetail')}</span>
+                <span className="sm:hidden">{t('about.contact.locationShort')}</span>
               </p>
             </div>
             <div className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
               <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-blue-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <Mail className="w-4 h-4 sm:w-6 sm:h-6 text-blue-500" />
               </div>
-              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Email</h3>
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">{t('about.contact.email')}</h3>
               <p className="text-gray-400 text-[10px] sm:text-base">
-                <span className="hidden sm:inline">support@tradesense.com<br />partners@tradesense.com</span>
-                <span className="sm:hidden">support@<br />tradesense.com</span>
+                <span className="hidden sm:inline">{t('about.contact.emailDetail')}</span>
+                <span className="sm:hidden">{t('about.contact.emailShort')}</span>
               </p>
             </div>
             <div className="glass-card rounded-lg sm:rounded-2xl p-3 sm:p-8 text-center hover:scale-105 transition-transform duration-300 card-hover-glow">
               <div className="w-8 h-8 sm:w-14 sm:h-14 mx-auto mb-2 sm:mb-4 bg-purple-500/20 rounded-lg sm:rounded-xl flex items-center justify-center">
                 <Phone className="w-4 h-4 sm:w-6 sm:h-6 text-purple-500" />
               </div>
-              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">Phone</h3>
+              <h3 className="text-xs sm:text-lg font-semibold text-white mb-1 sm:mb-3">{t('about.contact.phone')}</h3>
               <p className="text-gray-400 text-[10px] sm:text-base">
-                <span className="hidden sm:inline">+212 XXX XXX XXX<br />24/7 Live Chat</span>
-                <span className="sm:hidden">+212 XXX<br />24/7 Chat</span>
+                <span className="hidden sm:inline">{t('about.contact.phoneDetail')}</span>
+                <span className="sm:hidden">{t('about.contact.phoneShort')}</span>
               </p>
             </div>
           </div>
@@ -451,14 +439,14 @@ const About = () => {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
           <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8">
             <Star size={18} className="text-yellow-500" />
-            <span className="text-sm font-semibold text-yellow-400">Join 10,000+ Traders</span>
+            <span className="text-sm font-semibold text-yellow-400">{t('about.cta.badge')}</span>
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Ready to Start <span className="gradient-text-animated">Trading?</span>
+            {t('about.cta.title')} <span className="gradient-text-animated">{t('about.cta.titleHighlight')}</span>
           </h2>
           <p className="text-xl text-gray-400 mb-10">
-            Join TradeSense today and take the first step towards becoming a funded trader.
+            {t('about.cta.subtitle')}
           </p>
 
           <Link
@@ -466,7 +454,7 @@ const About = () => {
             className="group w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 md:px-10 py-4 md:py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
           >
             <Zap size={22} />
-            Start Your Challenge
+            {t('about.cta.button')}
             <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

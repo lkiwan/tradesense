@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { Settings, Bell, Shield, Globe, Moon, Eye, EyeOff, Lock, Key, Smartphone, Loader2, CheckCircle, AlertTriangle, ExternalLink, Link2 } from 'lucide-react'
 import { twoFactorAPI } from '../../services/api'
 import toast from 'react-hot-toast'
 import LinkedAccounts from '../../components/profile/LinkedAccounts'
 
 const SettingsPage = () => {
+  const { t, i18n } = useTranslation()
   const navigate = useNavigate()
   const [showPassword, setShowPassword] = useState(false)
   const [settings, setSettings] = useState({
@@ -14,7 +16,7 @@ const SettingsPage = () => {
     tradeAlerts: true,
     marketNews: false,
     darkMode: true,
-    language: 'fr'
+    language: i18n.language || 'fr'
   })
 
   // 2FA state
@@ -78,9 +80,9 @@ const SettingsPage = () => {
           <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-gray-500/20 to-gray-600/20 border border-gray-500/30">
             <Settings className="text-gray-400" size={20} />
           </div>
-          Parametres
+          {t('settingsPage.title')}
         </h1>
-        <p className="text-gray-400 mt-1 text-sm md:text-base">Configurez vos preferences</p>
+        <p className="text-gray-400 mt-1 text-sm md:text-base">{t('settingsPage.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
@@ -90,19 +92,19 @@ const SettingsPage = () => {
             <div className="p-1.5 rounded-lg bg-primary-500/10">
               <Bell size={18} className="text-primary-400" />
             </div>
-            Notifications
+            {t('settingsPage.notifications.title')}
           </h3>
           <div className="space-y-3 md:space-y-4">
             {[
-              { key: 'emailNotifications', label: 'Notifications par email', desc: 'Recevez des mises a jour par email' },
-              { key: 'pushNotifications', label: 'Notifications push', desc: 'Notifications sur votre navigateur' },
-              { key: 'tradeAlerts', label: 'Alertes de trading', desc: 'Alertes pour vos signaux IA' },
-              { key: 'marketNews', label: 'Actualites marche', desc: 'News et analyses de marche' },
+              { key: 'emailNotifications', labelKey: 'settingsPage.notifications.email.label', descKey: 'settingsPage.notifications.email.desc' },
+              { key: 'pushNotifications', labelKey: 'settingsPage.notifications.push.label', descKey: 'settingsPage.notifications.push.desc' },
+              { key: 'tradeAlerts', labelKey: 'settingsPage.notifications.tradeAlerts.label', descKey: 'settingsPage.notifications.tradeAlerts.desc' },
+              { key: 'marketNews', labelKey: 'settingsPage.notifications.marketNews.label', descKey: 'settingsPage.notifications.marketNews.desc' },
             ].map(item => (
               <div key={item.key} className="flex items-center justify-between py-3 border-b border-dark-200 last:border-0 gap-3">
                 <div className="min-w-0 flex-1">
-                  <p className="font-medium text-white text-sm md:text-base">{item.label}</p>
-                  <p className="text-xs md:text-sm text-gray-400 break-words">{item.desc}</p>
+                  <p className="font-medium text-white text-sm md:text-base">{t(item.labelKey)}</p>
+                  <p className="text-xs md:text-sm text-gray-400 break-words">{t(item.descKey)}</p>
                 </div>
                 <button
                   onClick={() => toggleSetting(item.key)}
@@ -121,7 +123,7 @@ const SettingsPage = () => {
             <div className="p-1.5 rounded-lg bg-green-500/10">
               <Shield size={18} className="text-green-400" />
             </div>
-            Securite
+            {t('settingsPage.security.title')}
           </h3>
           <div className="space-y-3 md:space-y-4">
             {/* Two-Factor Authentication */}
@@ -130,8 +132,8 @@ const SettingsPage = () => {
                 <div className="flex items-start sm:items-center gap-3">
                   <Smartphone size={20} className="text-primary-400 flex-shrink-0 mt-0.5 sm:mt-0" />
                   <div className="min-w-0">
-                    <p className="font-medium text-white text-sm md:text-base">Authentification 2FA</p>
-                    <p className="text-xs md:text-sm text-gray-400">Securisez votre compte avec un code a 6 chiffres</p>
+                    <p className="font-medium text-white text-sm md:text-base">{t('settingsPage.security.twoFa.title')}</p>
+                    <p className="text-xs md:text-sm text-gray-400">{t('settingsPage.security.twoFa.desc')}</p>
                   </div>
                 </div>
                 {loadingTwoFa ? (
@@ -139,11 +141,11 @@ const SettingsPage = () => {
                 ) : twoFaStatus.enabled ? (
                   <span className="flex items-center gap-1 text-green-400 text-sm font-medium">
                     <CheckCircle size={16} />
-                    Active
+                    {t('settingsPage.security.twoFa.enabled')}
                   </span>
                 ) : (
                   <span className="flex items-center gap-1 text-gray-400 text-sm">
-                    Non active
+                    {t('settingsPage.security.twoFa.notEnabled')}
                   </span>
                 )}
               </div>
@@ -154,7 +156,7 @@ const SettingsPage = () => {
                     <div className="space-y-3">
                       {/* Backup codes status */}
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-gray-400">Codes de secours restants:</span>
+                        <span className="text-gray-400">{t('settingsPage.security.twoFa.backupCodes')}:</span>
                         <span className={`font-medium ${twoFaStatus.backup_codes_remaining < 3 ? 'text-yellow-400' : 'text-white'}`}>
                           {twoFaStatus.backup_codes_remaining} / 10
                         </span>
@@ -163,7 +165,7 @@ const SettingsPage = () => {
                         <div className="flex items-start gap-2 p-3 bg-yellow-500/10 border border-yellow-500/20 rounded-lg">
                           <AlertTriangle size={16} className="text-yellow-400 mt-0.5 flex-shrink-0" />
                           <p className="text-sm text-yellow-200">
-                            Peu de codes restants. Pensez a les regenerer.
+                            {t('settingsPage.security.twoFa.lowCodesWarning')}
                           </p>
                         </div>
                       )}
@@ -173,13 +175,13 @@ const SettingsPage = () => {
                           className="flex-1 py-2.5 bg-dark-200 hover:bg-dark-300 text-white rounded-lg text-sm font-medium transition-colors flex items-center justify-center gap-2 min-h-[44px]"
                         >
                           <Key size={16} />
-                          Regenerer les codes
+                          {t('settingsPage.security.twoFa.regenerateCodes')}
                         </button>
                         <button
                           onClick={() => setShowDisableModal(true)}
                           className="px-4 py-2.5 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-lg text-sm font-medium transition-colors min-h-[44px]"
                         >
-                          Desactiver
+                          {t('settingsPage.security.twoFa.disable')}
                         </button>
                       </div>
                     </div>
@@ -189,7 +191,7 @@ const SettingsPage = () => {
                       className="w-full py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-lg font-medium transition-colors flex items-center justify-center gap-2 min-h-[48px] text-sm md:text-base"
                     >
                       <Shield size={18} />
-                      Activer l'authentification 2FA
+                      {t('settingsPage.security.twoFa.enable')}
                     </button>
                   )}
                 </div>
@@ -200,11 +202,11 @@ const SettingsPage = () => {
             <div className="pt-2">
               <p className="font-medium text-white mb-3 flex items-center gap-2 text-sm md:text-base">
                 <Lock size={18} className="text-gray-400" />
-                Changer le mot de passe
+                {t('settingsPage.security.password.title')}
               </p>
               <div className="space-y-3">
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Mot de passe actuel</label>
+                  <label className="block text-sm text-gray-400 mb-2">{t('settingsPage.security.password.current')}</label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                     <input
@@ -221,7 +223,7 @@ const SettingsPage = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Nouveau mot de passe</label>
+                  <label className="block text-sm text-gray-400 mb-2">{t('settingsPage.security.password.new')}</label>
                   <div className="relative">
                     <Key className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={18} />
                     <input
@@ -232,7 +234,7 @@ const SettingsPage = () => {
                   </div>
                 </div>
                 <button className="w-full py-3 bg-dark-200 hover:bg-dark-300 text-white rounded-lg font-medium transition-colors min-h-[48px] text-sm md:text-base">
-                  Changer le mot de passe
+                  {t('settingsPage.security.password.change')}
                 </button>
               </div>
             </div>
@@ -248,14 +250,14 @@ const SettingsPage = () => {
                   <AlertTriangle className="text-red-400" size={20} />
                 </div>
                 <div className="min-w-0">
-                  <h3 className="font-semibold text-white">Desactiver 2FA</h3>
-                  <p className="text-sm text-gray-400">Cette action reduira la securite de votre compte</p>
+                  <h3 className="font-semibold text-white">{t('settingsPage.security.twoFa.disableTitle')}</h3>
+                  <p className="text-sm text-gray-400">{t('settingsPage.security.twoFa.disableWarning')}</p>
                 </div>
               </div>
 
               <div className="mb-4">
                 <label className="block text-sm text-gray-400 mb-2">
-                  Entrez votre code a 6 chiffres pour confirmer
+                  {t('settingsPage.security.twoFa.enterCode')}
                 </label>
                 <input
                   type="text"
@@ -275,7 +277,7 @@ const SettingsPage = () => {
                   }}
                   className="flex-1 py-3 bg-dark-200 hover:bg-dark-300 text-white rounded-lg font-medium transition-colors min-h-[48px] order-2 sm:order-1"
                 >
-                  Annuler
+                  {t('common.cancel')}
                 </button>
                 <button
                   onClick={handleDisable2FA}
@@ -285,10 +287,10 @@ const SettingsPage = () => {
                   {disabling ? (
                     <>
                       <Loader2 className="animate-spin" size={18} />
-                      Desactivation...
+                      {t('settingsPage.security.twoFa.disabling')}
                     </>
                   ) : (
-                    'Desactiver'
+                    t('settingsPage.security.twoFa.disable')
                   )}
                 </button>
               </div>
@@ -305,12 +307,12 @@ const SettingsPage = () => {
             <div className="p-1.5 rounded-lg bg-purple-500/10">
               <Moon size={18} className="text-purple-400" />
             </div>
-            Apparence
+            {t('settingsPage.appearance.title')}
           </h3>
           <div className="flex items-center justify-between py-3 gap-3">
             <div className="min-w-0">
-              <p className="font-medium text-white text-sm md:text-base">Mode sombre</p>
-              <p className="text-xs md:text-sm text-gray-400">Interface en mode sombre</p>
+              <p className="font-medium text-white text-sm md:text-base">{t('settingsPage.appearance.darkMode.label')}</p>
+              <p className="text-xs md:text-sm text-gray-400">{t('settingsPage.appearance.darkMode.desc')}</p>
             </div>
             <button
               onClick={() => toggleSetting('darkMode')}
@@ -327,16 +329,23 @@ const SettingsPage = () => {
             <div className="p-1.5 rounded-lg bg-blue-500/10">
               <Globe size={18} className="text-blue-400" />
             </div>
-            Langue
+            {t('settingsPage.language.title')}
           </h3>
           <select
-            value={settings.language}
-            onChange={(e) => setSettings(prev => ({ ...prev, language: e.target.value }))}
+            value={i18n.language}
+            onChange={(e) => {
+              const newLang = e.target.value
+              i18n.changeLanguage(newLang)
+              setSettings(prev => ({ ...prev, language: newLang }))
+              // Update document direction for RTL languages
+              document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr'
+              document.documentElement.lang = newLang
+            }}
             className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-4 py-3 md:py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 cursor-pointer min-h-[48px] text-sm md:text-base"
           >
-            <option value="fr" className="bg-dark-300">Francais</option>
-            <option value="en" className="bg-dark-300">English</option>
-            <option value="ar" className="bg-dark-300">العربية</option>
+            <option value="fr" className="bg-dark-300">{t('settingsPage.language.french')}</option>
+            <option value="en" className="bg-dark-300">{t('settingsPage.language.english')}</option>
+            <option value="ar" className="bg-dark-300">{t('settingsPage.language.arabic')}</option>
           </select>
         </div>
       </div>

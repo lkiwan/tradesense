@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Calculator, DollarSign, Percent, TrendingUp, AlertTriangle, Info } from 'lucide-react'
 
 const CalculatorPage = () => {
+  const { t } = useTranslation()
   const [accountSize, setAccountSize] = useState(10000)
   const [riskPercent, setRiskPercent] = useState(1)
   const [entryPrice, setEntryPrice] = useState('')
@@ -24,9 +26,9 @@ const CalculatorPage = () => {
           <div className="p-2.5 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30">
             <Calculator className="text-blue-400" size={24} />
           </div>
-          Calculateur de Position
+          {t('calculator.pageTitle')}
         </h1>
-        <p className="text-gray-400 mt-1">Calculez la taille optimale de vos positions en fonction de votre gestion du risque</p>
+        <p className="text-gray-400 mt-1">{t('calculator.pageSubtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -37,12 +39,12 @@ const CalculatorPage = () => {
               <div className="p-1.5 rounded-lg bg-primary-500/10">
                 <DollarSign size={18} className="text-primary-400" />
               </div>
-              Parametres du Compte
+              {t('calculator.accountParams')}
             </h3>
 
             {/* Account Size */}
             <div className="mb-4">
-              <label className="block text-sm text-gray-400 mb-2">Taille du Compte</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('calculator.accountSize')}</label>
               <div className="relative group">
                 <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -56,7 +58,7 @@ const CalculatorPage = () => {
 
             {/* Risk Percent */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Risque par Trade (%)</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('calculator.riskPerTrade')}</label>
               <div className="relative group">
                 <Percent className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -90,12 +92,12 @@ const CalculatorPage = () => {
               <div className="p-1.5 rounded-lg bg-blue-500/10">
                 <TrendingUp size={18} className="text-blue-400" />
               </div>
-              Parametres du Trade
+              {t('calculator.tradeParams')}
             </h3>
 
             {/* Entry Price */}
             <div className="mb-4">
-              <label className="block text-sm text-gray-400 mb-2">Prix d'Entree</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('calculator.entryPrice')}</label>
               <input
                 type="number"
                 value={entryPrice}
@@ -107,7 +109,7 @@ const CalculatorPage = () => {
 
             {/* Stop Loss */}
             <div className="mb-4">
-              <label className="block text-sm text-gray-400 mb-2">Stop Loss</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('calculator.stopLoss')}</label>
               <input
                 type="number"
                 value={stopLoss}
@@ -119,7 +121,7 @@ const CalculatorPage = () => {
 
             {/* Take Profit */}
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Take Profit</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('calculator.takeProfit')}</label>
               <input
                 type="number"
                 value={takeProfit}
@@ -138,38 +140,38 @@ const CalculatorPage = () => {
               <div className="p-1.5 rounded-lg bg-green-500/10">
                 <Calculator size={18} className="text-green-400" />
               </div>
-              Resultats
+              {t('calculator.results')}
             </h3>
 
             <div className="space-y-4">
               {/* Position Size */}
               <div className="bg-dark-200/50 rounded-xl p-4 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400">Taille de Position</span>
+                  <span className="text-gray-400">{t('calculator.positionSize')}</span>
                   <div className="p-1.5 rounded-lg bg-primary-500/10">
                     <TrendingUp size={16} className="text-primary-400" />
                   </div>
                 </div>
                 <p className="text-3xl font-bold text-white group-hover:text-primary-400 transition-colors">{positionSize.toFixed(4)}</p>
-                <p className="text-sm text-gray-500 mt-1">unites</p>
+                <p className="text-sm text-gray-500 mt-1">{t('calculator.units')}</p>
               </div>
 
               {/* Risk Amount */}
               <div className="bg-dark-200/50 rounded-xl p-4 border border-white/5 hover:border-red-500/30 transition-all duration-300">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400">Montant a Risque</span>
+                  <span className="text-gray-400">{t('calculator.riskAmount')}</span>
                   <div className="p-1.5 rounded-lg bg-red-500/10">
                     <AlertTriangle size={16} className="text-red-400" />
                   </div>
                 </div>
                 <p className="text-2xl font-bold text-red-400">${riskAmount.toFixed(2)}</p>
-                <p className="text-sm text-gray-500 mt-1">{riskPercent}% du compte</p>
+                <p className="text-sm text-gray-500 mt-1">{riskPercent}% {t('calculator.ofAccount')}</p>
               </div>
 
               {/* Risk/Reward */}
               <div className="bg-dark-200/50 rounded-xl p-4 border border-white/5 hover:border-blue-500/30 transition-all duration-300">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-gray-400">Ratio Risque/Rendement</span>
+                  <span className="text-gray-400">{t('calculator.riskRewardRatio')}</span>
                   <div className="p-1.5 rounded-lg bg-blue-500/10">
                     <Info size={16} className="text-blue-400" />
                   </div>
@@ -178,18 +180,18 @@ const CalculatorPage = () => {
                   1:{riskRewardRatio.toFixed(2)}
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  {riskRewardRatio >= 2 ? 'Excellent' : riskRewardRatio >= 1 ? 'Acceptable' : 'Non recommande'}
+                  {riskRewardRatio >= 2 ? t('calculator.excellent') : riskRewardRatio >= 1 ? t('calculator.acceptable') : t('calculator.notRecommended')}
                 </p>
               </div>
 
               {/* Potential Outcomes */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-green-500/10 rounded-xl p-4 border border-green-500/30 hover:border-green-500/50 transition-all duration-300">
-                  <p className="text-xs text-green-400 uppercase tracking-wider mb-1">Profit Potentiel</p>
+                  <p className="text-xs text-green-400 uppercase tracking-wider mb-1">{t('calculator.potentialProfit')}</p>
                   <p className="text-xl font-bold text-green-400">+${potentialProfit.toFixed(2)}</p>
                 </div>
                 <div className="bg-red-500/10 rounded-xl p-4 border border-red-500/30 hover:border-red-500/50 transition-all duration-300">
-                  <p className="text-xs text-red-400 uppercase tracking-wider mb-1">Perte Potentielle</p>
+                  <p className="text-xs text-red-400 uppercase tracking-wider mb-1">{t('calculator.potentialLoss')}</p>
                   <p className="text-xl font-bold text-red-400">-${potentialLoss.toFixed(2)}</p>
                 </div>
               </div>
@@ -203,9 +205,9 @@ const CalculatorPage = () => {
                 <Info size={18} className="text-primary-400" />
               </div>
               <div>
-                <h4 className="font-medium text-white mb-1">Conseil de Gestion du Risque</h4>
+                <h4 className="font-medium text-white mb-1">{t('calculator.riskManagementTip')}</h4>
                 <p className="text-sm text-gray-400">
-                  Ne risquez jamais plus de 1-2% de votre capital par trade. Un ratio risque/rendement de 1:2 ou plus est recommande pour une strategie profitable a long terme.
+                  {t('calculator.riskManagementTipDesc')}
                 </p>
               </div>
             </div>

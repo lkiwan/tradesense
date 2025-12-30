@@ -179,7 +179,7 @@ const DashboardHome = () => {
             className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] w-full sm:w-auto min-h-[48px]"
           >
             <DollarSign size={20} />
-            Voir les Challenges
+            {t('sidebar.actions.startChallenge')}
           </Link>
         </div>
       </div>
@@ -207,7 +207,7 @@ const DashboardHome = () => {
       {/* Row 1: Account Overview Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
         <StatCard
-          title="Balance"
+          title={t('dashboard.balance')}
           value={stats.currentBalance}
           prefix="$"
           decimals={0}
@@ -216,32 +216,32 @@ const DashboardHome = () => {
           variant={stats.totalPnl >= 0 ? 'success' : 'danger'}
         />
         <StatCard
-          title="Equity"
+          title={t('dashboard.equity')}
           value={stats.equity}
           prefix="$"
           decimals={0}
           icon={BarChart3}
-          subValue={stats.unrealizedPnl !== 0 ? `Unrealized: ${stats.unrealizedPnl >= 0 ? '+' : ''}$${stats.unrealizedPnl.toFixed(0)}` : null}
+          subValue={stats.unrealizedPnl !== 0 ? `${t('dashboard.unrealized')}: ${stats.unrealizedPnl >= 0 ? '+' : ''}$${stats.unrealizedPnl.toFixed(0)}` : null}
           variant={stats.unrealizedPnl >= 0 ? 'success' : 'danger'}
         />
         <StatCard
-          title="Profit Target"
+          title={t('dashboard.profitTarget')}
           value={Math.max(stats.profitPercent, 0)}
           suffix="%"
           decimals={1}
           icon={Target}
-          subValue={`Target: ${profitTarget}%`}
+          subValue={`${t('dashboard.target')}: ${profitTarget}%`}
           progress={true}
           progressValue={Math.max(profitProgress, 0)}
           progressColor="green"
         />
         <StatCard
-          title="Drawdown"
+          title={t('dashboard.drawdown')}
           value={stats.drawdown}
           suffix="%"
           decimals={1}
           icon={Activity}
-          subValue={`Limit: ${stats.maxDrawdown}%`}
+          subValue={`${t('dashboard.limit')}: ${stats.maxDrawdown}%`}
           progress={true}
           progressValue={drawdownProgress}
           progressColor={drawdownProgress > 70 ? 'red' : drawdownProgress > 50 ? 'yellow' : 'green'}
@@ -255,7 +255,7 @@ const DashboardHome = () => {
       {/* Row 3: Key Performance Metrics */}
       <div className="grid grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
         <StatCard
-          title="Win Rate"
+          title={t('dashboard.winRate')}
           value={stats.winRate}
           suffix="%"
           decimals={1}
@@ -263,20 +263,20 @@ const DashboardHome = () => {
           variant={stats.winRate >= 50 ? 'success' : 'danger'}
         />
         <StatCard
-          title="Profit Factor"
+          title={t('dashboard.profitFactor')}
           value={stats.profitFactor === Infinity ? 99.99 : stats.profitFactor}
           decimals={2}
           icon={TrendingUp}
           variant={stats.profitFactor >= 1 ? 'success' : 'danger'}
         />
         <StatCard
-          title="Total Trades"
+          title={t('dashboard.totalTrades')}
           value={stats.totalTrades}
           icon={BarChart3}
           subValue={`${stats.winningTrades}W / ${stats.losingTrades}L`}
         />
         <StatCard
-          title="Best Trade"
+          title={t('dashboard.bestTrade')}
           value={stats.bestTrade}
           prefix="+$"
           decimals={0}
@@ -284,7 +284,7 @@ const DashboardHome = () => {
           variant="success"
         />
         <StatCard
-          title="Worst Trade"
+          title={t('dashboard.worstTrade')}
           value={Math.abs(stats.worstTrade)}
           prefix="-$"
           decimals={0}
@@ -292,7 +292,7 @@ const DashboardHome = () => {
           variant="danger"
         />
         <StatCard
-          title="Avg Win"
+          title={t('dashboard.avgWin')}
           value={stats.avgWin}
           prefix="+$"
           decimals={0}
@@ -367,7 +367,7 @@ const DashboardHome = () => {
               <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
                 <Activity size={16} className="text-green-400" />
               </div>
-              <span className="font-semibold text-white text-sm sm:text-base">Open Positions</span>
+              <span className="font-semibold text-white text-sm sm:text-base">{t('dashboard.openPositions')}</span>
               <span className="px-2 py-0.5 text-xs font-medium rounded-full bg-green-500/20 text-green-400 border border-green-500/30">
                 {openTrades.length}
               </span>
@@ -382,15 +382,15 @@ const DashboardHome = () => {
             <table className="w-full min-w-[700px]">
               <thead className="bg-dark-300/30">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Size</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Entry</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Current</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">SL</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">TP</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">P&L</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">Action</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.symbol')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.type')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.size')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.entry')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.current')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.sl')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.tp')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">{t('dashboard.pnl')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">{t('dashboard.action')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-200">
@@ -432,7 +432,7 @@ const DashboardHome = () => {
                           onClick={() => handleCloseTrade(trade.id)}
                           className="px-2 sm:px-3 py-1.5 sm:py-2 rounded-lg bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white transition-all text-xs sm:text-sm font-medium min-w-[44px] min-h-[36px]"
                         >
-                          Close
+                          {t('dashboard.close')}
                         </button>
                       </td>
                     </tr>
@@ -460,25 +460,25 @@ const DashboardHome = () => {
               <div className="w-8 h-8 bg-primary-500/20 rounded-lg flex items-center justify-center">
                 <Clock size={16} className="text-primary-400" />
               </div>
-              <span className="font-semibold text-white text-sm sm:text-base">Recent Trades</span>
+              <span className="font-semibold text-white text-sm sm:text-base">{t('dashboard.recentTrades')}</span>
               <span className="text-[10px] sm:text-xs text-gray-400">({closedTrades.length})</span>
             </div>
             <Link
               to="/trade-journal"
               className="text-xs sm:text-sm text-primary-400 hover:text-primary-300 transition-colors hover:underline"
             >
-              View All
+              {t('dashboard.viewAll')}
             </Link>
           </div>
           <div className="relative overflow-x-auto">
             <table className="w-full min-w-[400px]">
               <thead className="bg-dark-300/30">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Entry</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Exit</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">P&L</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.symbol')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.type')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.entry')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('dashboard.exit')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">{t('dashboard.pnl')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-dark-200">
@@ -512,7 +512,7 @@ const DashboardHome = () => {
           className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3 sm:py-3.5 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] w-full sm:w-auto min-h-[48px] text-sm sm:text-base"
         >
           <LineChart size={18} />
-          Open Trading Platform
+          {t('dashboard.openTradingPlatform')}
         </Link>
       </div>
     </motion.div>

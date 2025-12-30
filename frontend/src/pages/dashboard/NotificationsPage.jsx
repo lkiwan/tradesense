@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Bell,
   BellOff,
@@ -25,6 +26,7 @@ import {
 import pushNotificationService from '../../services/pushNotifications';
 
 const NotificationsPage = () => {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('history');
   const [notifications, setNotifications] = useState([]);
   const [preferences, setPreferences] = useState(null);
@@ -181,9 +183,9 @@ const NotificationsPage = () => {
   });
 
   const tabs = [
-    { id: 'history', label: 'Notifications', icon: Bell },
-    { id: 'preferences', label: 'Preferences', icon: Settings },
-    { id: 'devices', label: 'Devices', icon: Smartphone }
+    { id: 'history', labelKey: 'notifications.tabs.notifications', icon: Bell },
+    { id: 'preferences', labelKey: 'notifications.tabs.preferences', icon: Settings },
+    { id: 'devices', labelKey: 'notifications.tabs.devices', icon: Smartphone }
   ];
 
   return (
@@ -195,10 +197,10 @@ const NotificationsPage = () => {
             <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
               <Bell className="text-primary-400" size={20} />
             </div>
-            Notifications
+            {t('notifications.title')}
           </h1>
           <p className="text-gray-400 mt-1 text-sm md:text-base">
-            Manage your notification preferences and history
+            {t('notifications.subtitle')}
           </p>
         </div>
 
@@ -208,7 +210,7 @@ const NotificationsPage = () => {
             className="px-4 md:px-5 py-3 md:py-2.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl flex items-center justify-center gap-2 font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 min-h-[48px] w-full sm:w-auto text-sm md:text-base"
           >
             <Bell className="h-5 w-5" />
-            Enable Notifications
+            {t('notifications.enableNotifications')}
           </button>
         )}
       </div>
@@ -220,9 +222,9 @@ const NotificationsPage = () => {
             <AlertTriangle className="h-5 w-5 text-red-400" />
           </div>
           <div className="min-w-0">
-            <p className="text-red-200 font-medium text-sm md:text-base">Notifications Blocked</p>
+            <p className="text-red-200 font-medium text-sm md:text-base">{t('notifications.notificationsBlocked')}</p>
             <p className="text-red-300/70 text-xs md:text-sm break-words">
-              You have blocked notifications. Please enable them in your browser settings.
+              {t('notifications.notificationsBlockedDesc')}
             </p>
           </div>
         </div>
@@ -241,8 +243,8 @@ const NotificationsPage = () => {
             }`}
           >
             <tab.icon className="h-4 w-4 flex-shrink-0" />
-            <span className="hidden sm:inline">{tab.label}</span>
-            <span className="sm:hidden">{tab.label.split(' ')[0]}</span>
+            <span className="hidden sm:inline">{t(tab.labelKey)}</span>
+            <span className="sm:hidden">{t(tab.labelKey).split(' ')[0]}</span>
             {tab.id === 'history' && unreadCount > 0 && (
               <span className="px-1.5 md:px-2 py-0.5 text-xs bg-white/20 rounded-full">
                 {unreadCount}
@@ -269,13 +271,13 @@ const NotificationsPage = () => {
                     onChange={(e) => setFilter(e.target.value)}
                     className="bg-gray-800 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-gray-300 min-h-[44px] flex-1 sm:flex-none"
                   >
-                    <option value="all">All Notifications</option>
-                    <option value="unread">Unread Only</option>
-                    <option value="trade">Trading</option>
-                    <option value="challenge">Challenges</option>
-                    <option value="payout">Payouts</option>
-                    <option value="follower">Social</option>
-                    <option value="security">Security</option>
+                    <option value="all">{t('notifications.filters.all')}</option>
+                    <option value="unread">{t('notifications.filters.unread')}</option>
+                    <option value="trade">{t('notifications.filters.trading')}</option>
+                    <option value="challenge">{t('notifications.filters.challenges')}</option>
+                    <option value="payout">{t('notifications.filters.payouts')}</option>
+                    <option value="follower">{t('notifications.filters.social')}</option>
+                    <option value="security">{t('notifications.filters.security')}</option>
                   </select>
                 </div>
 
@@ -286,8 +288,7 @@ const NotificationsPage = () => {
                       className="px-3 py-2.5 text-sm text-gray-400 hover:text-white flex items-center gap-2 min-h-[44px]"
                     >
                       <CheckCheck className="h-4 w-4" />
-                      <span className="hidden sm:inline">Mark All Read</span>
-                      <span className="sm:hidden">Mark Read</span>
+                      <span>{t('notifications.markAllRead')}</span>
                     </button>
                   )}
                   <button
@@ -304,7 +305,7 @@ const NotificationsPage = () => {
                 {filteredNotifications.length === 0 ? (
                   <div className="text-center py-12 text-gray-500">
                     <BellOff className="h-12 w-12 mx-auto mb-3" />
-                    <p>No notifications yet</p>
+                    <p>{t('notifications.noNotifications')}</p>
                   </div>
                 ) : (
                   filteredNotifications.map(notification => (
@@ -380,9 +381,9 @@ const NotificationsPage = () => {
                       <VolumeX className="h-5 w-5 md:h-6 md:w-6 text-gray-500 flex-shrink-0" />
                     )}
                     <div className="min-w-0">
-                      <h3 className="text-white font-medium text-sm md:text-base">Push Notifications</h3>
+                      <h3 className="text-white font-medium text-sm md:text-base">{t('notifications.preferences.pushNotifications')}</h3>
                       <p className="text-gray-400 text-xs md:text-sm">
-                        {preferences.push_enabled ? 'Enabled' : 'Disabled'}
+                        {preferences.push_enabled ? t('notifications.preferences.enabled') : t('notifications.preferences.disabled')}
                       </p>
                     </div>
                   </div>
@@ -404,21 +405,21 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <TrendingUp className="h-4 w-4 md:h-5 md:w-5 text-blue-400" />
-                    Trading
+                    {t('notifications.preferences.trading')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="Trade Executed"
+                      label={t('notifications.preferences.tradeExecuted')}
                       checked={preferences.trade_executed}
                       onChange={(v) => updatePreference('trade_executed', v)}
                     />
                     <PreferenceToggle
-                      label="Trade Closed"
+                      label={t('notifications.preferences.tradeClosed')}
                       checked={preferences.trade_closed}
                       onChange={(v) => updatePreference('trade_closed', v)}
                     />
                     <PreferenceToggle
-                      label="Price Alerts"
+                      label={t('notifications.preferences.priceAlerts')}
                       checked={preferences.price_alerts}
                       onChange={(v) => updatePreference('price_alerts', v)}
                     />
@@ -429,21 +430,21 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <Trophy className="h-4 w-4 md:h-5 md:w-5 text-yellow-400" />
-                    Challenges
+                    {t('notifications.preferences.challenges')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="Challenge Updates"
+                      label={t('notifications.preferences.challengeUpdates')}
                       checked={preferences.challenge_updates}
                       onChange={(v) => updatePreference('challenge_updates', v)}
                     />
                     <PreferenceToggle
-                      label="Challenge Passed"
+                      label={t('notifications.preferences.challengePassed')}
                       checked={preferences.challenge_passed}
                       onChange={(v) => updatePreference('challenge_passed', v)}
                     />
                     <PreferenceToggle
-                      label="Challenge Failed"
+                      label={t('notifications.preferences.challengeFailed')}
                       checked={preferences.challenge_failed}
                       onChange={(v) => updatePreference('challenge_failed', v)}
                     />
@@ -454,11 +455,11 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <DollarSign className="h-4 w-4 md:h-5 md:w-5 text-green-400" />
-                    Payouts
+                    {t('notifications.preferences.payouts')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="Payout Updates"
+                      label={t('notifications.preferences.payoutUpdates')}
                       checked={preferences.payout_updates}
                       onChange={(v) => updatePreference('payout_updates', v)}
                     />
@@ -469,21 +470,21 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <Users className="h-4 w-4 md:h-5 md:w-5 text-purple-400" />
-                    Social
+                    {t('notifications.preferences.social')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="New Followers"
+                      label={t('notifications.preferences.newFollowers')}
                       checked={preferences.new_follower}
                       onChange={(v) => updatePreference('new_follower', v)}
                     />
                     <PreferenceToggle
-                      label="Copy Trade"
+                      label={t('notifications.preferences.copyTrade')}
                       checked={preferences.copy_trade}
                       onChange={(v) => updatePreference('copy_trade', v)}
                     />
                     <PreferenceToggle
-                      label="Idea Interactions"
+                      label={t('notifications.preferences.ideaInteractions')}
                       checked={preferences.idea_interactions}
                       onChange={(v) => updatePreference('idea_interactions', v)}
                     />
@@ -494,21 +495,21 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <Shield className="h-4 w-4 md:h-5 md:w-5 text-red-400" />
-                    System
+                    {t('notifications.preferences.system')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="Security Alerts"
+                      label={t('notifications.preferences.securityAlerts')}
                       checked={preferences.security_alerts}
                       onChange={(v) => updatePreference('security_alerts', v)}
                     />
                     <PreferenceToggle
-                      label="System Announcements"
+                      label={t('notifications.preferences.systemAnnouncements')}
                       checked={preferences.system_announcements}
                       onChange={(v) => updatePreference('system_announcements', v)}
                     />
                     <PreferenceToggle
-                      label="Marketing"
+                      label={t('notifications.preferences.marketing')}
                       checked={preferences.marketing}
                       onChange={(v) => updatePreference('marketing', v)}
                     />
@@ -519,18 +520,18 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <h4 className="text-white font-medium mb-3 md:mb-4 flex items-center gap-2 text-sm md:text-base">
                     <Clock className="h-4 w-4 md:h-5 md:w-5 text-orange-400" />
-                    Quiet Hours
+                    {t('notifications.preferences.quietHours')}
                   </h4>
                   <div className="space-y-3">
                     <PreferenceToggle
-                      label="Enable Quiet Hours"
+                      label={t('notifications.preferences.enableQuietHours')}
                       checked={preferences.quiet_hours_enabled}
                       onChange={(v) => updatePreference('quiet_hours_enabled', v)}
                     />
                     {preferences.quiet_hours_enabled && (
                       <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-3">
                         <div className="flex-1">
-                          <label className="text-gray-400 text-xs md:text-sm">Start</label>
+                          <label className="text-gray-400 text-xs md:text-sm">{t('notifications.preferences.start')}</label>
                           <select
                             value={preferences.quiet_hours_start}
                             onChange={(e) => updatePreference('quiet_hours_start', parseInt(e.target.value))}
@@ -542,7 +543,7 @@ const NotificationsPage = () => {
                           </select>
                         </div>
                         <div className="flex-1">
-                          <label className="text-gray-400 text-xs md:text-sm">End</label>
+                          <label className="text-gray-400 text-xs md:text-sm">{t('notifications.preferences.end')}</label>
                           <select
                             value={preferences.quiet_hours_end}
                             onChange={(e) => updatePreference('quiet_hours_end', parseInt(e.target.value))}
@@ -564,9 +565,9 @@ const NotificationsPage = () => {
                 <div className="bg-gray-800/50 rounded-lg p-3 md:p-4">
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                     <div className="min-w-0">
-                      <h4 className="text-white font-medium text-sm md:text-base">Test Notification</h4>
+                      <h4 className="text-white font-medium text-sm md:text-base">{t('notifications.testNotification')}</h4>
                       <p className="text-gray-400 text-xs md:text-sm">
-                        Send a test notification to verify your setup
+                        {t('notifications.testNotificationDesc')}
                       </p>
                     </div>
                     <button
@@ -574,7 +575,7 @@ const NotificationsPage = () => {
                       className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg flex items-center justify-center gap-2 min-h-[44px] w-full sm:w-auto text-sm"
                     >
                       <Send className="h-4 w-4" />
-                      Send Test
+                      {t('notifications.sendTest')}
                     </button>
                   </div>
                 </div>
@@ -588,9 +589,9 @@ const NotificationsPage = () => {
               {devices.length === 0 ? (
                 <div className="text-center py-12 text-gray-500">
                   <Smartphone className="h-12 w-12 mx-auto mb-3" />
-                  <p>No registered devices</p>
+                  <p>{t('notifications.devices.noDevices')}</p>
                   <p className="text-sm mt-2">
-                    Enable notifications to register this device
+                    {t('notifications.devices.enableToRegister')}
                   </p>
                 </div>
               ) : (
@@ -618,13 +619,13 @@ const NotificationsPage = () => {
                           {device.is_active ? (
                             <span className="text-green-400 text-xs flex items-center gap-1">
                               <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                              Active
+                              {t('notifications.devices.active')}
                             </span>
                           ) : (
-                            <span className="text-gray-500 text-xs">Inactive</span>
+                            <span className="text-gray-500 text-xs">{t('notifications.devices.inactive')}</span>
                           )}
                           <span className="text-gray-500 text-xs hidden sm:inline">
-                            Last used: {formatDate(device.last_used_at)}
+                            {t('notifications.devices.lastUsed')}: {formatDate(device.last_used_at)}
                           </span>
                         </div>
                       </div>

@@ -21,13 +21,13 @@ const ResetPassword = () => {
   // Check if token exists
   useEffect(() => {
     if (!token) {
-      setError('No reset token provided. Please request a new password reset link.')
+      setError(t('auth.resetPassword.noToken'))
     }
-  }, [token])
+  }, [token, t])
 
   // Password strength checker
   const getPasswordStrength = () => {
-    if (!password) return { strength: 0, label: '', color: '' }
+    if (!password) return { strength: 0, labelKey: '', color: '' }
     let strength = 0
     if (password.length >= 6) strength++
     if (password.length >= 8) strength++
@@ -35,9 +35,9 @@ const ResetPassword = () => {
     if (/[0-9]/.test(password)) strength++
     if (/[^A-Za-z0-9]/.test(password)) strength++
 
-    if (strength <= 2) return { strength, label: 'Weak', color: 'bg-red-500' }
-    if (strength <= 3) return { strength, label: 'Medium', color: 'bg-yellow-500' }
-    return { strength, label: 'Strong', color: 'bg-green-500' }
+    if (strength <= 2) return { strength, labelKey: 'auth.resetPassword.passwordStrength.weak', color: 'bg-red-500' }
+    if (strength <= 3) return { strength, labelKey: 'auth.resetPassword.passwordStrength.medium', color: 'bg-yellow-500' }
+    return { strength, labelKey: 'auth.resetPassword.passwordStrength.strong', color: 'bg-green-500' }
   }
 
   const passwordStrength = getPasswordStrength()
@@ -46,17 +46,17 @@ const ResetPassword = () => {
     e.preventDefault()
 
     if (!password || !confirmPassword) {
-      toast.error('Please fill in all fields')
+      toast.error(t('auth.resetPassword.fillAllFields'))
       return
     }
 
     if (password.length < 8) {
-      toast.error('Password must be at least 8 characters')
+      toast.error(t('auth.resetPassword.passwordMinLength'))
       return
     }
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match')
+      toast.error(t('auth.resetPassword.passwordsNotMatch'))
       return
     }
 
@@ -64,9 +64,9 @@ const ResetPassword = () => {
     try {
       await api.post('/auth/reset-password', { token, password })
       setSuccess(true)
-      toast.success('Password reset successful!')
+      toast.success(t('auth.resetPassword.resetSuccess'))
     } catch (err) {
-      const errorMessage = err.response?.data?.error || 'Failed to reset password'
+      const errorMessage = err.response?.data?.error || t('auth.resetPassword.resetFailed')
       setError(errorMessage)
       toast.error(errorMessage)
     } finally {
@@ -100,18 +100,17 @@ const ResetPassword = () => {
               <CheckCircle className="text-green-500" size={32} />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
-              Password Reset Complete
+              {t('auth.resetPassword.success.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
-              Your password has been successfully reset.
-              You can now log in with your new password.
+              {t('auth.resetPassword.success.message')}
             </p>
 
             <Link
               to="/login"
               className="w-full inline-flex items-center justify-center gap-2 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Go to Login
+              {t('auth.resetPassword.success.goToLogin')}
             </Link>
           </div>
 
@@ -119,7 +118,7 @@ const ResetPassword = () => {
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
               <Sparkles size={14} className="text-primary-400" />
-              Your account is secure
+              {t('auth.resetPassword.success.accountSecure')}
             </div>
           </div>
         </div>
@@ -153,7 +152,7 @@ const ResetPassword = () => {
               <AlertTriangle className="text-red-500" size={32} />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
-              Invalid Reset Link
+              {t('auth.resetPassword.error.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
               {error}
@@ -163,7 +162,7 @@ const ResetPassword = () => {
               to="/forgot-password"
               className="w-full inline-flex items-center justify-center gap-2 py-4 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-semibold transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
             >
-              Request New Link
+              {t('auth.resetPassword.error.requestNewLink')}
             </Link>
           </div>
 
@@ -171,7 +170,7 @@ const ResetPassword = () => {
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
               <Sparkles size={14} className="text-primary-400" />
-              Need help? Contact support
+              {t('auth.resetPassword.error.needHelp')}
             </div>
           </div>
         </div>

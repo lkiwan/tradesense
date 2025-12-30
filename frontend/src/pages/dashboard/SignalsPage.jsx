@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import {
   Brain, Zap, TrendingUp, TrendingDown, Clock, Target, AlertCircle,
   CheckCircle, XCircle, Filter, RefreshCw, BarChart3, Activity,
@@ -12,6 +13,7 @@ const SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'MSFT', 'AMZN', 'META', 'BTC-U
 const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
 
 const SignalsPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const [filter, setFilter] = useState('all')
   const [timeframe, setTimeframe] = useState('30')
@@ -127,11 +129,11 @@ const SignalsPage = () => {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case 'active': return 'Active'
-      case 'hit_tp': return 'Target Hit'
-      case 'hit_sl': return 'Stopped'
-      case 'expired': return 'Expired'
-      case 'closed': return 'Closed'
+      case 'active': return t('signals.status.active')
+      case 'hit_tp': return t('signals.status.targetHit')
+      case 'hit_sl': return t('signals.status.stopped')
+      case 'expired': return t('signals.status.expired')
+      case 'closed': return t('signals.status.closed')
       default: return status
     }
   }
@@ -182,17 +184,17 @@ const SignalsPage = () => {
               <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
                 <Brain className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
               </div>
-              AI Trading Signals
+              {t('signals.title')}
             </h1>
             <p className="text-gray-400 mt-1 text-sm sm:text-base">
-              Technical analysis + sentiment-powered signals
+              {t('signals.subtitle')}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-2.5 bg-green-500/10 rounded-xl border border-green-500/30">
             <Zap size={16} className="text-green-400" />
-            <span className="text-sm text-green-400 font-medium">AI Active</span>
+            <span className="text-sm text-green-400 font-medium">{t('signals.aiActive')}</span>
           </div>
           <div className="flex items-center gap-2 px-3 py-2 bg-primary-500/10 rounded-xl border border-primary-500/30">
             <Clock size={14} className="text-primary-400" />
@@ -205,7 +207,7 @@ const SignalsPage = () => {
             title={`Last updated: ${lastUpdated.toLocaleTimeString()}`}
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            Refresh
+            {t('signals.refresh')}
           </button>
         </div>
       </div>
@@ -213,7 +215,7 @@ const SignalsPage = () => {
       {loading ? (
         <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-12 text-center">
           <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">Loading signals data...</p>
+          <p className="text-gray-400">{t('signals.loading')}</p>
         </div>
       ) : (
         <>
@@ -223,17 +225,17 @@ const SignalsPage = () => {
               <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <Activity className="w-4 h-4 text-primary-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Signals</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.totalSignals')}</p>
                 </div>
                 <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">
                   {stats.total_signals}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">{stats.active_signals} active</p>
+                <p className="text-xs text-gray-500 mt-1">{stats.active_signals} {t('signals.activeSignals')}</p>
               </div>
               <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <Percent className="w-4 h-4 text-green-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Win Rate</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.winRate')}</p>
                 </div>
                 <p className="text-2xl font-bold text-green-400">{stats.win_rate}%</p>
                 <p className="text-xs text-gray-500 mt-1">{stats.wins}W / {stats.losses}L</p>
@@ -241,21 +243,21 @@ const SignalsPage = () => {
               <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <DollarSign className="w-4 h-4 text-primary-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Total Return</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.totalReturn')}</p>
                 </div>
                 <p className={`text-2xl font-bold ${stats.total_pnl_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                   {stats.total_pnl_percent >= 0 ? '+' : ''}{stats.total_pnl_percent}%
                 </p>
-                <p className="text-xs text-gray-500 mt-1">Last {timeframe} days</p>
+                <p className="text-xs text-gray-500 mt-1">{t('signals.lastDays', { days: timeframe })}</p>
               </div>
               <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
                 <div className="flex items-center gap-2 mb-2">
                   <Award className="w-4 h-4 text-yellow-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">Profit Factor</p>
+                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.profitFactor')}</p>
                 </div>
                 <p className="text-2xl font-bold text-primary-400">{stats.profit_factor}x</p>
                 <p className="text-xs text-gray-500 mt-1">
-                  Avg +{stats.avg_win_percent}% / -{stats.avg_loss_percent}%
+                  {t('signals.avgWinLoss', { win: stats.avg_win_percent, loss: stats.avg_loss_percent })}
                 </p>
               </div>
             </div>
@@ -265,7 +267,7 @@ const SignalsPage = () => {
           <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
             <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-primary-400" />
-              Quick Analysis
+              {t('signals.quickAnalysis')}
             </h3>
             <div className="flex flex-wrap gap-2 mb-4">
               {SYMBOLS.map(symbol => (
@@ -295,38 +297,38 @@ const SignalsPage = () => {
                 <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
                   <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
                     <Activity className="w-4 h-4" />
-                    Technical Analysis
+                    {t('signals.technicalAnalysis')}
                   </h4>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Signal</span>
+                      <span className="text-gray-400">{t('signals.signal')}</span>
                       <span className={`font-bold ${getSignalColor(symbolAnalysis.technical.signal)}`}>
                         {symbolAnalysis.technical.signal?.toUpperCase().replace('_', ' ')}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Score</span>
+                      <span className="text-gray-400">{t('signals.score')}</span>
                       <span className={`font-bold ${getScoreColor(symbolAnalysis.technical.score)}`}>
                         {symbolAnalysis.technical.score > 0 ? '+' : ''}{symbolAnalysis.technical.score}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Confidence</span>
+                      <span className="text-gray-400">{t('signals.confidence')}</span>
                       <span className="text-white font-medium">{symbolAnalysis.technical.confidence}%</span>
                     </div>
                     {symbolAnalysis.technical.entry_price && (
                       <>
                         <div className="border-t border-white/5 pt-3 mt-3">
                           <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-400">Entry</span>
+                            <span className="text-gray-400">{t('signals.entry')}</span>
                             <span className="text-white">${symbolAnalysis.technical.entry_price?.toLocaleString()}</span>
                           </div>
                           <div className="flex items-center justify-between text-sm mt-1">
-                            <span className="text-gray-400">Stop Loss</span>
+                            <span className="text-gray-400">{t('signals.stopLoss')}</span>
                             <span className="text-red-400">${symbolAnalysis.technical.stop_loss?.toLocaleString()}</span>
                           </div>
                           <div className="flex items-center justify-between text-sm mt-1">
-                            <span className="text-gray-400">Take Profit</span>
+                            <span className="text-gray-400">{t('signals.takeProfit')}</span>
                             <span className="text-green-400">${symbolAnalysis.technical.take_profit?.toLocaleString()}</span>
                           </div>
                         </div>
@@ -334,7 +336,7 @@ const SignalsPage = () => {
                     )}
                     {symbolAnalysis.technical.reasons && (
                       <div className="mt-3 pt-3 border-t border-white/5">
-                        <p className="text-xs text-gray-500 mb-2">Reasons:</p>
+                        <p className="text-xs text-gray-500 mb-2">{t('signals.reasons')}:</p>
                         <div className="flex flex-wrap gap-1">
                           {symbolAnalysis.technical.reasons.slice(0, 3).map((reason, i) => (
                             <span key={i} className="text-xs px-2 py-0.5 bg-dark-200/50 rounded text-gray-400">
@@ -351,23 +353,23 @@ const SignalsPage = () => {
                 <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
                   <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
                     <Brain className="w-4 h-4" />
-                    Sentiment Analysis
+                    {t('signals.sentimentAnalysis')}
                   </h4>
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Sentiment</span>
+                      <span className="text-gray-400">{t('signals.sentiment')}</span>
                       <span className={`font-bold ${getSignalColor(symbolAnalysis.sentiment.sentiment)}`}>
                         {symbolAnalysis.sentiment.sentiment?.toUpperCase().replace('_', ' ')}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Score</span>
+                      <span className="text-gray-400">{t('signals.score')}</span>
                       <span className={`font-bold ${getScoreColor(symbolAnalysis.sentiment.score)}`}>
                         {symbolAnalysis.sentiment.score > 0 ? '+' : ''}{symbolAnalysis.sentiment.score}
                       </span>
                     </div>
                     <div className="flex items-center justify-between">
-                      <span className="text-gray-400">Articles</span>
+                      <span className="text-gray-400">{t('signals.articles')}</span>
                       <span className="text-white font-medium">{symbolAnalysis.sentiment.article_count}</span>
                     </div>
                     {symbolAnalysis.sentiment.breakdown && (
@@ -397,7 +399,7 @@ const SignalsPage = () => {
                     )}
                     {symbolAnalysis.sentiment.keywords?.length > 0 && (
                       <div className="mt-3 pt-3 border-t border-white/5">
-                        <p className="text-xs text-gray-500 mb-2">Keywords:</p>
+                        <p className="text-xs text-gray-500 mb-2">{t('signals.keywords')}:</p>
                         <div className="flex flex-wrap gap-1">
                           {symbolAnalysis.sentiment.keywords.slice(0, 5).map((kw, i) => (
                             <span
@@ -422,7 +424,7 @@ const SignalsPage = () => {
           <div className="flex items-center gap-4 flex-wrap">
             <div className="flex items-center gap-2">
               <Filter size={16} className="text-gray-400" />
-              <span className="text-sm text-gray-400">Filter:</span>
+              <span className="text-sm text-gray-400">{t('signals.filter')}:</span>
             </div>
             {['all', 'buy', 'sell', 'active', 'wins', 'losses'].map(f => (
               <button
@@ -434,11 +436,11 @@ const SignalsPage = () => {
                     : 'bg-dark-100 text-gray-400 hover:text-white border border-dark-200'
                 }`}
               >
-                {f === 'all' ? 'All' : f === 'buy' ? 'Buy' : f === 'sell' ? 'Sell' : f === 'active' ? 'Active' : f === 'wins' ? 'Wins' : 'Losses'}
+                {f === 'all' ? t('signals.all') : f === 'buy' ? t('signals.buy') : f === 'sell' ? t('signals.sell') : f === 'active' ? t('signals.active') : f === 'wins' ? t('signals.wins') : t('signals.losses')}
               </button>
             ))}
             <div className="ml-auto flex items-center gap-2">
-              <span className="text-sm text-gray-400">Period:</span>
+              <span className="text-sm text-gray-400">{t('signals.period')}:</span>
               {['7', '30', '90'].map(days => (
                 <button
                   key={days}
@@ -460,7 +462,7 @@ const SignalsPage = () => {
             <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
               <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
                 <Award className="w-4 h-4 text-yellow-400" />
-                Top Signals (Last {timeframe} Days)
+                {t('signals.topSignals')} ({t('signals.lastDays', { days: timeframe })})
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
                 {leaderboard.map((signal, index) => (
@@ -495,14 +497,14 @@ const SignalsPage = () => {
           {/* Signals List */}
           <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
             <div className="p-4 border-b border-white/5 flex items-center justify-between">
-              <h3 className="font-semibold text-white">Signal History</h3>
-              <span className="text-sm text-gray-400">{filteredSignals.length} signals</span>
+              <h3 className="font-semibold text-white">{t('signals.signalHistory')}</h3>
+              <span className="text-sm text-gray-400">{filteredSignals.length} {t('signals.totalSignals').toLowerCase()}</span>
             </div>
             <div className="divide-y divide-dark-200">
               {filteredSignals.length === 0 ? (
                 <div className="p-8 text-center">
                   <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                  <p className="text-gray-400">No signals found</p>
+                  <p className="text-gray-400">{t('signals.noSignals')}</p>
                 </div>
               ) : (
                 filteredSignals.map((signal, index) => (

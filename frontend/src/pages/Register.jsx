@@ -28,22 +28,22 @@ const Register = () => {
     e.preventDefault()
 
     if (!username || !email || !password || !confirmPassword) {
-      toast.error('Please fill in all fields')
+      toast.error(t('auth.register.fillAllFields'))
       return
     }
 
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match')
+      toast.error(t('auth.register.passwordsNotMatch'))
       return
     }
 
     if (password.length < 6) {
-      toast.error('Password must be at least 6 characters')
+      toast.error(t('auth.register.passwordMinLength'))
       return
     }
 
     if (!agreedToTerms) {
-      toast.error('Please accept the terms and conditions')
+      toast.error(t('auth.register.acceptTerms'))
       return
     }
 
@@ -53,14 +53,14 @@ const Register = () => {
       setLoading(false)
 
       if (result.success) {
-        toast.success('Account created successfully! Please verify your email.')
+        toast.success(t('auth.register.success'))
         navigate('/email-verification-sent')
       } else {
         // Check for rate limit error
         if (result.error?.includes('rate') || result.error?.includes('Too many')) {
-          toast.error('Too many registration attempts. Please try again later.')
+          toast.error(t('auth.register.tooManyAttempts'))
         } else {
-          toast.error(result.error || 'Registration failed. Please try again.')
+          toast.error(result.error || t('auth.register.failed'))
         }
       }
     } catch (error) {
@@ -69,16 +69,16 @@ const Register = () => {
 
       // Handle rate limit (429)
       if (error.response?.status === 429) {
-        toast.error('Too many registration attempts. Please wait an hour before trying again.')
+        toast.error(t('auth.register.waitHour'))
       } else {
-        toast.error(error.response?.data?.error || 'Registration failed. Please check your connection.')
+        toast.error(error.response?.data?.error || t('auth.register.checkConnection'))
       }
     }
   }
 
   // Password strength checker
   const getPasswordStrength = () => {
-    if (!password) return { strength: 0, label: '', color: '' }
+    if (!password) return { strength: 0, labelKey: '', color: '' }
     let strength = 0
     if (password.length >= 6) strength++
     if (password.length >= 8) strength++
@@ -86,9 +86,9 @@ const Register = () => {
     if (/[0-9]/.test(password)) strength++
     if (/[^A-Za-z0-9]/.test(password)) strength++
 
-    if (strength <= 2) return { strength, label: 'Weak', color: 'bg-red-500' }
-    if (strength <= 3) return { strength, label: 'Medium', color: 'bg-yellow-500' }
-    return { strength, label: 'Strong', color: 'bg-green-500' }
+    if (strength <= 2) return { strength, labelKey: 'auth.register.passwordStrength.weak', color: 'bg-red-500' }
+    if (strength <= 3) return { strength, labelKey: 'auth.register.passwordStrength.medium', color: 'bg-yellow-500' }
+    return { strength, labelKey: 'auth.register.passwordStrength.strong', color: 'bg-green-500' }
   }
 
   const passwordStrength = getPasswordStrength()
@@ -124,7 +124,7 @@ const Register = () => {
               {t('auth.register.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400">
-              Créez votre compte et commencez à trader
+              {t('auth.register.subtitle')}
             </p>
           </div>
 
@@ -203,7 +203,7 @@ const Register = () => {
                     ))}
                   </div>
                   <p className={`text-xs ${passwordStrength.color.replace('bg-', 'text-')}`}>
-                    {passwordStrength.label}
+                    {passwordStrength.labelKey && t(passwordStrength.labelKey)}
                   </p>
                 </div>
               )}
@@ -252,7 +252,7 @@ const Register = () => {
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Globe size={14} className="inline mr-1" />
-                Langue préférée
+                {t('auth.register.preferredLanguage')}
               </label>
               <select
                 value={preferredLanguage}
@@ -276,13 +276,13 @@ const Register = () => {
                 className="mt-0.5 w-5 h-5 min-w-[20px] rounded border-gray-600 bg-dark-300 text-primary-500 focus:ring-primary-500 focus:ring-offset-0 cursor-pointer"
               />
               <span className="text-xs sm:text-sm text-gray-400 leading-relaxed">
-                J'accepte les{' '}
+                {t('auth.register.terms.iAccept')}{' '}
                 <a href="#" className="text-primary-400 hover:text-primary-300 transition-colors">
-                  conditions d'utilisation
+                  {t('auth.register.terms.termsOfUse')}
                 </a>{' '}
-                et la{' '}
+                {t('auth.register.terms.and')}{' '}
                 <a href="#" className="text-primary-400 hover:text-primary-300 transition-colors">
-                  politique de confidentialité
+                  {t('auth.register.terms.privacyPolicy')}
                 </a>
               </span>
             </div>
@@ -314,7 +314,7 @@ const Register = () => {
               <div className="w-full border-t border-white/10" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">ou s'inscrire avec</span>
+              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">{t('auth.register.orSignUpWith')}</span>
             </div>
           </div>
 
@@ -334,7 +334,7 @@ const Register = () => {
         <div className="mt-6 sm:mt-8 text-center animate-slide-up-fade" style={{ animationDelay: '0.3s' }}>
           <div className="inline-flex items-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full text-gray-400 text-xs sm:text-sm border border-white/5 hover:border-primary-500/30 transition-all duration-300 hover:text-gray-300">
             <Sparkles size={14} className="text-primary-400 animate-pulse flex-shrink-0" />
-            <span>Join 10,000+ traders worldwide</span>
+            <span>{t('auth.register.joinTraders')}</span>
             <div className="flex gap-1 flex-shrink-0">
               <div className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
               <div className="w-2 h-2 bg-primary-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />

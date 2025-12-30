@@ -11,11 +11,11 @@ const News = () => {
   const [activeCategory, setActiveCategory] = useState('all')
 
   const categories = [
-    { id: 'all', label: 'Tout' },
-    { id: 'stocks', label: 'Actions' },
-    { id: 'crypto', label: 'Crypto' },
-    { id: 'forex', label: 'Forex' },
-    { id: 'morocco', label: 'Maroc' }
+    { id: 'all', labelKey: 'news.categories.all' },
+    { id: 'stocks', labelKey: 'news.categories.stocks' },
+    { id: 'crypto', labelKey: 'news.categories.crypto' },
+    { id: 'forex', labelKey: 'news.categories.forex' },
+    { id: 'morocco', labelKey: 'news.categories.morocco' }
   ]
 
   const news = [
@@ -120,13 +120,13 @@ const News = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500/10 rounded-full mb-4">
             <Newspaper className="text-blue-500" size={20} />
-            <span className="text-blue-500 font-medium">Actualites en Direct</span>
+            <span className="text-blue-500 font-medium">{t('news.badge')}</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('nav.news')}
+            {t('news.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Restez informe avec les dernieres actualites financieres et les analyses IA
+            {t('news.subtitle')}
           </p>
         </div>
 
@@ -145,7 +145,7 @@ const News = () => {
                       : 'bg-white dark:bg-dark-100 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-dark-200'
                   }`}
                 >
-                  {cat.label}
+                  {t(cat.labelKey)}
                 </button>
               ))}
               <button
@@ -189,7 +189,7 @@ const News = () => {
                       <div className="flex items-start gap-2 p-3 bg-primary-500/5 rounded-lg">
                         <Sparkles className="text-primary-500 flex-shrink-0 mt-0.5" size={16} />
                         <div>
-                          <span className="text-xs font-medium text-primary-500">Analyse IA</span>
+                          <span className="text-xs font-medium text-primary-500">{t('news.aiAnalysis')}</span>
                           <p className="text-sm text-gray-700 dark:text-gray-300">
                             {item.aiSummary}
                           </p>
@@ -208,9 +208,9 @@ const News = () => {
             <div className="bg-white dark:bg-dark-100 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Clock size={20} className="text-primary-500" />
-                Calendrier Economique
+                {t('news.economicCalendar')}
               </h3>
-              <div className="text-sm text-gray-500 mb-4">Aujourd'hui</div>
+              <div className="text-sm text-gray-500 mb-4">{t('news.today')}</div>
               <div className="space-y-3">
                 {economicCalendar.map((event, index) => (
                   <div
@@ -238,7 +238,7 @@ const News = () => {
             <div className="bg-white dark:bg-dark-100 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
                 <Globe size={20} className="text-primary-500" />
-                Marches Mondiaux
+                {t('news.globalMarkets')}
               </h3>
               <div className="space-y-3">
                 {[

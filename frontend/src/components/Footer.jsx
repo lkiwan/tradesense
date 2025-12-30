@@ -24,8 +24,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-gray-600 dark:text-gray-400 text-xs sm:text-sm max-w-md mb-4">
-              La premiere Prop Firm assistee par IA pour l'Afrique. Tradez sur des donnees reelles,
-              atteignez vos objectifs et devenez un trader finance.
+              {t('footer.description')}
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="text-gray-400 hover:text-primary-500 transition-colors">
@@ -45,7 +44,7 @@ const Footer = () => {
 
           {/* Quick Links - Side by side on mobile */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">Platform</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">{t('footer.platform')}</h3>
             <ul className="space-y-1.5 sm:space-y-2">
               <li>
                 <Link to="/pricing" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
@@ -72,26 +71,26 @@ const Footer = () => {
 
           {/* Legal - Side by side on mobile */}
           <div>
-            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">Legal</h3>
+            <h3 className="font-semibold text-gray-900 dark:text-white mb-3 sm:mb-4 text-sm sm:text-base">{t('footer.legal')}</h3>
             <ul className="space-y-1.5 sm:space-y-2">
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
-                  Conditions
+                  {t('footer.terms')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
-                  Confidentialite
+                  {t('footer.privacy')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
-                  Regles
+                  {t('footer.rules')}
                 </a>
               </li>
               <li>
                 <a href="#" className="text-gray-600 dark:text-gray-400 hover:text-primary-500 text-xs sm:text-sm transition-colors">
-                  Contact
+                  {t('footer.contact')}
                 </a>
               </li>
             </ul>
@@ -102,10 +101,10 @@ const Footer = () => {
         <div className="mt-12 pt-8 border-t border-gray-200 dark:border-dark-100">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              © {currentYear} TradeSense AI. Tous droits reserves.
+              © {currentYear} TradeSense AI. {t('footer.copyright')}
             </p>
             <p className="text-gray-500 dark:text-gray-400 text-sm">
-              Fait avec passion pour les traders africains
+              {t('footer.madeWith')}
             </p>
           </div>
         </div>

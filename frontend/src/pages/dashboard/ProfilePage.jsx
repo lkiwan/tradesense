@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { User, Mail, Phone, MapPin, Calendar, Edit2, Camera, Shield, Award, Sparkles } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 
 const ProfilePage = () => {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [isEditing, setIsEditing] = useState(false)
 
@@ -13,9 +15,9 @@ const ProfilePage = () => {
           <div className="p-2 md:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
             <User className="text-primary-400" size={20} />
           </div>
-          Mon Profil
+          {t('profile.title')}
         </h1>
-        <p className="text-gray-400 mt-1 text-sm md:text-base">Gerez vos informations personnelles</p>
+        <p className="text-gray-400 mt-1 text-sm md:text-base">{t('profile.subtitle')}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
@@ -39,21 +41,21 @@ const ProfilePage = () => {
             <p className="text-gray-400 text-sm">{user?.email}</p>
             <div className="inline-flex items-center gap-2 mt-3 px-3 py-1.5 bg-green-500/10 rounded-full border border-green-500/30">
               <Shield size={14} className="text-green-400" />
-              <span className="text-sm text-green-400 font-medium">Compte verifie</span>
+              <span className="text-sm text-green-400 font-medium">{t('profile.accountVerified')}</span>
             </div>
             <div className="mt-6 pt-6 border-t border-white/5">
               <div className="flex items-center justify-center gap-6">
                 <div className="text-center">
                   <p className="text-2xl font-bold text-white">12</p>
-                  <p className="text-xs text-gray-400">Trades</p>
+                  <p className="text-xs text-gray-400">{t('profile.trades')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-green-400">78%</p>
-                  <p className="text-xs text-gray-400">Win Rate</p>
+                  <p className="text-xs text-gray-400">{t('profile.winRate')}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-2xl font-bold text-primary-400">1</p>
-                  <p className="text-xs text-gray-400">Challenges</p>
+                  <p className="text-xs text-gray-400">{t('profile.challenges')}</p>
                 </div>
               </div>
             </div>
@@ -63,7 +65,7 @@ const ProfilePage = () => {
         {/* Info Form */}
         <div className="lg:col-span-2 bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4 md:p-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 md:mb-6">
-            <h3 className="font-semibold text-white">Informations Personnelles</h3>
+            <h3 className="font-semibold text-white">{t('profile.personalInfo')}</h3>
             <button
               onClick={() => setIsEditing(!isEditing)}
               className={`flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg font-medium transition-all duration-300 min-h-[44px] w-full sm:w-auto ${
@@ -73,13 +75,13 @@ const ProfilePage = () => {
               }`}
             >
               <Edit2 size={16} />
-              {isEditing ? 'Annuler' : 'Modifier'}
+              {isEditing ? t('profile.cancel') : t('profile.edit')}
             </button>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Nom d'utilisateur</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('profile.username')}</label>
               <div className="relative group">
                 <User className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -91,7 +93,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Email</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('profile.email')}</label>
               <div className="relative group">
                 <Mail className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -103,7 +105,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Telephone</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('profile.phone')}</label>
               <div className="relative group">
                 <Phone className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -115,7 +117,7 @@ const ProfilePage = () => {
               </div>
             </div>
             <div>
-              <label className="block text-sm text-gray-400 mb-2">Pays</label>
+              <label className="block text-sm text-gray-400 mb-2">{t('profile.country')}</label>
               <div className="relative group">
                 <MapPin className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
                 <input
@@ -130,7 +132,7 @@ const ProfilePage = () => {
 
           {isEditing && (
             <button className="mt-4 md:mt-6 px-6 py-3 md:py-3.5 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] min-h-[48px] w-full sm:w-auto">
-              Sauvegarder
+              {t('profile.save')}
             </button>
           )}
         </div>
@@ -142,10 +144,15 @@ const ProfilePage = () => {
           <div className="p-1.5 rounded-lg bg-yellow-500/10">
             <Award size={18} className="text-yellow-400" />
           </div>
-          Accomplissements
+          {t('profile.achievements')}
         </h3>
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 md:gap-3">
-          {['Premier Trade', 'Profit Positif', '10 Trades', 'Phase 1 Reussie'].map((badge, i) => (
+          {[
+            t('profile.badges.firstTrade'),
+            t('profile.badges.positiveProfit'),
+            t('profile.badges.tenTrades'),
+            t('profile.badges.phase1Success')
+          ].map((badge, i) => (
             <div key={i} className="flex items-center justify-center sm:justify-start gap-2 px-3 md:px-4 py-2.5 bg-gradient-to-r from-yellow-500/10 to-orange-500/10 rounded-xl border border-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 group cursor-pointer min-h-[44px]">
               <Award size={16} className="text-yellow-400 group-hover:scale-110 transition-transform flex-shrink-0" />
               <span className="text-xs sm:text-sm text-white font-medium truncate">{badge}</span>

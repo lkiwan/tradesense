@@ -71,7 +71,33 @@
       "title": "The First AI-Powered Prop Firm for Africa",
       "subtitle": "TradeSense AI combines real-time AI analysis, smart trading tools and premium education",
       "cta": "Start the Challenge",
-      "watchDemo": "Watch Demo"
+      "watchDemo": "Watch Demo",
+      "poweredByAI": "Powered by AI",
+      "becomeTrader": "Become a Trader",
+      "withAI": "with Artificial Intelligence",
+      "typingTexts": ["Profitable", "Pro", "Expert"],
+      "description": "The first prop trading platform in Morocco. Pass your challenge, receive up to",
+      "capital": "in capital and keep",
+      "profits": "of profits",
+      "freeTrial": "7-Day Free Trial",
+      "demo": "Demo"
+    },
+    "floatingCards": {
+      "newTraders": "New traders today",
+      "justPaidOut": "Just paid out",
+      "liveAISignal": "Live AI Signal",
+      "justNow": "Just now",
+      "entry": "Entry",
+      "target": "Target",
+      "aiConfidence": "AI Confidence",
+      "winRate": "Win rate",
+      "activeSignals": "Active signals"
+    },
+    "stats": {
+      "activeTraders": "Active Traders",
+      "capitalDistributed": "Capital Distributed",
+      "successRate": "Success Rate",
+      "aiAccuracy": "AI Accuracy"
     },
     "features": {
       "title": "Why Choose TradeSense?",
@@ -112,35 +138,333 @@
       }
     },
     "testimonials": {
+      "title": "What our traders say",
+      "badge": "Testimonials",
       "roles": {
         "professional": "Professional Trader",
         "funded": "Funded Trader",
         "beginner": "Beginner Trader"
       }
+    },
+    "features": {
+      "badge": "Features",
+      "title": "Everything you need to",
+      "titleHighlight": "succeed",
+      "subtitle": "A complete platform to become a professional funded trader",
+      "profitSplit": {
+        "title": "15% Profit Split",
+        "description": "Receive 15% of profits even during the challenge phase."
+      },
+      "noTimeLimit": {
+        "title": "No Time Limit",
+        "description": "Take all the time you need to pass your challenge."
+      },
+      "newsTrading": {
+        "title": "News Trading",
+        "description": "Trading during economic announcements is allowed."
+      },
+      "spreads": {
+        "title": "Spreads & Leverage",
+        "description": "Competitive spreads and leverage up to 1:100."
+      },
+      "reset": {
+        "title": "Reset Option",
+        "description": "Reset your account at a reduced price if you fail."
+      },
+      "competitions": {
+        "title": "Monthly Competitions",
+        "description": "Participate and win free challenge accounts."
+      }
+    },
+    "markets": {
+      "title": "Trade on the best markets"
+    },
+    "guarantee": {
+      "badge": "Payment Guarantee",
+      "title": "Guaranteed Payments in",
+      "titleHighlight": "24 Hours",
+      "description": "We are so confident in our process that we pay you",
+      "penalty": "if your payment takes more than 24 hours.",
+      "avgTime": "5 Hours",
+      "avgTimeLabel": "Average time",
+      "secure": "100% Secure",
+      "secureLabel": "Guaranteed",
+      "paymentApproved": "Payment Approved",
+      "minutesAgo": "2 minutes ago",
+      "processing": "Processing",
+      "completed": "Completed"
+    },
+    "steps": {
+      "badge": "How it works",
+      "title": "4 steps to become a funded trader"
+    },
+    "pricingSection": {
+      "badge": "Powered by AI",
+      "title": "Choose Your",
+      "titleHighlight": "Challenge",
+      "subtitle": "The higher your plan, the more powerful and accurate the AI. Up to 96% accuracy!",
+      "bestValue": "Best value",
+      "account": "Account",
+      "signalsPerDay": "Signals/day",
+      "start": "Start",
+      "viewDetails": "View all details",
+      "swipeHint": "Swipe to change"
+    },
+    "aiAssistant": {
+      "title": "Still have questions? Ask",
+      "titleHighlight": "TradeSense AI!",
+      "subtitle": "Speak or type to get instant answers",
+      "soundOff": "Sound off",
+      "activateSound": "Activate sound",
+      "muteSound": "Mute sound",
+      "typeHere": "Type your question here...",
+      "youSaid": "You said:",
+      "analyzing": "Analyzing..."
+    },
+    "benefits": {
+      "title": "Why choose TradeSense AI?",
+      "aiSignals": "Real-time AI signals and risk alerts",
+      "marketData": "Real market data (US, Crypto & Morocco)",
+      "masterclass": "Masterclass and trading education included",
+      "community": "Active community of traders",
+      "support": "24/7 support in French and Arabic",
+      "secure": "Secure and reliable platform",
+      "createAccount": "Create a Free Account"
+    },
+    "faqSection": {
+      "badge": "FAQ",
+      "title": "Frequently asked questions",
+      "q1": "What is prop trading?",
+      "a1": "Prop trading (proprietary trading) allows you to trade with a trading company's capital. You first pass a challenge to prove your skills, then you receive a funded account and keep up to 80% of the profits.",
+      "q2": "How does the TradeSense challenge work?",
+      "a2": "Choose a plan (Starter, Pro or Elite), reach the profit target (8-10%) without exceeding the loss limits. Once passed, you receive a funded account with the same capital.",
+      "q3": "Which markets can I trade?",
+      "a3": "You can trade US stocks (Apple, Tesla, Google...), cryptocurrencies (Bitcoin, Ethereum...) and Moroccan stocks (IAM, Attijariwafa Bank...).",
+      "q4": "How do AI signals work?",
+      "a4": "Our AI analyzes real-time market data, technical indicators and sentiment to generate buy/sell signals with a confidence level. You also receive risk alerts.",
+      "q5": "Can I withdraw my profits?",
+      "a5": "Yes! Once your challenge is passed and your account is funded, you can withdraw your profits every month. You keep up to 80% of your gains."
+    },
+    "finalCta": {
+      "badge": "Limited Offer - 20% off",
+      "title": "Ready to start your journey as a",
+      "titleHighlight": "trader?",
+      "subtitle": "Join over",
+      "traderCount": "10,000 traders",
+      "subtitleEnd": "who trust TradeSense AI",
+      "viewChallenges": "View Challenges",
+      "createAccount": "Create a Free Account",
+      "noCard": "No credit card required for registration",
+      "sslSecured": "SSL Secured",
+      "payouts24h": "24h Payouts",
+      "globalSupport": "Global Support"
     }
   },
   "dashboard": {
     "title": "Trading Dashboard",
     "balance": "Balance",
+    "equity": "Equity",
     "profit": "Profit",
+    "profitTarget": "Profit Target",
+    "drawdown": "Drawdown",
     "dailyLoss": "Daily Loss",
     "totalDrawdown": "Total Drawdown",
     "status": "Status",
     "openTrade": "Open Trade",
     "closeTrade": "Close",
+    "close": "Close",
     "buy": "Buy",
     "sell": "Sell",
     "quantity": "Quantity",
     "symbol": "Symbol",
+    "type": "Type",
+    "size": "Size",
+    "entry": "Entry",
+    "exit": "Exit",
+    "current": "Current",
+    "sl": "SL",
+    "tp": "TP",
+    "pnl": "P&L",
+    "action": "Action",
     "noActiveChallenge": "No active challenge",
-    "purchaseChallenge": "Purchase a challenge to start trading"
+    "purchaseChallenge": "Purchase a challenge to start trading",
+    "winRate": "Win Rate",
+    "profitFactor": "Profit Factor",
+    "totalTrades": "Total Trades",
+    "bestTrade": "Best Trade",
+    "worstTrade": "Worst Trade",
+    "avgWin": "Avg Win",
+    "avgLoss": "Avg Loss",
+    "openPositions": "Open Positions",
+    "recentTrades": "Recent Trades",
+    "viewAll": "View All",
+    "openTradingPlatform": "Open Trading Platform",
+    "unrealized": "Unrealized",
+    "target": "Target",
+    "limit": "Limit",
+    "fromStart": "from start"
+  },
+  "accounts": {
+    "title": "My Account",
+    "welcomeBack": "Welcome back",
+    "trackProgress": "Track your challenge progress",
+    "startTrading": "Start Trading",
+    "startYourJourney": "Start Your Journey",
+    "joinThousands": "Join thousands of traders who have proven their skills and earned funded accounts.",
+    "getFundedNow": "Get Funded Now",
+    "freeTrial": "Free Trial",
+    "phase1": "Phase 1",
+    "phase2": "Phase 2",
+    "funded": "Funded",
+    "active": "Active",
+    "currentBalance": "Current Balance",
+    "accountDevelopment": "Account Development",
+    "yourJourney": "Your Journey",
+    "trial": "Trial",
+    "noTradeHistory": "No trade history yet",
+    "completeTrades": "Complete trades to see your equity curve",
+    "tradingCredentials": "Trading Credentials",
+    "login": "Login",
+    "password": "Password",
+    "server": "Server",
+    "downloadMT5": "Download MT5",
+    "accountDetails": "Account Details",
+    "planType": "Plan Type",
+    "platform": "Platform",
+    "accountSize": "Account Size",
+    "addons": "Add-ons",
+    "resetChallenge": "Reset Challenge",
+    "extendTime": "Extend Time",
+    "upgradeAccount": "Upgrade Account",
+    "specialOffer": "Special Offer",
+    "offCode": "20% off with code TRADER20",
+    "viewOffers": "View Offers",
+    "history": "History",
+    "trades": "Trades",
+    "best": "Best",
+    "worst": "Worst",
+    "open": "Open",
+    "fromStart": "from start",
+    "profitTarget": "Profit Target",
+    "drawdown": "Drawdown",
+    "winRate": "Win Rate",
+    "profitFactor": "Profit Factor",
+    "avgWin": "Avg Win",
+    "avgLoss": "Avg Loss",
+    "openPositions": "Open Positions",
+    "symbol": "Symbol",
+    "type": "Type",
+    "entry": "Entry",
+    "exit": "Exit",
+    "pnl": "P&L",
+    "account": "Account",
+    "of": "of"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Manage your notification preferences and history",
+    "tabs": {
+      "notifications": "Notifications",
+      "preferences": "Preferences",
+      "devices": "Devices"
+    },
+    "enableNotifications": "Enable Notifications",
+    "notificationsBlocked": "Notifications Blocked",
+    "notificationsBlockedDesc": "You have blocked notifications. Please enable them in your browser settings.",
+    "markAllRead": "Mark All Read",
+    "noNotifications": "No notifications yet",
+    "filters": {
+      "all": "All Notifications",
+      "unread": "Unread Only",
+      "trading": "Trading",
+      "challenges": "Challenges",
+      "payouts": "Payouts",
+      "social": "Social",
+      "security": "Security"
+    },
+    "preferences": {
+      "pushNotifications": "Push Notifications",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "trading": "Trading",
+      "tradeExecuted": "Trade Executed",
+      "tradeClosed": "Trade Closed",
+      "priceAlerts": "Price Alerts",
+      "challenges": "Challenges",
+      "challengeUpdates": "Challenge Updates",
+      "challengePassed": "Challenge Passed",
+      "challengeFailed": "Challenge Failed",
+      "payouts": "Payouts",
+      "payoutUpdates": "Payout Updates",
+      "social": "Social",
+      "newFollowers": "New Followers",
+      "copyTrade": "Copy Trade",
+      "ideaInteractions": "Idea Interactions",
+      "system": "System",
+      "securityAlerts": "Security Alerts",
+      "systemAnnouncements": "System Announcements",
+      "marketing": "Marketing",
+      "quietHours": "Quiet Hours",
+      "enableQuietHours": "Enable Quiet Hours",
+      "start": "Start",
+      "end": "End"
+    },
+    "devices": {
+      "noDevices": "No registered devices",
+      "enableToRegister": "Enable notifications to register this device",
+      "active": "Active",
+      "inactive": "Inactive",
+      "lastUsed": "Last used"
+    },
+    "testNotification": "Test Notification",
+    "testNotificationDesc": "Send a test notification to verify your setup",
+    "sendTest": "Send Test"
   },
   "signals": {
-    "title": "AI Signals",
-    "buy": "BUY",
-    "sell": "SELL",
-    "hold": "HOLD",
+    "title": "AI Trading Signals",
+    "subtitle": "Technical analysis + sentiment-powered signals",
+    "aiActive": "AI Active",
+    "refresh": "Refresh",
+    "loading": "Loading signals data...",
+    "totalSignals": "Total Signals",
+    "activeSignals": "active",
+    "winRate": "Win Rate",
+    "totalReturn": "Total Return",
+    "lastDays": "Last {{days}} days",
+    "profitFactor": "Profit Factor",
+    "avgWinLoss": "Avg +{{win}}% / -{{loss}}%",
+    "quickAnalysis": "Quick Analysis",
+    "technicalAnalysis": "Technical Analysis",
+    "sentimentAnalysis": "Sentiment Analysis",
+    "signal": "Signal",
+    "score": "Score",
     "confidence": "Confidence",
+    "entry": "Entry",
+    "stopLoss": "Stop Loss",
+    "takeProfit": "Take Profit",
+    "reasons": "Reasons",
+    "sentiment": "Sentiment",
+    "articles": "Articles",
+    "keywords": "Keywords",
+    "filter": "Filter",
+    "all": "All",
+    "buy": "Buy",
+    "sell": "Sell",
+    "active": "Active",
+    "wins": "Wins",
+    "losses": "Losses",
+    "period": "Period",
+    "topSignals": "Top Signals",
+    "signalHistory": "Signal History",
+    "noSignals": "No signals found",
+    "status": {
+      "active": "Active",
+      "targetHit": "Target Hit",
+      "stopped": "Stopped",
+      "expired": "Expired",
+      "closed": "Closed"
+    },
+    "hold": "HOLD",
     "reason": "Reason"
   },
   "pricing": {
@@ -274,21 +598,115 @@
   "auth": {
     "login": {
       "title": "Login",
+      "subtitle": "Sign in to access your dashboard",
       "email": "Email",
       "password": "Password",
       "submit": "Sign in",
       "noAccount": "No account?",
-      "register": "Register"
+      "register": "Register",
+      "rememberMe": "Remember me",
+      "forgotPassword": "Forgot password?",
+      "orContinueWith": "or continue with",
+      "demo": "demo",
+      "useDemoAccount": "Use demo account",
+      "secureLogin": "Secure login with 2FA support",
+      "welcomeBack": "Welcome back!",
+      "fillAllFields": "Please fill in all fields",
+      "completeCaptcha": "Please complete the CAPTCHA verification",
+      "pleaseWait": "Please wait {{time}} before trying again",
+      "loginFailed": "Login failed",
+      "tooManyAttempts": "Too many attempts",
+      "wait": "Wait {{time}}",
+      "banned": {
+        "title": "This account has been banned",
+        "reason": "Reason: {{reason}}",
+        "contactSupport": "If you believe this is a mistake, please contact support."
+      }
     },
     "register": {
       "title": "Register",
+      "subtitle": "Create your account and start trading",
       "username": "Username",
       "email": "Email",
       "password": "Password",
       "confirmPassword": "Confirm password",
+      "preferredLanguage": "Preferred language",
       "submit": "Sign up",
       "hasAccount": "Already have an account?",
-      "login": "Login"
+      "login": "Login",
+      "orSignUpWith": "or sign up with",
+      "joinTraders": "Join 10,000+ traders worldwide",
+      "fillAllFields": "Please fill in all fields",
+      "passwordsNotMatch": "Passwords do not match",
+      "passwordMinLength": "Password must be at least 6 characters",
+      "acceptTerms": "Please accept the terms and conditions",
+      "success": "Account created successfully! Please verify your email.",
+      "tooManyAttempts": "Too many registration attempts. Please try again later.",
+      "failed": "Registration failed. Please try again.",
+      "waitHour": "Too many attempts. Please wait an hour before trying again.",
+      "checkConnection": "Registration failed. Please check your connection.",
+      "terms": {
+        "iAccept": "I accept the",
+        "termsOfUse": "terms of use",
+        "and": "and the",
+        "privacyPolicy": "privacy policy"
+      },
+      "passwordStrength": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong"
+      }
+    },
+    "forgotPassword": {
+      "title": "Forgot Password?",
+      "subtitle": "Enter your email and we'll send you a link to reset your password",
+      "emailLabel": "Email Address",
+      "enterEmail": "Please enter your email address",
+      "sending": "Sending...",
+      "sendResetLink": "Send Reset Link",
+      "backToLogin": "Back to login",
+      "secureRecovery": "Secure password recovery",
+      "success": {
+        "title": "Check Your Email",
+        "message": "If an account exists with the email",
+        "messageContinue": "you will receive a password reset link shortly.",
+        "note": "Note:",
+        "noteText": "The link will expire in 1 hour. If you don't see the email, check your spam folder."
+      }
+    },
+    "resetPassword": {
+      "title": "Reset Your Password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "minCharacters": "Minimum 8 characters",
+      "resetting": "Resetting...",
+      "resetButton": "Reset Password",
+      "secureReset": "Secure password reset",
+      "fillAllFields": "Please fill in all fields",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "passwordsNotMatch": "Passwords do not match",
+      "resetSuccess": "Password reset successful!",
+      "resetFailed": "Failed to reset password",
+      "noToken": "No reset token provided. Please request a new password reset link.",
+      "passwordStrength": {
+        "weak": "Weak",
+        "medium": "Medium",
+        "strong": "Strong"
+      },
+      "success": {
+        "title": "Password Reset Complete",
+        "message": "Your password has been successfully reset. You can now log in with your new password.",
+        "goToLogin": "Go to Login",
+        "accountSecure": "Your account is secure"
+      },
+      "error": {
+        "title": "Invalid Reset Link",
+        "requestNewLink": "Request New Link",
+        "needHelp": "Need help? Contact support"
+      }
     }
   },
   "common": {
@@ -308,5 +726,1348 @@
     "active": "Active",
     "passed": "Passed",
     "failed": "Failed"
+  },
+  "footer": {
+    "description": "The first AI-powered Prop Firm for Africa. Trade on real data, reach your goals and become a funded trader.",
+    "platform": "Platform",
+    "legal": "Legal",
+    "terms": "Terms",
+    "privacy": "Privacy",
+    "rules": "Rules",
+    "contact": "Contact",
+    "copyright": "All rights reserved.",
+    "madeWith": "Made with passion for African traders"
+  },
+  "pricingPage": {
+    "hero": {
+      "badge": "Powered by Artificial Intelligence",
+      "title": "Trade with",
+      "titleHighlight": "Predictive AI",
+      "description": "Our artificial intelligence analyzes millions of data points in real-time to predict market movements. The higher your plan, the more powerful and accurate the AI."
+    },
+    "aiStats": {
+      "levels": "5 Levels",
+      "levelsDesc": "of AI Intelligence",
+      "accuracy": "96%",
+      "accuracyDesc": "Accuracy",
+      "signals": "+40",
+      "signalsDesc": "Signals/day"
+    },
+    "aiTiers": {
+      "title": "Intelligence Levels",
+      "starter": {
+        "name": "AI Starter",
+        "description": "Basic algorithm"
+      },
+      "basic": {
+        "name": "AI Basic",
+        "description": "Advanced technical analysis"
+      },
+      "advanced": {
+        "name": "AI Advanced",
+        "description": "Optimized Machine Learning"
+      },
+      "pro": {
+        "name": "AI Pro",
+        "description": "Deep Learning + Sentiment"
+      },
+      "elite": {
+        "name": "AI Elite",
+        "description": "Quantum Neural Network"
+      }
+    },
+    "table": {
+      "showNumbers": "Show numbers",
+      "account": "Account",
+      "bestValue": "Best value",
+      "start": "Start",
+      "avgReward": "Avg. reward",
+      "paymentNote": "All prices are one-time payments.",
+      "step1": "STEP 1",
+      "step2": "STEP 2",
+      "days": "days",
+      "unlimited": "Unlimited",
+      "yes": "Yes"
+    },
+    "rowLabels": {
+      "ai": "Artificial Intelligence",
+      "accuracy": "AI Accuracy",
+      "signals": "Signals / day",
+      "profit": "Profit Target",
+      "dailyLoss": "Max Daily Loss",
+      "maxLoss": "Max Loss",
+      "minDays": "Min Trading Days",
+      "period": "Trading Period",
+      "refund": "Refund"
+    },
+    "features": {
+      "allMarkets": "All markets",
+      "realTimeSignals": "Real-time signals",
+      "vipSupport": "VIP 24/7 Support",
+      "institutionalAnalysis": "Institutional analysis",
+      "fullApiAccess": "Full API access",
+      "forexCryptoIndices": "Forex + Crypto + Indices",
+      "instantAlerts": "Instant alerts",
+      "prioritySupport": "Priority support",
+      "sentimentAnalysis": "Sentiment analysis",
+      "forexCrypto": "Forex + Crypto",
+      "emailAlerts": "Email alerts",
+      "dedicatedSupport": "Dedicated support",
+      "backtesting": "Backtesting included",
+      "majorForex": "Major Forex",
+      "dailyAlerts": "Daily alerts",
+      "standardSupport": "Standard support",
+      "eurGbp": "EUR/USD + GBP/USD",
+      "basicSignals": "Basic signals",
+      "emailSupport": "Email support"
+    },
+    "aiFeatures": {
+      "badge": "Advanced Technology",
+      "title": "How our",
+      "titleHighlight": "AI",
+      "titleEnd": "predicts the market",
+      "description": "Our technology combines multiple artificial intelligence approaches to maximize prediction accuracy.",
+      "deepLearning": {
+        "title": "Deep Learning",
+        "description": "Deep neural networks analyzing historical patterns across 20 years of data."
+      },
+      "technicalAnalysis": {
+        "title": "Technical Analysis",
+        "description": "Over 150 technical indicators calculated in real-time across all timeframes."
+      },
+      "sentimentAnalysis": {
+        "title": "Sentiment Analysis",
+        "description": "Analysis of news sentiment, social media and economic reports."
+      },
+      "fastExecution": {
+        "title": "Fast Execution",
+        "description": "Signals generated in milliseconds to capture the best opportunities."
+      }
+    },
+    "comparison": {
+      "badge": "Comparison",
+      "title": "Why choose a",
+      "titleHighlight": "higher plan",
+      "starter": {
+        "title": "AI Starter",
+        "level": "Beginner level",
+        "features": [
+          "Basic EUR/USD, GBP/USD analysis",
+          "5-10 signals per day",
+          "72% accuracy",
+          "Basic technical indicators"
+        ]
+      },
+      "elite": {
+        "title": "AI Elite",
+        "level": "Expert level",
+        "premium": "PREMIUM",
+        "features": [
+          "All markets (Forex, Crypto, Indices, Commodities)",
+          "Unlimited real-time signals",
+          "96% accuracy with Quantum Neural Network",
+          "Institutional analysis + Sentiment + API"
+        ]
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Frequently Asked",
+      "titleHighlight": "Questions",
+      "items": [
+        {
+          "q": "How does the trading AI work?",
+          "a": "Our AI uses Deep Learning and Machine Learning algorithms to analyze millions of data points in real-time. It detects patterns invisible to the human eye and generates trading signals with up to 96% accuracy."
+        },
+        {
+          "q": "What is the difference between AI levels?",
+          "a": "Each level offers more sophisticated algorithms. AI Starter uses basic technical analysis, while AI Elite combines Deep Learning, sentiment analysis and institutional data for ultra-precise predictions."
+        },
+        {
+          "q": "Are the signals guaranteed?",
+          "a": "No signal is 100% guaranteed. However, our AI Elite shows a 96% success rate over the last 12 months. Trading always involves risks."
+        },
+        {
+          "q": "Can I upgrade my plan?",
+          "a": "Yes! You can upgrade your plan at any time to access a more powerful AI. The price difference will be calculated pro-rata."
+        }
+      ]
+    },
+    "cta": {
+      "badge": "Limited offer - Save up to 20%",
+      "title": "Ready to trade with",
+      "titleHighlight": "AI",
+      "description": "Join over 10,000 traders who already use our AI to maximize their profits.",
+      "button": "Start with AI Pro",
+      "securePayment": "Secure payment",
+      "fullRefund": "100% Refund",
+      "instantActivation": "Instant activation"
+    }
+  },
+  "masterclass": {
+    "badge": "Learning Center",
+    "title": "MasterClass",
+    "subtitle": "High quality courses to become a professional trader, from beginner to expert",
+    "stats": {
+      "lessons": "Lessons",
+      "content": "Of Content",
+      "modules": "Modules",
+      "students": "Students"
+    },
+    "courses": {
+      "introTrading": {
+        "title": "Introduction to Trading",
+        "description": "Trading basics for beginners"
+      },
+      "technicalAnalysis": {
+        "title": "Technical Analysis",
+        "description": "Master charts and indicators"
+      },
+      "riskManagement": {
+        "title": "Risk Management",
+        "description": "Protect your capital like a pro"
+      },
+      "tradingPsychology": {
+        "title": "Trading Psychology",
+        "description": "Control your emotions to win"
+      },
+      "advancedStrategies": {
+        "title": "Advanced Strategies",
+        "description": "Professional trading techniques"
+      },
+      "algoTrading": {
+        "title": "Algorithmic Trading",
+        "description": "Automate your strategies"
+      }
+    },
+    "levels": {
+      "beginner": "Beginner",
+      "intermediate": "Intermediate",
+      "advanced": "Advanced",
+      "expert": "Expert",
+      "allLevels": "All levels"
+    },
+    "lessons": "lessons",
+    "comingSoon": "Coming Soon",
+    "start": "Start",
+    "webinars": {
+      "title": "Live Webinars",
+      "nextWebinar": "Next Webinar: Trading Strategies 2025",
+      "description": "Join our experts to discover the best strategies for this year",
+      "registerFree": "Register for Free"
+    }
+  },
+  "community": {
+    "badge": "Community Zone",
+    "title": "Community",
+    "subtitle": "Connect with thousands of traders, share strategies and learn from the best",
+    "sharePlaceholder": "Share your trading experience...",
+    "popularGroups": "Popular Groups",
+    "topTradersMonth": "Top Traders of the Month",
+    "onlineNow": "Online now",
+    "traders": "traders",
+    "members": "members",
+    "groups": {
+      "beginners": "Beginner Traders",
+      "technicalAnalysis": "Technical Analysis",
+      "cryptoTrading": "Crypto Trading",
+      "forexExperts": "Forex Experts"
+    },
+    "badges": {
+      "fundedTrader": "Funded Trader",
+      "topTrader": "Top Trader"
+    }
+  },
+  "news": {
+    "badge": "Live News",
+    "title": "News",
+    "subtitle": "Stay informed with the latest financial news and AI analysis",
+    "categories": {
+      "all": "All",
+      "stocks": "Stocks",
+      "crypto": "Crypto",
+      "forex": "Forex",
+      "morocco": "Morocco"
+    },
+    "aiAnalysis": "AI Analysis",
+    "economicCalendar": "Economic Calendar",
+    "today": "Today",
+    "globalMarkets": "Global Markets",
+    "sentiment": {
+      "bullish": "Bullish",
+      "bearish": "Bearish",
+      "neutral": "Neutral"
+    }
+  },
+  "about": {
+    "badge": "About TradeSense",
+    "title": "Empowering Traders to Achieve Their",
+    "titleHighlight": "Dreams",
+    "subtitle": "We believe talented traders shouldn't be held back by lack of capital. Our mission is to identify, fund, and support skilled traders worldwide.",
+    "stats": {
+      "fundedTraders": "Funded Traders",
+      "payoutsMade": "Payouts Made",
+      "activeUsers": "Active Users",
+      "supportAvailable": "Support Available"
+    },
+    "story": {
+      "badge": "Our Story",
+      "title": "From Vision to",
+      "titleHighlight": "Reality",
+      "p1": "TradeSense was born from a simple observation: many talented traders around the world lack the capital to trade professionally. We set out to change that.",
+      "p2": "Founded by a team of experienced traders and fintech professionals, we built a platform that gives skilled traders access to significant trading capital without risking their own money.",
+      "p3": "Today, we've funded hundreds of traders from over 50 countries, paying out millions in profits. But we're just getting started.",
+      "startJourney": "Start Your Journey"
+    },
+    "globalReach": {
+      "title": "Global Reach",
+      "description": "We support traders from around the world, with localized support in French, English, and Arabic.",
+      "countries": "Countries",
+      "languages": "Languages",
+      "support": "Support"
+    },
+    "values": {
+      "badge": "Our Values",
+      "title": "The Principles That",
+      "titleHighlight": "Guide Us",
+      "subtitle": "Everything we do is driven by these core values",
+      "transparency": {
+        "title": "Transparency",
+        "description": "Clear rules, fair evaluation, and honest communication. No hidden fees or surprise conditions."
+      },
+      "community": {
+        "title": "Community",
+        "description": "We build a supportive community where traders help each other grow and succeed."
+      },
+      "excellence": {
+        "title": "Excellence",
+        "description": "We set high standards for ourselves and our traders, pushing everyone to be their best."
+      },
+      "traderFirst": {
+        "title": "Trader First",
+        "description": "Every decision we make is focused on providing the best experience for our traders."
+      }
+    },
+    "journey": {
+      "badge": "Our Journey",
+      "title": "Milestones Along the",
+      "titleHighlight": "Way"
+    },
+    "team": {
+      "badge": "Our Team",
+      "title": "Meet the",
+      "titleHighlight": "People",
+      "subtitle": "Experienced professionals dedicated to your trading success",
+      "roles": {
+        "ceoFounder": "CEO & Founder",
+        "headTrading": "Head of Trading",
+        "cto": "CTO",
+        "headSupport": "Head of Support"
+      }
+    },
+    "contact": {
+      "location": "Location",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "cta": {
+      "badge": "Join 10,000+ Traders",
+      "title": "Ready to Start",
+      "titleHighlight": "Trading?",
+      "subtitle": "Join TradeSense today and take the first step towards becoming a funded trader.",
+      "startChallenge": "Start Your Challenge"
+    }
+  },
+  "contact": {
+    "badge": "Contact Us",
+    "title": "Get in",
+    "titleHighlight": "Touch",
+    "subtitle": "Have a question or need assistance? We're here to help. Choose your preferred contact method below.",
+    "methods": {
+      "emailUs": "Email Us",
+      "emailDesc": "Get a response within 24 hours",
+      "liveChat": "Live Chat",
+      "liveChatDesc": "Available 24/7",
+      "startConversation": "Start a conversation",
+      "callUs": "Call Us",
+      "callUsDesc": "Mon-Fri, 9am-6pm CET"
+    },
+    "form": {
+      "title": "Send us a Message",
+      "subtitle": "We'll get back to you within 24 hours",
+      "yourName": "Your Name",
+      "emailAddress": "Email Address",
+      "category": "Category",
+      "subject": "Subject",
+      "message": "Message",
+      "messagePlaceholder": "Describe your question or issue in detail...",
+      "send": "Send Message",
+      "sending": "Sending..."
+    },
+    "categories": {
+      "general": "General Inquiry",
+      "support": "Technical Support",
+      "billing": "Billing & Payments",
+      "partnership": "Partnership Inquiry",
+      "feedback": "Feedback & Suggestions"
+    },
+    "offices": {
+      "title": "Our Offices"
+    },
+    "supportHours": {
+      "title": "Support Hours",
+      "liveChat": "Live Chat",
+      "emailSupport": "Email Support",
+      "phoneSupport": "Phone Support",
+      "response24h": "24h response"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "faq": "Frequently Asked Questions",
+      "howItWorks": "How It Works",
+      "communityForum": "Community Forum"
+    },
+    "respondFast": {
+      "title": "We Respond Fast",
+      "description": "Our average response time is under 2 hours during business hours. We're committed to helping you succeed."
+    },
+    "locations": {
+      "badge": "Locations",
+      "title": "Find Us",
+      "titleHighlight": "Worldwide",
+      "mapComingSoon": "Interactive map coming soon"
+    }
+  },
+  "faqPage": {
+    "badge": "Help Center",
+    "title": "Frequently Asked",
+    "titleHighlight": "Questions",
+    "subtitle": "Find answers to common questions about TradeSense, our challenges, and trading conditions.",
+    "searchPlaceholder": "Search questions...",
+    "categories": {
+      "all": "All Questions",
+      "gettingStarted": "Getting Started",
+      "challenges": "Challenge Rules",
+      "payments": "Payments & Payouts",
+      "trading": "Trading",
+      "account": "Account"
+    },
+    "noResults": {
+      "title": "No questions found",
+      "description": "Try adjusting your search or category filter."
+    },
+    "stillHaveQuestions": {
+      "badge": "Support",
+      "title": "Still Have",
+      "titleHighlight": "Questions?",
+      "description": "Can't find what you're looking for? Our support team is here to help 24/7.",
+      "contactSupport": "Contact Support",
+      "liveChat": "Live Chat"
+    },
+    "helpfulResources": {
+      "badge": "Helpful Resources",
+      "title": "Explore More",
+      "howItWorks": {
+        "title": "How It Works",
+        "description": "Learn about our challenge process step by step."
+      },
+      "pricing": {
+        "title": "Pricing",
+        "description": "View our challenge plans and pricing options."
+      },
+      "academy": {
+        "title": "Academy",
+        "description": "Free educational resources for traders."
+      }
+    }
+  },
+  "howItWorks": {
+    "badge": "How It Works",
+    "title": "Your Path to Becoming a",
+    "titleHighlight": "Funded Trader",
+    "subtitle": "Follow our simple 4-step process to prove your trading skills and get access to real capital. No hidden fees, no tricks - just pure trading.",
+    "startChallenge": "Start Your Challenge",
+    "tryFreeTrial": "Try Free Trial",
+    "process": {
+      "badge": "The Process",
+      "title": "4 Simple Steps to",
+      "titleHighlight": "Success"
+    },
+    "steps": {
+      "step1": {
+        "number": "01",
+        "title": "Choose Your Challenge",
+        "description": "Select from our Starter ($5K), Pro ($25K), or Elite ($100K) account sizes. Each comes with specific profit targets and trading rules.",
+        "details": [
+          "No time limit to complete",
+          "Trade forex, crypto & stocks",
+          "Competitive spreads from 0.0 pips"
+        ]
+      },
+      "step2": {
+        "number": "02",
+        "title": "Phase 1: Evaluation",
+        "description": "Prove your trading skills by reaching a 10% profit target while respecting our risk management rules.",
+        "details": [
+          "10% profit target",
+          "10% max drawdown limit",
+          "5% daily loss limit"
+        ]
+      },
+      "step3": {
+        "number": "03",
+        "title": "Phase 2: Verification",
+        "description": "Confirm your consistency with a 5% profit target. This phase ensures you can replicate your success.",
+        "details": [
+          "5% profit target",
+          "Same risk rules apply",
+          "Prove consistency"
+        ]
+      },
+      "step4": {
+        "number": "04",
+        "title": "Get Funded",
+        "description": "Congratulations! You're now a funded trader. Trade with real capital and keep up to 80% of your profits.",
+        "details": [
+          "Up to 80% profit split",
+          "Real capital trading",
+          "Monthly payouts"
+        ]
+      }
+    },
+    "features": {
+      "badge": "Why Choose Us",
+      "title": "Why Traders Choose",
+      "titleHighlight": "TradeSense",
+      "subtitle": "We've built a platform that puts traders first with fair rules and real opportunities.",
+      "noTimeLimits": {
+        "title": "No Time Limits",
+        "description": "Take your time to complete each phase. No pressure, no rushing."
+      },
+      "riskManagement": {
+        "title": "Risk Management",
+        "description": "Clear rules to protect capital: 10% max drawdown, 5% daily limit."
+      },
+      "profitSplit": {
+        "title": "Up to 80% Profit Split",
+        "description": "Keep the majority of profits you generate as a funded trader."
+      },
+      "fastPayouts": {
+        "title": "Fast Payouts",
+        "description": "Get your profits within 24 hours of requesting a withdrawal."
+      },
+      "communitySupport": {
+        "title": "Community Support",
+        "description": "Join our community of traders sharing strategies and insights."
+      },
+      "scalingProgram": {
+        "title": "Scaling Program",
+        "description": "Grow your account size up to $300K based on performance."
+      }
+    },
+    "cta": {
+      "badge": "Start Today",
+      "title": "Ready to Start Your",
+      "titleHighlight": "Journey?",
+      "subtitle": "Join thousands of traders who have already taken the first step towards becoming funded. Your trading career starts here.",
+      "viewPricing": "View Pricing",
+      "startFreeTrial": "Start Free Trial"
+    }
+  },
+  "freeTrial": {
+    "badge": "7-Day Free Trial",
+    "title": "Test TradeSense",
+    "titleHighlight": "for Free",
+    "subtitle": "Choose the plan you want after the trial. You'll have 7 days to test with $5,000 virtual capital before being charged.",
+    "features": {
+      "freeDays": "7 days free",
+      "virtualCapital": "$5,000 virtual capital",
+      "cancelAnytime": "Cancel anytime"
+    },
+    "choosePlan": {
+      "title": "Choose your plan after the trial",
+      "subtitle": "You will only be charged after the 7-day free trial",
+      "afterTrial": "after trial",
+      "capital": "Capital"
+    },
+    "whatYouGet": {
+      "title": "What you get during the trial",
+      "virtualCapital": "$5,000 virtual capital",
+      "fullAccess": "7 days full access",
+      "realMarkets": "Trade on real markets",
+      "aiSignals": "AI signals included",
+      "fullDashboard": "Full dashboard",
+      "sameRules": "Same rules as challenges",
+      "profitTarget": "Target: 10% profit",
+      "communityAccess": "Community access"
+    },
+    "summary": {
+      "title": "Summary",
+      "plan": "Plan",
+      "today": "Today",
+      "afterDays": "After 7 days",
+      "paypalNotice": "You will be redirected to PayPal to authorize future payment. No amount will be charged today.",
+      "createAccount": "Create Account and Start",
+      "startTrial": "Start My Free Trial",
+      "cancelNotice": "Cancel anytime before the trial ends",
+      "viewChallenges": "View challenges"
+    },
+    "howItWorks": {
+      "title": "How it works?",
+      "step1": {
+        "title": "Choose a plan",
+        "description": "Select the desired plan"
+      },
+      "step2": {
+        "title": "Authorize PayPal",
+        "description": "Link your PayPal account"
+      },
+      "step3": {
+        "title": "Trade 7 days",
+        "description": "Test with $5,000 virtual"
+      },
+      "step4": {
+        "title": "Continue or cancel",
+        "description": "Decide before trial ends"
+      }
+    }
+  },
+  "economicCalendar": {
+    "title": "Economic Calendar",
+    "subtitle": "Important market events",
+    "today": "Today",
+    "importance": {
+      "high": "High",
+      "medium": "Medium",
+      "low": "Low"
+    }
+  },
+  "hallOfFame": {
+    "badge": "Our Successful Traders",
+    "title": "Hall of Fame",
+    "subtitle": "Discover our funded traders who passed the challenge"
+  },
+  "academy": {
+    "badge": "Educational Resources",
+    "title": "Academy",
+    "subtitle": "Free trading guides and resources for all levels"
+  },
+  "partners": {
+    "badge": "Partnership Program",
+    "title": "Become a Partner",
+    "subtitle": "Earn commissions by referring traders"
+  },
+  "profile": {
+    "title": "My Profile",
+    "subtitle": "Manage your personal information",
+    "accountVerified": "Account verified",
+    "trades": "Trades",
+    "winRate": "Win Rate",
+    "challenges": "Challenges",
+    "personalInfo": "Personal Information",
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "username": "Username",
+    "email": "Email",
+    "phone": "Phone",
+    "country": "Country",
+    "achievements": "Achievements",
+    "badges": {
+      "firstTrade": "First Trade",
+      "positiveProfit": "Positive Profit",
+      "tenTrades": "10 Trades",
+      "phase1Success": "Phase 1 Success"
+    }
+  },
+  "settingsPage": {
+    "title": "Settings",
+    "subtitle": "Configure your preferences",
+    "notifications": {
+      "title": "Notifications",
+      "email": {
+        "label": "Email notifications",
+        "desc": "Receive updates via email"
+      },
+      "push": {
+        "label": "Push notifications",
+        "desc": "Browser notifications"
+      },
+      "tradeAlerts": {
+        "label": "Trade alerts",
+        "desc": "Alerts for your AI signals"
+      },
+      "marketNews": {
+        "label": "Market news",
+        "desc": "Market news and analysis"
+      }
+    },
+    "security": {
+      "title": "Security",
+      "twoFa": {
+        "title": "2FA Authentication",
+        "desc": "Secure your account with a 6-digit code",
+        "enabled": "Enabled",
+        "notEnabled": "Not enabled",
+        "backupCodes": "Backup codes remaining",
+        "lowCodesWarning": "Few codes remaining. Consider regenerating.",
+        "regenerateCodes": "Regenerate codes",
+        "disable": "Disable",
+        "enable": "Enable 2FA Authentication",
+        "disableTitle": "Disable 2FA",
+        "disableWarning": "This action will reduce your account security",
+        "enterCode": "Enter your 6-digit code to confirm",
+        "disabling": "Disabling..."
+      },
+      "password": {
+        "title": "Change password",
+        "current": "Current password",
+        "new": "New password",
+        "change": "Change password"
+      }
+    },
+    "appearance": {
+      "title": "Appearance",
+      "darkMode": {
+        "label": "Dark mode",
+        "desc": "Dark mode interface"
+      }
+    },
+    "language": {
+      "title": "Language",
+      "french": "Français",
+      "english": "English",
+      "arabic": "العربية"
+    }
+  },
+  "supportPage": {
+    "title": "Support & Resources",
+    "subtitle": "Get help and access learning materials",
+    "tabs": {
+      "support": "Support",
+      "files": "Files & Resources"
+    },
+    "quickHelp": {
+      "faq": "FAQ",
+      "faqDesc": "Frequently asked questions",
+      "liveChat": "Live Chat",
+      "liveChatDesc": "Live discussion",
+      "phone": "Phone",
+      "phoneDesc": "Mon-Fri 9am-6pm"
+    },
+    "newTicket": {
+      "title": "New Ticket",
+      "subject": "Subject",
+      "subjectPlaceholder": "Briefly describe your issue",
+      "message": "Message",
+      "messagePlaceholder": "Explain your issue in detail...",
+      "send": "Send"
+    },
+    "myTickets": {
+      "title": "My Tickets",
+      "createdOn": "Created on",
+      "resolved": "Resolved",
+      "inProgress": "In progress"
+    },
+    "resources": {
+      "docs": "Docs",
+      "videos": "Videos",
+      "types": "Types",
+      "watch": "Watch",
+      "download": "Download"
+    }
+  },
+  "referral": {
+    "title": "Referral Program",
+    "subtitle": "Invite your friends and earn rewards",
+    "yourLink": "Your Referral Link",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "stats": {
+      "totalReferrals": "Total Referrals",
+      "activeReferrals": "Active Referrals",
+      "earnings": "Earnings",
+      "pending": "Pending"
+    },
+    "affiliateDashboard": "Affiliate Dashboard",
+    "tier": "Tier",
+    "tiers": {
+      "none": "None",
+      "bronze": "Bronze",
+      "silver": "Silver",
+      "gold": "Gold",
+      "platinum": "Platinum"
+    },
+    "bonus": "Bonus",
+    "earnDescription": "Earn {{tier1}}% on direct referrals and {{tier2}}% on sub-referrals. Build your network and unlock performance bonuses!",
+    "totalEarnings": "Total Earnings",
+    "copyLink": "Copy Link",
+    "tier1Referrals": "Tier 1 Referrals",
+    "tier2Referrals": "Tier 2 Referrals",
+    "commission": "commission",
+    "totalRevenue": "Total Revenue",
+    "availableBalance": "Available Balance",
+    "tabs": {
+      "overview": "Overview",
+      "network": "Network",
+      "payouts": "Payouts",
+      "materials": "Materials"
+    },
+    "yourReferralCode": "Your Referral Code",
+    "referralLink": "Referral Link",
+    "performanceTier": "Performance Tier",
+    "maxTierReached": "Max tier reached!",
+    "next": "Next",
+    "referrals": "Referrals",
+    "revenue": "Revenue",
+    "tierBonuses": "Tier Bonuses",
+    "commissionRates": "Commission Rates",
+    "tier1Direct": "Tier 1 (Direct)",
+    "tier2SubRefs": "Tier 2 (Sub-refs)",
+    "earnOnEveryPurchase": "Earn on every purchase your network makes. No limits!",
+    "marketingMaterials": "Marketing Materials",
+    "downloadBannersDesc": "Download banners, templates, and more",
+    "materials": {
+      "banner728x90": "Banner 728x90",
+      "banner300x250": "Banner 300x250",
+      "socialMediaKit": "Social Media Kit",
+      "emailTemplates": "Email Templates",
+      "allSizes": "All sizes",
+      "templates": "5 templates"
+    },
+    "marketingGuidelines": "Marketing Guidelines",
+    "guidelines": {
+      "discloseRelationship": "Always disclose affiliate relationship",
+      "noFalseClaims": "Do not make false claims about earnings",
+      "noSpam": "Do not spam or use deceptive marketing",
+      "noBrandedKeywords": "Do not bid on TradeSense branded keywords"
+    },
+    "toast": {
+      "copiedToClipboard": "Copied to clipboard!",
+      "payoutRequestSubmitted": "Payout request submitted successfully!"
+    }
+  },
+  "kyc": {
+    "title": "KYC Verification",
+    "subtitle": "Verify your identity to unlock all features",
+    "status": {
+      "pending": "Pending",
+      "verified": "Verified",
+      "rejected": "Rejected",
+      "notStarted": "Not started"
+    },
+    "uploadId": "Upload ID Document",
+    "uploadProofAddress": "Proof of Address",
+    "uploadSelfie": "Selfie with ID",
+    "submit": "Submit for Verification"
+  },
+  "payouts": {
+    "title": "Payouts",
+    "subtitle": "Manage your withdrawals and track your payment history",
+    "availableBalance": "Available Balance",
+    "requestPayout": "Request Payout",
+    "history": "Payout History",
+    "status": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "completed": "Completed",
+      "rejected": "Rejected"
+    },
+    "method": "Method",
+    "amount": "Amount",
+    "date": "Date",
+    "newWithdrawal": "New Withdrawal",
+    "readyToWithdraw": "Ready to withdraw",
+    "totalWithdrawn": "Total Withdrawn",
+    "completedWithdrawals": "completed withdrawals",
+    "inProgress": "In Progress",
+    "pendingProcessing": "Pending processing",
+    "withdrawalMethods": "Withdrawal Methods",
+    "bankTransfer": "Bank Transfer",
+    "bankTransferTime": "2-5 business days",
+    "cryptoUsdt": "Crypto (USDT)",
+    "cryptoTime": "Instant - 24h",
+    "withdrawalInfo": "Withdrawal Information",
+    "withdrawalInfoDesc": "Withdrawals are processed every business day. The minimum withdrawal amount is $100. Profits must be generated with a funded account to be eligible for withdrawal.",
+    "withdrawalHistory": "Withdrawal History",
+    "tableHeaders": {
+      "id": "ID",
+      "method": "Method",
+      "requestDate": "Request Date",
+      "processedDate": "Processed Date",
+      "status": "Status",
+      "amount": "Amount"
+    },
+    "methodLabels": {
+      "bank": "Transfer",
+      "crypto": "Crypto"
+    }
+  },
+  "transactionsPage": {
+    "title": "Transactions",
+    "subtitle": "Your transaction history",
+    "type": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "trade": "Trade",
+      "commission": "Commission",
+      "bonus": "Bonus"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending",
+      "failed": "Failed"
+    }
+  },
+  "tradingRules": {
+    "title": "Trading Rules",
+    "subtitle": "View your challenge rules",
+    "profitTarget": "Profit Target",
+    "maxDrawdown": "Maximum Drawdown",
+    "dailyLoss": "Max Daily Loss",
+    "minTradingDays": "Minimum Trading Days"
+  },
+  "competitionsPage": {
+    "title": "Competitions",
+    "subtitle": "Participate in trading competitions",
+    "active": "Active Competitions",
+    "upcoming": "Upcoming",
+    "completed": "Completed",
+    "prize": "Prize",
+    "participants": "Participants",
+    "timeLeft": "Time Left",
+    "yourRank": "Your Rank",
+    "joinNow": "Join Now"
+  },
+  "certificates": {
+    "title": "Certificates",
+    "subtitle": "Your success certificates and accomplishments",
+    "download": "Download",
+    "share": "Share",
+    "noCertificates": "No certificates",
+    "noCertificatesDesc": "Complete a challenge to get your first certificate. Each successful step brings you closer to becoming a funded trader!",
+    "phase1Completed": "Phase 1 Completed",
+    "phase2Completed": "Phase 2 Completed",
+    "fundedAccounts": "Funded Accounts",
+    "verified": "Verified",
+    "obtainedOn": "Obtained on",
+    "certificate": "Certificate",
+    "aboutCertificates": "About certificates",
+    "aboutCertificatesDesc": "Each certificate is verifiable proof of your accomplishments. You can download them in PDF format and share them on social media to showcase your trading skills.",
+    "downloadSuccess": "Certificate downloaded successfully",
+    "downloadError": "Failed to download certificate",
+    "linkCopied": "Link copied to clipboard!",
+    "shareText": "Check out my trading certificate:"
+  },
+  "calculator": {
+    "title": "Calculator",
+    "subtitle": "Trading calculation tools",
+    "positionSize": "Position Size",
+    "riskReward": "Risk/Reward",
+    "pipValue": "Pip Value",
+    "margin": "Margin",
+    "profit": "Profit",
+    "loss": "Loss",
+    "calculate": "Calculate",
+    "pageTitle": "Position Calculator",
+    "pageSubtitle": "Calculate the optimal size of your positions based on your risk management",
+    "accountParams": "Account Parameters",
+    "accountSize": "Account Size",
+    "riskPerTrade": "Risk per Trade (%)",
+    "tradeParams": "Trade Parameters",
+    "entryPrice": "Entry Price",
+    "stopLoss": "Stop Loss",
+    "takeProfit": "Take Profit",
+    "results": "Results",
+    "units": "units",
+    "riskAmount": "Risk Amount",
+    "ofAccount": "of account",
+    "riskRewardRatio": "Risk/Reward Ratio",
+    "excellent": "Excellent",
+    "acceptable": "Acceptable",
+    "notRecommended": "Not recommended",
+    "potentialProfit": "Potential Profit",
+    "potentialLoss": "Potential Loss",
+    "riskManagementTip": "Risk Management Tip",
+    "riskManagementTipDesc": "Never risk more than 1-2% of your capital per trade. A risk/reward ratio of 1:2 or higher is recommended for a profitable long-term strategy."
+  },
+  "tradeJournal": {
+    "title": "Trade Journal",
+    "subtitle": "Track and analyze your trades",
+    "addTrade": "Add Trade",
+    "totalTrades": "Total Trades",
+    "winRate": "Win Rate",
+    "profitLoss": "Profit/Loss",
+    "averageWin": "Average Win",
+    "averageLoss": "Average Loss"
+  },
+  "sidebar": {
+    "categories": {
+      "dashboard": "Dashboard",
+      "trading": "Trading",
+      "financials": "Financials",
+      "rewards": "Rewards",
+      "resources": "Resources"
+    },
+    "items": {
+      "accounts": "Accounts",
+      "notifications": "Notifications",
+      "profile": "Profile",
+      "settings": "Settings",
+      "trading": "Trading",
+      "quickTrading": "Quick Trading",
+      "tradeJournal": "Trade Journal",
+      "chartsMarkets": "Charts & Markets",
+      "copyTrading": "Copy Trading",
+      "mtConnection": "MT4/MT5 Connect",
+      "plans": "Plans",
+      "transactions": "Transactions",
+      "calculator": "Calculator",
+      "infinityPoints": "Infinity Points",
+      "referEarn": "Refer & Earn",
+      "competitions": "Competitions",
+      "certificates": "Certificates",
+      "marketNews": "Market News",
+      "tradingRules": "Trading Rules",
+      "support": "Support"
+    },
+    "userMenu": {
+      "myProfile": "My Profile",
+      "settings": "Settings",
+      "logout": "Logout"
+    },
+    "challenge": {
+      "funded": "Funded",
+      "phase": "Phase"
+    },
+    "actions": {
+      "goTrading": "Go Trading",
+      "startChallenge": "Start Challenge"
+    }
+  },
+  "trading": {
+    "loading": "Loading...",
+    "bid": "Bid",
+    "ask": "Ask",
+    "spread": "Spread",
+    "balance": "Balance",
+    "equity": "Equity",
+    "pnl": "P&L",
+    "positions": "Positions",
+    "closeAll": "Close All",
+    "noOpenPositions": "No open positions",
+    "tradesWillAppear": "Your trades will appear here",
+    "symbol": "Symbol",
+    "type": "Type",
+    "size": "Size",
+    "entry": "Entry",
+    "current": "Current",
+    "action": "Action",
+    "close": "Close",
+    "buy": "BUY",
+    "sell": "SELL",
+    "lotSize": "Lot Size",
+    "slTp": "Stop Loss / Take Profit",
+    "usePips": "Use Pips",
+    "usePrice": "Use Price",
+    "stopLossPips": "Stop Loss (Pips)",
+    "takeProfitPips": "Take Profit (Pips)",
+    "stopLossPrice": "Stop Loss (Price)",
+    "takeProfitPrice": "Take Profit (Price)",
+    "riskCalculator": "Risk Calculator",
+    "riskPercent": "Risk %",
+    "riskDollar": "Risk $",
+    "rrRatio": "R:R Ratio",
+    "potential": "Potential",
+    "executing": "Executing...",
+    "loadingPrice": "Loading Price...",
+    "fetchingPrice": "Fetching price...",
+    "priceUnavailable": "Price unavailable:"
+  },
+  "plans": {
+    "hero": {
+      "badge": "Powered by Artificial Intelligence",
+      "title": "Trade with",
+      "titleHighlight": "Predictive AI",
+      "description": "Our artificial intelligence analyzes millions of data points in real-time to predict market movements."
+    },
+    "aiStats": {
+      "levels": "5 Levels",
+      "levelsDesc": "of AI Intelligence",
+      "accuracy": "96%",
+      "accuracyDesc": "Accuracy",
+      "signals": "+40",
+      "signalsDesc": "Signals/day"
+    },
+    "aiTiers": {
+      "starter": {
+        "name": "AI Starter",
+        "description": "Basic algorithm"
+      },
+      "basic": {
+        "name": "AI Basic",
+        "description": "Advanced technical analysis"
+      },
+      "advanced": {
+        "name": "AI Advanced",
+        "description": "Optimized Machine Learning"
+      },
+      "pro": {
+        "name": "AI Pro",
+        "description": "Deep Learning + Sentiment"
+      },
+      "elite": {
+        "name": "AI Elite",
+        "description": "Quantum Neural Network"
+      }
+    },
+    "rowLabels": {
+      "ai": "Artificial Intelligence",
+      "aiShort": "AI",
+      "accuracy": "AI Accuracy",
+      "accuracyShort": "Accuracy",
+      "signals": "Signals / day",
+      "signalsShort": "Signals",
+      "profit": "Profit Target",
+      "profitShort": "Target",
+      "dailyLoss": "Max Daily Loss",
+      "dailyLossShort": "Daily Loss",
+      "maxLoss": "Max Loss",
+      "maxLossShort": "Max Loss",
+      "minDays": "Min Trading Days",
+      "minDaysShort": "Min Days",
+      "period": "Trading Period",
+      "periodShort": "Period",
+      "refund": "Refund",
+      "refundShort": "Refund"
+    },
+    "activeChallenge": {
+      "title": "You have an active challenge",
+      "currentlyIn": "Currently in {{phase}} with ${{balance}} balance",
+      "viewDashboard": "View Dashboard"
+    },
+    "table": {
+      "showNumbers": "Show numbers",
+      "chooseAccount": "Choose your account",
+      "tapToSeeDetails": "Tap on a plan to see details",
+      "swipeHint": "Swipe to see all plans",
+      "bestChoice": "BEST CHOICE",
+      "bestValue": "Best value",
+      "account": "Account",
+      "startChallenge": "Start the Challenge",
+      "start": "Start",
+      "securePayment": "Secure payment",
+      "instantActivation": "Instant activation",
+      "paymentNote": "One-time payments.",
+      "avgReward": "Avg. reward",
+      "step1": "ST.1",
+      "step2": "ST.2",
+      "days": "days",
+      "unlimited": "Unlimited",
+      "yes": "Yes",
+      "refundPercent": "100%",
+      "refundLabel": "refund",
+      "objective": "obj.",
+      "reward": "reward",
+      "signalsPerDay": "signals/day",
+      "minDays": "min",
+      "objectiveStep1": "Target St.1",
+      "objectiveStep2": "Target St.2",
+      "dailyMaxLoss": "Daily Max Loss",
+      "totalMaxLoss": "Total Max Loss"
+    },
+    "aiFeatures": {
+      "badge": "Advanced Technology",
+      "title": "How our",
+      "titleHighlight": "AI",
+      "titleEnd": "predicts the market",
+      "description": "Our technology combines multiple artificial intelligence approaches to maximize prediction accuracy.",
+      "deepLearning": {
+        "title": "Deep Learning",
+        "description": "Neural networks analyzing historical patterns."
+      },
+      "technicalAnalysis": {
+        "title": "Technical Analysis",
+        "description": "150+ indicators calculated in real-time."
+      },
+      "sentiment": {
+        "title": "Sentiment",
+        "description": "News and social media analysis."
+      },
+      "fast": {
+        "title": "Fast",
+        "description": "Signals generated in milliseconds."
+      }
+    },
+    "freeTrial": {
+      "badge": "Free trial available",
+      "title": "Not ready to start yet?",
+      "description": "Try our platform for free for 7 days with a $5,000 demo account",
+      "cta": "Start free trial",
+      "securePayment": "Secure payment",
+      "fullRefund": "100% Refund",
+      "instantActivation": "Instant activation"
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "subtitle": "History of all your transactions",
+    "export": "Export",
+    "searchPlaceholder": "Search for a transaction...",
+    "stats": {
+      "totalDeposits": "Total Deposits",
+      "tradingProfits": "Trading Profits",
+      "tradingLosses": "Trading Losses",
+      "totalWithdrawals": "Total Withdrawals"
+    },
+    "filters": {
+      "all": "All"
+    },
+    "types": {
+      "deposit": "Deposit",
+      "withdrawal": "Withdrawal",
+      "trade": "Trade",
+      "fee": "Fee"
+    },
+    "table": {
+      "type": "Type",
+      "description": "Description",
+      "date": "Date",
+      "status": "Status",
+      "amount": "Amount"
+    },
+    "status": {
+      "completed": "Completed",
+      "pending": "Pending"
+    }
+  },
+  "tradingRulesPage": {
+    "title": "Trading Rules & FAQ",
+    "subtitle": "Understand the rules and find answers to common questions",
+    "tabs": {
+      "rules": "Trading Rules",
+      "faq": "FAQ"
+    },
+    "important": {
+      "title": "Important",
+      "message": "Failure to comply with these rules will result in your challenge failing. Make sure you understand them before starting."
+    },
+    "tip": {
+      "title": "Tip",
+      "message": "Always use a stop-loss and never risk more than 1-2% of your capital per trade to easily respect drawdown rules."
+    },
+    "rules": {
+      "profitTarget": {
+        "title": "Profit Target",
+        "desc": "Reach 10% profit to pass the phase"
+      },
+      "maxDrawdown": {
+        "title": "Maximum Drawdown",
+        "desc": "Do not exceed 10% maximum loss"
+      },
+      "dailyDrawdown": {
+        "title": "Daily Drawdown",
+        "desc": "Do not exceed 5% loss per day"
+      },
+      "tradingDays": {
+        "title": "Trading Days",
+        "desc": "Minimum 5 active trading days"
+      },
+      "noWeekend": {
+        "title": "No Weekend Trading",
+        "desc": "No open positions over the weekend"
+      },
+      "noNews": {
+        "title": "No News Trading",
+        "desc": "Avoid trading during major announcements"
+      }
+    },
+    "faq": {
+      "searchPlaceholder": "Search questions...",
+      "categories": {
+        "all": "All Questions",
+        "gettingStarted": "Getting Started",
+        "challenges": "Challenge Rules",
+        "payments": "Payments & Payouts",
+        "trading": "Trading",
+        "account": "Account"
+      },
+      "noResults": {
+        "title": "No questions found",
+        "message": "Try adjusting your search or category filter."
+      },
+      "q1": {
+        "question": "What is TradeSense?",
+        "answer": "TradeSense is a proprietary trading firm that funds talented traders. We provide capital to traders who prove their skills through our evaluation process, allowing them to trade without risking their own money and keep up to 80% of the profits they generate."
+      },
+      "q2": {
+        "question": "How does the challenge process work?",
+        "answer": "Our challenge has two phases: Phase 1 (Evaluation) requires you to reach a 10% profit target, and Phase 2 (Verification) requires a 5% profit target. Once you pass both phases, you become a funded trader with access to real capital."
+      },
+      "q3": {
+        "question": "Is there a free trial available?",
+        "answer": "Yes! We offer a 7-day free trial with $5,000 virtual capital. This allows you to experience our platform and trading conditions before committing to a paid challenge. The trial has a 10% profit target and includes access to all platform features."
+      },
+      "q4": {
+        "question": "What are the profit targets for each phase?",
+        "answer": "Phase 1 (Evaluation) has a 10% profit target, and Phase 2 (Verification) has a 5% profit target. There is no time limit to achieve these targets, so you can trade at your own pace."
+      },
+      "q5": {
+        "question": "What are the maximum drawdown rules?",
+        "answer": "We have two drawdown rules: a 10% maximum overall drawdown (from your starting balance) and a 5% maximum daily loss limit. If you breach either rule, your challenge ends and you would need to start over."
+      },
+      "q6": {
+        "question": "Is there a time limit to complete the challenge?",
+        "answer": "No, there is no time limit to complete either phase of the challenge. You can take as long as you need to reach the profit targets while respecting the risk management rules."
+      },
+      "q7": {
+        "question": "Can I trade during news events?",
+        "answer": "Yes, you can trade during high-impact news events. However, we recommend proper risk management during volatile periods. There are no trading restrictions on news events."
+      },
+      "q8": {
+        "question": "How much do the challenges cost?",
+        "answer": "Our challenge prices vary by account size: Starter ($5K account) costs $200, Pro ($25K account) costs $500, and Elite ($100K account) costs $1,000. These are one-time fees with no recurring charges."
+      },
+      "q9": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept PayPal, credit/debit cards (Visa, Mastercard), and various local payment methods depending on your region. All payments are processed securely through our payment partners."
+      },
+      "q10": {
+        "question": "How do I receive my profits as a funded trader?",
+        "answer": "As a funded trader, you can request a payout once you have profits available. Payouts are processed within 24 hours and sent via your preferred method (bank transfer, PayPal, or crypto). You keep up to 80% of your profits."
+      },
+      "q11": {
+        "question": "Is there a minimum payout amount?",
+        "answer": "Yes, the minimum payout amount is $100. You can request payouts on a monthly basis, and there are no limits on the maximum payout amount."
+      },
+      "q12": {
+        "question": "What markets can I trade?",
+        "answer": "You can trade US stocks, cryptocurrencies, and Moroccan stocks on our platform. We provide real-time market data and competitive spreads across all instruments."
+      },
+      "q13": {
+        "question": "What trading platform do you use?",
+        "answer": "We provide our own proprietary trading platform with real-time charts, AI-powered signals, and advanced order management. The platform is web-based and accessible from any device."
+      },
+      "q14": {
+        "question": "Are there any trading restrictions?",
+        "answer": "We have minimal restrictions: no martingale strategies, no copy trading from external sources, and positions must be closed before the market closes on Friday (for weekend risk management). Other than that, you have full freedom in your trading approach."
+      },
+      "q15": {
+        "question": "What is the maximum leverage available?",
+        "answer": "Leverage varies by instrument: up to 1:100 for forex, 1:20 for stocks, and 1:10 for cryptocurrencies. We recommend using appropriate leverage based on your risk management strategy."
+      },
+      "q16": {
+        "question": "Can I have multiple challenge accounts?",
+        "answer": "Yes, you can have multiple challenge accounts. However, you cannot use the same trading strategy across multiple accounts (no copy trading between your own accounts)."
+      },
+      "q17": {
+        "question": "What happens if I fail the challenge?",
+        "answer": "If you breach a rule or fail to reach the profit target, your challenge ends. You can purchase a new challenge at any time to try again. We recommend reviewing your trades and refining your strategy before retrying."
+      },
+      "q18": {
+        "question": "Can I scale my funded account?",
+        "answer": "Yes! Our scaling program allows you to increase your account size based on consistent performance. After maintaining profitability for 3 months, you can request an account size increase up to $300K."
+      }
+    }
   }
 }

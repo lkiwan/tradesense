@@ -33,54 +33,54 @@ const HowItWorks = () => {
   const steps = [
     {
       number: '01',
-      title: 'Choose Your Challenge',
-      description: 'Select from our Starter ($5K), Pro ($25K), or Elite ($100K) account sizes. Each comes with specific profit targets and trading rules.',
+      titleKey: 'howItWorks.steps.step1.title',
+      descKey: 'howItWorks.steps.step1.description',
       icon: Target,
       color: 'green',
       gradient: 'from-green-500 to-emerald-600',
-      details: [
-        'No time limit to complete',
-        'Trade forex, crypto & stocks',
-        'Competitive spreads from 0.0 pips'
+      detailKeys: [
+        'howItWorks.steps.step1.detail1',
+        'howItWorks.steps.step1.detail2',
+        'howItWorks.steps.step1.detail3'
       ]
     },
     {
       number: '02',
-      title: 'Phase 1: Evaluation',
-      description: 'Prove your trading skills by reaching a 10% profit target while respecting our risk management rules.',
+      titleKey: 'howItWorks.steps.step2.title',
+      descKey: 'howItWorks.steps.step2.description',
       icon: TrendingUp,
       color: 'blue',
       gradient: 'from-blue-500 to-cyan-600',
-      details: [
-        '10% profit target',
-        '10% max drawdown limit',
-        '5% daily loss limit'
+      detailKeys: [
+        'howItWorks.steps.step2.detail1',
+        'howItWorks.steps.step2.detail2',
+        'howItWorks.steps.step2.detail3'
       ]
     },
     {
       number: '03',
-      title: 'Phase 2: Verification',
-      description: 'Confirm your consistency with a 5% profit target. This phase ensures you can replicate your success.',
+      titleKey: 'howItWorks.steps.step3.title',
+      descKey: 'howItWorks.steps.step3.description',
       icon: CheckCircle2,
       color: 'purple',
       gradient: 'from-purple-500 to-pink-600',
-      details: [
-        '5% profit target',
-        'Same risk rules apply',
-        'Prove consistency'
+      detailKeys: [
+        'howItWorks.steps.step3.detail1',
+        'howItWorks.steps.step3.detail2',
+        'howItWorks.steps.step3.detail3'
       ]
     },
     {
       number: '04',
-      title: 'Get Funded',
-      description: 'Congratulations! You\'re now a funded trader. Trade with real capital and keep up to 80% of your profits.',
+      titleKey: 'howItWorks.steps.step4.title',
+      descKey: 'howItWorks.steps.step4.description',
       icon: Award,
       color: 'yellow',
       gradient: 'from-yellow-500 to-orange-600',
-      details: [
-        'Up to 80% profit split',
-        'Real capital trading',
-        'Monthly payouts'
+      detailKeys: [
+        'howItWorks.steps.step4.detail1',
+        'howItWorks.steps.step4.detail2',
+        'howItWorks.steps.step4.detail3'
       ]
     }
   ]
@@ -88,43 +88,43 @@ const HowItWorks = () => {
   const features = [
     {
       icon: Clock,
-      title: 'No Time Limits',
-      description: 'Take your time to complete each phase. No pressure, no rushing.',
+      titleKey: 'howItWorks.features.noTimeLimit.title',
+      descKey: 'howItWorks.features.noTimeLimit.description',
       color: 'text-blue-500',
       bg: 'bg-blue-500/10'
     },
     {
       icon: Shield,
-      title: 'Risk Management',
-      description: 'Clear rules to protect capital: 10% max drawdown, 5% daily limit.',
+      titleKey: 'howItWorks.features.riskManagement.title',
+      descKey: 'howItWorks.features.riskManagement.description',
       color: 'text-green-500',
       bg: 'bg-green-500/10'
     },
     {
       icon: Percent,
-      title: 'Up to 80% Profit Split',
-      description: 'Keep the majority of profits you generate as a funded trader.',
+      titleKey: 'howItWorks.features.profitSplit.title',
+      descKey: 'howItWorks.features.profitSplit.description',
       color: 'text-purple-500',
       bg: 'bg-purple-500/10'
     },
     {
       icon: Zap,
-      title: 'Fast Payouts',
-      description: 'Get your profits within 24 hours of requesting a withdrawal.',
+      titleKey: 'howItWorks.features.fastPayouts.title',
+      descKey: 'howItWorks.features.fastPayouts.description',
       color: 'text-yellow-500',
       bg: 'bg-yellow-500/10'
     },
     {
       icon: Users,
-      title: 'Community Support',
-      description: 'Join our community of traders sharing strategies and insights.',
+      titleKey: 'howItWorks.features.community.title',
+      descKey: 'howItWorks.features.community.description',
       color: 'text-cyan-500',
       bg: 'bg-cyan-500/10'
     },
     {
       icon: DollarSign,
-      title: 'Scaling Program',
-      description: 'Grow your account size up to $300K based on performance.',
+      titleKey: 'howItWorks.features.scaling.title',
+      descKey: 'howItWorks.features.scaling.description',
       color: 'text-orange-500',
       bg: 'bg-orange-500/10'
     }
@@ -153,18 +153,17 @@ const HowItWorks = () => {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-5 py-2.5 glass-card rounded-full mb-8 animate-float">
               <Play size={18} className="text-primary-500" />
-              <span className="text-sm font-medium text-primary-400">How It Works</span>
+              <span className="text-sm font-medium text-primary-400">{t('howItWorks.badge')}</span>
             </div>
 
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-              Your Path to Becoming a{' '}
+              {t('howItWorks.heroTitle')}{' '}
               <span className="gradient-text-animated">
-                Funded Trader
+                {t('howItWorks.heroTitleHighlight')}
               </span>
             </h1>
             <p className="text-xl text-gray-400 mb-10 leading-relaxed">
-              Follow our simple 4-step process to prove your trading skills and get access to real capital.
-              No hidden fees, no tricks - just pure trading.
+              {t('howItWorks.heroSubtitle')}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
@@ -173,21 +172,21 @@ const HowItWorks = () => {
                 className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring"
               >
                 <Zap size={20} />
-                Start Your Challenge
+                {t('howItWorks.startChallenge')}
                 <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/free-trial"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 md:px-8 py-4 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300 spotlight"
               >
-                Try Free Trial
+                {t('howItWorks.tryFreeTrial')}
               </Link>
             </div>
           </div>
 
           {/* Scroll Indicator */}
           <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 scroll-indicator">
-            <span className="text-xs text-gray-500 uppercase tracking-widest">Scroll</span>
+            <span className="text-xs text-gray-500 uppercase tracking-widest">{t('howItWorks.scroll')}</span>
             <ArrowDown size={20} className="text-gray-500 animate-bounce" />
           </div>
         </div>
@@ -203,10 +202,10 @@ const HowItWorks = () => {
           <div className="text-center mb-20">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Sparkles size={14} />
-              The Process
+              {t('howItWorks.process.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              4 Simple Steps to <span className="gradient-text-animated">Success</span>
+              {t('howItWorks.process.title')} <span className="gradient-text-animated">{t('howItWorks.process.titleHighlight')}</span>
             </h2>
           </div>
 
@@ -228,16 +227,16 @@ const HowItWorks = () => {
                       <ChevronRight size={20} />
                     </div>
                     <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white">
-                      {step.title}
+                      {t(step.titleKey)}
                     </h2>
                     <p className="text-lg text-gray-400 leading-relaxed">
-                      {step.description}
+                      {t(step.descKey)}
                     </p>
                     <ul className="space-y-3 text-left">
-                      {step.details.map((detail, i) => (
+                      {step.detailKeys.map((detailKey, i) => (
                         <li key={i} className="flex items-center gap-3 text-gray-300">
                           <CheckCircle2 size={20} className={`flex-shrink-0 ${step.color === 'green' ? 'text-green-500' : step.color === 'blue' ? 'text-blue-500' : step.color === 'purple' ? 'text-purple-500' : 'text-yellow-500'}`} />
-                          {detail}
+                          {t(detailKey)}
                         </li>
                       ))}
                     </ul>
@@ -267,7 +266,7 @@ const HowItWorks = () => {
                       <div className="relative text-white text-center">
                         <Icon size={80} className="mx-auto mb-4 opacity-90 group-hover:scale-110 transition-transform duration-500" />
                         <div className="text-7xl font-bold mb-2 opacity-30">{step.number}</div>
-                        <div className="text-xl font-semibold">{step.title}</div>
+                        <div className="text-xl font-semibold">{t(step.titleKey)}</div>
                       </div>
                     </div>
 
@@ -295,13 +294,13 @@ const HowItWorks = () => {
           <div className="text-center mb-16">
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Star size={14} />
-              Why Choose Us
+              {t('howItWorks.whyChoose.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              Why Traders Choose <span className="gradient-text-animated">TradeSense</span>
+              {t('howItWorks.whyChoose.title')} <span className="gradient-text-animated">TradeSense</span>
             </h2>
             <p className="text-lg text-gray-400 max-w-2xl mx-auto">
-              We've built a platform that puts traders first with fair rules and real opportunities.
+              {t('howItWorks.whyChoose.subtitle')}
             </p>
           </div>
 
@@ -317,10 +316,10 @@ const HowItWorks = () => {
                     <Icon size={28} className={feature.color} />
                   </div>
                   <h3 className="text-xl font-semibold text-white mb-3 group-hover:text-primary-400 transition-colors">
-                    {feature.title}
+                    {t(feature.titleKey)}
                   </h3>
                   <p className="text-gray-400 leading-relaxed">
-                    {feature.description}
+                    {t(feature.descKey)}
                   </p>
                 </div>
               )
@@ -344,15 +343,14 @@ const HowItWorks = () => {
             <div className="relative z-10">
               <div className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500/20 rounded-full mb-8">
                 <Zap size={18} className="text-primary-400" />
-                <span className="text-sm font-semibold text-primary-400">Start Today</span>
+                <span className="text-sm font-semibold text-primary-400">{t('howItWorks.cta.badge')}</span>
               </div>
 
               <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
-                Ready to Start Your <span className="gradient-text-animated">Journey?</span>
+                {t('howItWorks.cta.title')} <span className="gradient-text-animated">{t('howItWorks.cta.titleHighlight')}</span>
               </h2>
               <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-                Join thousands of traders who have already taken the first step towards becoming funded.
-                Your trading career starts here.
+                {t('howItWorks.cta.subtitle')}
               </p>
 
               <div className="flex flex-col sm:flex-row gap-4 justify-center px-4">
@@ -360,7 +358,7 @@ const HowItWorks = () => {
                   to="/pricing"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary-500 text-black font-bold rounded-xl hover:bg-primary-400 transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
                 >
-                  View Pricing
+                  {t('howItWorks.cta.viewPricing')}
                   <ArrowRight size={22} className="group-hover:translate-x-1 transition-transform" />
                 </Link>
                 <Link
@@ -368,7 +366,7 @@ const HowItWorks = () => {
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 glass-card text-white font-semibold rounded-xl hover:bg-white/10 transition-all duration-300"
                 >
                   <Play size={20} />
-                  Start Free Trial
+                  {t('howItWorks.cta.startFreeTrial')}
                 </Link>
               </div>
             </div>

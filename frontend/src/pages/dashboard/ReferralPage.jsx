@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   Users, Copy, Check, Share2, DollarSign, Gift, TrendingUp, Twitter, Facebook,
   Linkedin, Mail, Award, Star, ChevronRight, Wallet, Download, ExternalLink,
@@ -10,6 +11,7 @@ import { CommissionChart, SubAffiliateTree, PayoutHistory } from '../../componen
 import { showSuccessToast, showErrorToast } from '../../utils/errorHandler'
 
 const ReferralPage = () => {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const [activeTab, setActiveTab] = useState('overview')
   const [copied, setCopied] = useState(false)
@@ -76,7 +78,7 @@ const ReferralPage = () => {
   const copyToClipboard = (text) => {
     navigator.clipboard.writeText(text)
     setCopied(true)
-    showSuccessToast('Copied to clipboard!')
+    showSuccessToast(t('referral.toast.copiedToClipboard'))
     setTimeout(() => setCopied(false), 2000)
   }
 
@@ -86,7 +88,7 @@ const ReferralPage = () => {
         payment_method: paymentMethod,
         payment_details: paymentDetails
       })
-      showSuccessToast('Payout request submitted successfully!')
+      showSuccessToast(t('referral.toast.payoutRequestSubmitted'))
       fetchDashboardData()
     } catch (error) {
       showErrorToast(error)
@@ -143,28 +145,26 @@ const ReferralPage = () => {
                   <Users className="text-white" size={24} />
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white">Affiliate Dashboard</h1>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white">{t('referral.affiliateDashboard')}</h1>
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-0.5 rounded text-xs font-medium ${tierConfig.bg} ${tierConfig.text}`}>
-                      {currentTier.charAt(0).toUpperCase() + currentTier.slice(1)} Tier
+                      {t(`referral.tiers.${currentTier}`)} {t('referral.tier')}
                     </span>
                     {dashboardData?.performance?.bonus_rate > 0 && (
                       <span className="px-2 py-0.5 bg-white/20 rounded text-xs font-medium text-white">
-                        +{dashboardData.performance.bonus_rate}% Bonus
+                        +{dashboardData.performance.bonus_rate}% {t('referral.bonus')}
                       </span>
                     )}
                   </div>
                 </div>
               </div>
               <p className="text-white/80 max-w-xl">
-                Earn <span className="font-bold">{dashboardData?.commission_rates?.tier1}%</span> on direct referrals and{' '}
-                <span className="font-bold">{dashboardData?.commission_rates?.tier2}%</span> on sub-referrals.
-                Build your network and unlock performance bonuses!
+                {t('referral.earnDescription', { tier1: dashboardData?.commission_rates?.tier1, tier2: dashboardData?.commission_rates?.tier2 })}
               </p>
             </div>
             <div className="flex flex-col items-end gap-2">
               <div className="text-right">
-                <p className="text-white/60 text-sm">Total Earnings</p>
+                <p className="text-white/60 text-sm">{t('referral.totalEarnings')}</p>
                 <p className="text-3xl font-bold text-white">
                   ${(dashboardData?.stats?.totals?.commissions || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
                 </p>
@@ -175,7 +175,7 @@ const ReferralPage = () => {
                   className="flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white/30 text-white rounded-lg font-medium transition-all"
                 >
                   {copied ? <Check size={18} /> : <Copy size={18} />}
-                  Copy Link
+                  {t('referral.copyLink')}
                 </button>
               </div>
             </div>
@@ -191,9 +191,9 @@ const ReferralPage = () => {
               <Users className="text-blue-500" size={20} />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Tier 1 Referrals</p>
+          <p className="text-sm text-gray-400 mb-1">{t('referral.tier1Referrals')}</p>
           <p className="text-2xl font-bold text-white">{dashboardData?.stats?.tier1?.referrals || 0}</p>
-          <p className="text-xs text-green-500">{dashboardData?.commission_rates?.tier1}% commission</p>
+          <p className="text-xs text-green-500">{dashboardData?.commission_rates?.tier1}% {t('referral.commission')}</p>
         </div>
         <div className="bg-dark-100 rounded-xl border border-dark-200 p-5">
           <div className="flex items-center gap-3 mb-2">
@@ -201,9 +201,9 @@ const ReferralPage = () => {
               <Zap className="text-purple-500" size={20} />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Tier 2 Referrals</p>
+          <p className="text-sm text-gray-400 mb-1">{t('referral.tier2Referrals')}</p>
           <p className="text-2xl font-bold text-white">{dashboardData?.stats?.tier2?.referrals || 0}</p>
-          <p className="text-xs text-purple-500">{dashboardData?.commission_rates?.tier2}% commission</p>
+          <p className="text-xs text-purple-500">{dashboardData?.commission_rates?.tier2}% {t('referral.commission')}</p>
         </div>
         <div className="bg-dark-100 rounded-xl border border-dark-200 p-5">
           <div className="flex items-center gap-3 mb-2">
@@ -211,7 +211,7 @@ const ReferralPage = () => {
               <DollarSign className="text-green-500" size={20} />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Total Revenue</p>
+          <p className="text-sm text-gray-400 mb-1">{t('referral.totalRevenue')}</p>
           <p className="text-2xl font-bold text-green-500">
             ${(dashboardData?.stats?.totals?.revenue || 0).toLocaleString('en-US', { minimumFractionDigits: 0 })}
           </p>
@@ -222,7 +222,7 @@ const ReferralPage = () => {
               <Wallet className="text-yellow-500" size={20} />
             </div>
           </div>
-          <p className="text-sm text-gray-400 mb-1">Available Balance</p>
+          <p className="text-sm text-gray-400 mb-1">{t('referral.availableBalance')}</p>
           <p className="text-2xl font-bold text-yellow-500">
             ${(dashboardData?.stats?.totals?.pending_balance || 0).toLocaleString('en-US', { minimumFractionDigits: 2 })}
           </p>
@@ -232,10 +232,10 @@ const ReferralPage = () => {
       {/* Tabs */}
       <div className="flex gap-2 bg-dark-100 rounded-lg p-1 border border-dark-200">
         {[
-          { id: 'overview', label: 'Overview', icon: TrendingUp },
-          { id: 'network', label: 'Network', icon: Users },
-          { id: 'payouts', label: 'Payouts', icon: Wallet },
-          { id: 'materials', label: 'Materials', icon: Download }
+          { id: 'overview', labelKey: 'referral.tabs.overview', icon: TrendingUp },
+          { id: 'network', labelKey: 'referral.tabs.network', icon: Users },
+          { id: 'payouts', labelKey: 'referral.tabs.payouts', icon: Wallet },
+          { id: 'materials', labelKey: 'referral.tabs.materials', icon: Download }
         ].map(tab => (
           <button
             key={tab.id}
@@ -247,7 +247,7 @@ const ReferralPage = () => {
             }`}
           >
             <tab.icon size={18} />
-            {tab.label}
+            {t(tab.labelKey)}
           </button>
         ))}
       </div>
@@ -259,7 +259,7 @@ const ReferralPage = () => {
           <div className="lg:col-span-2 space-y-6">
             {/* Referral Code & Link */}
             <div className="bg-dark-100 rounded-xl border border-dark-200 p-6">
-              <h3 className="font-semibold text-white mb-4">Your Referral Code</h3>
+              <h3 className="font-semibold text-white mb-4">{t('referral.yourReferralCode')}</h3>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1 bg-dark-200 rounded-lg px-4 py-3 font-mono text-xl text-white">
                   {dashboardData?.referral_code || 'Loading...'}
@@ -272,7 +272,7 @@ const ReferralPage = () => {
                 </button>
               </div>
 
-              <h4 className="text-sm text-gray-400 mb-2">Referral Link</h4>
+              <h4 className="text-sm text-gray-400 mb-2">{t('referral.referralLink')}</h4>
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex-1 bg-dark-200 rounded-lg px-4 py-3 text-gray-400 text-sm truncate">
                   {dashboardData?.referral_link || 'Loading...'}
@@ -318,9 +318,9 @@ const ReferralPage = () => {
                   <TierIcon className={tierConfig.text} size={20} />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-white">Performance Tier</h3>
+                  <h3 className="font-semibold text-white">{t('referral.performanceTier')}</h3>
                   <p className="text-sm text-gray-400">
-                    {currentTier === 'platinum' ? 'Max tier reached!' : `Next: ${dashboardData?.performance?.next_tier}`}
+                    {currentTier === 'platinum' ? t('referral.maxTierReached') : `${t('referral.next')}: ${t(`referral.tiers.${dashboardData?.performance?.next_tier}`)}`}
                   </p>
                 </div>
               </div>
@@ -329,7 +329,7 @@ const ReferralPage = () => {
                 <div className="space-y-4">
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">Referrals</span>
+                      <span className="text-gray-400">{t('referral.referrals')}</span>
                       <span className="text-white">
                         {dashboardData.performance.next_tier_progress.referrals.current} / {dashboardData.performance.next_tier_progress.referrals.required}
                       </span>
@@ -343,7 +343,7 @@ const ReferralPage = () => {
                   </div>
                   <div>
                     <div className="flex justify-between text-sm mb-1">
-                      <span className="text-gray-400">Revenue</span>
+                      <span className="text-gray-400">{t('referral.revenue')}</span>
                       <span className="text-white">
                         ${dashboardData.performance.next_tier_progress.revenue.current.toLocaleString()} / ${dashboardData.performance.next_tier_progress.revenue.required.toLocaleString()}
                       </span>
@@ -360,7 +360,7 @@ const ReferralPage = () => {
 
               {/* Tier Benefits */}
               <div className="mt-4 pt-4 border-t border-dark-200">
-                <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">Tier Bonuses</p>
+                <p className="text-xs text-gray-500 uppercase tracking-wide mb-3">{t('referral.tierBonuses')}</p>
                 <div className="space-y-2">
                   {Object.entries(dashboardData?.performance?.tiers || {}).map(([name, data]) => (
                     <div
@@ -372,7 +372,7 @@ const ReferralPage = () => {
                       <span className={`text-sm font-medium capitalize ${
                         currentTier === name ? 'text-primary-400' : 'text-gray-400'
                       }`}>
-                        {name}
+                        {t(`referral.tiers.${name}`)}
                       </span>
                       <span className={`text-sm ${
                         currentTier === name ? 'text-primary-400 font-bold' : 'text-gray-500'
@@ -388,23 +388,23 @@ const ReferralPage = () => {
             {/* Commission Rates Card */}
             <div className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 rounded-xl border border-green-500/30 p-6">
               <Gift className="text-green-400 mb-3" size={28} />
-              <h4 className="font-semibold text-white mb-3">Commission Rates</h4>
+              <h4 className="font-semibold text-white mb-3">{t('referral.commissionRates')}</h4>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Tier 1 (Direct)</span>
+                  <span className="text-gray-300">{t('referral.tier1Direct')}</span>
                   <span className="text-2xl font-bold text-green-400">
                     {dashboardData?.commission_rates?.tier1}%
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-300">Tier 2 (Sub-refs)</span>
+                  <span className="text-gray-300">{t('referral.tier2SubRefs')}</span>
                   <span className="text-2xl font-bold text-purple-400">
                     {dashboardData?.commission_rates?.tier2}%
                   </span>
                 </div>
               </div>
               <p className="text-xs text-gray-400 mt-3">
-                Earn on every purchase your network makes. No limits!
+                {t('referral.earnOnEveryPurchase')}
               </p>
             </div>
           </div>
@@ -436,17 +436,17 @@ const ReferralPage = () => {
               <Download className="w-5 h-5 text-primary-500" />
             </div>
             <div>
-              <h3 className="font-semibold text-white">Marketing Materials</h3>
-              <p className="text-sm text-gray-400">Download banners, templates, and more</p>
+              <h3 className="font-semibold text-white">{t('referral.marketingMaterials')}</h3>
+              <p className="text-sm text-gray-400">{t('referral.downloadBannersDesc')}</p>
             </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {[
-              { name: 'Banner 728x90', type: 'PNG', size: '728x90px' },
-              { name: 'Banner 300x250', type: 'PNG', size: '300x250px' },
-              { name: 'Social Media Kit', type: 'ZIP', size: 'All sizes' },
-              { name: 'Email Templates', type: 'HTML', size: '5 templates' }
+              { nameKey: 'referral.materials.banner728x90', type: 'PNG', sizeKey: '728x90px' },
+              { nameKey: 'referral.materials.banner300x250', type: 'PNG', sizeKey: '300x250px' },
+              { nameKey: 'referral.materials.socialMediaKit', type: 'ZIP', sizeKey: 'referral.materials.allSizes' },
+              { nameKey: 'referral.materials.emailTemplates', type: 'HTML', sizeKey: 'referral.materials.templates' }
             ].map((material, idx) => (
               <div
                 key={idx}
@@ -457,8 +457,8 @@ const ReferralPage = () => {
                     <Download className="w-5 h-5 text-primary-500" />
                   </div>
                   <div>
-                    <p className="font-medium text-white">{material.name}</p>
-                    <p className="text-xs text-gray-400">{material.type} • {material.size}</p>
+                    <p className="font-medium text-white">{t(material.nameKey)}</p>
+                    <p className="text-xs text-gray-400">{material.type} - {material.sizeKey.startsWith('referral.') ? t(material.sizeKey) : material.sizeKey}</p>
                   </div>
                 </div>
                 <ChevronRight className="w-5 h-5 text-gray-400" />
@@ -471,12 +471,12 @@ const ReferralPage = () => {
             <div className="flex items-start gap-3">
               <Shield className="w-5 h-5 text-yellow-400 flex-shrink-0 mt-0.5" />
               <div>
-                <p className="text-sm text-yellow-200 font-medium">Marketing Guidelines</p>
+                <p className="text-sm text-yellow-200 font-medium">{t('referral.marketingGuidelines')}</p>
                 <ul className="text-xs text-yellow-300/70 mt-2 space-y-1">
-                  <li>• Always disclose affiliate relationship</li>
-                  <li>• Do not make false claims about earnings</li>
-                  <li>• Do not spam or use deceptive marketing</li>
-                  <li>• Do not bid on TradeSense branded keywords</li>
+                  <li>- {t('referral.guidelines.discloseRelationship')}</li>
+                  <li>- {t('referral.guidelines.noFalseClaims')}</li>
+                  <li>- {t('referral.guidelines.noSpam')}</li>
+                  <li>- {t('referral.guidelines.noBrandedKeywords')}</li>
                 </ul>
               </div>
             </div>

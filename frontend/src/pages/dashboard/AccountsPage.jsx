@@ -136,6 +136,7 @@ const StatCard = ({ icon: Icon, label, value, subvalue, color = 'white', delay =
 
 // Equity Curve Chart Component - Mobile responsive
 const EquityCurveChart = ({ trades, initialBalance }) => {
+  const { t } = useTranslation()
   const chartData = useMemo(() => {
     if (!trades || trades.length === 0) return []
 
@@ -193,8 +194,8 @@ const EquityCurveChart = ({ trades, initialBalance }) => {
       <div className="h-48 sm:h-64 flex items-center justify-center">
         <div className="text-center">
           <LineChart className="w-10 h-10 sm:w-12 sm:h-12 text-gray-600 mx-auto mb-2 sm:mb-3" />
-          <p className="text-gray-400 text-sm">No trade history yet</p>
-          <p className="text-gray-500 text-xs">Complete trades to see your equity curve</p>
+          <p className="text-gray-400 text-sm">{t('accounts.noTradeHistory')}</p>
+          <p className="text-gray-500 text-xs">{t('accounts.completeTrades')}</p>
         </div>
       </div>
     )
@@ -400,14 +401,14 @@ const AccountsPage = () => {
           <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-xl sm:rounded-2xl flex items-center justify-center mx-auto mb-4 sm:mb-6">
             <Zap className="text-white w-8 h-8 sm:w-10 sm:h-10" />
           </div>
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">Start Your Journey</h2>
-          <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">Join thousands of traders who have proven their skills and earned funded accounts.</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">{t('accounts.startYourJourney')}</h2>
+          <p className="text-gray-400 mb-6 sm:mb-8 text-sm sm:text-base">{t('accounts.joinThousands')}</p>
           <Link
             to="/plans"
             className="inline-flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-semibold transition-all shadow-lg shadow-purple-500/25 w-full min-h-[48px] touch-manipulation"
           >
             <Zap size={18} />
-            Get Funded Now
+            {t('accounts.getFundedNow')}
           </Link>
         </motion.div>
       </div>
@@ -438,16 +439,16 @@ const AccountsPage = () => {
       >
         <div>
           <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
-            Welcome back, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{user?.username || 'Trader'}</span>
+            {t('accounts.welcomeBack')}, <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">{user?.username || 'Trader'}</span>
           </h1>
-          <p className="text-gray-400 mt-1 text-sm sm:text-base">Track your challenge progress</p>
+          <p className="text-gray-400 mt-1 text-sm sm:text-base">{t('accounts.trackProgress')}</p>
         </div>
         <Link
           to="/trading"
           className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 sm:py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white rounded-xl font-medium transition-all shadow-lg shadow-purple-500/20 w-full sm:w-auto min-h-[48px] touch-manipulation mx-auto sm:mx-0"
         >
           <Activity size={18} />
-          Start Trading
+          {t('accounts.startTrading')}
         </Link>
       </motion.div>
 
@@ -474,27 +475,27 @@ const AccountsPage = () => {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 flex-wrap">
                   <h2 className="text-base sm:text-xl font-bold text-white truncate">
-                    {challenge.phase === 'trial' ? 'Free Trial' :
-                     challenge.phase === 'evaluation' ? 'Phase 1' :
-                     challenge.phase === 'verification' ? 'Phase 2' :
-                     'Funded'}
+                    {challenge.phase === 'trial' ? t('accounts.freeTrial') :
+                     challenge.phase === 'evaluation' ? t('accounts.phase1') :
+                     challenge.phase === 'verification' ? t('accounts.phase2') :
+                     t('accounts.funded')}
                   </h2>
                   <span className="px-2 py-0.5 bg-green-500/10 text-green-400 text-xs font-medium rounded-full">
-                    Active
+                    {t('accounts.active')}
                   </span>
                 </div>
-                <p className="text-gray-400 text-sm">${challenge.initial_balance?.toLocaleString()} Account</p>
+                <p className="text-gray-400 text-sm">${challenge.initial_balance?.toLocaleString()} {t('accounts.account')}</p>
               </div>
             </div>
 
             {/* Balance Display */}
             <div className="bg-dark-300/30 rounded-xl p-3 sm:p-4">
-              <p className="text-xs sm:text-sm text-gray-400">Current Balance</p>
+              <p className="text-xs sm:text-sm text-gray-400">{t('accounts.currentBalance')}</p>
               <p className="text-2xl sm:text-3xl font-bold text-white">
                 ${stats.currentBalance.toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </p>
               <p className={`text-xs sm:text-sm font-medium ${stats.profitPercent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                {stats.profitPercent >= 0 ? '+' : ''}{stats.profitPercent.toFixed(2)}% from start
+                {stats.profitPercent >= 0 ? '+' : ''}{stats.profitPercent.toFixed(2)}% {t('accounts.fromStart')}
               </p>
             </div>
           </div>
@@ -508,9 +509,9 @@ const AccountsPage = () => {
               max={profitTarget}
               color="green"
               label={`${profitProgress.toFixed(1)}%`}
-              sublabel={`of ${profitTarget}%`}
+              sublabel={`${t('accounts.of')} ${profitTarget}%`}
             />
-            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">Profit Target</p>
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">{t('accounts.profitTarget')}</p>
           </div>
 
           <div className="flex flex-col items-center p-2 sm:p-4 bg-dark-300/30 rounded-lg sm:rounded-xl">
@@ -519,9 +520,9 @@ const AccountsPage = () => {
               max={stats.maxDrawdown}
               color={getDrawdownColor()}
               label={`${drawdownUsed.toFixed(1)}%`}
-              sublabel={`of ${stats.maxDrawdown}%`}
+              sublabel={`${t('accounts.of')} ${stats.maxDrawdown}%`}
             />
-            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">Drawdown</p>
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">{t('accounts.drawdown')}</p>
           </div>
 
           <div className="flex flex-col items-center p-2 sm:p-4 bg-dark-300/30 rounded-lg sm:rounded-xl">
@@ -530,9 +531,9 @@ const AccountsPage = () => {
               max={100}
               color="purple"
               label={`${stats.winRate.toFixed(0)}%`}
-              sublabel="Win Rate"
+              sublabel={t('accounts.winRate')}
             />
-            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">Win Rate</p>
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">{t('accounts.winRate')}</p>
           </div>
 
           <div className="flex flex-col items-center p-2 sm:p-4 bg-dark-300/30 rounded-lg sm:rounded-xl">
@@ -543,7 +544,7 @@ const AccountsPage = () => {
               label={stats.profitFactor === Infinity ? '∞' : stats.profitFactor.toFixed(2)}
               sublabel="Factor"
             />
-            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">Profit Factor</p>
+            <p className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-gray-300">{t('accounts.profitFactor')}</p>
           </div>
         </div>
       </motion.div>
@@ -558,7 +559,7 @@ const AccountsPage = () => {
         <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 mb-3 sm:mb-4">
           <div className="flex items-center gap-2">
             <LineChart className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-            <h3 className="text-sm sm:text-lg font-semibold text-white">Account Development</h3>
+            <h3 className="text-sm sm:text-lg font-semibold text-white">{t('accounts.accountDevelopment')}</h3>
           </div>
           <div className="flex items-center gap-3 text-xs sm:text-sm">
             <div className="flex items-center gap-1.5">
@@ -583,23 +584,23 @@ const AccountsPage = () => {
         transition={{ delay: 0.2 }}
         className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 hover:border-purple-500/20 transition-all duration-300 shadow-lg p-4 sm:p-6"
       >
-        <h3 className="text-sm sm:text-lg font-semibold text-white mb-4 sm:mb-6 text-center sm:text-left">Your Journey</h3>
+        <h3 className="text-sm sm:text-lg font-semibold text-white mb-4 sm:mb-6 text-center sm:text-left">{t('accounts.yourJourney')}</h3>
         <div className="flex items-center justify-center overflow-x-auto pb-2">
-          <PhaseStep phase="trial" label="Trial" isActive={challenge.phase === 'trial'} isCompleted={currentPhaseIndex > 0} />
-          <PhaseStep phase="evaluation" label="Phase 1" isActive={challenge.phase === 'evaluation'} isCompleted={currentPhaseIndex > 1} />
-          <PhaseStep phase="verification" label="Phase 2" isActive={challenge.phase === 'verification'} isCompleted={currentPhaseIndex > 2} />
-          <PhaseStep phase="funded" label="Funded" isActive={challenge.phase === 'funded'} isCompleted={false} isLast />
+          <PhaseStep phase="trial" label={t('accounts.trial')} isActive={challenge.phase === 'trial'} isCompleted={currentPhaseIndex > 0} />
+          <PhaseStep phase="evaluation" label={t('accounts.phase1')} isActive={challenge.phase === 'evaluation'} isCompleted={currentPhaseIndex > 1} />
+          <PhaseStep phase="verification" label={t('accounts.phase2')} isActive={challenge.phase === 'verification'} isCompleted={currentPhaseIndex > 2} />
+          <PhaseStep phase="funded" label={t('accounts.funded')} isActive={challenge.phase === 'funded'} isCompleted={false} isLast />
         </div>
       </motion.div>
 
       {/* Stats Grid - 3 columns on mobile */}
       <div className="grid grid-cols-3 sm:grid-cols-3 lg:grid-cols-6 gap-2 sm:gap-4">
-        <StatCard icon={BarChart2} label="Trades" value={stats.totalTrades} delay={0.1} />
-        <StatCard icon={TrendingUp} label="Best" value={`+$${stats.bestTrade.toFixed(0)}`} color="green" delay={0.15} />
-        <StatCard icon={TrendingDown} label="Worst" value={`$${stats.worstTrade.toFixed(0)}`} color="red" delay={0.2} />
-        <StatCard icon={Target} label="Avg Win" value={`+$${stats.avgWin.toFixed(0)}`} color="green" delay={0.25} />
-        <StatCard icon={AlertTriangle} label="Avg Loss" value={`-$${stats.avgLoss.toFixed(0)}`} color="red" delay={0.3} />
-        <StatCard icon={Activity} label="Open" value={openTrades.length} color="purple" delay={0.35} />
+        <StatCard icon={BarChart2} label={t('accounts.trades')} value={stats.totalTrades} delay={0.1} />
+        <StatCard icon={TrendingUp} label={t('accounts.best')} value={`+$${stats.bestTrade.toFixed(0)}`} color="green" delay={0.15} />
+        <StatCard icon={TrendingDown} label={t('accounts.worst')} value={`$${stats.worstTrade.toFixed(0)}`} color="red" delay={0.2} />
+        <StatCard icon={Target} label={t('accounts.avgWin')} value={`+$${stats.avgWin.toFixed(0)}`} color="green" delay={0.25} />
+        <StatCard icon={AlertTriangle} label={t('accounts.avgLoss')} value={`-$${stats.avgLoss.toFixed(0)}`} color="red" delay={0.3} />
+        <StatCard icon={Activity} label={t('accounts.open')} value={openTrades.length} color="purple" delay={0.35} />
       </div>
 
       {/* Two Column Layout */}
@@ -613,13 +614,13 @@ const AccountsPage = () => {
         >
           <div className="flex items-center justify-center sm:justify-start gap-2 mb-3 sm:mb-4">
             <Monitor className="w-4 h-4 sm:w-5 sm:h-5 text-purple-400" />
-            <h3 className="text-sm sm:text-lg font-semibold text-white">Trading Credentials</h3>
+            <h3 className="text-sm sm:text-lg font-semibold text-white">{t('accounts.tradingCredentials')}</h3>
           </div>
           <div className="grid grid-cols-1 gap-2 sm:gap-4">
             {[
-              { label: 'Login', value: challenge.trading_login || '00000', field: 'login' },
-              { label: 'Password', value: challenge.trading_password || 'password', display: '••••••••', field: 'password' },
-              { label: 'Server', value: challenge.trading_server || 'TradeSense-Demo', field: 'server' },
+              { label: t('accounts.login'), value: challenge.trading_login || '00000', field: 'login' },
+              { label: t('accounts.password'), value: challenge.trading_password || 'password', display: '••••••••', field: 'password' },
+              { label: t('accounts.server'), value: challenge.trading_server || 'TradeSense-Demo', field: 'server' },
             ].map((cred) => (
               <div key={cred.field} className="flex items-center justify-between bg-dark-200/50 rounded-lg sm:rounded-xl p-3 sm:p-4 border border-white/5">
                 <div className="min-w-0 flex-1">
@@ -647,7 +648,7 @@ const AccountsPage = () => {
               className="inline-flex items-center gap-2 px-4 py-2.5 bg-dark-200/50 hover:bg-dark-300 rounded-lg text-sm text-gray-300 hover:text-white transition-all min-h-[44px] touch-manipulation"
             >
               <ExternalLink size={14} />
-              Download MT5
+              {t('accounts.downloadMT5')}
             </a>
           </div>
         </motion.div>
@@ -661,18 +662,18 @@ const AccountsPage = () => {
         >
           {/* Plan Info */}
           <div className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-5">
-            <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 text-center sm:text-left">Account Details</h4>
+            <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 text-center sm:text-left">{t('accounts.accountDetails')}</h4>
             <div className="space-y-2 sm:space-y-3 text-sm">
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Plan Type</span>
+                <span className="text-gray-400">{t('accounts.planType')}</span>
                 <span className="text-purple-400 font-medium">{challenge.plan_type || 'Standard'}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Platform</span>
+                <span className="text-gray-400">{t('accounts.platform')}</span>
                 <span className="text-white font-medium">MT5</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-gray-400">Account Size</span>
+                <span className="text-gray-400">{t('accounts.accountSize')}</span>
                 <span className="text-white font-medium">${challenge.initial_balance?.toLocaleString()}</span>
               </div>
             </div>
@@ -683,13 +684,13 @@ const AccountsPage = () => {
             <div className="bg-dark-100 rounded-xl sm:rounded-2xl border border-white/5 p-4 sm:p-5">
               <h4 className="font-semibold text-white text-sm sm:text-base mb-3 sm:mb-4 flex items-center justify-center sm:justify-start gap-2">
                 <Zap size={14} className="text-yellow-400" />
-                Add-ons
+                {t('accounts.addons')}
               </h4>
               <div className="space-y-2">
                 {[
-                  { label: 'Reset Challenge', icon: RefreshCw, onClick: () => setShowResetModal(true) },
-                  { label: 'Extend Time', icon: Clock, onClick: () => setShowExtendModal(true) },
-                  { label: 'Upgrade Account', icon: TrendingUp, onClick: () => setShowUpgradeModal(true) },
+                  { label: t('accounts.resetChallenge'), icon: RefreshCw, onClick: () => setShowResetModal(true) },
+                  { label: t('accounts.extendTime'), icon: Clock, onClick: () => setShowExtendModal(true) },
+                  { label: t('accounts.upgradeAccount'), icon: TrendingUp, onClick: () => setShowUpgradeModal(true) },
                 ].map((item) => (
                   <button
                     key={item.label}
@@ -714,10 +715,10 @@ const AccountsPage = () => {
                 <Gift size={18} className="text-white" />
               </div>
               <div>
-                <h4 className="font-semibold text-white text-sm sm:text-base mb-1">Special Offer</h4>
-                <p className="text-xs sm:text-sm text-gray-300 mb-2 sm:mb-3">20% off with code TRADER20</p>
+                <h4 className="font-semibold text-white text-sm sm:text-base mb-1">{t('accounts.specialOffer')}</h4>
+                <p className="text-xs sm:text-sm text-gray-300 mb-2 sm:mb-3">{t('accounts.offCode')}</p>
                 <Link to="/my-offers" className="text-xs sm:text-sm text-purple-400 hover:text-purple-300 font-medium inline-flex items-center justify-center sm:justify-start gap-1 w-full sm:w-auto">
-                  View Offers <ArrowRight size={14} />
+                  {t('accounts.viewOffers')} <ArrowRight size={14} />
                 </Link>
               </div>
             </div>
@@ -737,7 +738,7 @@ const AccountsPage = () => {
             <div className="p-3 sm:p-4 border-b border-white/5 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-0">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="font-semibold text-white text-sm sm:text-base">Open Positions</span>
+                <span className="font-semibold text-white text-sm sm:text-base">{t('accounts.openPositions')}</span>
                 <span className="px-2 py-0.5 bg-green-500/10 text-green-400 text-xs font-medium rounded-full">
                   {openTrades.length}
                 </span>
@@ -801,7 +802,7 @@ const AccountsPage = () => {
           <div className="p-3 sm:p-4 border-b border-white/5 flex flex-col sm:flex-row items-center justify-center sm:justify-between gap-2 sm:gap-0">
             <div className="flex items-center gap-2">
               <Clock size={16} className="text-gray-400" />
-              <span className="font-semibold text-white text-sm sm:text-base">History</span>
+              <span className="font-semibold text-white text-sm sm:text-base">{t('accounts.history')}</span>
               <span className="text-[10px] sm:text-xs text-gray-500">({closedTrades.length})</span>
             </div>
             <span className={`font-bold text-sm ${stats.totalPnl >= 0 ? 'text-green-500' : 'text-red-500'}`}>
@@ -812,11 +813,11 @@ const AccountsPage = () => {
             <table className="w-full min-w-[320px]">
               <thead className="bg-dark-200/50">
                 <tr className="text-[10px] sm:text-xs text-gray-500 uppercase">
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Symbol</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Type</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Entry</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">Exit</th>
-                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">P&L</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('accounts.symbol')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('accounts.type')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('accounts.entry')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-left font-medium">{t('accounts.exit')}</th>
+                  <th className="px-3 sm:px-4 py-2 sm:py-3 text-right font-medium">{t('accounts.pnl')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">

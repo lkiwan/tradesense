@@ -16,7 +16,7 @@ const ForgotPassword = () => {
     e.preventDefault()
 
     if (!email) {
-      toast.error('Please enter your email address')
+      toast.error(t('auth.forgotPassword.enterEmail'))
       return
     }
 
@@ -57,17 +57,16 @@ const ForgotPassword = () => {
               <CheckCircle className="text-green-500" size={32} />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-3 sm:mb-4">
-              Check Your Email
+              {t('auth.forgotPassword.success.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400 mb-4 sm:mb-6">
-              If an account exists with the email <span className="text-primary-400 font-medium break-all">{email}</span>,
-              you will receive a password reset link shortly.
+              {t('auth.forgotPassword.success.message')} <span className="text-primary-400 font-medium break-all">{email}</span>,
+              {t('auth.forgotPassword.success.messageContinue')}
             </p>
 
             <div className="bg-dark-300/50 rounded-xl p-3 sm:p-4 mb-4 sm:mb-6 text-left border border-white/5">
               <p className="text-xs sm:text-sm text-gray-400">
-                <strong className="text-gray-300">Note:</strong> The link will expire in 1 hour. If you don't see the email,
-                check your spam folder.
+                <strong className="text-gray-300">{t('auth.forgotPassword.success.note')}</strong> {t('auth.forgotPassword.success.noteText')}
               </p>
             </div>
 
@@ -76,7 +75,7 @@ const ForgotPassword = () => {
               className="inline-flex items-center gap-2 text-primary-400 hover:text-primary-300 font-medium transition-colors"
             >
               <ArrowLeft size={18} />
-              Back to login
+              {t('auth.forgotPassword.backToLogin')}
             </Link>
           </div>
 
@@ -117,10 +116,10 @@ const ForgotPassword = () => {
               <KeyRound className="text-primary-400" size={24} />
             </div>
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-2">
-              Forgot Password?
+              {t('auth.forgotPassword.title')}
             </h2>
             <p className="text-sm sm:text-base text-gray-400">
-              Enter your email and we'll send you a link to reset your password
+              {t('auth.forgotPassword.subtitle')}
             </p>
           </div>
 
@@ -128,7 +127,7 @@ const ForgotPassword = () => {
             {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
+                {t('auth.forgotPassword.emailLabel')}
               </label>
               <div className="relative group">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={20} />
@@ -152,12 +151,12 @@ const ForgotPassword = () => {
               {loading ? (
                 <>
                   <Loader2 className="animate-spin" size={20} />
-                  Sending...
+                  {t('auth.forgotPassword.sending')}
                 </>
               ) : (
                 <>
                   <Mail size={20} />
-                  Send Reset Link
+                  {t('auth.forgotPassword.sendResetLink')}
                 </>
               )}
             </button>
@@ -170,7 +169,7 @@ const ForgotPassword = () => {
               className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors"
             >
               <ArrowLeft size={18} />
-              Back to login
+              {t('auth.forgotPassword.backToLogin')}
             </Link>
           </div>
         </div>
@@ -179,7 +178,7 @@ const ForgotPassword = () => {
         <div className="mt-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 glass-card rounded-full text-gray-400 text-sm">
             <Sparkles size={14} className="text-primary-400" />
-            Secure password recovery
+            {t('auth.forgotPassword.secureRecovery')}
           </div>
         </div>
       </div>

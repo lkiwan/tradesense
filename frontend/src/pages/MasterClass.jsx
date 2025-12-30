@@ -9,56 +9,62 @@ const MasterClass = () => {
 
   const courses = [
     {
-      title: 'Introduction au Trading',
-      description: 'Les bases du trading pour debutants',
+      titleKey: 'masterclass.courses.introTrading.title',
+      descKey: 'masterclass.courses.introTrading.description',
       lessons: 12,
       duration: '2h 30min',
-      level: 'Debutant',
+      levelKey: 'masterclass.levels.beginner',
+      level: 'beginner',
       locked: false,
       icon: BookOpen
     },
     {
-      title: 'Analyse Technique',
-      description: 'Maitrisez les graphiques et indicateurs',
+      titleKey: 'masterclass.courses.technicalAnalysis.title',
+      descKey: 'masterclass.courses.technicalAnalysis.description',
       lessons: 18,
       duration: '4h 15min',
-      level: 'Intermediaire',
+      levelKey: 'masterclass.levels.intermediate',
+      level: 'intermediate',
       locked: false,
       icon: BarChart
     },
     {
-      title: 'Gestion des Risques',
-      description: 'Protegez votre capital comme un pro',
+      titleKey: 'masterclass.courses.riskManagement.title',
+      descKey: 'masterclass.courses.riskManagement.description',
       lessons: 10,
       duration: '2h',
-      level: 'Intermediaire',
+      levelKey: 'masterclass.levels.intermediate',
+      level: 'intermediate',
       locked: false,
       icon: Shield
     },
     {
-      title: 'Psychologie du Trading',
-      description: 'Controlez vos emotions pour gagner',
+      titleKey: 'masterclass.courses.tradingPsychology.title',
+      descKey: 'masterclass.courses.tradingPsychology.description',
       lessons: 8,
       duration: '1h 45min',
-      level: 'Tous niveaux',
+      levelKey: 'masterclass.levels.allLevels',
+      level: 'allLevels',
       locked: false,
       icon: TrendingUp
     },
     {
-      title: 'Strategies Avancees',
-      description: 'Techniques de trading professionnelles',
+      titleKey: 'masterclass.courses.advancedStrategies.title',
+      descKey: 'masterclass.courses.advancedStrategies.description',
       lessons: 24,
       duration: '6h',
-      level: 'Avance',
+      levelKey: 'masterclass.levels.advanced',
+      level: 'advanced',
       locked: true,
       icon: Award
     },
     {
-      title: 'Trading Algorithmique',
-      description: 'Automatisez vos strategies',
+      titleKey: 'masterclass.courses.algoTrading.title',
+      descKey: 'masterclass.courses.algoTrading.description',
       lessons: 20,
       duration: '5h',
-      level: 'Expert',
+      levelKey: 'masterclass.levels.expert',
+      level: 'expert',
       locked: true,
       icon: BarChart
     }
@@ -66,13 +72,13 @@ const MasterClass = () => {
 
   const getLevelColor = (level) => {
     switch (level) {
-      case 'Debutant':
+      case 'beginner':
         return 'bg-green-500/10 text-green-500'
-      case 'Intermediaire':
+      case 'intermediate':
         return 'bg-blue-500/10 text-blue-500'
-      case 'Avance':
+      case 'advanced':
         return 'bg-purple-500/10 text-purple-500'
-      case 'Expert':
+      case 'expert':
         return 'bg-red-500/10 text-red-500'
       default:
         return 'bg-gray-500/10 text-gray-500'
@@ -86,14 +92,13 @@ const MasterClass = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 rounded-full mb-4">
             <GraduationCap className="text-primary-500" size={20} />
-            <span className="text-primary-500 font-medium">Centre d'Apprentissage</span>
+            <span className="text-primary-500 font-medium">{t('masterclass.badge')}</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('nav.masterclass')}
+            {t('masterclass.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Des cours de haute qualite pour devenir un trader professionnel,
-            du debutant a l'expert
+            {t('masterclass.subtitle')}
           </p>
         </div>
 
@@ -101,19 +106,19 @@ const MasterClass = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           <div className="bg-white dark:bg-dark-100 rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-primary-500 mb-1">90+</div>
-            <div className="text-sm text-gray-500">Lecons</div>
+            <div className="text-sm text-gray-500">{t('masterclass.stats.lessons')}</div>
           </div>
           <div className="bg-white dark:bg-dark-100 rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-primary-500 mb-1">20h+</div>
-            <div className="text-sm text-gray-500">De Contenu</div>
+            <div className="text-sm text-gray-500">{t('masterclass.stats.content')}</div>
           </div>
           <div className="bg-white dark:bg-dark-100 rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-primary-500 mb-1">6</div>
-            <div className="text-sm text-gray-500">Modules</div>
+            <div className="text-sm text-gray-500">{t('masterclass.stats.modules')}</div>
           </div>
           <div className="bg-white dark:bg-dark-100 rounded-xl p-4 text-center">
             <div className="text-3xl font-bold text-primary-500 mb-1">5K+</div>
-            <div className="text-sm text-gray-500">Etudiants</div>
+            <div className="text-sm text-gray-500">{t('masterclass.stats.students')}</div>
           </div>
         </div>
 
@@ -133,7 +138,7 @@ const MasterClass = () => {
                   <Icon className="text-white/30 absolute right-4 bottom-4" size={80} />
                   <div className="relative">
                     <span className={`inline-block px-2 py-1 rounded text-xs font-medium ${getLevelColor(course.level)}`}>
-                      {course.level}
+                      {t(course.levelKey)}
                     </span>
                     {course.locked && (
                       <Lock className="absolute top-0 right-0 text-white" size={20} />
@@ -144,16 +149,16 @@ const MasterClass = () => {
                 {/* Course Content */}
                 <div className="p-6">
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                    {course.title}
+                    {t(course.titleKey)}
                   </h3>
                   <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                    {course.description}
+                    {t(course.descKey)}
                   </p>
 
                   <div className="flex items-center justify-between text-sm text-gray-500 mb-4">
                     <div className="flex items-center gap-1">
                       <PlayCircle size={16} />
-                      <span>{course.lessons} lecons</span>
+                      <span>{course.lessons} {t('masterclass.lessons')}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Clock size={16} />
@@ -169,7 +174,7 @@ const MasterClass = () => {
                     }`}
                     disabled={course.locked}
                   >
-                    {course.locked ? 'Bientot Disponible' : 'Commencer'}
+                    {course.locked ? t('masterclass.comingSoon') : t('masterclass.start')}
                   </button>
                 </div>
               </div>
@@ -180,17 +185,17 @@ const MasterClass = () => {
         {/* Webinars Section */}
         <div className="mt-16">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6 text-center">
-            Webinaires en Direct
+            {t('masterclass.webinars.title')}
           </h2>
           <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-2xl p-8 text-center text-white">
             <h3 className="text-xl font-semibold mb-2">
-              Prochain Webinaire: Strategies de Trading 2024
+              {t('masterclass.webinars.nextWebinar')}
             </h3>
             <p className="text-white/80 mb-6">
-              Rejoignez nos experts pour decouvrir les meilleures strategies pour cette annee
+              {t('masterclass.webinars.description')}
             </p>
             <button className="px-6 py-3 bg-white text-primary-500 rounded-xl font-semibold hover:bg-gray-100 transition-colors">
-              S'inscrire Gratuitement
+              {t('masterclass.webinars.registerFree')}
             </button>
           </div>
         </div>

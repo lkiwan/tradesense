@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import {
   MessageSquare, Send, Clock, CheckCircle, HelpCircle, Headphones,
   BookOpen, Play, FileText, Download, Video, Book, Brain, TrendingUp, Shield, FolderOpen
 } from 'lucide-react'
 
 const SupportPage = () => {
+  const { t } = useTranslation()
   // Main tab state
   const [activeTab, setActiveTab] = useState('support')
 
@@ -14,8 +16,8 @@ const SupportPage = () => {
 
   // Main tabs
   const mainTabs = [
-    { id: 'support', label: 'Support', icon: Headphones },
-    { id: 'files', label: 'Files & Resources', icon: FolderOpen }
+    { id: 'support', labelKey: 'supportPage.tabs.support', icon: Headphones },
+    { id: 'files', labelKey: 'supportPage.tabs.files', icon: FolderOpen }
   ]
 
   // Mock tickets data
@@ -51,8 +53,8 @@ const SupportPage = () => {
               <HelpCircle size={18} className="text-primary-400" />
             </div>
             <div>
-              <h4 className="font-medium text-white group-hover:text-primary-400 transition-colors text-sm sm:text-base">FAQ</h4>
-              <p className="text-[10px] sm:text-xs text-gray-400">Questions frequentes</p>
+              <h4 className="font-medium text-white group-hover:text-primary-400 transition-colors text-sm sm:text-base">{t('supportPage.quickHelp.faq')}</h4>
+              <p className="text-[10px] sm:text-xs text-gray-400">{t('supportPage.quickHelp.faqDesc')}</p>
             </div>
           </div>
         </div>
@@ -62,8 +64,8 @@ const SupportPage = () => {
               <MessageSquare size={18} className="text-blue-400" />
             </div>
             <div>
-              <h4 className="font-medium text-white group-hover:text-blue-400 transition-colors text-sm sm:text-base">Live Chat</h4>
-              <p className="text-[10px] sm:text-xs text-gray-400">Discussion en direct</p>
+              <h4 className="font-medium text-white group-hover:text-blue-400 transition-colors text-sm sm:text-base">{t('supportPage.quickHelp.liveChat')}</h4>
+              <p className="text-[10px] sm:text-xs text-gray-400">{t('supportPage.quickHelp.liveChatDesc')}</p>
             </div>
           </div>
         </div>
@@ -73,8 +75,8 @@ const SupportPage = () => {
               <Headphones size={18} className="text-green-400" />
             </div>
             <div>
-              <h4 className="font-medium text-white group-hover:text-green-400 transition-colors text-sm sm:text-base">Telephone</h4>
-              <p className="text-[10px] sm:text-xs text-gray-400">Lun-Ven 9h-18h</p>
+              <h4 className="font-medium text-white group-hover:text-green-400 transition-colors text-sm sm:text-base">{t('supportPage.quickHelp.phone')}</h4>
+              <p className="text-[10px] sm:text-xs text-gray-400">{t('supportPage.quickHelp.phoneDesc')}</p>
             </div>
           </div>
         </div>
@@ -86,32 +88,32 @@ const SupportPage = () => {
           <div className="p-1.5 rounded-lg bg-primary-500/10">
             <Send size={16} className="text-primary-400" />
           </div>
-          Nouveau Ticket
+          {t('supportPage.newTicket.title')}
         </h3>
         <div className="space-y-3 sm:space-y-4">
           <div>
-            <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">Sujet</label>
+            <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('supportPage.newTicket.subject')}</label>
             <input
               type="text"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              placeholder="Decrivez brievement votre probleme"
+              placeholder={t('supportPage.newTicket.subjectPlaceholder')}
               className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white text-sm focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 outline-none transition-all duration-300 min-h-[44px]"
             />
           </div>
           <div>
-            <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">Message</label>
+            <label className="block text-xs sm:text-sm text-gray-400 mb-1.5 sm:mb-2">{t('supportPage.newTicket.message')}</label>
             <textarea
               rows={4}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Expliquez votre probleme en detail..."
+              placeholder={t('supportPage.newTicket.messagePlaceholder')}
               className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white text-sm focus:border-primary-500/50 focus:ring-2 focus:ring-primary-500/20 outline-none resize-none transition-all duration-300"
             />
           </div>
           <button className="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 bg-primary-500 hover:bg-primary-600 text-white rounded-xl font-medium transition-all duration-300 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] w-full sm:w-auto min-h-[44px] text-sm sm:text-base">
             <Send size={16} />
-            Envoyer
+            {t('supportPage.newTicket.send')}
           </button>
         </div>
       </div>
@@ -123,7 +125,7 @@ const SupportPage = () => {
             <div className="p-1.5 rounded-lg bg-purple-500/10">
               <MessageSquare size={16} className="text-purple-400" />
             </div>
-            Mes Tickets
+            {t('supportPage.myTickets.title')}
           </h3>
         </div>
         <div className="divide-y divide-white/5">
@@ -139,13 +141,13 @@ const SupportPage = () => {
                 </div>
                 <div className="min-w-0">
                   <h4 className="font-medium text-white group-hover:text-primary-400 transition-colors text-sm truncate">{ticket.subject}</h4>
-                  <p className="text-xs text-gray-400">Cree le {ticket.date}</p>
+                  <p className="text-xs text-gray-400">{t('supportPage.myTickets.createdOn')} {ticket.date}</p>
                 </div>
               </div>
               <span className={`px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg text-[10px] sm:text-xs font-medium self-start sm:self-center whitespace-nowrap ${
                 ticket.status === 'resolved' ? 'bg-green-500/10 text-green-400 border border-green-500/30' : 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30'
               }`}>
-                {ticket.status === 'resolved' ? 'Resolu' : 'En cours'}
+                {ticket.status === 'resolved' ? t('supportPage.myTickets.resolved') : t('supportPage.myTickets.inProgress')}
               </span>
             </div>
           ))}
@@ -165,7 +167,7 @@ const SupportPage = () => {
               <FileText size={16} className="text-blue-400 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">Docs</p>
+              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">{t('supportPage.resources.docs')}</p>
               <p className="text-sm sm:text-xl font-bold text-white group-hover:text-blue-400 transition-colors">3</p>
             </div>
           </div>
@@ -176,7 +178,7 @@ const SupportPage = () => {
               <Video size={16} className="text-red-400 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">Videos</p>
+              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">{t('supportPage.resources.videos')}</p>
               <p className="text-sm sm:text-xl font-bold text-white group-hover:text-red-400 transition-colors">2</p>
             </div>
           </div>
@@ -187,7 +189,7 @@ const SupportPage = () => {
               <BookOpen size={16} className="text-green-400 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">Types</p>
+              <p className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">{t('supportPage.resources.types')}</p>
               <p className="text-sm sm:text-xl font-bold text-white group-hover:text-green-400 transition-colors">4</p>
             </div>
           </div>
@@ -219,12 +221,12 @@ const SupportPage = () => {
                 {resource.type === 'video' ? (
                   <button className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-red-500/10 text-red-400 rounded-lg border border-red-500/30 hover:bg-red-500/20 transition-colors text-xs sm:text-sm min-h-[36px]">
                     <Play size={12} />
-                    <span>Regarder</span>
+                    <span>{t('supportPage.resources.watch')}</span>
                   </button>
                 ) : (
                   <button className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/30 hover:bg-blue-500/20 transition-colors text-xs sm:text-sm min-h-[36px]">
                     <Download size={12} />
-                    <span>Telecharger</span>
+                    <span>{t('supportPage.resources.download')}</span>
                   </button>
                 )}
               </div>
@@ -243,9 +245,9 @@ const SupportPage = () => {
           <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-green-500/20 to-green-600/20 border border-green-500/30">
             <Headphones className="text-green-400 w-5 h-5 sm:w-6 sm:h-6" />
           </div>
-          Support & Resources
+          {t('supportPage.title')}
         </h1>
-        <p className="text-gray-400 mt-1 text-sm sm:text-base">Get help and access learning materials</p>
+        <p className="text-gray-400 mt-1 text-sm sm:text-base">{t('supportPage.subtitle')}</p>
       </div>
 
       {/* Main Tabs */}
@@ -263,7 +265,7 @@ const SupportPage = () => {
               }`}
             >
               <IconComponent size={14} className="sm:w-4 sm:h-4" />
-              <span className="font-medium">{tab.label}</span>
+              <span className="font-medium">{t(tab.labelKey)}</span>
             </button>
           )
         })}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate } from 'react-router-dom'
 import {
   Target, TrendingDown, Calendar, Clock, RefreshCw,
@@ -9,52 +10,47 @@ import {
 import { challengeModelsAPI } from '../../services/api'
 import { useChallenge } from '../../context/ChallengeContext'
 
-// AI Tiers Configuration
-const AI_TIERS = {
+// AI Tiers Configuration (static styling, names/descriptions from translations)
+const AI_TIERS_CONFIG = {
   starter: {
-    name: 'IA Starter',
+    key: 'starter',
     icon: Cpu,
     color: 'text-gray-400',
     bgColor: 'bg-gray-500/20',
     accuracy: '72%',
-    signals: '5-10',
-    description: 'Algorithme de base'
+    signals: '5-10'
   },
   basic: {
-    name: 'IA Basic',
+    key: 'basic',
     icon: Zap,
     color: 'text-blue-400',
     bgColor: 'bg-blue-500/20',
     accuracy: '78%',
-    signals: '10-15',
-    description: 'Analyse technique avancée'
+    signals: '10-15'
   },
   advanced: {
-    name: 'IA Advanced',
+    key: 'advanced',
     icon: Brain,
     color: 'text-purple-400',
     bgColor: 'bg-purple-500/20',
     accuracy: '85%',
-    signals: '15-25',
-    description: 'Machine Learning optimisé'
+    signals: '15-25'
   },
   pro: {
-    name: 'IA Pro',
+    key: 'pro',
     icon: Sparkles,
     color: 'text-orange-400',
     bgColor: 'bg-orange-500/20',
     accuracy: '91%',
-    signals: '25-40',
-    description: 'Deep Learning + Sentiment'
+    signals: '25-40'
   },
   elite: {
-    name: 'IA Elite',
+    key: 'elite',
     icon: Crown,
     color: 'text-yellow-400',
     bgColor: 'bg-yellow-500/20',
     accuracy: '96%',
-    signals: 'Illimité',
-    description: 'Neural Network Quantique'
+    signals: 'unlimited'
   }
 }
 
@@ -72,24 +68,26 @@ const formatCurrency = (amount, currency = '$') => {
   return `${currency}${amount.toLocaleString('fr-FR')}`
 }
 
-// Row labels configuration - with short labels for mobile
-const ROW_LABELS = [
-  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', label: 'Intelligence Artificielle', shortLabel: 'IA' },
-  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', label: 'Précision IA', shortLabel: 'Précision' },
-  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', label: 'Signaux / jour', shortLabel: 'Signaux' },
-  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', label: 'Objectif de Profit', shortLabel: 'Objectif' },
-  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', label: 'Perte Max Journalière', shortLabel: 'Perte/jour' },
-  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', label: 'Perte Max.', shortLabel: 'Perte Max' },
-  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', label: 'Jours de Trading Min.', shortLabel: 'Min. jours' },
-  { key: 'period', icon: Clock, iconColor: 'text-gray-400', label: 'Période de Trading', shortLabel: 'Période' },
-  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', label: 'Remboursement', shortLabel: 'Remb.' },
+// Row labels configuration - with short labels for mobile (uses translation keys)
+const ROW_LABELS_CONFIG = [
+  { key: 'ai', icon: Brain, iconColor: 'text-purple-500', labelKey: 'ai', shortLabelKey: 'aiShort' },
+  { key: 'accuracy', icon: Target, iconColor: 'text-green-500', labelKey: 'accuracy', shortLabelKey: 'accuracyShort' },
+  { key: 'signals', icon: BarChart3, iconColor: 'text-blue-500', labelKey: 'signals', shortLabelKey: 'signalsShort' },
+  { key: 'profit', icon: TrendingUp, iconColor: 'text-primary-500', labelKey: 'profit', shortLabelKey: 'profitShort' },
+  { key: 'dailyLoss', icon: TrendingDown, iconColor: 'text-orange-500', labelKey: 'dailyLoss', shortLabelKey: 'dailyLossShort' },
+  { key: 'maxLoss', icon: TrendingDown, iconColor: 'text-red-500', labelKey: 'maxLoss', shortLabelKey: 'maxLossShort' },
+  { key: 'minDays', icon: Calendar, iconColor: 'text-gray-400', labelKey: 'minDays', shortLabelKey: 'minDaysShort' },
+  { key: 'period', icon: Clock, iconColor: 'text-gray-400', labelKey: 'period', shortLabelKey: 'periodShort' },
+  { key: 'refund', icon: RefreshCw, iconColor: 'text-green-500', labelKey: 'refund', shortLabelKey: 'refundShort' },
 ]
 
-// Get cell value for matrix
-const getCellValue = (size, model, rowKey, showNumbers) => {
+// Get cell value for matrix - now accepts t (translation function) as parameter
+const getCellValue = (size, model, rowKey, showNumbers, t) => {
   const aiTierKey = getAiTierForBalance(size.balance)
-  const aiTier = AI_TIERS[aiTierKey]
+  const aiTier = AI_TIERS_CONFIG[aiTierKey]
   const AiIcon = aiTier.icon
+  const aiName = t(`plans.aiTiers.${aiTier.key}.name`)
+  const signalsValue = aiTier.signals === 'unlimited' ? t('plans.table.unlimited') : aiTier.signals
 
   const phase1Target = (size.balance * (model?.phase1_profit_target || 10)) / 100
   const phase2Target = (size.balance * (model?.phase2_profit_target || 5)) / 100
@@ -103,7 +101,7 @@ const getCellValue = (size, model, rowKey, showNumbers) => {
           <div className={`p-1 rounded-lg ${aiTier.bgColor}`}>
             <AiIcon size={14} className={aiTier.color} />
           </div>
-          <span className={`text-[10px] lg:text-xs font-bold ${aiTier.color}`}>{aiTier.name}</span>
+          <span className={`text-[10px] lg:text-xs font-bold ${aiTier.color}`}>{aiName}</span>
         </div>
       )
     case 'accuracy':
@@ -111,16 +109,16 @@ const getCellValue = (size, model, rowKey, showNumbers) => {
         <span className={`text-sm lg:text-base font-bold ${aiTier.color}`}>{aiTier.accuracy}</span>
       )
     case 'signals':
-      return <span className="text-white font-semibold text-xs lg:text-sm">{aiTier.signals}</span>
+      return <span className="text-white font-semibold text-xs lg:text-sm">{signalsValue}</span>
     case 'profit':
       return (
         <div className="text-[10px] lg:text-xs">
           <div className="text-white">
-            <span className="text-gray-500">ÉT.1 </span>
+            <span className="text-gray-500">{t('plans.table.step1')} </span>
             <span className="font-semibold">{showNumbers ? formatCurrency(phase1Target) : `${model?.phase1_profit_target || 10}%`}</span>
           </div>
           <div className="text-white">
-            <span className="text-gray-500">ÉT.2 </span>
+            <span className="text-gray-500">{t('plans.table.step2')} </span>
             <span className="font-semibold">{showNumbers ? formatCurrency(phase2Target) : `${model?.phase2_profit_target || 5}%`}</span>
           </div>
         </div>
@@ -130,14 +128,14 @@ const getCellValue = (size, model, rowKey, showNumbers) => {
     case 'maxLoss':
       return <span className="text-white font-semibold text-xs lg:text-sm">{showNumbers ? formatCurrency(maxLoss) : `${model?.max_total_loss || 10}%`}</span>
     case 'minDays':
-      return <span className="text-white font-semibold text-xs lg:text-sm">{model?.min_trading_days || 4} jours</span>
+      return <span className="text-white font-semibold text-xs lg:text-sm">{model?.min_trading_days || 4} {t('plans.table.days')}</span>
     case 'period':
-      return <span className="text-white font-semibold text-xs lg:text-sm">Illimité</span>
+      return <span className="text-white font-semibold text-xs lg:text-sm">{t('plans.table.unlimited')}</span>
     case 'refund':
       return (
         <div className="flex items-center justify-center gap-1">
-          <span className="text-white font-semibold text-xs">Oui</span>
-          <span className="px-1 py-0.5 bg-green-500/20 text-green-400 text-[10px] font-bold rounded">100%</span>
+          <span className="text-white font-semibold text-xs">{t('plans.table.yes')}</span>
+          <span className="px-1 py-0.5 bg-green-500/20 text-green-400 text-[10px] font-bold rounded">{t('plans.table.refundPercent')}</span>
         </div>
       )
     default:
@@ -146,6 +144,7 @@ const getCellValue = (size, model, rowKey, showNumbers) => {
 }
 
 const PlansPage = () => {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const { hasActiveChallenge, challenge } = useChallenge()
   const [models, setModels] = useState([])
@@ -210,14 +209,14 @@ const PlansPage = () => {
           {/* Badge */}
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 md:py-2.5 glass-card rounded-full mb-4 sm:mb-6 md:mb-8">
             <Brain className="text-purple-400 w-4 h-4 sm:w-[18px] sm:h-[18px]" />
-            <span className="text-purple-300 text-[10px] sm:text-xs md:text-sm font-medium">Propulse par l'Intelligence Artificielle</span>
+            <span className="text-purple-300 text-[10px] sm:text-xs md:text-sm font-medium">{t('plans.hero.badge')}</span>
           </div>
 
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-white mb-3 sm:mb-4 md:mb-6 leading-tight px-1 sm:px-2">
-            Tradez avec une <span className="gradient-text-animated">IA Predictive</span>
+            {t('plans.hero.title')} <span className="gradient-text-animated">{t('plans.hero.titleHighlight')}</span>
           </h1>
           <p className="text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10 leading-relaxed px-2">
-            Notre intelligence artificielle analyse des millions de donnees en temps reel pour predire les mouvements du marche.
+            {t('plans.hero.description')}
           </p>
 
           {/* AI Stats */}
@@ -227,8 +226,8 @@ const PlansPage = () => {
                 <Brain className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-purple-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">5 Niveaux</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs">d'Intelligence IA</p>
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">{t('plans.aiStats.levels')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">{t('plans.aiStats.levelsDesc')}</p>
               </div>
             </div>
             <div className="group flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 glass-card px-2 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover:border-green-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
@@ -236,8 +235,8 @@ const PlansPage = () => {
                 <Target className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-green-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">96%</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs">de Precision</p>
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">{t('plans.aiStats.accuracy')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">{t('plans.aiStats.accuracyDesc')}</p>
               </div>
             </div>
             <div className="group flex flex-col sm:flex-row items-center sm:items-center gap-1.5 sm:gap-3 glass-card px-2 sm:px-4 md:px-5 py-2 sm:py-3 rounded-xl sm:rounded-2xl hover:border-blue-500/30 transition-all duration-300 hover:scale-105 cursor-pointer">
@@ -245,8 +244,8 @@ const PlansPage = () => {
                 <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 md:w-6 md:h-6 text-blue-400" />
               </div>
               <div className="text-center sm:text-left">
-                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">+40</p>
-                <p className="text-gray-500 text-[10px] sm:text-xs">Signaux/jour</p>
+                <p className="text-sm sm:text-lg md:text-xl font-bold text-white">{t('plans.aiStats.signals')}</p>
+                <p className="text-gray-500 text-[10px] sm:text-xs">{t('plans.aiStats.signalsDesc')}</p>
               </div>
             </div>
           </div>
@@ -260,16 +259,16 @@ const PlansPage = () => {
             <TrendingUp className="text-white w-4 h-4 sm:w-5 sm:h-5" />
           </div>
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-white text-sm sm:text-base">Vous avez un challenge actif</h3>
+            <h3 className="font-semibold text-white text-sm sm:text-base">{t('plans.activeChallenge.title')}</h3>
             <p className="text-xs sm:text-sm text-gray-400 break-words">
-              Actuellement en {challenge?.phase} avec ${challenge?.current_balance?.toLocaleString()} de solde
+              {t('plans.activeChallenge.currentlyIn', { phase: challenge?.phase, balance: challenge?.current_balance?.toLocaleString() })}
             </p>
           </div>
           <Link
             to="/accounts"
             className="px-4 py-2.5 sm:py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors min-h-[44px] w-full sm:w-auto text-center text-sm sm:text-base touch-manipulation active:scale-95"
           >
-            Voir le Dashboard
+            {t('plans.activeChallenge.viewDashboard')}
           </Link>
         </div>
       )}
@@ -291,7 +290,7 @@ const PlansPage = () => {
                     showNumbers ? 'left-5 sm:left-7' : 'left-0.5 sm:left-1'
                   }`} />
                 </div>
-                <span className="text-gray-300 text-xs md:text-sm font-medium whitespace-nowrap">Afficher les chiffres</span>
+                <span className="text-gray-300 text-xs md:text-sm font-medium whitespace-nowrap">{t('plans.table.showNumbers')}</span>
               </label>
             </div>
 
@@ -299,14 +298,14 @@ const PlansPage = () => {
             <div className="sm:hidden space-y-3">
               {/* Section title */}
               <div className="text-center mb-4">
-                <h2 className="text-lg font-bold text-white mb-1">Choisissez votre compte</h2>
-                <p className="text-gray-400 text-xs">Appuyez sur un plan pour voir les détails</p>
+                <h2 className="text-lg font-bold text-white mb-1">{t('plans.table.chooseAccount')}</h2>
+                <p className="text-gray-400 text-xs">{t('plans.table.tapToSeeDetails')}</p>
               </div>
 
               {/* Compact vertical cards */}
               {sortedSizes.map((size) => {
                 const aiTierKey = getAiTierForBalance(size.balance)
-                const aiTier = AI_TIERS[aiTierKey]
+                const aiTier = AI_TIERS_CONFIG[aiTierKey]
                 const AiIcon = aiTier.icon
                 const hasDiscount = size.is_on_sale && size.sale_price
                 const isBestValue = size.balance === 100000
@@ -331,7 +330,7 @@ const PlansPage = () => {
                       <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-[10px] font-bold py-1 text-center">
                         <div className="flex items-center justify-center gap-1">
                           <Flame size={10} />
-                          <span>MEILLEUR CHOIX</span>
+                          <span>{t('plans.table.bestChoice')}</span>
                         </div>
                       </div>
                     )}
@@ -350,7 +349,7 @@ const PlansPage = () => {
                           <div className="min-w-0">
                             <p className="text-lg font-bold text-white">{formatCurrency(size.balance)}</p>
                             <div className="flex items-center gap-2">
-                              <span className={`text-xs font-medium ${aiTier.color}`}>{aiTier.name}</span>
+                              <span className={`text-xs font-medium ${aiTier.color}`}>{t(`plans.aiTiers.${aiTier.key}.name`)}</span>
                               <span className="text-gray-500 text-[10px]">•</span>
                               <span className="text-green-400 text-xs font-medium">{aiTier.accuracy}</span>
                             </div>
@@ -380,15 +379,15 @@ const PlansPage = () => {
                       <div className="flex items-center gap-4 mt-2 pt-2 border-t border-white/5">
                         <div className="flex items-center gap-1">
                           <BarChart3 size={10} className="text-blue-400" />
-                          <span className="text-[10px] text-gray-400">{aiTier.signals} signaux/j</span>
+                          <span className="text-[10px] text-gray-400">{aiTier.signals === 'unlimited' ? t('plans.table.unlimited') : aiTier.signals} {t('plans.table.signalsPerDay')}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <TrendingUp size={10} className="text-green-400" />
-                          <span className="text-[10px] text-gray-400">+{selectedModel?.phase1_profit_target || 10}% obj.</span>
+                          <span className="text-[10px] text-gray-400">+{selectedModel?.phase1_profit_target || 10}% {t('plans.table.objective')}</span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Star size={10} className="text-yellow-400" />
-                          <span className="text-[10px] text-gray-400">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')} réc.</span>
+                          <span className="text-[10px] text-gray-400">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')} {t('plans.table.reward')}</span>
                         </div>
                       </div>
                     </div>
@@ -404,28 +403,28 @@ const PlansPage = () => {
                           <div className="bg-dark-200/50 rounded-lg p-2.5">
                             <div className="flex items-center gap-1.5 mb-1">
                               <TrendingUp size={12} className="text-primary-500" />
-                              <span className="text-[10px] text-gray-400">Objectif Ét.1</span>
+                              <span className="text-[10px] text-gray-400">{t('plans.table.objectiveStep1')}</span>
                             </div>
                             <p className="text-sm font-bold text-white">{formatCurrency(phase1Target)}</p>
                           </div>
                           <div className="bg-dark-200/50 rounded-lg p-2.5">
                             <div className="flex items-center gap-1.5 mb-1">
                               <TrendingUp size={12} className="text-primary-500" />
-                              <span className="text-[10px] text-gray-400">Objectif Ét.2</span>
+                              <span className="text-[10px] text-gray-400">{t('plans.table.objectiveStep2')}</span>
                             </div>
                             <p className="text-sm font-bold text-white">{formatCurrency(phase2Target)}</p>
                           </div>
                           <div className="bg-dark-200/50 rounded-lg p-2.5">
                             <div className="flex items-center gap-1.5 mb-1">
                               <TrendingDown size={12} className="text-orange-500" />
-                              <span className="text-[10px] text-gray-400">Perte Max/Jour</span>
+                              <span className="text-[10px] text-gray-400">{t('plans.table.dailyMaxLoss')}</span>
                             </div>
                             <p className="text-sm font-bold text-white">{formatCurrency(dailyLoss)}</p>
                           </div>
                           <div className="bg-dark-200/50 rounded-lg p-2.5">
                             <div className="flex items-center gap-1.5 mb-1">
                               <TrendingDown size={12} className="text-red-500" />
-                              <span className="text-[10px] text-gray-400">Perte Max Totale</span>
+                              <span className="text-[10px] text-gray-400">{t('plans.table.totalMaxLoss')}</span>
                             </div>
                             <p className="text-sm font-bold text-white">{formatCurrency(maxLoss)}</p>
                           </div>
@@ -436,16 +435,16 @@ const PlansPage = () => {
                           <div className="flex items-center gap-3">
                             <div className="flex items-center gap-1">
                               <Calendar size={12} className="text-gray-400" />
-                              <span className="text-gray-400">{selectedModel?.min_trading_days || 4}j min</span>
+                              <span className="text-gray-400">{selectedModel?.min_trading_days || 4}{t('plans.table.minDays')}</span>
                             </div>
                             <div className="flex items-center gap-1">
                               <Clock size={12} className="text-gray-400" />
-                              <span className="text-gray-400">Illimité</span>
+                              <span className="text-gray-400">{t('plans.table.unlimited')}</span>
                             </div>
                           </div>
                           <div className="flex items-center gap-1">
                             <RefreshCw size={12} className="text-green-500" />
-                            <span className="text-green-400 font-medium">100% remb.</span>
+                            <span className="text-green-400 font-medium">{t('plans.table.refundPercent')} {t('plans.table.refundLabel')}</span>
                           </div>
                         </div>
 
@@ -462,7 +461,7 @@ const PlansPage = () => {
                           }`}
                         >
                           <Rocket size={18} />
-                          Commencer le Challenge
+                          {t('plans.table.startChallenge')}
                           <ArrowRight size={16} />
                         </button>
                       </div>
@@ -476,11 +475,11 @@ const PlansPage = () => {
                 <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500">
                   <div className="flex items-center gap-1">
                     <Shield size={10} className="text-green-500" />
-                    <span>Paiement sécurisé</span>
+                    <span>{t('plans.table.securePayment')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Zap size={10} className="text-yellow-500" />
-                    <span>Activation instantanée</span>
+                    <span>{t('plans.table.instantActivation')}</span>
                   </div>
                 </div>
               </div>
@@ -491,7 +490,7 @@ const PlansPage = () => {
               {/* Scroll hint for tablet */}
               <div className="flex md:hidden items-center justify-center gap-2 mb-3 text-gray-500 text-xs">
                 <span>←</span>
-                <span>Glissez pour voir tous les plans</span>
+                <span>{t('plans.table.swipeHint')}</span>
                 <span>→</span>
               </div>
 
@@ -504,7 +503,7 @@ const PlansPage = () => {
                     <div className="h-[100px]" />
 
                     {/* Row Labels */}
-                    {ROW_LABELS.map((row) => {
+                    {ROW_LABELS_CONFIG.map((row) => {
                       const IconComponent = row.icon
                       return (
                         <div
@@ -512,14 +511,14 @@ const PlansPage = () => {
                           className={`flex items-center gap-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}
                         >
                           <IconComponent size={14} className={`${row.iconColor} flex-shrink-0`} />
-                          <span className="text-gray-300 text-xs lg:text-sm font-medium leading-tight">{row.label}</span>
+                          <span className="text-gray-300 text-xs lg:text-sm font-medium leading-tight">{t(`plans.rowLabels.${row.labelKey}`)}</span>
                         </div>
                       )
                     })}
 
                     {/* Payment note */}
                     <div className="pt-6 pr-2">
-                      <p className="text-xs text-gray-500 leading-relaxed">Paiements uniques.</p>
+                      <p className="text-xs text-gray-500 leading-relaxed">{t('plans.table.paymentNote')}</p>
                     </div>
                   </div>
 
@@ -527,7 +526,7 @@ const PlansPage = () => {
                   <div className="flex-1 flex gap-1.5 lg:gap-2 items-start">
                     {sortedSizes.map((size) => {
                       const aiTierKey = getAiTierForBalance(size.balance)
-                      const aiTier = AI_TIERS[aiTierKey]
+                      const aiTier = AI_TIERS_CONFIG[aiTierKey]
                       const hasDiscount = size.is_on_sale && size.sale_price
                       const isBestValue = size.balance === 100000
 
@@ -546,21 +545,21 @@ const PlansPage = () => {
                               {isBestValue && (
                                 <div className="flex items-center justify-center gap-1">
                                   <Flame size={12} />
-                                  <span>Meilleur rapport</span>
+                                  <span>{t('plans.table.bestValue')}</span>
                                 </div>
                               )}
                             </div>
 
                             {/* Header */}
                             <div className="text-center py-3 h-[72px] flex flex-col justify-center">
-                              <p className="text-gray-400 text-xs mb-1">Compte</p>
+                              <p className="text-gray-400 text-xs mb-1">{t('plans.table.account')}</p>
                               <p className="text-lg lg:text-xl font-bold text-white">{formatCurrency(size.balance)}</p>
                             </div>
 
                             {/* Data Rows */}
-                            {ROW_LABELS.map((row) => (
+                            {ROW_LABELS_CONFIG.map((row) => (
                               <div key={row.key} className={`flex items-center justify-center text-center px-2 ${row.key === 'profit' || row.key === 'ai' ? 'h-14' : 'h-11'}`}>
-                                {getCellValue(size, selectedModel, row.key, showNumbers)}
+                                {getCellValue(size, selectedModel, row.key, showNumbers, t)}
                               </div>
                             ))}
 
@@ -590,7 +589,7 @@ const PlansPage = () => {
                                 }`}
                               >
                                 <Rocket size={14} />
-                                Commencer
+                                {t('plans.table.start')}
                               </button>
                             </div>
                           </div>
@@ -602,7 +601,7 @@ const PlansPage = () => {
                               <span className="text-white font-bold text-sm">€{Math.round(size.balance * 0.05).toLocaleString('fr-FR')}</span>
                             </div>
                             <div className="flex items-center justify-center gap-1 text-gray-500 text-xs mt-1">
-                              <span>Récompense moy.</span>
+                              <span>{t('plans.table.avgReward')}</span>
                               <Info size={10} className="cursor-help" />
                             </div>
                           </div>
@@ -629,13 +628,13 @@ const PlansPage = () => {
           <div className="text-center mb-8 sm:mb-12">
             <span className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 sm:py-2 glass-card rounded-full text-purple-400 text-xs sm:text-sm font-medium mb-3 sm:mb-4">
               <Brain size={14} className="sm:w-4 sm:h-4" />
-              Technologie Avancée
+              {t('plans.aiFeatures.badge')}
             </span>
             <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-2 sm:mb-3 px-2">
-              Comment notre <span className="gradient-text-animated">IA</span> predit le marche
+              {t('plans.aiFeatures.title')} <span className="gradient-text-animated">{t('plans.aiFeatures.titleHighlight')}</span> {t('plans.aiFeatures.titleEnd')}
             </h2>
             <p className="text-gray-400 max-w-xl mx-auto text-xs sm:text-sm md:text-base px-2">
-              Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.
+              {t('plans.aiFeatures.description')}
             </p>
           </div>
 
@@ -644,32 +643,32 @@ const PlansPage = () => {
               <div className="w-8 h-8 sm:w-14 sm:h-14 bg-purple-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
                 <Brain className="text-purple-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-purple-400 transition-colors">Deep Learning</h3>
-              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Réseaux de neurones analysant les patterns historiques.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-purple-400 transition-colors">{t('plans.aiFeatures.deepLearning.title')}</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">{t('plans.aiFeatures.deepLearning.description')}</p>
             </div>
 
             <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-blue-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
               <div className="w-8 h-8 sm:w-14 sm:h-14 bg-blue-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
                 <BarChart3 className="text-blue-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-blue-400 transition-colors">Analyse Technique</h3>
-              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">150+ indicateurs calculés en temps réel.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-blue-400 transition-colors">{t('plans.aiFeatures.technicalAnalysis.title')}</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">{t('plans.aiFeatures.technicalAnalysis.description')}</p>
             </div>
 
             <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-green-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
               <div className="w-8 h-8 sm:w-14 sm:h-14 bg-green-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
                 <TrendingUp className="text-green-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-green-400 transition-colors">Sentiment</h3>
-              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Analyse des news et réseaux sociaux.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-green-400 transition-colors">{t('plans.aiFeatures.sentiment.title')}</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">{t('plans.aiFeatures.sentiment.description')}</p>
             </div>
 
             <div className="group glass-card p-2.5 sm:p-5 rounded-lg sm:rounded-2xl hover:border-orange-500/30 transition-all duration-500 ease-out sm:hover:scale-105 sm:hover:-translate-y-2 cursor-pointer">
               <div className="w-8 h-8 sm:w-14 sm:h-14 bg-orange-500/20 rounded-lg flex items-center justify-center mb-1.5 sm:mb-4 transition-all duration-300 group-hover:scale-110">
                 <Zap className="text-orange-400 w-4 h-4 sm:w-5 sm:h-5" />
               </div>
-              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-orange-400 transition-colors">Rapide</h3>
-              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">Signaux générés en millisecondes.</p>
+              <h3 className="text-white font-semibold text-xs sm:text-base mb-0.5 sm:mb-2 group-hover:text-orange-400 transition-colors">{t('plans.aiFeatures.fast.title')}</h3>
+              <p className="text-gray-400 text-[10px] sm:text-sm leading-relaxed hidden sm:block">{t('plans.aiFeatures.fast.description')}</p>
             </div>
           </div>
         </div>
@@ -686,15 +685,15 @@ const PlansPage = () => {
           <div className="relative px-3 sm:px-4 text-center">
             <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2 sm:py-2.5 glass-card rounded-full mb-4 sm:mb-6">
               <Sparkles className="text-yellow-400 animate-pulse" size={14} />
-              <span className="text-white text-xs sm:text-sm font-medium">Essai gratuit disponible</span>
+              <span className="text-white text-xs sm:text-sm font-medium">{t('plans.freeTrial.badge')}</span>
             </div>
 
             <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-white mb-3 sm:mb-4 px-2">
-              Pas encore pret a vous lancer?
+              {t('plans.freeTrial.title')}
             </h2>
 
             <p className="text-white/80 mb-5 sm:mb-6 md:mb-8 max-w-lg mx-auto text-xs sm:text-sm md:text-base px-2">
-              Essayez notre plateforme gratuitement pendant 7 jours avec un compte demo de $5,000
+              {t('plans.freeTrial.description')}
             </p>
 
             <Link
@@ -702,7 +701,7 @@ const PlansPage = () => {
               className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3 sm:py-3.5 md:py-4 bg-white text-dark-400 rounded-lg sm:rounded-xl font-bold hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:scale-105 active:scale-95 min-h-[48px] w-full sm:w-auto max-w-xs sm:max-w-none mx-auto touch-manipulation"
             >
               <Star size={16} className="sm:w-[18px] sm:h-[18px] md:w-5 md:h-5" />
-              <span className="text-sm sm:text-base">Commencer l'essai gratuit</span>
+              <span className="text-sm sm:text-base">{t('plans.freeTrial.cta')}</span>
               <ArrowRight size={14} className="sm:w-4 sm:h-4 md:w-[18px] md:h-[18px]" />
             </Link>
 
@@ -710,15 +709,15 @@ const PlansPage = () => {
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 mt-6 sm:mt-8 md:mt-10 pt-4 sm:pt-6 border-t border-white/10">
               <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
                 <Shield size={14} className="text-green-400 sm:w-4 sm:h-4" />
-                <span>Paiement sécurisé</span>
+                <span>{t('plans.freeTrial.securePayment')}</span>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
                 <RefreshCw size={14} className="text-blue-400 sm:w-4 sm:h-4" />
-                <span>Remboursement 100%</span>
+                <span>{t('plans.freeTrial.fullRefund')}</span>
               </div>
               <div className="flex items-center gap-1.5 sm:gap-2 text-white/60 text-xs sm:text-sm">
                 <Zap size={14} className="text-yellow-400 sm:w-4 sm:h-4" />
-                <span>Activation instantanée</span>
+                <span>{t('plans.freeTrial.instantActivation')}</span>
               </div>
             </div>
           </div>

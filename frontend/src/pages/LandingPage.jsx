@@ -167,43 +167,43 @@ const LandingPage = () => {
   const features = [
     {
       icon: TrendingUp,
-      title: "15% Profit Split",
-      description: "Recevez 15% des profits même pendant la phase de challenge.",
+      title: t('landing.features.profitSplit.title'),
+      description: t('landing.features.profitSplit.description'),
       color: 'text-primary-500',
       bg: 'bg-primary-500/10'
     },
     {
       icon: Clock,
-      title: "Pas de Limite de Temps",
-      description: "Prenez tout le temps nécessaire pour réussir votre challenge.",
+      title: t('landing.features.noTimeLimit.title'),
+      description: t('landing.features.noTimeLimit.description'),
       color: 'text-blue-500',
       bg: 'bg-blue-500/10'
     },
     {
       icon: Newspaper,
-      title: "News Trading",
-      description: "Le trading pendant les annonces économiques est autorisé.",
+      title: t('landing.features.newsTrading.title'),
+      description: t('landing.features.newsTrading.description'),
       color: 'text-purple-500',
       bg: 'bg-purple-500/10'
     },
     {
       icon: Zap,
-      title: "Spreads & Levier",
-      description: "Spreads compétitifs et effet de levier jusqu'à 1:100.",
+      title: t('landing.features.spreads.title'),
+      description: t('landing.features.spreads.description'),
       color: 'text-orange-500',
       bg: 'bg-orange-500/10'
     },
     {
       icon: RotateCcw,
-      title: "Option Reset",
-      description: "Réinitialisez votre compte à prix réduit si vous échouez.",
+      title: t('landing.features.reset.title'),
+      description: t('landing.features.reset.description'),
       color: 'text-red-500',
       bg: 'bg-red-500/10'
     },
     {
       icon: Trophy,
-      title: "Compétitions Mensuelles",
-      description: "Participez et gagnez des comptes challenge gratuits.",
+      title: t('landing.features.competitions.title'),
+      description: t('landing.features.competitions.description'),
       color: 'text-yellow-500',
       bg: 'bg-yellow-500/10'
     }
@@ -249,34 +249,34 @@ const LandingPage = () => {
 
   const faqs = [
     {
-      question: 'Qu\'est-ce que le prop trading?',
-      answer: 'Le prop trading (proprietary trading) vous permet de trader avec le capital d\'une societe de trading. Vous passez d\'abord un challenge pour prouver vos competences, puis vous recevez un compte finance et gardez jusqu\'a 80% des profits.'
+      question: t('landing.faqSection.q1'),
+      answer: t('landing.faqSection.a1')
     },
     {
-      question: 'Comment fonctionne le challenge TradeSense?',
-      answer: 'Choisissez un plan (Starter, Pro ou Elite), atteignez l\'objectif de profit (8-10%) sans depasser les limites de perte. Une fois reussi, vous recevez un compte finance avec le meme capital.'
+      question: t('landing.faqSection.q2'),
+      answer: t('landing.faqSection.a2')
     },
     {
-      question: 'Quels marches puis-je trader?',
-      answer: 'Vous pouvez trader les actions US (Apple, Tesla, Google...), les cryptomonnaies (Bitcoin, Ethereum...) et les actions marocaines (IAM, Attijariwafa Bank...).'
+      question: t('landing.faqSection.q3'),
+      answer: t('landing.faqSection.a3')
     },
     {
-      question: 'Comment fonctionnent les signaux IA?',
-      answer: 'Notre IA analyse les donnees de marche en temps reel, les indicateurs techniques et le sentiment pour generer des signaux d\'achat/vente avec un niveau de confiance. Vous recevez aussi des alertes de risque.'
+      question: t('landing.faqSection.q4'),
+      answer: t('landing.faqSection.a4')
     },
     {
-      question: 'Puis-je retirer mes profits?',
-      answer: 'Oui! Une fois votre challenge reussi et votre compte finance, vous pouvez retirer vos profits chaque mois. Vous gardez jusqu\'a 80% de vos gains.'
+      question: t('landing.faqSection.q5'),
+      answer: t('landing.faqSection.a5')
     }
   ]
 
   const benefits = [
-    { icon: Sparkles, text: 'Signaux IA et alertes de risque en temps reel' },
-    { icon: Globe, text: 'Donnees de marche reelles (US, Crypto & Maroc)' },
-    { icon: GraduationCap, text: 'Masterclass et formation trading incluses' },
-    { icon: Users, text: 'Communaute active de traders' },
-    { icon: Headphones, text: 'Support 24/7 en francais et arabe' },
-    { icon: Lock, text: 'Plateforme securisee et fiable' }
+    { icon: Sparkles, text: t('landing.benefits.aiSignals') },
+    { icon: Globe, text: t('landing.benefits.marketData') },
+    { icon: GraduationCap, text: t('landing.benefits.masterclass') },
+    { icon: Users, text: t('landing.benefits.community') },
+    { icon: Headphones, text: t('landing.benefits.support') },
+    { icon: Lock, text: t('landing.benefits.secure') }
   ]
 
   const partners = [
@@ -658,7 +658,7 @@ const LandingPage = () => {
                 <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-primary-500/20 flex items-center justify-center">
                   <Sparkles className="text-primary-400" size={12} />
                 </div>
-                <span className="text-xs sm:text-sm font-medium text-primary-400">Powered by AI</span>
+                <span className="text-xs sm:text-sm font-medium text-primary-400">{t('landing.hero.poweredByAI')}</span>
                 <span className="relative flex h-2 w-2 sm:h-2.5 sm:w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 sm:h-2.5 sm:w-2.5 bg-primary-500"></span>
@@ -667,20 +667,20 @@ const LandingPage = () => {
 
               {/* Title with Gradient Animation */}
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-white mb-4 sm:mb-6 leading-tight">
-                <span className="block">Devenez Trader</span>
+                <span className="block">{t('landing.hero.becomeTrader')}</span>
                 <span className="gradient-text-animated block">
                   <TypingText
-                    texts={['Rentable', 'Pro', 'Expert']}
+                    texts={t('landing.hero.typingTexts', { returnObjects: true }) || ['Rentable', 'Pro', 'Expert']}
                   />
                 </span>
-                <span className="text-glow block mt-1 sm:mt-2 text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">avec l'Intelligence Artificielle</span>
+                <span className="text-glow block mt-1 sm:mt-2 text-lg sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl">{t('landing.hero.withAI')}</span>
               </h1>
 
               {/* Subtitle */}
               <p className="text-sm sm:text-lg md:text-xl text-gray-300 mx-auto lg:mx-0 mb-8 sm:mb-10 leading-relaxed max-w-[90%] sm:max-w-lg md:max-w-2xl">
-                La premiere plateforme de prop trading au Maroc. Passez votre challenge, recevez jusqu'a{' '}
-                <span className="text-primary-400 font-semibold">$200,000</span> de capital et gardez{' '}
-                <span className="text-primary-400 font-semibold">80% des profits</span>.
+                {t('landing.hero.description')}{' '}
+                <span className="text-primary-400 font-semibold">$200,000</span> {t('landing.hero.capital')}{' '}
+                <span className="text-primary-400 font-semibold">80% {t('landing.hero.profits')}</span>.
               </p>
 
               {/* CTA Buttons with Glow Effects */}
@@ -690,7 +690,7 @@ const LandingPage = () => {
                   className="group relative flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-sm sm:text-base md:text-lg transition-all duration-300 shadow-glow hover:shadow-glow-lg hover:scale-105 pulse-ring overflow-hidden min-h-[48px] touch-manipulation"
                 >
                   <span className="relative z-10 flex items-center gap-2">
-                    Commencer le Challenge
+                    {t('landing.hero.cta')}
                     <ArrowRight className="group-hover:translate-x-1 transition-transform" size={18} />
                   </span>
                 </Link>
@@ -699,13 +699,13 @@ const LandingPage = () => {
                   className="group flex items-center justify-center gap-2 px-5 sm:px-6 md:px-8 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight min-h-[48px] touch-manipulation"
                 >
                   <Zap className="text-primary-400 group-hover:scale-110 transition-transform" size={18} />
-                  Essai Gratuit 7 Jours
+                  {t('landing.hero.freeTrial')}
                 </Link>
                 <button className="group flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 sm:py-4 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-sm sm:text-base transition-all duration-300 hover:scale-105 min-h-[48px] touch-manipulation">
                   <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-primary-500/20 transition-colors">
                     <Play size={14} fill="white" className="text-white ml-0.5" />
                   </div>
-                  Demo
+                  {t('landing.hero.demo')}
                 </button>
               </div>
 
@@ -729,7 +729,7 @@ const LandingPage = () => {
                       </div>
                       <div>
                         <p className="text-white text-lg font-bold">+248</p>
-                        <p className="text-xs text-gray-400">New traders today</p>
+                        <p className="text-xs text-gray-400">{t('landing.floatingCards.newTraders')}</p>
                       </div>
                     </div>
                   </div>
@@ -742,7 +742,7 @@ const LandingPage = () => {
                       </div>
                       <div>
                         <p className="text-green-400 text-lg font-bold">$12,450</p>
-                        <p className="text-xs text-gray-400">Just paid out</p>
+                        <p className="text-xs text-gray-400">{t('landing.floatingCards.justPaidOut')}</p>
                       </div>
                     </div>
                   </div>
@@ -756,26 +756,26 @@ const LandingPage = () => {
                         <TrendingUp className="text-primary-500" size={22} />
                       </div>
                       <div>
-                        <p className="text-white font-semibold">Live AI Signal</p>
-                        <p className="text-xs text-gray-400">Just now</p>
+                        <p className="text-white font-semibold">{t('landing.floatingCards.liveAISignal')}</p>
+                        <p className="text-xs text-gray-400">{t('landing.floatingCards.justNow')}</p>
                       </div>
                     </div>
-                    <span className="px-4 py-1.5 bg-green-500/20 text-green-400 text-sm font-bold rounded-full border border-green-500/30">BUY</span>
+                    <span className="px-4 py-1.5 bg-green-500/20 text-green-400 text-sm font-bold rounded-full border border-green-500/30">{t('signals.buy')}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-2xl font-bold text-white">EUR/USD</p>
-                      <p className="text-sm text-gray-400">Entry: 1.0892</p>
+                      <p className="text-sm text-gray-400">{t('landing.floatingCards.entry')}: 1.0892</p>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-green-400">+2.4%</p>
-                      <p className="text-xs text-gray-400">Target: 1.0940</p>
+                      <p className="text-xs text-gray-400">{t('landing.floatingCards.target')}: 1.0940</p>
                     </div>
                   </div>
                   <div className="mt-4 h-2.5 bg-dark-200 rounded-full overflow-hidden">
                     <div className="h-full w-[94%] bg-gradient-to-r from-primary-500 to-primary-400 rounded-full animate-pulse" />
                   </div>
-                  <p className="text-xs text-gray-500 mt-2 text-center">AI Confidence: 94%</p>
+                  <p className="text-xs text-gray-500 mt-2 text-center">{t('landing.floatingCards.aiConfidence')}: 94%</p>
                 </div>
 
                 {/* Bottom Row - Stats */}
@@ -788,7 +788,7 @@ const LandingPage = () => {
                       </div>
                       <div>
                         <p className="text-purple-400 text-lg font-bold">92%</p>
-                        <p className="text-xs text-gray-400">Win rate</p>
+                        <p className="text-xs text-gray-400">{t('landing.floatingCards.winRate')}</p>
                       </div>
                     </div>
                   </div>
@@ -801,7 +801,7 @@ const LandingPage = () => {
                       </div>
                       <div>
                         <p className="text-orange-400 text-lg font-bold">12</p>
-                        <p className="text-xs text-gray-400">Active signals</p>
+                        <p className="text-xs text-gray-400">{t('landing.floatingCards.activeSignals')}</p>
                       </div>
                     </div>
                   </div>
@@ -822,7 +822,7 @@ const LandingPage = () => {
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={10000} suffix="+" />
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm mt-1">Traders Actifs</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('landing.stats.activeTraders')}</div>
               </div>
             </div>
 
@@ -835,7 +835,7 @@ const LandingPage = () => {
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   $<AnimatedCounter end={2} suffix="M+" />
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm mt-1">Capital Distribue</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('landing.stats.capitalDistributed')}</div>
               </div>
             </div>
 
@@ -848,7 +848,7 @@ const LandingPage = () => {
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={85} suffix="%" />
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm mt-1">Taux de Reussite</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('landing.stats.successRate')}</div>
               </div>
             </div>
 
@@ -861,7 +861,7 @@ const LandingPage = () => {
                 <div className="text-xl sm:text-2xl md:text-3xl font-bold text-white">
                   <AnimatedCounter end={80} suffix="%" />
                 </div>
-                <div className="text-gray-400 text-xs sm:text-sm mt-1">Profit Split</div>
+                <div className="text-gray-400 text-xs sm:text-sm mt-1">{t('landing.stats.profitSplit')}</div>
               </div>
             </div>
           </div>
@@ -924,7 +924,7 @@ const LandingPage = () => {
         <div className="relative z-10 w-full overflow-hidden">
           <div className="text-center mb-16">
             <p className="text-sm font-bold text-primary-500 uppercase tracking-[0.3em] drop-shadow-lg animate-pulse">
-              Tradez sur les meilleurs marchés
+              {t('landing.markets.title')}
             </p>
           </div>
 
@@ -968,13 +968,13 @@ const LandingPage = () => {
           <div className={`text-center mb-16 transition-all duration-700 ${featuresVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <span className="inline-flex items-center gap-2 px-4 py-2 bg-primary-500/10 text-primary-400 rounded-full text-sm font-medium mb-6 border border-primary-500/20">
               <Sparkles size={14} />
-              Fonctionnalites
+              {t('landing.features.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-4">
-              Tout ce qu'il vous faut pour <span className="gradient-text-animated">reussir</span>
+              {t('landing.features.title')} <span className="gradient-text-animated">{t('landing.features.titleHighlight')}</span>
             </h2>
             <p className="text-gray-400 max-w-2xl mx-auto text-lg">
-              Une plateforme complete pour devenir un trader professionnel finance
+              {t('landing.features.subtitle')}
             </p>
           </div>
 
@@ -1017,17 +1017,15 @@ const LandingPage = () => {
               <div>
                 <div className="inline-flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-full mb-6 border border-green-500/20">
                   <Shield className="text-green-500" size={20} />
-                  <span className="text-green-400 text-sm font-semibold">Garantie de Paiement</span>
+                  <span className="text-green-400 text-sm font-semibold">{t('landing.guarantee.badge')}</span>
                 </div>
 
                 <h2 className="text-2xl md:text-3xl lg:text-5xl font-bold text-white mb-6">
-                  Paiements Garantis en <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">24 Heures</span>
+                  {t('landing.guarantee.title')} <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-500">{t('landing.guarantee.titleHighlight')}</span>
                 </h2>
 
                 <p className="text-gray-300 text-lg mb-8 leading-relaxed">
-                  Nous sommes tellement confiants dans notre processus que nous vous
-                  payons <span className="text-white font-bold">$1,000</span> si votre
-                  paiement prend plus de 24 heures.
+                  {t('landing.guarantee.description')} <span className="text-white font-bold">$1,000</span> {t('landing.guarantee.penalty')}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4">
@@ -1036,8 +1034,8 @@ const LandingPage = () => {
                       <Zap className="text-yellow-400" size={24} />
                     </div>
                     <div>
-                      <p className="text-white font-bold">5 Heures</p>
-                      <p className="text-gray-400 text-sm">Temps moyen</p>
+                      <p className="text-white font-bold">{t('landing.guarantee.avgTime')}</p>
+                      <p className="text-gray-400 text-sm">{t('landing.guarantee.avgTimeLabel')}</p>
                     </div>
                   </div>
 
@@ -1048,8 +1046,8 @@ const LandingPage = () => {
                       <Shield className="text-primary-500" size={24} />
                     </div>
                     <div>
-                      <p className="text-white font-bold">100% Sécurisé</p>
-                      <p className="text-gray-400 text-sm">Garantie</p>
+                      <p className="text-white font-bold">{t('landing.guarantee.secure')}</p>
+                      <p className="text-gray-400 text-sm">{t('landing.guarantee.secureLabel')}</p>
                     </div>
                   </div>
                 </div>
@@ -1063,8 +1061,8 @@ const LandingPage = () => {
                         <CheckCircle className="text-green-500" size={20} />
                       </div>
                       <div>
-                        <p className="text-white font-bold">Paiement Approuvé</p>
-                        <p className="text-green-500 text-sm">Il y a 2 minutes</p>
+                        <p className="text-white font-bold">{t('landing.guarantee.paymentApproved')}</p>
+                        <p className="text-green-500 text-sm">{t('landing.guarantee.minutesAgo')}</p>
                       </div>
                     </div>
                     <span className="text-white font-mono font-bold">$12,450.00</span>
@@ -1075,8 +1073,8 @@ const LandingPage = () => {
                       <div className="h-full bg-green-500 w-full animate-pulse" />
                     </div>
                     <div className="flex justify-between text-xs text-gray-400">
-                      <span>Traitement</span>
-                      <span>Complété</span>
+                      <span>{t('landing.guarantee.processing')}</span>
+                      <span>{t('landing.guarantee.completed')}</span>
                     </div>
                   </div>
                 </div>
@@ -1098,10 +1096,10 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${stepsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <span className="inline-block px-4 py-1 bg-blue-500/10 text-blue-500 rounded-full text-sm font-medium mb-4">
-              Comment ca marche
+              {t('landing.steps.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              4 etapes pour devenir trader finance
+              {t('landing.steps.title')}
             </h2>
           </div>
 
@@ -1159,13 +1157,13 @@ const LandingPage = () => {
           <div className={`text-center mb-12 transition-all duration-700 ${pricingVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full mb-4">
               <Brain className="text-purple-400" size={18} />
-              <span className="text-purple-400 text-sm font-medium">Propulsé par l'IA</span>
+              <span className="text-purple-400 text-sm font-medium">{t('landing.pricingSection.badge')}</span>
             </div>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Choisissez Votre <span className="text-primary-500">Challenge</span>
+              {t('landing.pricingSection.title')} <span className="text-primary-500">{t('landing.pricingSection.titleHighlight')}</span>
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              Plus votre plan est élevé, plus l'IA est puissante et précise. Jusqu'à 96% de précision!
+              {t('landing.pricingSection.subtitle')}
             </p>
           </div>
 
@@ -1184,7 +1182,7 @@ const LandingPage = () => {
           {/* Swipe hint for mobile */}
           <div className="flex sm:hidden items-center justify-center gap-2 mb-4 text-gray-500 text-xs">
             <span>←</span>
-            <span>Glissez pour changer</span>
+            <span>{t('landing.pricingSection.swipeHint')}</span>
             <span>→</span>
           </div>
 
@@ -1209,7 +1207,7 @@ const LandingPage = () => {
                     <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white text-xs font-semibold py-1.5 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <Flame size={12} />
-                        <span>Meilleur choix</span>
+                        <span>{t('landing.pricingSection.bestValue')}</span>
                       </div>
                     </div>
                   )}
@@ -1217,7 +1215,7 @@ const LandingPage = () => {
                   <div className="p-5">
                     {/* Account Size */}
                     <div className="text-center mb-4">
-                      <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">Compte</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs mb-1">{t('landing.pricingSection.account')}</p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
                         ${plan.balance.toLocaleString('fr-FR')}
                       </p>
@@ -1237,7 +1235,7 @@ const LandingPage = () => {
 
                     {/* Signals */}
                     <div className="text-center mb-4">
-                      <p className="text-gray-500 dark:text-gray-400 text-xs">Signaux/jour</p>
+                      <p className="text-gray-500 dark:text-gray-400 text-xs">{t('landing.pricingSection.signalsPerDay')}</p>
                       <p className="text-gray-900 dark:text-white font-semibold">{plan.signals}</p>
                     </div>
 
@@ -1265,7 +1263,7 @@ const LandingPage = () => {
                         }`}
                     >
                       <Rocket size={14} />
-                      Commencer
+                      {t('landing.pricingSection.start')}
                     </Link>
                   </div>
                   </div>
@@ -1280,7 +1278,7 @@ const LandingPage = () => {
               to="/pricing"
               className="inline-flex items-center gap-2 px-6 py-3 bg-white dark:bg-dark-100 text-gray-900 dark:text-white rounded-xl font-semibold transition-all hover:scale-105 hover:shadow-lg border border-gray-200 dark:border-dark-200"
             >
-              Voir tous les détails
+              {t('landing.pricingSection.viewDetails')}
               <ArrowRight size={18} />
             </Link>
           </div>
@@ -1295,10 +1293,10 @@ const LandingPage = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className={`text-center mb-16 transition-all duration-700 ${testimonialsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
             <span className="inline-block px-4 py-1 bg-yellow-500/10 text-yellow-500 rounded-full text-sm font-medium mb-4">
-              Temoignages
+              {t('landing.testimonials.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Ce que disent nos traders
+              {t('landing.testimonials.title')}
             </h2>
           </div>
 
@@ -1421,12 +1419,12 @@ const LandingPage = () => {
           </div>
 
           <h2 className="text-xl md:text-2xl lg:text-3xl font-medium text-white mb-4 px-4">
-            Vous avez encore des questions ? Demandez a <span className="font-bold">TradeSense AI !</span>
+            {t('landing.aiAssistant.title')} <span className="font-bold">{t('landing.aiAssistant.titleHighlight')}</span>
           </h2>
 
           <p className="text-gray-400 text-sm mb-6 flex items-center justify-center gap-2">
-            {isMuted && <span className="text-red-400">(Son coupé)</span>}
-            Parlez ou écrivez pour obtenir des réponses instantanées
+            {isMuted && <span className="text-red-400">({t('landing.aiAssistant.soundOff')})</span>}
+            {t('landing.aiAssistant.subtitle')}
           </p>
 
           {/* Text Chat Input */}
@@ -1438,7 +1436,7 @@ const LandingPage = () => {
                   value={chatInput}
                   onChange={(e) => setChatInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Tapez votre question ici..."
+                  placeholder={t('landing.aiAssistant.typeHere')}
                   className="flex-1 bg-transparent text-white placeholder-gray-500 px-4 py-2 outline-none"
                   disabled={isProcessing}
                 />
@@ -1458,7 +1456,7 @@ const LandingPage = () => {
             <div className="bg-[#1E293B]/80 backdrop-blur-md rounded-2xl border border-white/10 p-6 max-w-2xl mx-auto shadow-2xl">
               {transcript && (
                 <div className="text-left mb-4">
-                  <p className="text-sm text-gray-500 mb-1">Vous avez dit :</p>
+                  <p className="text-sm text-gray-500 mb-1">{t('landing.aiAssistant.youSaid')}</p>
                   <p className="text-white text-lg">"{transcript}"</p>
                 </div>
               )}
@@ -1468,7 +1466,7 @@ const LandingPage = () => {
                   <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce" />
                   <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce delay-100" />
                   <div className="w-2 h-2 rounded-full bg-blue-400 animate-bounce delay-200" />
-                  <span className="text-sm ml-2">Analyse en cours...</span>
+                  <span className="text-sm ml-2">{t('landing.aiAssistant.analyzing')}</span>
                 </div>
               )}
 
@@ -1498,7 +1496,7 @@ const LandingPage = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div>
               <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-6 md:mb-8">
-                Pourquoi choisir TradeSense AI?
+                {t('landing.benefits.title')}
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                 {benefits.map((benefit, index) => {
@@ -1517,7 +1515,7 @@ const LandingPage = () => {
                 to="/register"
                 className="inline-flex items-center justify-center gap-2 mt-6 md:mt-8 w-full sm:w-auto px-6 md:px-8 py-4 bg-white text-primary-600 rounded-xl font-semibold text-base md:text-lg hover:bg-gray-100 transition-all hover:scale-105"
               >
-                Creer un Compte Gratuit
+                {t('landing.benefits.createAccount')}
                 <ChevronRight size={20} />
               </Link>
             </div>
@@ -1575,10 +1573,10 @@ const LandingPage = () => {
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <span className="inline-block px-4 py-1 bg-purple-500/10 text-purple-500 rounded-full text-sm font-medium mb-4">
-              FAQ
+              {t('landing.faqSection.badge')}
             </span>
             <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              Questions frequentes
+              {t('landing.faqSection.title')}
             </h2>
           </div>
 
@@ -1624,16 +1622,16 @@ const LandingPage = () => {
           {/* Badge with Pulse */}
           <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full glass-card mb-8 animate-pulse-green">
             <Zap className="text-primary-400" size={18} />
-            <span className="text-sm font-semibold text-primary-400">Offre Limitee - 20% de reduction</span>
+            <span className="text-sm font-semibold text-primary-400">{t('landing.finalCta.badge')}</span>
           </div>
 
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
-            Pret a commencer votre parcours de{' '}
-            <span className="gradient-text-animated">trader?</span>
+            {t('landing.finalCta.title')}{' '}
+            <span className="gradient-text-animated">{t('landing.finalCta.titleHighlight')}</span>
           </h2>
 
           <p className="text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
-            Rejoignez plus de <span className="text-white font-semibold">10,000 traders</span> qui font confiance a TradeSense AI
+            {t('landing.finalCta.subtitle')} <span className="text-white font-semibold">{t('landing.finalCta.traderCount')}</span> {t('landing.finalCta.subtitleEnd')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4">
@@ -1642,7 +1640,7 @@ const LandingPage = () => {
               className="group relative w-full sm:w-auto flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 bg-primary-500 hover:bg-primary-400 text-black font-bold rounded-xl text-base md:text-lg transition-all duration-300 shadow-glow-lg hover:shadow-glow-xl hover:scale-105 pulse-ring"
             >
               <span className="relative z-10 flex items-center gap-2">
-                Voir les Challenges
+                {t('landing.finalCta.viewChallenges')}
                 <ArrowRight className="group-hover:translate-x-1 transition-transform" size={22} />
               </span>
             </Link>
@@ -1651,28 +1649,28 @@ const LandingPage = () => {
               className="w-full sm:w-auto flex items-center justify-center gap-2 px-8 md:px-10 py-4 md:py-5 glass-card hover:bg-white/10 text-white rounded-xl font-semibold text-base md:text-lg transition-all duration-300 hover:scale-105 spotlight"
             >
               <Users size={20} />
-              Creer un Compte Gratuit
+              {t('landing.finalCta.createAccount')}
             </Link>
           </div>
 
           <p className="mt-8 text-sm text-gray-500 flex items-center justify-center gap-2">
             <Lock size={14} />
-            Pas de carte bancaire requise pour l'inscription
+            {t('landing.finalCta.noCard')}
           </p>
 
           {/* Trust Icons */}
           <div className="mt-12 flex flex-wrap items-center justify-center gap-4 md:gap-8 opacity-50">
             <div className="flex items-center gap-2 text-gray-400">
               <Shield size={20} />
-              <span className="text-sm">SSL Secured</span>
+              <span className="text-sm">{t('landing.finalCta.sslSecured')}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-400">
               <CheckCircle size={20} />
-              <span className="text-sm">24h Payouts</span>
+              <span className="text-sm">{t('landing.finalCta.payouts24h')}</span>
             </div>
             <div className="flex items-center gap-2 text-gray-400">
               <Globe size={20} />
-              <span className="text-sm">Global Support</span>
+              <span className="text-sm">{t('landing.finalCta.globalSupport')}</span>
             </div>
           </div>
         </div>

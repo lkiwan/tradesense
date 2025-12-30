@@ -15,7 +15,7 @@ const Community = () => {
       content: 'Je viens de passer mon challenge Elite! 12.5% de profit en 3 semaines. Merci a la communaute pour les conseils!',
       likes: 45,
       comments: 12,
-      badge: 'Funded Trader'
+      badgeKey: 'community.badges.fundedTrader'
     },
     {
       author: 'ForexMaster',
@@ -24,7 +24,7 @@ const Community = () => {
       content: 'Nouvelle strategie: j\'utilise les signaux IA de TradeSense combines avec mon analyse technique. Resultats impressionnants!',
       likes: 78,
       comments: 23,
-      badge: 'Top Trader'
+      badgeKey: 'community.badges.topTrader'
     },
     {
       author: 'CryptoKing',
@@ -33,15 +33,15 @@ const Community = () => {
       content: 'Qui trade le BTC ce soir? Les signaux indiquent une possible hausse. Partagez vos analyses!',
       likes: 34,
       comments: 45,
-      badge: null
+      badgeKey: null
     }
   ]
 
   const groups = [
-    { name: 'Traders Debutants', members: 2340, icon: Users },
-    { name: 'Analyse Technique', members: 1890, icon: TrendingUp },
-    { name: 'Crypto Trading', members: 3210, icon: Star },
-    { name: 'Forex Experts', members: 1560, icon: Award }
+    { nameKey: 'community.groups.beginners', members: 2340, icon: Users },
+    { nameKey: 'community.groups.technicalAnalysis', members: 1890, icon: TrendingUp },
+    { nameKey: 'community.groups.cryptoTrading', members: 3210, icon: Star },
+    { nameKey: 'community.groups.forexExperts', members: 1560, icon: Award }
   ]
 
   const topMembers = [
@@ -57,14 +57,13 @@ const Community = () => {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-purple-500/10 rounded-full mb-4">
             <Users className="text-purple-500" size={20} />
-            <span className="text-purple-500 font-medium">Zone Communautaire</span>
+            <span className="text-purple-500 font-medium">{t('community.badge')}</span>
           </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            {t('nav.community')}
+            {t('community.title')}
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-            Connectez-vous avec des milliers de traders, partagez des strategies
-            et apprenez des meilleurs
+            {t('community.subtitle')}
           </p>
         </div>
 
@@ -79,7 +78,7 @@ const Community = () => {
                 </div>
                 <input
                   type="text"
-                  placeholder="Partagez votre experience de trading..."
+                  placeholder={t('community.sharePlaceholder')}
                   className="flex-1 bg-gray-100 dark:bg-dark-200 rounded-full px-6 py-3 text-gray-600 dark:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500"
                 />
               </div>
@@ -99,9 +98,9 @@ const Community = () => {
                       <span className="font-semibold text-gray-900 dark:text-white">
                         {post.author}
                       </span>
-                      {post.badge && (
+                      {post.badgeKey && (
                         <span className="px-2 py-0.5 text-xs bg-primary-500/10 text-primary-500 rounded-full">
-                          {post.badge}
+                          {t(post.badgeKey)}
                         </span>
                       )}
                       <span className="text-gray-500 text-sm">• {post.time}</span>
@@ -133,7 +132,7 @@ const Community = () => {
             {/* Groups */}
             <div className="bg-white dark:bg-dark-100 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-                Groupes Populaires
+                {t('community.popularGroups')}
               </h3>
               <div className="space-y-3">
                 {groups.map((group, index) => {
@@ -149,10 +148,10 @@ const Community = () => {
                         </div>
                         <div>
                           <div className="font-medium text-gray-900 dark:text-white text-sm">
-                            {group.name}
+                            {t(group.nameKey)}
                           </div>
                           <div className="text-xs text-gray-500">
-                            {group.members.toLocaleString()} membres
+                            {group.members.toLocaleString()} {t('community.members')}
                           </div>
                         </div>
                       </div>
@@ -168,7 +167,7 @@ const Community = () => {
             {/* Top Members */}
             <div className="bg-white dark:bg-dark-100 rounded-xl p-6">
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">
-                Top Traders du Mois
+                {t('community.topTradersMonth')}
               </h3>
               <div className="space-y-3">
                 {topMembers.map((member, index) => (
@@ -200,11 +199,11 @@ const Community = () => {
               <div className="flex items-center gap-2 mb-4">
                 <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
                 <span className="font-semibold text-gray-900 dark:text-white">
-                  En ligne maintenant
+                  {t('community.onlineNow')}
                 </span>
               </div>
               <p className="text-2xl font-bold text-primary-500">
-                1,234 traders
+                1,234 {t('community.traders')}
               </p>
             </div>
           </div>

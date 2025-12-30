@@ -68,79 +68,404 @@
   },
   "landing": {
     "hero": {
-      "title": "La Premiere Prop Firm Assistee par IA pour l'Afrique",
-      "subtitle": "TradeSense AI combine analyses IA en temps reel, outils de trading intelligents et education premium",
+      "title": "La Première Prop Firm Assistée par IA pour l'Afrique",
+      "subtitle": "TradeSense AI combine analyses IA en temps réel, outils de trading intelligents et éducation premium",
       "cta": "Commencer le Challenge",
-      "watchDemo": "Voir la Demo"
+      "watchDemo": "Voir la Démo",
+      "poweredByAI": "Propulsé par l'IA",
+      "becomeTrader": "Devenez Trader",
+      "withAI": "avec l'Intelligence Artificielle",
+      "typingTexts": ["Rentable", "Pro", "Expert"],
+      "description": "La première plateforme de prop trading au Maroc. Passez votre challenge, recevez jusqu'à",
+      "capital": "de capital et gardez",
+      "profits": "des profits",
+      "freeTrial": "Essai Gratuit 7 Jours",
+      "demo": "Démo"
+    },
+    "floatingCards": {
+      "newTraders": "Nouveaux traders aujourd'hui",
+      "justPaidOut": "Vient d'être payé",
+      "liveAISignal": "Signal IA en Direct",
+      "justNow": "À l'instant",
+      "entry": "Entrée",
+      "target": "Objectif",
+      "aiConfidence": "Confiance IA",
+      "winRate": "Taux de réussite",
+      "activeSignals": "Signaux actifs"
+    },
+    "stats": {
+      "activeTraders": "Traders Actifs",
+      "capitalDistributed": "Capital Distribué",
+      "successRate": "Taux de Réussite",
+      "aiAccuracy": "Précision IA",
+      "profitSplit": "Partage des Profits"
     },
     "features": {
       "title": "Pourquoi Choisir TradeSense?",
       "ai": {
         "title": "Assistance IA",
-        "description": "Signaux Achat/Vente en temps reel, plans de trade personnalises et alertes de risque"
+        "description": "Signaux Achat/Vente en temps réel, plans de trade personnalisés et alertes de risque"
       },
       "news": {
-        "title": "Hub d'Actualites",
-        "description": "Actualites financieres en temps reel et resumes de marche crees par l'IA"
+        "title": "Hub d'Actualités",
+        "description": "Actualités financières en temps réel et résumés de marché créés par l'IA"
       },
       "community": {
-        "title": "Communaute",
-        "description": "Discutez, partagez des strategies et apprenez des experts"
+        "title": "Communauté",
+        "description": "Discutez, partagez des stratégies et apprenez des experts"
       },
       "education": {
         "title": "MasterClass",
-        "description": "Cours du debutant a l'avance avec webinaires et quiz"
+        "description": "Cours du débutant à l'avancé avec webinaires et quiz"
       }
     },
     "howItWorks": {
-      "title": "Comment Ca Marche?",
+      "title": "Comment Ça Marche?",
       "step1": {
         "title": "Choisissez Votre Challenge",
-        "description": "Selectionnez un plan adapte a votre niveau"
+        "description": "Sélectionnez un plan adapté à votre niveau"
       },
       "step2": {
-        "title": "Tradez sur Donnees Reelles",
-        "description": "Accedez aux marches US et marocains en temps reel"
+        "title": "Tradez sur Données Réelles",
+        "description": "Accédez aux marchés US et marocains en temps réel"
       },
       "step3": {
         "title": "Atteignez l'Objectif",
-        "description": "Gagnez 10% sans depasser les limites de perte"
+        "description": "Gagnez 10% sans dépasser les limites de perte"
       },
       "step4": {
-        "title": "Devenez Finance",
-        "description": "Reussissez le challenge et devenez trader finance"
+        "title": "Devenez Financé",
+        "description": "Réussissez le challenge et devenez trader financé"
       }
     },
     "testimonials": {
+      "title": "Ce que disent nos traders",
+      "badge": "Témoignages",
       "roles": {
         "professional": "Trader Professionnel",
-        "funded": "Trader Finance",
-        "beginner": "Trader Debutant"
+        "funded": "Trader Financé",
+        "beginner": "Trader Débutant"
       }
+    },
+    "features": {
+      "badge": "Fonctionnalités",
+      "title": "Tout ce qu'il vous faut pour",
+      "titleHighlight": "réussir",
+      "subtitle": "Une plateforme complète pour devenir un trader professionnel financé",
+      "profitSplit": {
+        "title": "15% Profit Split",
+        "description": "Recevez 15% des profits même pendant la phase de challenge."
+      },
+      "noTimeLimit": {
+        "title": "Pas de Limite de Temps",
+        "description": "Prenez tout le temps nécessaire pour réussir votre challenge."
+      },
+      "newsTrading": {
+        "title": "News Trading",
+        "description": "Le trading pendant les annonces économiques est autorisé."
+      },
+      "spreads": {
+        "title": "Spreads & Levier",
+        "description": "Spreads compétitifs et effet de levier jusqu'à 1:100."
+      },
+      "reset": {
+        "title": "Option Reset",
+        "description": "Réinitialisez votre compte à prix réduit si vous échouez."
+      },
+      "competitions": {
+        "title": "Compétitions Mensuelles",
+        "description": "Participez et gagnez des comptes challenge gratuits."
+      }
+    },
+    "markets": {
+      "title": "Tradez sur les meilleurs marchés"
+    },
+    "guarantee": {
+      "badge": "Garantie de Paiement",
+      "title": "Paiements Garantis en",
+      "titleHighlight": "24 Heures",
+      "description": "Nous sommes tellement confiants dans notre processus que nous vous payons",
+      "penalty": "si votre paiement prend plus de 24 heures.",
+      "avgTime": "5 Heures",
+      "avgTimeLabel": "Temps moyen",
+      "secure": "100% Sécurisé",
+      "secureLabel": "Garantie",
+      "paymentApproved": "Paiement Approuvé",
+      "minutesAgo": "Il y a 2 minutes",
+      "processing": "Traitement",
+      "completed": "Complété"
+    },
+    "steps": {
+      "badge": "Comment ça marche",
+      "title": "4 étapes pour devenir trader financé"
+    },
+    "pricingSection": {
+      "badge": "Propulsé par l'IA",
+      "title": "Choisissez Votre",
+      "titleHighlight": "Challenge",
+      "subtitle": "Plus votre plan est élevé, plus l'IA est puissante et précise. Jusqu'à 96% de précision!",
+      "bestValue": "Meilleur choix",
+      "account": "Compte",
+      "signalsPerDay": "Signaux/jour",
+      "start": "Commencer",
+      "viewDetails": "Voir tous les détails",
+      "swipeHint": "Glissez pour changer"
+    },
+    "aiAssistant": {
+      "title": "Vous avez encore des questions ? Demandez à",
+      "titleHighlight": "TradeSense AI !",
+      "subtitle": "Parlez ou écrivez pour obtenir des réponses instantanées",
+      "soundOff": "Son coupé",
+      "activateSound": "Activer le son",
+      "muteSound": "Couper le son",
+      "typeHere": "Tapez votre question ici...",
+      "youSaid": "Vous avez dit :",
+      "analyzing": "Analyse en cours..."
+    },
+    "benefits": {
+      "title": "Pourquoi choisir TradeSense AI?",
+      "aiSignals": "Signaux IA et alertes de risque en temps réel",
+      "marketData": "Données de marché réelles (US, Crypto & Maroc)",
+      "masterclass": "Masterclass et formation trading incluses",
+      "community": "Communauté active de traders",
+      "support": "Support 24/7 en français et arabe",
+      "secure": "Plateforme sécurisée et fiable",
+      "createAccount": "Créer un Compte Gratuit"
+    },
+    "faqSection": {
+      "badge": "FAQ",
+      "title": "Questions fréquentes",
+      "q1": "Qu'est-ce que le prop trading?",
+      "a1": "Le prop trading (proprietary trading) vous permet de trader avec le capital d'une société de trading. Vous passez d'abord un challenge pour prouver vos compétences, puis vous recevez un compte financé et gardez jusqu'à 80% des profits.",
+      "q2": "Comment fonctionne le challenge TradeSense?",
+      "a2": "Choisissez un plan (Starter, Pro ou Elite), atteignez l'objectif de profit (8-10%) sans dépasser les limites de perte. Une fois réussi, vous recevez un compte financé avec le même capital.",
+      "q3": "Quels marchés puis-je trader?",
+      "a3": "Vous pouvez trader les actions US (Apple, Tesla, Google...), les cryptomonnaies (Bitcoin, Ethereum...) et les actions marocaines (IAM, Attijariwafa Bank...).",
+      "q4": "Comment fonctionnent les signaux IA?",
+      "a4": "Notre IA analyse les données de marché en temps réel, les indicateurs techniques et le sentiment pour générer des signaux d'achat/vente avec un niveau de confiance. Vous recevez aussi des alertes de risque.",
+      "q5": "Puis-je retirer mes profits?",
+      "a5": "Oui! Une fois votre challenge réussi et votre compte financé, vous pouvez retirer vos profits chaque mois. Vous gardez jusqu'à 80% de vos gains."
+    },
+    "finalCta": {
+      "badge": "Offre Limitée - 20% de réduction",
+      "title": "Prêt à commencer votre parcours de",
+      "titleHighlight": "trader?",
+      "subtitle": "Rejoignez plus de",
+      "traderCount": "10,000 traders",
+      "subtitleEnd": "qui font confiance à TradeSense AI",
+      "viewChallenges": "Voir les Challenges",
+      "createAccount": "Créer un Compte Gratuit",
+      "noCard": "Pas de carte bancaire requise pour l'inscription",
+      "sslSecured": "SSL Sécurisé",
+      "payouts24h": "Paiements 24h",
+      "globalSupport": "Support Global"
     }
   },
   "dashboard": {
     "title": "Tableau de Bord Trading",
     "balance": "Solde",
+    "equity": "Équité",
     "profit": "Profit",
-    "dailyLoss": "Perte Journaliere",
+    "profitTarget": "Objectif de Profit",
+    "drawdown": "Drawdown",
+    "dailyLoss": "Perte Journalière",
     "totalDrawdown": "Drawdown Total",
     "status": "Statut",
     "openTrade": "Ouvrir un Trade",
     "closeTrade": "Fermer",
+    "close": "Fermer",
     "buy": "Acheter",
     "sell": "Vendre",
-    "quantity": "Quantite",
+    "quantity": "Quantité",
     "symbol": "Symbole",
+    "type": "Type",
+    "size": "Taille",
+    "entry": "Entrée",
+    "exit": "Sortie",
+    "current": "Actuel",
+    "sl": "SL",
+    "tp": "TP",
+    "pnl": "P&L",
+    "action": "Action",
     "noActiveChallenge": "Pas de challenge actif",
-    "purchaseChallenge": "Achetez un challenge pour commencer"
+    "purchaseChallenge": "Achetez un challenge pour commencer",
+    "winRate": "Taux de Réussite",
+    "profitFactor": "Facteur de Profit",
+    "totalTrades": "Total Trades",
+    "bestTrade": "Meilleur Trade",
+    "worstTrade": "Pire Trade",
+    "avgWin": "Gain Moyen",
+    "avgLoss": "Perte Moyenne",
+    "openPositions": "Positions Ouvertes",
+    "recentTrades": "Trades Récents",
+    "viewAll": "Voir Tout",
+    "openTradingPlatform": "Ouvrir la Plateforme de Trading",
+    "unrealized": "Non Réalisé",
+    "target": "Objectif",
+    "limit": "Limite",
+    "fromStart": "depuis le début"
+  },
+  "accounts": {
+    "title": "Mon Compte",
+    "welcomeBack": "Bon retour",
+    "trackProgress": "Suivez la progression de votre challenge",
+    "startTrading": "Commencer à Trader",
+    "startYourJourney": "Commencez Votre Parcours",
+    "joinThousands": "Rejoignez des milliers de traders qui ont prouvé leurs compétences et obtenu des comptes financés.",
+    "getFundedNow": "Obtenez un Financement",
+    "freeTrial": "Essai Gratuit",
+    "phase1": "Phase 1",
+    "phase2": "Phase 2",
+    "funded": "Financé",
+    "active": "Actif",
+    "currentBalance": "Solde Actuel",
+    "accountDevelopment": "Évolution du Compte",
+    "yourJourney": "Votre Parcours",
+    "trial": "Essai",
+    "noTradeHistory": "Pas d'historique de trades",
+    "completeTrades": "Effectuez des trades pour voir votre courbe d'équité",
+    "tradingCredentials": "Identifiants de Trading",
+    "login": "Login",
+    "password": "Mot de passe",
+    "server": "Serveur",
+    "downloadMT5": "Télécharger MT5",
+    "accountDetails": "Détails du Compte",
+    "planType": "Type de Plan",
+    "platform": "Plateforme",
+    "accountSize": "Taille du Compte",
+    "addons": "Options",
+    "resetChallenge": "Réinitialiser le Challenge",
+    "extendTime": "Prolonger le Temps",
+    "upgradeAccount": "Améliorer le Compte",
+    "specialOffer": "Offre Spéciale",
+    "offCode": "20% de réduction avec le code TRADER20",
+    "viewOffers": "Voir les Offres",
+    "history": "Historique",
+    "trades": "Trades",
+    "best": "Meilleur",
+    "worst": "Pire",
+    "open": "Ouvert",
+    "fromStart": "depuis le début",
+    "profitTarget": "Objectif de Profit",
+    "drawdown": "Drawdown",
+    "winRate": "Taux de Réussite",
+    "profitFactor": "Facteur de Profit",
+    "avgWin": "Gain Moyen",
+    "avgLoss": "Perte Moyenne",
+    "openPositions": "Positions Ouvertes",
+    "symbol": "Symbole",
+    "type": "Type",
+    "entry": "Entrée",
+    "exit": "Sortie",
+    "pnl": "P&L",
+    "account": "Compte",
+    "of": "sur"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "subtitle": "Gérez vos préférences et historique de notifications",
+    "tabs": {
+      "notifications": "Notifications",
+      "preferences": "Préférences",
+      "devices": "Appareils"
+    },
+    "enableNotifications": "Activer les Notifications",
+    "notificationsBlocked": "Notifications Bloquées",
+    "notificationsBlockedDesc": "Vous avez bloqué les notifications. Veuillez les activer dans les paramètres de votre navigateur.",
+    "markAllRead": "Tout marquer comme lu",
+    "noNotifications": "Pas encore de notifications",
+    "filters": {
+      "all": "Toutes les Notifications",
+      "unread": "Non lues",
+      "trading": "Trading",
+      "challenges": "Challenges",
+      "payouts": "Paiements",
+      "social": "Social",
+      "security": "Sécurité"
+    },
+    "preferences": {
+      "pushNotifications": "Notifications Push",
+      "enabled": "Activées",
+      "disabled": "Désactivées",
+      "trading": "Trading",
+      "tradeExecuted": "Trade Exécuté",
+      "tradeClosed": "Trade Fermé",
+      "priceAlerts": "Alertes de Prix",
+      "challenges": "Challenges",
+      "challengeUpdates": "Mises à jour Challenge",
+      "challengePassed": "Challenge Réussi",
+      "challengeFailed": "Challenge Échoué",
+      "payouts": "Paiements",
+      "payoutUpdates": "Mises à jour Paiement",
+      "social": "Social",
+      "newFollowers": "Nouveaux Abonnés",
+      "copyTrade": "Copy Trade",
+      "ideaInteractions": "Interactions Idées",
+      "system": "Système",
+      "securityAlerts": "Alertes de Sécurité",
+      "systemAnnouncements": "Annonces Système",
+      "marketing": "Marketing",
+      "quietHours": "Heures Silencieuses",
+      "enableQuietHours": "Activer les Heures Silencieuses",
+      "start": "Début",
+      "end": "Fin"
+    },
+    "devices": {
+      "noDevices": "Aucun appareil enregistré",
+      "enableToRegister": "Activez les notifications pour enregistrer cet appareil",
+      "active": "Actif",
+      "inactive": "Inactif",
+      "lastUsed": "Dernière utilisation"
+    },
+    "testNotification": "Notification de Test",
+    "testNotificationDesc": "Envoyez une notification de test pour vérifier votre configuration",
+    "sendTest": "Envoyer Test"
   },
   "signals": {
     "title": "Signaux IA",
-    "buy": "ACHAT",
-    "sell": "VENTE",
-    "hold": "ATTENDRE",
+    "subtitle": "Analyse technique + signaux basés sur le sentiment",
+    "aiActive": "IA Active",
+    "refresh": "Actualiser",
+    "loading": "Chargement des données...",
+    "totalSignals": "Total Signaux",
+    "activeSignals": "actifs",
+    "winRate": "Taux de Réussite",
+    "totalReturn": "Rendement Total",
+    "lastDays": "Derniers {{days}} jours",
+    "profitFactor": "Facteur de Profit",
+    "avgWinLoss": "Moy +{{win}}% / -{{loss}}%",
+    "quickAnalysis": "Analyse Rapide",
+    "technicalAnalysis": "Analyse Technique",
+    "sentimentAnalysis": "Analyse de Sentiment",
+    "signal": "Signal",
+    "score": "Score",
     "confidence": "Confiance",
+    "entry": "Entrée",
+    "stopLoss": "Stop Loss",
+    "takeProfit": "Take Profit",
+    "reasons": "Raisons",
+    "sentiment": "Sentiment",
+    "articles": "Articles",
+    "keywords": "Mots-clés",
+    "filter": "Filtre",
+    "all": "Tout",
+    "buy": "Achat",
+    "sell": "Vente",
+    "active": "Actifs",
+    "wins": "Gains",
+    "losses": "Pertes",
+    "period": "Période",
+    "topSignals": "Meilleurs Signaux",
+    "signalHistory": "Historique des Signaux",
+    "noSignals": "Aucun signal trouvé",
+    "status": {
+      "active": "Actif",
+      "targetHit": "Objectif Atteint",
+      "stopped": "Stoppé",
+      "expired": "Expiré",
+      "closed": "Fermé"
+    },
+    "hold": "ATTENDRE",
     "reason": "Raison"
   },
   "pricing": {
@@ -251,12 +576,12 @@
   },
   "checkout": {
     "title": "Paiement",
-    "selectMethod": "Choisissez votre methode de paiement",
+    "selectMethod": "Choisissez votre méthode de paiement",
     "paypal": "Payer avec PayPal",
     "cmi": "Carte Bancaire (CMI)",
     "crypto": "Crypto (BTC/USDT)",
     "processing": "Traitement en cours...",
-    "success": "Paiement reussi!",
+    "success": "Paiement réussi!",
     "error": "Erreur de paiement"
   },
   "leaderboard": {
@@ -274,27 +599,121 @@
   "auth": {
     "login": {
       "title": "Connexion",
+      "subtitle": "Connectez-vous pour accéder à votre dashboard",
       "email": "Email",
       "password": "Mot de passe",
       "submit": "Se connecter",
       "noAccount": "Pas de compte?",
-      "register": "Inscrivez-vous"
+      "register": "Inscrivez-vous",
+      "rememberMe": "Se souvenir de moi",
+      "forgotPassword": "Mot de passe oublié?",
+      "orContinueWith": "ou continuer avec",
+      "demo": "démo",
+      "useDemoAccount": "Utiliser le compte démo",
+      "secureLogin": "Connexion sécurisée avec support 2FA",
+      "welcomeBack": "Bienvenue!",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "completeCaptcha": "Veuillez compléter la vérification CAPTCHA",
+      "pleaseWait": "Veuillez patienter {{time}} avant de réessayer",
+      "loginFailed": "Échec de la connexion",
+      "tooManyAttempts": "Trop de tentatives",
+      "wait": "Patientez {{time}}",
+      "banned": {
+        "title": "Ce compte a été banni",
+        "reason": "Raison: {{reason}}",
+        "contactSupport": "Si vous pensez qu'il s'agit d'une erreur, veuillez contacter le support."
+      }
     },
     "register": {
       "title": "Inscription",
+      "subtitle": "Créez votre compte et commencez à trader",
       "username": "Nom d'utilisateur",
       "email": "Email",
       "password": "Mot de passe",
       "confirmPassword": "Confirmer le mot de passe",
+      "preferredLanguage": "Langue préférée",
       "submit": "S'inscrire",
-      "hasAccount": "Deja un compte?",
-      "login": "Connectez-vous"
+      "hasAccount": "Déjà un compte?",
+      "login": "Connectez-vous",
+      "orSignUpWith": "ou s'inscrire avec",
+      "joinTraders": "Rejoignez plus de 10 000 traders dans le monde",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "passwordsNotMatch": "Les mots de passe ne correspondent pas",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 6 caractères",
+      "acceptTerms": "Veuillez accepter les conditions générales",
+      "success": "Compte créé avec succès! Veuillez vérifier votre email.",
+      "tooManyAttempts": "Trop de tentatives d'inscription. Veuillez réessayer plus tard.",
+      "failed": "L'inscription a échoué. Veuillez réessayer.",
+      "waitHour": "Trop de tentatives. Veuillez attendre une heure avant de réessayer.",
+      "checkConnection": "L'inscription a échoué. Veuillez vérifier votre connexion.",
+      "terms": {
+        "iAccept": "J'accepte les",
+        "termsOfUse": "conditions d'utilisation",
+        "and": "et la",
+        "privacyPolicy": "politique de confidentialité"
+      },
+      "passwordStrength": {
+        "weak": "Faible",
+        "medium": "Moyen",
+        "strong": "Fort"
+      }
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié?",
+      "subtitle": "Entrez votre email et nous vous enverrons un lien pour réinitialiser votre mot de passe",
+      "emailLabel": "Adresse email",
+      "enterEmail": "Veuillez entrer votre adresse email",
+      "sending": "Envoi en cours...",
+      "sendResetLink": "Envoyer le lien de réinitialisation",
+      "backToLogin": "Retour à la connexion",
+      "secureRecovery": "Récupération de mot de passe sécurisée",
+      "success": {
+        "title": "Vérifiez votre email",
+        "message": "Si un compte existe avec l'email",
+        "messageContinue": "vous recevrez un lien de réinitialisation sous peu.",
+        "note": "Note:",
+        "noteText": "Le lien expirera dans 1 heure. Si vous ne voyez pas l'email, vérifiez votre dossier spam."
+      }
+    },
+    "resetPassword": {
+      "title": "Réinitialiser votre mot de passe",
+      "subtitle": "Entrez votre nouveau mot de passe ci-dessous",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "newPasswordPlaceholder": "Entrez le nouveau mot de passe",
+      "confirmPasswordPlaceholder": "Confirmez le nouveau mot de passe",
+      "minCharacters": "Minimum 8 caractères",
+      "resetting": "Réinitialisation...",
+      "resetButton": "Réinitialiser le mot de passe",
+      "secureReset": "Réinitialisation sécurisée",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "passwordMinLength": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordsNotMatch": "Les mots de passe ne correspondent pas",
+      "resetSuccess": "Mot de passe réinitialisé avec succès!",
+      "resetFailed": "Échec de la réinitialisation du mot de passe",
+      "noToken": "Aucun jeton de réinitialisation fourni. Veuillez demander un nouveau lien.",
+      "passwordStrength": {
+        "weak": "Faible",
+        "medium": "Moyen",
+        "strong": "Fort"
+      },
+      "success": {
+        "title": "Mot de passe réinitialisé",
+        "message": "Votre mot de passe a été réinitialisé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.",
+        "goToLogin": "Aller à la connexion",
+        "accountSecure": "Votre compte est sécurisé"
+      },
+      "error": {
+        "title": "Lien invalide",
+        "requestNewLink": "Demander un nouveau lien",
+        "needHelp": "Besoin d'aide? Contactez le support"
+      }
     }
   },
   "common": {
     "loading": "Chargement...",
     "error": "Erreur",
-    "success": "Succes",
+    "success": "Succès",
     "save": "Enregistrer",
     "cancel": "Annuler",
     "delete": "Supprimer",
@@ -306,7 +725,1350 @@
   },
   "status": {
     "active": "Actif",
-    "passed": "Reussi",
-    "failed": "Echoue"
+    "passed": "Réussi",
+    "failed": "Échoué"
+  },
+  "footer": {
+    "description": "La première Prop Firm assistée par IA pour l'Afrique. Tradez sur des données réelles, atteignez vos objectifs et devenez un trader financé.",
+    "platform": "Plateforme",
+    "legal": "Légal",
+    "terms": "Conditions",
+    "privacy": "Confidentialité",
+    "rules": "Règles",
+    "contact": "Contact",
+    "copyright": "Tous droits réservés.",
+    "madeWith": "Fait avec passion pour les traders africains"
+  },
+  "pricingPage": {
+    "hero": {
+      "badge": "Propulsé par l'Intelligence Artificielle",
+      "title": "Tradez avec une",
+      "titleHighlight": "IA Prédictive",
+      "description": "Notre intelligence artificielle analyse des millions de données en temps réel pour prédire les mouvements du marché. Plus votre plan est élevé, plus l'IA est puissante et précise."
+    },
+    "aiStats": {
+      "levels": "5 Niveaux",
+      "levelsDesc": "d'Intelligence IA",
+      "accuracy": "96%",
+      "accuracyDesc": "de Précision",
+      "signals": "+40",
+      "signalsDesc": "Signaux/jour"
+    },
+    "aiTiers": {
+      "title": "Niveaux d'Intelligence",
+      "starter": {
+        "name": "IA Starter",
+        "description": "Algorithme de base"
+      },
+      "basic": {
+        "name": "IA Basic",
+        "description": "Analyse technique avancée"
+      },
+      "advanced": {
+        "name": "IA Advanced",
+        "description": "Machine Learning optimisé"
+      },
+      "pro": {
+        "name": "IA Pro",
+        "description": "Deep Learning + Sentiment"
+      },
+      "elite": {
+        "name": "IA Elite",
+        "description": "Neural Network Quantique"
+      }
+    },
+    "table": {
+      "showNumbers": "Afficher les chiffres",
+      "account": "Compte",
+      "bestValue": "Meilleur rapport",
+      "start": "Commencer",
+      "avgReward": "Récompense moy.",
+      "paymentNote": "Tous les prix sont des paiements uniques.",
+      "step1": "ÉTAPE 1",
+      "step2": "ÉTAPE 2",
+      "days": "jours",
+      "unlimited": "Illimité",
+      "yes": "Oui"
+    },
+    "rowLabels": {
+      "ai": "Intelligence Artificielle",
+      "accuracy": "Précision IA",
+      "signals": "Signaux / jour",
+      "profit": "Objectif de Profit",
+      "dailyLoss": "Perte Max Journalière",
+      "maxLoss": "Perte Max.",
+      "minDays": "Jours de Trading Min.",
+      "period": "Période de Trading",
+      "refund": "Remboursement"
+    },
+    "features": {
+      "allMarkets": "Tous les marchés",
+      "realTimeSignals": "Signaux temps réel",
+      "vipSupport": "Support VIP 24/7",
+      "institutionalAnalysis": "Analyse institutionnelle",
+      "fullApiAccess": "Accès API complet",
+      "forexCryptoIndices": "Forex + Crypto + Indices",
+      "instantAlerts": "Alertes instantanées",
+      "prioritySupport": "Support prioritaire",
+      "sentimentAnalysis": "Analyse de sentiment",
+      "forexCrypto": "Forex + Crypto",
+      "emailAlerts": "Alertes par email",
+      "dedicatedSupport": "Support dédié",
+      "backtesting": "Backtesting inclus",
+      "majorForex": "Forex majeurs",
+      "dailyAlerts": "Alertes quotidiennes",
+      "standardSupport": "Support standard",
+      "eurGbp": "EUR/USD + GBP/USD",
+      "basicSignals": "Signaux basiques",
+      "emailSupport": "Support email"
+    },
+    "aiFeatures": {
+      "badge": "Technologie Avancée",
+      "title": "Comment notre",
+      "titleHighlight": "IA",
+      "titleEnd": "prédit le marché",
+      "description": "Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.",
+      "deepLearning": {
+        "title": "Deep Learning",
+        "description": "Réseaux de neurones profonds analysant les patterns historiques sur 20 ans de données."
+      },
+      "technicalAnalysis": {
+        "title": "Analyse Technique",
+        "description": "Plus de 150 indicateurs techniques calculés en temps réel sur tous les timeframes."
+      },
+      "sentimentAnalysis": {
+        "title": "Sentiment Analysis",
+        "description": "Analyse du sentiment des news, réseaux sociaux et rapports économiques."
+      },
+      "fastExecution": {
+        "title": "Exécution Rapide",
+        "description": "Signaux générés en millisecondes pour capturer les meilleures opportunités."
+      }
+    },
+    "comparison": {
+      "badge": "Comparaison",
+      "title": "Pourquoi choisir un",
+      "titleHighlight": "plan supérieur",
+      "starter": {
+        "title": "IA Starter",
+        "level": "Niveau débutant",
+        "features": [
+          "Analyse basique EUR/USD, GBP/USD",
+          "5-10 signaux par jour",
+          "Précision de 72%",
+          "Indicateurs techniques de base"
+        ]
+      },
+      "elite": {
+        "title": "IA Elite",
+        "level": "Niveau expert",
+        "premium": "PREMIUM",
+        "features": [
+          "Tous les marchés (Forex, Crypto, Indices, Commodités)",
+          "Signaux illimités en temps réel",
+          "Précision de 96% avec Neural Network Quantique",
+          "Analyse institutionnelle + Sentiment + API"
+        ]
+      }
+    },
+    "faq": {
+      "badge": "FAQ",
+      "title": "Questions",
+      "titleHighlight": "Fréquentes",
+      "items": [
+        {
+          "q": "Comment fonctionne l'IA de trading?",
+          "a": "Notre IA utilise des algorithmes de Deep Learning et Machine Learning pour analyser des millions de points de données en temps réel. Elle détecte des patterns invisibles à l'œil humain et génère des signaux de trading avec une précision allant jusqu'à 96%."
+        },
+        {
+          "q": "Quelle est la différence entre les niveaux d'IA?",
+          "a": "Chaque niveau offre des algorithmes plus sophistiqués. L'IA Starter utilise l'analyse technique de base, tandis que l'IA Elite combine Deep Learning, analyse de sentiment et données institutionnelles pour des prédictions ultra-précises."
+        },
+        {
+          "q": "Les signaux sont-ils garantis?",
+          "a": "Aucun signal n'est garanti à 100%. Cependant, notre IA Elite affiche un taux de réussite de 96% sur les 12 derniers mois. Le trading comporte toujours des risques."
+        },
+        {
+          "q": "Puis-je upgrader mon plan?",
+          "a": "Oui! Vous pouvez upgrader votre plan à tout moment pour accéder à une IA plus puissante. La différence de prix sera calculée au prorata."
+        }
+      ]
+    },
+    "cta": {
+      "badge": "Offre limitée - Économisez jusqu'à 20%",
+      "title": "Prêt à trader avec",
+      "titleHighlight": "l'IA",
+      "description": "Rejoignez plus de 10,000 traders qui utilisent déjà notre IA pour maximiser leurs profits.",
+      "button": "Commencer avec l'IA Pro",
+      "securePayment": "Paiement sécurisé",
+      "fullRefund": "Remboursement 100%",
+      "instantActivation": "Activation instantanée"
+    }
+  },
+  "masterclass": {
+    "badge": "Centre d'Apprentissage",
+    "title": "MasterClass",
+    "subtitle": "Des cours de haute qualité pour devenir un trader professionnel, du débutant à l'expert",
+    "stats": {
+      "lessons": "Leçons",
+      "content": "De Contenu",
+      "modules": "Modules",
+      "students": "Étudiants"
+    },
+    "courses": {
+      "introTrading": {
+        "title": "Introduction au Trading",
+        "description": "Les bases du trading pour débutants"
+      },
+      "technicalAnalysis": {
+        "title": "Analyse Technique",
+        "description": "Maîtrisez les graphiques et indicateurs"
+      },
+      "riskManagement": {
+        "title": "Gestion des Risques",
+        "description": "Protégez votre capital comme un pro"
+      },
+      "tradingPsychology": {
+        "title": "Psychologie du Trading",
+        "description": "Contrôlez vos émotions pour gagner"
+      },
+      "advancedStrategies": {
+        "title": "Stratégies Avancées",
+        "description": "Techniques de trading professionnelles"
+      },
+      "algoTrading": {
+        "title": "Trading Algorithmique",
+        "description": "Automatisez vos stratégies"
+      }
+    },
+    "levels": {
+      "beginner": "Débutant",
+      "intermediate": "Intermédiaire",
+      "advanced": "Avancé",
+      "expert": "Expert",
+      "allLevels": "Tous niveaux"
+    },
+    "lessons": "leçons",
+    "comingSoon": "Bientôt Disponible",
+    "start": "Commencer",
+    "webinars": {
+      "title": "Webinaires en Direct",
+      "nextWebinar": "Prochain Webinaire: Stratégies de Trading 2025",
+      "description": "Rejoignez nos experts pour découvrir les meilleures stratégies pour cette année",
+      "registerFree": "S'inscrire Gratuitement"
+    }
+  },
+  "community": {
+    "badge": "Zone Communautaire",
+    "title": "Communauté",
+    "subtitle": "Connectez-vous avec des milliers de traders, partagez des stratégies et apprenez des meilleurs",
+    "sharePlaceholder": "Partagez votre expérience de trading...",
+    "popularGroups": "Groupes Populaires",
+    "topTradersMonth": "Top Traders du Mois",
+    "onlineNow": "En ligne maintenant",
+    "traders": "traders",
+    "members": "membres",
+    "groups": {
+      "beginners": "Traders Débutants",
+      "technicalAnalysis": "Analyse Technique",
+      "cryptoTrading": "Crypto Trading",
+      "forexExperts": "Forex Experts"
+    },
+    "badges": {
+      "fundedTrader": "Trader Financé",
+      "topTrader": "Top Trader"
+    }
+  },
+  "news": {
+    "badge": "Actualités en Direct",
+    "title": "Actualités",
+    "subtitle": "Restez informé avec les dernières actualités financières et les analyses IA",
+    "categories": {
+      "all": "Tout",
+      "stocks": "Actions",
+      "crypto": "Crypto",
+      "forex": "Forex",
+      "morocco": "Maroc"
+    },
+    "aiAnalysis": "Analyse IA",
+    "economicCalendar": "Calendrier Économique",
+    "today": "Aujourd'hui",
+    "globalMarkets": "Marchés Mondiaux",
+    "sentiment": {
+      "bullish": "Haussier",
+      "bearish": "Baissier",
+      "neutral": "Neutre"
+    }
+  },
+  "about": {
+    "badge": "À propos de TradeSense",
+    "title": "Accompagner les traders vers la réalisation de leurs",
+    "titleHighlight": "rêves",
+    "subtitle": "Nous croyons que les traders talentueux ne devraient pas être freinés par un manque de capital. Notre mission est d'identifier, financer et soutenir les traders qualifiés du monde entier.",
+    "stats": {
+      "fundedTraders": "Traders Financés",
+      "payoutsMade": "Paiements Effectués",
+      "activeUsers": "Utilisateurs Actifs",
+      "supportAvailable": "Support Disponible"
+    },
+    "story": {
+      "badge": "Notre Histoire",
+      "title": "De la Vision à la",
+      "titleHighlight": "Réalité",
+      "p1": "TradeSense est né d'une observation simple : de nombreux traders talentueux dans le monde manquent de capital pour trader professionnellement. Nous avons décidé de changer cela.",
+      "p2": "Fondée par une équipe de traders expérimentés et de professionnels de la fintech, nous avons construit une plateforme qui donne aux traders qualifiés l'accès à un capital de trading significatif sans risquer leur propre argent.",
+      "p3": "Aujourd'hui, nous avons financé des centaines de traders de plus de 50 pays, versant des millions en profits. Mais nous ne faisons que commencer.",
+      "startJourney": "Commencez Votre Parcours"
+    },
+    "globalReach": {
+      "title": "Portée Mondiale",
+      "description": "Nous soutenons les traders du monde entier, avec un support localisé en français, anglais et arabe.",
+      "countries": "Pays",
+      "languages": "Langues",
+      "support": "Support"
+    },
+    "values": {
+      "badge": "Nos Valeurs",
+      "title": "Les Principes Qui",
+      "titleHighlight": "Nous Guident",
+      "subtitle": "Tout ce que nous faisons est guidé par ces valeurs fondamentales",
+      "transparency": {
+        "title": "Transparence",
+        "description": "Règles claires, évaluation équitable et communication honnête. Pas de frais cachés ni de conditions surprises."
+      },
+      "community": {
+        "title": "Communauté",
+        "description": "Nous construisons une communauté solidaire où les traders s'entraident pour grandir et réussir."
+      },
+      "excellence": {
+        "title": "Excellence",
+        "description": "Nous fixons des standards élevés pour nous-mêmes et nos traders, poussant chacun à donner le meilleur."
+      },
+      "traderFirst": {
+        "title": "Le Trader d'Abord",
+        "description": "Chaque décision que nous prenons vise à offrir la meilleure expérience à nos traders."
+      }
+    },
+    "journey": {
+      "badge": "Notre Parcours",
+      "title": "Étapes Clés du",
+      "titleHighlight": "Chemin"
+    },
+    "team": {
+      "badge": "Notre Équipe",
+      "title": "Rencontrez les",
+      "titleHighlight": "Personnes",
+      "subtitle": "Des professionnels expérimentés dédiés à votre succès en trading",
+      "roles": {
+        "ceoFounder": "PDG & Fondateur",
+        "headTrading": "Responsable Trading",
+        "cto": "Directeur Technique",
+        "headSupport": "Responsable Support"
+      }
+    },
+    "contact": {
+      "location": "Emplacement",
+      "email": "Email",
+      "phone": "Téléphone"
+    },
+    "cta": {
+      "badge": "Rejoignez +10,000 Traders",
+      "title": "Prêt à Commencer à",
+      "titleHighlight": "Trader?",
+      "subtitle": "Rejoignez TradeSense aujourd'hui et faites le premier pas vers le trading financé.",
+      "startChallenge": "Commencez Votre Challenge"
+    }
+  },
+  "contact": {
+    "badge": "Contactez-nous",
+    "title": "Entrez en",
+    "titleHighlight": "Contact",
+    "subtitle": "Vous avez une question ou besoin d'aide ? Nous sommes là pour vous aider. Choisissez votre méthode de contact préférée ci-dessous.",
+    "methods": {
+      "emailUs": "Envoyez-nous un Email",
+      "emailDesc": "Réponse sous 24 heures",
+      "liveChat": "Chat en Direct",
+      "liveChatDesc": "Disponible 24/7",
+      "startConversation": "Démarrer une conversation",
+      "callUs": "Appelez-nous",
+      "callUsDesc": "Lun-Ven, 9h-18h CET"
+    },
+    "form": {
+      "title": "Envoyez-nous un Message",
+      "subtitle": "Nous vous répondrons sous 24 heures",
+      "yourName": "Votre Nom",
+      "emailAddress": "Adresse Email",
+      "category": "Catégorie",
+      "subject": "Sujet",
+      "message": "Message",
+      "messagePlaceholder": "Décrivez votre question ou problème en détail...",
+      "send": "Envoyer le Message",
+      "sending": "Envoi en cours..."
+    },
+    "categories": {
+      "general": "Demande Générale",
+      "support": "Support Technique",
+      "billing": "Facturation & Paiements",
+      "partnership": "Partenariat",
+      "feedback": "Feedback & Suggestions"
+    },
+    "offices": {
+      "title": "Nos Bureaux"
+    },
+    "supportHours": {
+      "title": "Heures de Support",
+      "liveChat": "Chat en Direct",
+      "emailSupport": "Support Email",
+      "phoneSupport": "Support Téléphonique",
+      "response24h": "Réponse 24h"
+    },
+    "quickLinks": {
+      "title": "Liens Rapides",
+      "faq": "Questions Fréquemment Posées",
+      "howItWorks": "Comment Ça Marche",
+      "communityForum": "Forum Communautaire"
+    },
+    "respondFast": {
+      "title": "Nous Répondons Vite",
+      "description": "Notre temps de réponse moyen est inférieur à 2 heures pendant les heures ouvrables. Nous nous engageons à vous aider à réussir."
+    },
+    "locations": {
+      "badge": "Emplacements",
+      "title": "Trouvez-nous",
+      "titleHighlight": "Partout",
+      "mapComingSoon": "Carte interactive bientôt disponible"
+    }
+  },
+  "faqPage": {
+    "badge": "Centre d'Aide",
+    "title": "Questions Fréquemment",
+    "titleHighlight": "Posées",
+    "subtitle": "Trouvez des réponses aux questions courantes sur TradeSense, nos challenges et les conditions de trading.",
+    "searchPlaceholder": "Rechercher des questions...",
+    "categories": {
+      "all": "Toutes les Questions",
+      "gettingStarted": "Premiers Pas",
+      "challenges": "Règles du Challenge",
+      "payments": "Paiements & Retraits",
+      "trading": "Trading",
+      "account": "Compte"
+    },
+    "noResults": {
+      "title": "Aucune question trouvée",
+      "description": "Essayez d'ajuster votre recherche ou filtre de catégorie."
+    },
+    "stillHaveQuestions": {
+      "badge": "Support",
+      "title": "Vous Avez Encore des",
+      "titleHighlight": "Questions?",
+      "description": "Vous ne trouvez pas ce que vous cherchez ? Notre équipe de support est là pour vous aider 24/7.",
+      "contactSupport": "Contacter le Support",
+      "liveChat": "Chat en Direct"
+    },
+    "helpfulResources": {
+      "badge": "Ressources Utiles",
+      "title": "Explorer Plus",
+      "howItWorks": {
+        "title": "Comment Ça Marche",
+        "description": "Découvrez notre processus de challenge étape par étape."
+      },
+      "pricing": {
+        "title": "Tarifs",
+        "description": "Consultez nos plans de challenge et options tarifaires."
+      },
+      "academy": {
+        "title": "Académie",
+        "description": "Ressources éducatives gratuites pour les traders."
+      }
+    }
+  },
+  "howItWorks": {
+    "badge": "Comment Ça Marche",
+    "title": "Votre Chemin pour Devenir un",
+    "titleHighlight": "Trader Financé",
+    "subtitle": "Suivez notre processus simple en 4 étapes pour prouver vos compétences de trading et accéder à un capital réel. Pas de frais cachés, pas de pièges - juste du trading pur.",
+    "startChallenge": "Commencez Votre Challenge",
+    "tryFreeTrial": "Essayer Gratuitement",
+    "process": {
+      "badge": "Le Processus",
+      "title": "4 Étapes Simples vers le",
+      "titleHighlight": "Succès"
+    },
+    "steps": {
+      "step1": {
+        "number": "01",
+        "title": "Choisissez Votre Challenge",
+        "description": "Sélectionnez parmi nos comptes Starter ($5K), Pro ($25K) ou Elite ($100K). Chacun vient avec des objectifs de profit et des règles de trading spécifiques.",
+        "details": [
+          "Pas de limite de temps",
+          "Tradez forex, crypto & actions",
+          "Spreads compétitifs à partir de 0.0 pips"
+        ]
+      },
+      "step2": {
+        "number": "02",
+        "title": "Phase 1: Évaluation",
+        "description": "Prouvez vos compétences de trading en atteignant un objectif de profit de 10% tout en respectant nos règles de gestion des risques.",
+        "details": [
+          "Objectif de profit de 10%",
+          "Drawdown max de 10%",
+          "Limite de perte journalière de 5%"
+        ]
+      },
+      "step3": {
+        "number": "03",
+        "title": "Phase 2: Vérification",
+        "description": "Confirmez votre constance avec un objectif de profit de 5%. Cette phase garantit que vous pouvez répliquer votre succès.",
+        "details": [
+          "Objectif de profit de 5%",
+          "Mêmes règles de risque",
+          "Prouvez votre constance"
+        ]
+      },
+      "step4": {
+        "number": "04",
+        "title": "Soyez Financé",
+        "description": "Félicitations ! Vous êtes maintenant un trader financé. Tradez avec du capital réel et gardez jusqu'à 80% de vos profits.",
+        "details": [
+          "Jusqu'à 80% des profits",
+          "Trading avec capital réel",
+          "Paiements mensuels"
+        ]
+      }
+    },
+    "features": {
+      "badge": "Pourquoi Nous Choisir",
+      "title": "Pourquoi les Traders Choisissent",
+      "titleHighlight": "TradeSense",
+      "subtitle": "Nous avons construit une plateforme qui met les traders en premier avec des règles justes et de vraies opportunités.",
+      "noTimeLimits": {
+        "title": "Pas de Limite de Temps",
+        "description": "Prenez votre temps pour compléter chaque phase. Pas de pression."
+      },
+      "riskManagement": {
+        "title": "Gestion des Risques",
+        "description": "Règles claires pour protéger le capital: 10% drawdown max, 5% limite journalière."
+      },
+      "profitSplit": {
+        "title": "Jusqu'à 80% des Profits",
+        "description": "Gardez la majorité des profits que vous générez en tant que trader financé."
+      },
+      "fastPayouts": {
+        "title": "Paiements Rapides",
+        "description": "Recevez vos profits sous 24 heures après demande de retrait."
+      },
+      "communitySupport": {
+        "title": "Support Communautaire",
+        "description": "Rejoignez notre communauté de traders partageant stratégies et insights."
+      },
+      "scalingProgram": {
+        "title": "Programme de Scaling",
+        "description": "Augmentez la taille de votre compte jusqu'à $300K selon vos performances."
+      }
+    },
+    "cta": {
+      "badge": "Commencez Aujourd'hui",
+      "title": "Prêt à Commencer Votre",
+      "titleHighlight": "Parcours?",
+      "subtitle": "Rejoignez des milliers de traders qui ont déjà fait le premier pas vers le trading financé. Votre carrière de trader commence ici.",
+      "viewPricing": "Voir les Tarifs",
+      "startFreeTrial": "Essai Gratuit"
+    }
+  },
+  "freeTrial": {
+    "badge": "Essai Gratuit 7 Jours",
+    "title": "Testez TradeSense",
+    "titleHighlight": "Gratuitement",
+    "subtitle": "Choisissez le plan que vous souhaitez après l'essai. Vous aurez 7 jours pour tester avec $5,000 de capital virtuel avant d'être facturé.",
+    "features": {
+      "freeDays": "7 jours gratuits",
+      "virtualCapital": "$5,000 capital virtuel",
+      "cancelAnytime": "Annulez à tout moment"
+    },
+    "choosePlan": {
+      "title": "Choisissez votre plan après l'essai",
+      "subtitle": "Vous ne serez facturé qu'après les 7 jours d'essai gratuit",
+      "afterTrial": "après l'essai",
+      "capital": "Capital"
+    },
+    "whatYouGet": {
+      "title": "Ce que vous obtenez pendant l'essai",
+      "virtualCapital": "$5,000 de capital virtuel",
+      "fullAccess": "7 jours d'accès complet",
+      "realMarkets": "Trading sur marchés réels",
+      "aiSignals": "Signaux IA inclus",
+      "fullDashboard": "Dashboard complet",
+      "sameRules": "Mêmes règles que les challenges",
+      "profitTarget": "Objectif: 10% de profit",
+      "communityAccess": "Accès à la communauté"
+    },
+    "summary": {
+      "title": "Résumé",
+      "plan": "Plan",
+      "today": "Aujourd'hui",
+      "afterDays": "Après 7 jours",
+      "paypalNotice": "Vous serez redirigé vers PayPal pour autoriser le paiement futur. Aucun montant ne sera prélevé aujourd'hui.",
+      "createAccount": "Créer un Compte et Commencer",
+      "startTrial": "Démarrer Mon Essai Gratuit",
+      "cancelNotice": "Annulez à tout moment avant la fin de l'essai",
+      "viewChallenges": "Voir les challenges"
+    },
+    "howItWorks": {
+      "title": "Comment ça marche?",
+      "step1": {
+        "title": "Choisissez un plan",
+        "description": "Sélectionnez le plan souhaité"
+      },
+      "step2": {
+        "title": "Autorisez PayPal",
+        "description": "Liez votre compte PayPal"
+      },
+      "step3": {
+        "title": "Tradez 7 jours",
+        "description": "Testez avec $5,000 virtuels"
+      },
+      "step4": {
+        "title": "Continuez ou annulez",
+        "description": "Décidez avant la fin de l'essai"
+      }
+    }
+  },
+  "economicCalendar": {
+    "title": "Calendrier Économique",
+    "subtitle": "Événements importants du marché",
+    "today": "Aujourd'hui",
+    "importance": {
+      "high": "Haute",
+      "medium": "Moyenne",
+      "low": "Faible"
+    }
+  },
+  "hallOfFame": {
+    "badge": "Nos Traders à Succès",
+    "title": "Hall of Fame",
+    "subtitle": "Découvrez nos traders financés qui ont réussi le challenge"
+  },
+  "academy": {
+    "badge": "Ressources Éducatives",
+    "title": "Académie",
+    "subtitle": "Guides et ressources de trading gratuits pour tous les niveaux"
+  },
+  "partners": {
+    "badge": "Programme de Partenariat",
+    "title": "Devenez Partenaire",
+    "subtitle": "Gagnez des commissions en référant des traders"
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "subtitle": "Gérez vos informations personnelles",
+    "accountVerified": "Compte vérifié",
+    "trades": "Trades",
+    "winRate": "Taux de Réussite",
+    "challenges": "Challenges",
+    "personalInfo": "Informations Personnelles",
+    "edit": "Modifier",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "username": "Nom d'utilisateur",
+    "email": "Email",
+    "phone": "Téléphone",
+    "country": "Pays",
+    "achievements": "Accomplissements",
+    "badges": {
+      "firstTrade": "Premier Trade",
+      "positiveProfit": "Profit Positif",
+      "tenTrades": "10 Trades",
+      "phase1Success": "Phase 1 Réussie"
+    }
+  },
+  "settingsPage": {
+    "title": "Paramètres",
+    "subtitle": "Configurez vos préférences",
+    "notifications": {
+      "title": "Notifications",
+      "email": {
+        "label": "Notifications par email",
+        "desc": "Recevez des mises à jour par email"
+      },
+      "push": {
+        "label": "Notifications push",
+        "desc": "Notifications sur votre navigateur"
+      },
+      "tradeAlerts": {
+        "label": "Alertes de trading",
+        "desc": "Alertes pour vos signaux IA"
+      },
+      "marketNews": {
+        "label": "Actualités marché",
+        "desc": "News et analyses de marché"
+      }
+    },
+    "security": {
+      "title": "Sécurité",
+      "twoFa": {
+        "title": "Authentification 2FA",
+        "desc": "Sécurisez votre compte avec un code à 6 chiffres",
+        "enabled": "Activé",
+        "notEnabled": "Non activé",
+        "backupCodes": "Codes de secours restants",
+        "lowCodesWarning": "Peu de codes restants. Pensez à les régénérer.",
+        "regenerateCodes": "Régénérer les codes",
+        "disable": "Désactiver",
+        "enable": "Activer l'authentification 2FA",
+        "disableTitle": "Désactiver 2FA",
+        "disableWarning": "Cette action réduira la sécurité de votre compte",
+        "enterCode": "Entrez votre code à 6 chiffres pour confirmer",
+        "disabling": "Désactivation..."
+      },
+      "password": {
+        "title": "Changer le mot de passe",
+        "current": "Mot de passe actuel",
+        "new": "Nouveau mot de passe",
+        "change": "Changer le mot de passe"
+      }
+    },
+    "appearance": {
+      "title": "Apparence",
+      "darkMode": {
+        "label": "Mode sombre",
+        "desc": "Interface en mode sombre"
+      }
+    },
+    "language": {
+      "title": "Langue",
+      "french": "Français",
+      "english": "English",
+      "arabic": "العربية"
+    }
+  },
+  "supportPage": {
+    "title": "Support & Ressources",
+    "subtitle": "Obtenez de l'aide et accédez aux ressources d'apprentissage",
+    "tabs": {
+      "support": "Support",
+      "files": "Fichiers & Ressources"
+    },
+    "quickHelp": {
+      "faq": "FAQ",
+      "faqDesc": "Questions fréquentes",
+      "liveChat": "Chat en Direct",
+      "liveChatDesc": "Discussion en direct",
+      "phone": "Téléphone",
+      "phoneDesc": "Lun-Ven 9h-18h"
+    },
+    "newTicket": {
+      "title": "Nouveau Ticket",
+      "subject": "Sujet",
+      "subjectPlaceholder": "Décrivez brièvement votre problème",
+      "message": "Message",
+      "messagePlaceholder": "Expliquez votre problème en détail...",
+      "send": "Envoyer"
+    },
+    "myTickets": {
+      "title": "Mes Tickets",
+      "createdOn": "Créé le",
+      "resolved": "Résolu",
+      "inProgress": "En cours"
+    },
+    "resources": {
+      "docs": "Docs",
+      "videos": "Vidéos",
+      "types": "Types",
+      "watch": "Regarder",
+      "download": "Télécharger"
+    }
+  },
+  "referral": {
+    "title": "Programme de Parrainage",
+    "subtitle": "Invitez vos amis et gagnez des récompenses",
+    "yourLink": "Votre Lien de Parrainage",
+    "copy": "Copier",
+    "copied": "Copié!",
+    "stats": {
+      "totalReferrals": "Total Parrainages",
+      "activeReferrals": "Parrainages Actifs",
+      "earnings": "Gains",
+      "pending": "En Attente"
+    },
+    "affiliateDashboard": "Tableau de Bord Affilie",
+    "tier": "Niveau",
+    "tiers": {
+      "none": "Aucun",
+      "bronze": "Bronze",
+      "silver": "Argent",
+      "gold": "Or",
+      "platinum": "Platine"
+    },
+    "bonus": "Bonus",
+    "earnDescription": "Gagnez {{tier1}}% sur les parrainages directs et {{tier2}}% sur les sous-parrainages. Developpez votre reseau et debloquez des bonus de performance !",
+    "totalEarnings": "Gains Totaux",
+    "copyLink": "Copier le Lien",
+    "tier1Referrals": "Parrainages Niveau 1",
+    "tier2Referrals": "Parrainages Niveau 2",
+    "commission": "commission",
+    "totalRevenue": "Revenu Total",
+    "availableBalance": "Solde Disponible",
+    "tabs": {
+      "overview": "Apercu",
+      "network": "Reseau",
+      "payouts": "Paiements",
+      "materials": "Materiels"
+    },
+    "yourReferralCode": "Votre Code de Parrainage",
+    "referralLink": "Lien de Parrainage",
+    "performanceTier": "Niveau de Performance",
+    "maxTierReached": "Niveau maximum atteint !",
+    "next": "Suivant",
+    "referrals": "Parrainages",
+    "revenue": "Revenu",
+    "tierBonuses": "Bonus de Niveau",
+    "commissionRates": "Taux de Commission",
+    "tier1Direct": "Niveau 1 (Direct)",
+    "tier2SubRefs": "Niveau 2 (Sous-parrainages)",
+    "earnOnEveryPurchase": "Gagnez sur chaque achat de votre reseau. Sans limites !",
+    "marketingMaterials": "Materiels Marketing",
+    "downloadBannersDesc": "Telechargez bannieres, modeles et plus",
+    "materials": {
+      "banner728x90": "Banniere 728x90",
+      "banner300x250": "Banniere 300x250",
+      "socialMediaKit": "Kit Reseaux Sociaux",
+      "emailTemplates": "Modeles d'Email",
+      "allSizes": "Toutes tailles",
+      "templates": "5 modeles"
+    },
+    "marketingGuidelines": "Directives Marketing",
+    "guidelines": {
+      "discloseRelationship": "Toujours divulguer la relation d'affiliation",
+      "noFalseClaims": "Ne pas faire de fausses declarations sur les gains",
+      "noSpam": "Ne pas spammer ou utiliser de marketing trompeur",
+      "noBrandedKeywords": "Ne pas encherir sur les mots-cles de marque TradeSense"
+    },
+    "toast": {
+      "copiedToClipboard": "Copie dans le presse-papiers !",
+      "payoutRequestSubmitted": "Demande de paiement soumise avec succes !"
+    }
+  },
+  "kyc": {
+    "title": "Verification KYC",
+    "subtitle": "Vérifiez votre identité pour débloquer toutes les fonctionnalités",
+    "status": {
+      "pending": "En attente",
+      "verified": "Vérifié",
+      "rejected": "Rejeté",
+      "notStarted": "Non commencé"
+    },
+    "uploadId": "Télécharger Pièce d'Identité",
+    "uploadProofAddress": "Preuve d'Adresse",
+    "uploadSelfie": "Selfie avec Pièce d'Identité",
+    "submit": "Soumettre pour Vérification"
+  },
+  "payouts": {
+    "title": "Retraits",
+    "subtitle": "Gérez vos retraits et suivez l'historique de vos paiements",
+    "availableBalance": "Solde Disponible",
+    "requestPayout": "Demander un Paiement",
+    "history": "Historique des Paiements",
+    "status": {
+      "pending": "En attente",
+      "processing": "En cours",
+      "completed": "Complété",
+      "rejected": "Rejeté"
+    },
+    "method": "Méthode",
+    "amount": "Montant",
+    "date": "Date",
+    "newWithdrawal": "Nouveau Retrait",
+    "readyToWithdraw": "Prêt à retirer",
+    "totalWithdrawn": "Total Retiré",
+    "completedWithdrawals": "retraits complétés",
+    "inProgress": "En Cours",
+    "pendingProcessing": "En attente de traitement",
+    "withdrawalMethods": "Méthodes de Retrait",
+    "bankTransfer": "Virement Bancaire",
+    "bankTransferTime": "2-5 jours ouvrables",
+    "cryptoUsdt": "Crypto (USDT)",
+    "cryptoTime": "Instantané - 24h",
+    "withdrawalInfo": "Information sur les Retraits",
+    "withdrawalInfoDesc": "Les retraits sont traités tous les jours ouvrables. Le montant minimum de retrait est de 100$. Les profits doivent être générés avec un compte funded pour être éligibles au retrait.",
+    "withdrawalHistory": "Historique des Retraits",
+    "tableHeaders": {
+      "id": "ID",
+      "method": "Méthode",
+      "requestDate": "Date Demande",
+      "processedDate": "Date Traitement",
+      "status": "Statut",
+      "amount": "Montant"
+    },
+    "methodLabels": {
+      "bank": "Virement",
+      "crypto": "Crypto"
+    }
+  },
+  "transactionsPage": {
+    "title": "Transactions",
+    "subtitle": "Historique de vos transactions",
+    "type": {
+      "deposit": "Dépôt",
+      "withdrawal": "Retrait",
+      "trade": "Trade",
+      "commission": "Commission",
+      "bonus": "Bonus"
+    },
+    "status": {
+      "completed": "Complété",
+      "pending": "En attente",
+      "failed": "Échoué"
+    }
+  },
+  "tradingRules": {
+    "title": "Règles de Trading",
+    "subtitle": "Consultez les règles de votre challenge",
+    "profitTarget": "Objectif de Profit",
+    "maxDrawdown": "Drawdown Maximum",
+    "dailyLoss": "Perte Journalière Max",
+    "minTradingDays": "Jours de Trading Minimum"
+  },
+  "competitionsPage": {
+    "title": "Compétitions",
+    "subtitle": "Participez aux compétitions de trading",
+    "active": "Compétitions Actives",
+    "upcoming": "À Venir",
+    "completed": "Terminées",
+    "prize": "Prix",
+    "participants": "Participants",
+    "timeLeft": "Temps Restant",
+    "yourRank": "Votre Classement",
+    "joinNow": "Participer"
+  },
+  "certificates": {
+    "title": "Certificats",
+    "subtitle": "Vos certificats de réussite et accomplissements",
+    "download": "Télécharger",
+    "share": "Partager",
+    "noCertificates": "Aucun certificat",
+    "noCertificatesDesc": "Complétez un challenge pour obtenir votre premier certificat. Chaque étape réussie vous rapproche de devenir un trader fundé!",
+    "phase1Completed": "Phase 1 Complétées",
+    "phase2Completed": "Phase 2 Complétées",
+    "fundedAccounts": "Comptes Fundés",
+    "verified": "Vérifié",
+    "obtainedOn": "Obtenu le",
+    "certificate": "Certificat",
+    "aboutCertificates": "À propos des certificats",
+    "aboutCertificatesDesc": "Chaque certificat est une preuve vérifiable de vos accomplissements. Vous pouvez les télécharger en format PDF et les partager sur les réseaux sociaux pour mettre en valeur vos compétences de trading.",
+    "downloadSuccess": "Certificat téléchargé avec succès",
+    "downloadError": "Échec du téléchargement du certificat",
+    "linkCopied": "Lien copié dans le presse-papiers!",
+    "shareText": "Découvrez mon certificat de trading:"
+  },
+  "calculator": {
+    "title": "Calculateur",
+    "subtitle": "Outils de calcul pour le trading",
+    "positionSize": "Taille de Position",
+    "riskReward": "Risque/Récompense",
+    "pipValue": "Valeur du Pip",
+    "margin": "Marge",
+    "profit": "Profit",
+    "loss": "Perte",
+    "calculate": "Calculer",
+    "pageTitle": "Calculateur de Position",
+    "pageSubtitle": "Calculez la taille optimale de vos positions en fonction de votre gestion du risque",
+    "accountParams": "Paramètres du Compte",
+    "accountSize": "Taille du Compte",
+    "riskPerTrade": "Risque par Trade (%)",
+    "tradeParams": "Paramètres du Trade",
+    "entryPrice": "Prix d'Entrée",
+    "stopLoss": "Stop Loss",
+    "takeProfit": "Take Profit",
+    "results": "Résultats",
+    "units": "unités",
+    "riskAmount": "Montant à Risque",
+    "ofAccount": "du compte",
+    "riskRewardRatio": "Ratio Risque/Rendement",
+    "excellent": "Excellent",
+    "acceptable": "Acceptable",
+    "notRecommended": "Non recommandé",
+    "potentialProfit": "Profit Potentiel",
+    "potentialLoss": "Perte Potentielle",
+    "riskManagementTip": "Conseil de Gestion du Risque",
+    "riskManagementTipDesc": "Ne risquez jamais plus de 1-2% de votre capital par trade. Un ratio risque/rendement de 1:2 ou plus est recommandé pour une stratégie profitable à long terme."
+  },
+  "tradeJournal": {
+    "title": "Journal de Trading",
+    "subtitle": "Suivez et analysez vos trades",
+    "addTrade": "Ajouter un Trade",
+    "totalTrades": "Total Trades",
+    "winRate": "Taux de Réussite",
+    "profitLoss": "Profit/Perte",
+    "averageWin": "Gain Moyen",
+    "averageLoss": "Perte Moyenne"
+  },
+  "sidebar": {
+    "categories": {
+      "dashboard": "Tableau de bord",
+      "trading": "Trading",
+      "financials": "Finances",
+      "rewards": "Récompenses",
+      "resources": "Ressources"
+    },
+    "items": {
+      "accounts": "Comptes",
+      "notifications": "Notifications",
+      "profile": "Profil",
+      "settings": "Paramètres",
+      "trading": "Trading",
+      "quickTrading": "Trading Rapide",
+      "tradeJournal": "Journal de Trading",
+      "chartsMarkets": "Graphiques & Marchés",
+      "copyTrading": "Copy Trading",
+      "mtConnection": "Connexion MT4/MT5",
+      "plans": "Plans",
+      "transactions": "Transactions",
+      "calculator": "Calculateur",
+      "infinityPoints": "Points Infinity",
+      "referEarn": "Parrainage",
+      "competitions": "Compétitions",
+      "certificates": "Certificats",
+      "marketNews": "Actualités Marchés",
+      "tradingRules": "Règles de Trading",
+      "support": "Support"
+    },
+    "userMenu": {
+      "myProfile": "Mon Profil",
+      "settings": "Paramètres",
+      "logout": "Déconnexion"
+    },
+    "challenge": {
+      "funded": "Financé",
+      "phase": "Phase"
+    },
+    "actions": {
+      "goTrading": "Aller au Trading",
+      "startChallenge": "Commencer le Challenge"
+    }
+  },
+  "trading": {
+    "loading": "Chargement...",
+    "bid": "Offre",
+    "ask": "Demande",
+    "spread": "Spread",
+    "balance": "Solde",
+    "equity": "Équité",
+    "pnl": "P&L",
+    "positions": "Positions",
+    "closeAll": "Tout Fermer",
+    "noOpenPositions": "Aucune position ouverte",
+    "tradesWillAppear": "Vos trades apparaîtront ici",
+    "symbol": "Symbole",
+    "type": "Type",
+    "size": "Taille",
+    "entry": "Entrée",
+    "current": "Actuel",
+    "action": "Action",
+    "close": "Fermer",
+    "buy": "ACHAT",
+    "sell": "VENTE",
+    "lotSize": "Taille du Lot",
+    "slTp": "Stop Loss / Take Profit",
+    "usePips": "Utiliser Pips",
+    "usePrice": "Utiliser Prix",
+    "stopLossPips": "Stop Loss (Pips)",
+    "takeProfitPips": "Take Profit (Pips)",
+    "stopLossPrice": "Stop Loss (Prix)",
+    "takeProfitPrice": "Take Profit (Prix)",
+    "riskCalculator": "Calculateur de Risque",
+    "riskPercent": "Risque %",
+    "riskDollar": "Risque $",
+    "rrRatio": "Ratio R:R",
+    "potential": "Potentiel",
+    "executing": "Exécution...",
+    "loadingPrice": "Chargement du Prix...",
+    "fetchingPrice": "Récupération du prix...",
+    "priceUnavailable": "Prix indisponible :"
+  },
+  "plans": {
+    "hero": {
+      "badge": "Propulsé par l'Intelligence Artificielle",
+      "title": "Tradez avec une",
+      "titleHighlight": "IA Prédictive",
+      "description": "Notre intelligence artificielle analyse des millions de données en temps réel pour prédire les mouvements du marché."
+    },
+    "aiStats": {
+      "levels": "5 Niveaux",
+      "levelsDesc": "d'Intelligence IA",
+      "accuracy": "96%",
+      "accuracyDesc": "de Précision",
+      "signals": "+40",
+      "signalsDesc": "Signaux/jour"
+    },
+    "aiTiers": {
+      "starter": {
+        "name": "IA Starter",
+        "description": "Algorithme de base"
+      },
+      "basic": {
+        "name": "IA Basic",
+        "description": "Analyse technique avancée"
+      },
+      "advanced": {
+        "name": "IA Advanced",
+        "description": "Machine Learning optimisé"
+      },
+      "pro": {
+        "name": "IA Pro",
+        "description": "Deep Learning + Sentiment"
+      },
+      "elite": {
+        "name": "IA Elite",
+        "description": "Neural Network Quantique"
+      }
+    },
+    "rowLabels": {
+      "ai": "Intelligence Artificielle",
+      "aiShort": "IA",
+      "accuracy": "Précision IA",
+      "accuracyShort": "Précision",
+      "signals": "Signaux / jour",
+      "signalsShort": "Signaux",
+      "profit": "Objectif de Profit",
+      "profitShort": "Objectif",
+      "dailyLoss": "Perte Max Journalière",
+      "dailyLossShort": "Perte/jour",
+      "maxLoss": "Perte Max.",
+      "maxLossShort": "Perte Max",
+      "minDays": "Jours de Trading Min.",
+      "minDaysShort": "Min. jours",
+      "period": "Période de Trading",
+      "periodShort": "Période",
+      "refund": "Remboursement",
+      "refundShort": "Remb."
+    },
+    "activeChallenge": {
+      "title": "Vous avez un challenge actif",
+      "currentlyIn": "Actuellement en {{phase}} avec ${{balance}} de solde",
+      "viewDashboard": "Voir le Dashboard"
+    },
+    "table": {
+      "showNumbers": "Afficher les chiffres",
+      "chooseAccount": "Choisissez votre compte",
+      "tapToSeeDetails": "Appuyez sur un plan pour voir les détails",
+      "swipeHint": "Glissez pour voir tous les plans",
+      "bestChoice": "MEILLEUR CHOIX",
+      "bestValue": "Meilleur rapport",
+      "account": "Compte",
+      "startChallenge": "Commencer le Challenge",
+      "start": "Commencer",
+      "securePayment": "Paiement sécurisé",
+      "instantActivation": "Activation instantanée",
+      "paymentNote": "Paiements uniques.",
+      "avgReward": "Récompense moy.",
+      "step1": "ÉT.1",
+      "step2": "ÉT.2",
+      "days": "jours",
+      "unlimited": "Illimité",
+      "yes": "Oui",
+      "refundPercent": "100%",
+      "refundLabel": "remb.",
+      "objective": "obj.",
+      "reward": "réc.",
+      "signalsPerDay": "signaux/j",
+      "minDays": "min",
+      "objectiveStep1": "Objectif Ét.1",
+      "objectiveStep2": "Objectif Ét.2",
+      "dailyMaxLoss": "Perte Max/Jour",
+      "totalMaxLoss": "Perte Max Totale"
+    },
+    "aiFeatures": {
+      "badge": "Technologie Avancée",
+      "title": "Comment notre",
+      "titleHighlight": "IA",
+      "titleEnd": "prédit le marché",
+      "description": "Notre technologie combine plusieurs approches d'intelligence artificielle pour maximiser la précision des prédictions.",
+      "deepLearning": {
+        "title": "Deep Learning",
+        "description": "Réseaux de neurones analysant les patterns historiques."
+      },
+      "technicalAnalysis": {
+        "title": "Analyse Technique",
+        "description": "150+ indicateurs calculés en temps réel."
+      },
+      "sentiment": {
+        "title": "Sentiment",
+        "description": "Analyse des news et réseaux sociaux."
+      },
+      "fast": {
+        "title": "Rapide",
+        "description": "Signaux générés en millisecondes."
+      }
+    },
+    "freeTrial": {
+      "badge": "Essai gratuit disponible",
+      "title": "Pas encore prêt à vous lancer?",
+      "description": "Essayez notre plateforme gratuitement pendant 7 jours avec un compte démo de $5,000",
+      "cta": "Commencer l'essai gratuit",
+      "securePayment": "Paiement sécurisé",
+      "fullRefund": "Remboursement 100%",
+      "instantActivation": "Activation instantanée"
+    }
+  },
+  "transactions": {
+    "title": "Transactions",
+    "subtitle": "Historique de toutes vos transactions",
+    "export": "Exporter",
+    "searchPlaceholder": "Rechercher une transaction...",
+    "stats": {
+      "totalDeposits": "Total Depots",
+      "tradingProfits": "Profits Trading",
+      "tradingLosses": "Pertes Trading",
+      "totalWithdrawals": "Total Retraits"
+    },
+    "filters": {
+      "all": "Tous"
+    },
+    "types": {
+      "deposit": "Depot",
+      "withdrawal": "Retrait",
+      "trade": "Trade",
+      "fee": "Frais"
+    },
+    "table": {
+      "type": "Type",
+      "description": "Description",
+      "date": "Date",
+      "status": "Statut",
+      "amount": "Montant"
+    },
+    "status": {
+      "completed": "Complete",
+      "pending": "En cours"
+    }
+  },
+  "tradingRulesPage": {
+    "title": "Règles de Trading & FAQ",
+    "subtitle": "Comprenez les règles et trouvez des réponses aux questions fréquentes",
+    "tabs": {
+      "rules": "Règles de Trading",
+      "faq": "FAQ"
+    },
+    "important": {
+      "title": "Important",
+      "message": "Le non-respect de ces règles entraînera l'échec de votre challenge. Assurez-vous de bien les comprendre avant de commencer."
+    },
+    "tip": {
+      "title": "Conseil",
+      "message": "Utilisez toujours un stop-loss et ne risquez jamais plus de 1-2% de votre capital par trade pour respecter facilement les règles de drawdown."
+    },
+    "rules": {
+      "profitTarget": {
+        "title": "Objectif de Profit",
+        "desc": "Atteindre 10% de profit pour passer la phase"
+      },
+      "maxDrawdown": {
+        "title": "Drawdown Maximum",
+        "desc": "Ne pas dépasser 10% de perte maximale"
+      },
+      "dailyDrawdown": {
+        "title": "Drawdown Journalier",
+        "desc": "Ne pas dépasser 5% de perte par jour"
+      },
+      "tradingDays": {
+        "title": "Jours de Trading",
+        "desc": "Minimum 5 jours de trading actif"
+      },
+      "noWeekend": {
+        "title": "Pas de Trading Weekend",
+        "desc": "Aucune position ouverte le weekend"
+      },
+      "noNews": {
+        "title": "Pas de News Trading",
+        "desc": "Éviter de trader pendant les annonces majeures"
+      }
+    },
+    "faq": {
+      "searchPlaceholder": "Rechercher des questions...",
+      "categories": {
+        "all": "Toutes les Questions",
+        "gettingStarted": "Démarrage",
+        "challenges": "Règles du Challenge",
+        "payments": "Paiements & Retraits",
+        "trading": "Trading",
+        "account": "Compte"
+      },
+      "noResults": {
+        "title": "Aucune question trouvée",
+        "message": "Essayez d'ajuster votre recherche ou le filtre de catégorie."
+      },
+      "q1": {
+        "question": "Qu'est-ce que TradeSense ?",
+        "answer": "TradeSense est une société de trading propriétaire qui finance des traders talentueux. Nous fournissons des capitaux aux traders qui prouvent leurs compétences à travers notre processus d'évaluation, leur permettant de trader sans risquer leur propre argent et de garder jusqu'à 80% des profits qu'ils génèrent."
+      },
+      "q2": {
+        "question": "Comment fonctionne le processus de challenge ?",
+        "answer": "Notre challenge a deux phases : la Phase 1 (Évaluation) nécessite d'atteindre un objectif de profit de 10%, et la Phase 2 (Vérification) nécessite un objectif de profit de 5%. Une fois les deux phases passées, vous devenez un trader financé avec accès à un capital réel."
+      },
+      "q3": {
+        "question": "Y a-t-il un essai gratuit disponible ?",
+        "answer": "Oui ! Nous offrons un essai gratuit de 7 jours avec 5 000$ de capital virtuel. Cela vous permet de découvrir notre plateforme et nos conditions de trading avant de vous engager dans un challenge payant. L'essai a un objectif de profit de 10% et inclut l'accès à toutes les fonctionnalités de la plateforme."
+      },
+      "q4": {
+        "question": "Quels sont les objectifs de profit pour chaque phase ?",
+        "answer": "La Phase 1 (Évaluation) a un objectif de profit de 10%, et la Phase 2 (Vérification) a un objectif de profit de 5%. Il n'y a pas de limite de temps pour atteindre ces objectifs, vous pouvez donc trader à votre rythme."
+      },
+      "q5": {
+        "question": "Quelles sont les règles de drawdown maximum ?",
+        "answer": "Nous avons deux règles de drawdown : un drawdown maximum global de 10% (depuis votre solde de départ) et une limite de perte journalière maximum de 5%. Si vous dépassez l'une de ces règles, votre challenge se termine et vous devriez recommencer."
+      },
+      "q6": {
+        "question": "Y a-t-il une limite de temps pour compléter le challenge ?",
+        "answer": "Non, il n'y a pas de limite de temps pour compléter l'une ou l'autre phase du challenge. Vous pouvez prendre le temps qu'il vous faut pour atteindre les objectifs de profit tout en respectant les règles de gestion des risques."
+      },
+      "q7": {
+        "question": "Puis-je trader pendant les événements d'actualité ?",
+        "answer": "Oui, vous pouvez trader pendant les événements d'actualité à fort impact. Cependant, nous recommandons une bonne gestion des risques pendant les périodes volatiles. Il n'y a pas de restrictions de trading sur les événements d'actualité."
+      },
+      "q8": {
+        "question": "Combien coûtent les challenges ?",
+        "answer": "Nos prix de challenge varient selon la taille du compte : Starter (compte de 5K$) coûte 200$, Pro (compte de 25K$) coûte 500$, et Elite (compte de 100K$) coûte 1 000$. Ce sont des frais uniques sans charges récurrentes."
+      },
+      "q9": {
+        "question": "Quels moyens de paiement acceptez-vous ?",
+        "answer": "Nous acceptons PayPal, les cartes de crédit/débit (Visa, Mastercard), et divers moyens de paiement locaux selon votre région. Tous les paiements sont traités de manière sécurisée via nos partenaires de paiement."
+      },
+      "q10": {
+        "question": "Comment recevoir mes profits en tant que trader financé ?",
+        "answer": "En tant que trader financé, vous pouvez demander un retrait une fois que vous avez des profits disponibles. Les retraits sont traités dans les 24 heures et envoyés via votre méthode préférée (virement bancaire, PayPal ou crypto). Vous gardez jusqu'à 80% de vos profits."
+      },
+      "q11": {
+        "question": "Y a-t-il un montant minimum de retrait ?",
+        "answer": "Oui, le montant minimum de retrait est de 100$. Vous pouvez demander des retraits sur une base mensuelle, et il n'y a pas de limites sur le montant maximum de retrait."
+      },
+      "q12": {
+        "question": "Quels marchés puis-je trader ?",
+        "answer": "Vous pouvez trader des actions américaines, des cryptomonnaies et des actions marocaines sur notre plateforme. Nous fournissons des données de marché en temps réel et des spreads compétitifs sur tous les instruments."
+      },
+      "q13": {
+        "question": "Quelle plateforme de trading utilisez-vous ?",
+        "answer": "Nous fournissons notre propre plateforme de trading propriétaire avec des graphiques en temps réel, des signaux alimentés par l'IA et une gestion avancée des ordres. La plateforme est basée sur le web et accessible depuis n'importe quel appareil."
+      },
+      "q14": {
+        "question": "Y a-t-il des restrictions de trading ?",
+        "answer": "Nous avons des restrictions minimales : pas de stratégies martingale, pas de copy trading de sources externes, et les positions doivent être fermées avant la fermeture du marché le vendredi (pour la gestion des risques du weekend). À part cela, vous avez une liberté totale dans votre approche de trading."
+      },
+      "q15": {
+        "question": "Quel est l'effet de levier maximum disponible ?",
+        "answer": "L'effet de levier varie selon l'instrument : jusqu'à 1:100 pour le forex, 1:20 pour les actions, et 1:10 pour les cryptomonnaies. Nous recommandons d'utiliser un effet de levier approprié basé sur votre stratégie de gestion des risques."
+      },
+      "q16": {
+        "question": "Puis-je avoir plusieurs comptes de challenge ?",
+        "answer": "Oui, vous pouvez avoir plusieurs comptes de challenge. Cependant, vous ne pouvez pas utiliser la même stratégie de trading sur plusieurs comptes (pas de copy trading entre vos propres comptes)."
+      },
+      "q17": {
+        "question": "Que se passe-t-il si j'échoue au challenge ?",
+        "answer": "Si vous enfreignez une règle ou n'atteignez pas l'objectif de profit, votre challenge se termine. Vous pouvez acheter un nouveau challenge à tout moment pour réessayer. Nous recommandons de revoir vos trades et d'affiner votre stratégie avant de réessayer."
+      },
+      "q18": {
+        "question": "Puis-je augmenter mon compte financé ?",
+        "answer": "Oui ! Notre programme de scaling vous permet d'augmenter la taille de votre compte en fonction de performances constantes. Après avoir maintenu une rentabilité pendant 3 mois, vous pouvez demander une augmentation de la taille du compte jusqu'à 300K$."
+      }
+    }
   }
 }
