@@ -140,6 +140,7 @@ def get_price(symbol):
         return jsonify(result), 200
 
     # Fallback: Check if Moroccan stock - use enhanced provider (mock data)
+    # NOTE: We do NOT cache mock data to avoid race conditions on startup
     if symbol in SUPPORTED_MOROCCAN:
         price_data = moroccan_provider.get_price(symbol)
         if price_data:
@@ -159,7 +160,7 @@ def get_price(symbol):
                 'source': price_data.get('source', 'unknown'),
                 'timestamp': price_data.get('timestamp', '')
             }
-            CacheService.set(cache_key, result, timeout=30)
+            # Do NOT cache mock data - real prices will be available shortly
             return jsonify(result), 200
         return jsonify({'error': f'Moroccan stock {symbol} not found'}), 404
 

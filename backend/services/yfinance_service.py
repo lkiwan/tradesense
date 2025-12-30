@@ -344,8 +344,8 @@ def _price_updater_thread():
         import time
         sleep_func = time.sleep
 
-    # Initial short delay to allow Flask to start
-    sleep_func(3)
+    # Wait 15 seconds for first iteration (initial fetch already done in start_price_updater)
+    sleep_func(15)
 
     while _price_updater_running:
         try:
@@ -361,6 +361,16 @@ def start_price_updater():
     global _price_updater_running
     if not _price_updater_running:
         _price_updater_running = True
+
+        # Do IMMEDIATE first fetch before starting background loop
+        # This ensures prices are available before serving requests
+        logger.info("Doing initial price fetch...")
+        try:
+            _update_live_prices()
+            logger.info("Initial price fetch complete")
+        except Exception as e:
+            logger.warning(f"Initial price fetch failed: {e}")
+
         # Use eventlet.spawn_n for fire-and-forget green thread
         try:
             import eventlet
