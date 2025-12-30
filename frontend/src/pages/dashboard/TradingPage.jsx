@@ -8,8 +8,33 @@ import {
   TrendingUp, TrendingDown, Target, Shield, DollarSign,
   Calculator, Play, X, RefreshCw, Settings, ChevronDown,
   AlertTriangle, Check, Percent, BarChart3, Clock, Zap,
-  Crosshair, Layers, Activity, Eye, EyeOff
+  Crosshair, Layers, Activity, Eye, EyeOff, Search
 } from 'lucide-react'
+
+// All Moroccan stocks from Casablanca Bourse (80 stocks)
+const ALL_MOROCCAN_STOCKS = {
+  'IAM': 'Maroc Telecom', 'ATW': 'Attijariwafa Bank', 'BCP': 'Banque Centrale Populaire',
+  'BOA': 'Bank of Africa', 'CIH': 'CIH Bank', 'CDM': 'Crédit du Maroc',
+  'BCI': 'BMCI', 'CAM': 'Crédit Agricole Maroc', 'SBM': 'Société de Bourse',
+  'LBV': 'Label Vie', 'CMA': 'Ciments du Maroc', 'MNG': 'Managem',
+  'TQM': 'Taqa Morocco', 'CSR': 'Cosumar', 'HPS': 'HPS',
+  'LHM': 'Lesieur Cristal', 'MSA': 'Marsa Maroc', 'WAA': 'Wafa Assurance',
+  'ADH': 'Addoha', 'ADI': 'Alliances', 'AFM': 'Afma', 'AGM': 'Agma',
+  'ALM': 'Aluminium Maroc', 'ARL': 'Aradei Capital', 'ARD': 'Aradei Capital',
+  'ATH': 'Auto Hall', 'ATL': 'Atlanta', 'BAL': 'Balima', 'CFG': 'CFG Bank',
+  'CIL': 'Cartier Saada', 'CLT': 'Centrale Laitière', 'CMT': 'CMT',
+  'COL': 'Colorado', 'CTM': 'CTM', 'DIS': 'Disway', 'DLM': 'Delattre Levivier',
+  'DRI': 'Dari Couspate', 'DWY': 'Disway', 'EQD': 'Eqdom', 'FBR': 'Fenie Brossette',
+  'GAZ': 'Afriquia Gaz', 'GTM': 'Galvanoplast', 'HMN': 'Holcim Maroc',
+  'IMO': 'Immorente', 'INV': 'Involys', 'JET': 'Jet Contractors', 'LAC': 'Lesieur Cristal',
+  'M2M': 'M2M Group', 'MAB': 'Maghreb Bail', 'MIC': 'Microdata', 'MIN': 'Minière Touissit',
+  'MOX': 'Med Paper', 'MUT': 'Mutandis', 'NEJ': 'Nexans Maroc', 'NKL': 'Nkl',
+  'OUL': 'Oulmes', 'PRO': 'Promopharm', 'RDS': 'Résidences Dar Saada', 'REB': 'Rebab',
+  'RIS': 'Risma', 'SAH': 'Saham Assurance', 'SAM': 'Samir', 'SID': 'Sonasid',
+  'SLF': 'Salafin', 'SMI': 'SMI', 'SNA': 'SNEP', 'SNP': 'SNEP', 'SOT': 'Sothema',
+  'SPR': 'Stroc Industrie', 'SRM': 'S.R.M', 'STR': 'Stokvis', 'TGC': 'Tgcc',
+  'TIM': 'Timar', 'TMA': 'Total Maroc', 'UMR': 'Unimer', 'ZDJ': 'Zellidja'
+}
 
 // Symbol categories - symbol is for backend, tvSymbol is for TradingView chart
 const SYMBOL_CATEGORIES = {
@@ -95,6 +120,21 @@ const TradingPage = () => {
   // UI state
   const [showRiskCalculator, setShowRiskCalculator] = useState(true)
   const [chartInterval, setChartInterval] = useState('15')
+
+  // Moroccan stock search state
+  const [moroccanSearch, setMoroccanSearch] = useState('')
+  const [showMoroccanDropdown, setShowMoroccanDropdown] = useState(false)
+
+  // Filter Moroccan stocks based on search
+  const filteredMoroccanStocks = useMemo(() => {
+    if (!moroccanSearch) return []
+    const search = moroccanSearch.toLowerCase()
+    return Object.entries(ALL_MOROCCAN_STOCKS)
+      .filter(([symbol, name]) =>
+        symbol.toLowerCase().includes(search) || name.toLowerCase().includes(search)
+      )
+      .slice(0, 8)
+  }, [moroccanSearch])
 
   // Fetch data
   useEffect(() => {
@@ -310,18 +350,84 @@ const TradingPage = () => {
             ))}
           </div>
 
-          <select
-            value={selectedSymbol.symbol}
-            onChange={(e) => {
-              const sym = SYMBOL_CATEGORIES[selectedCategory].find(s => s.symbol === e.target.value)
-              if (sym) setSelectedSymbol(sym)
-            }}
-            className="bg-dark-200 border border-dark-300 text-white rounded-lg px-3 sm:px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 w-full sm:w-auto min-h-[44px]"
-          >
-            {SYMBOL_CATEGORIES[selectedCategory].map(sym => (
-              <option key={sym.symbol} value={sym.symbol}>{sym.name}</option>
-            ))}
-          </select>
+          {/* Symbol selector with search for Morocco */}
+          <div className="flex items-center gap-2 w-full sm:w-auto">
+            <select
+              value={selectedSymbol.symbol}
+              onChange={(e) => {
+                // First check predefined list
+                const sym = SYMBOL_CATEGORIES[selectedCategory].find(s => s.symbol === e.target.value)
+                if (sym) {
+                  setSelectedSymbol(sym)
+                } else if (selectedCategory === 'morocco' && ALL_MOROCCAN_STOCKS[e.target.value]) {
+                  // Check ALL_MOROCCAN_STOCKS for Morocco category
+                  setSelectedSymbol({
+                    symbol: e.target.value,
+                    tvSymbol: `CSEMA:${e.target.value}`,
+                    name: ALL_MOROCCAN_STOCKS[e.target.value],
+                    pip: 0.01
+                  })
+                }
+              }}
+              className="bg-dark-200 border border-dark-300 text-white rounded-lg px-3 sm:px-4 py-2 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-primary-500 flex-1 sm:flex-none sm:w-auto min-h-[44px]"
+            >
+              {SYMBOL_CATEGORIES[selectedCategory].map(sym => (
+                <option key={sym.symbol} value={sym.symbol}>{sym.name}</option>
+              ))}
+              {/* Show selected stock if it's not in the default list */}
+              {selectedCategory === 'morocco' &&
+               !SYMBOL_CATEGORIES.morocco.find(s => s.symbol === selectedSymbol.symbol) &&
+               ALL_MOROCCAN_STOCKS[selectedSymbol.symbol] && (
+                <option value={selectedSymbol.symbol}>{selectedSymbol.name}</option>
+              )}
+            </select>
+
+            {/* Morocco Search Bar */}
+            {selectedCategory === 'morocco' && (
+              <div className="relative flex-1 sm:flex-none sm:w-48">
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Rechercher..."
+                    value={moroccanSearch}
+                    onChange={(e) => {
+                      setMoroccanSearch(e.target.value)
+                      setShowMoroccanDropdown(true)
+                    }}
+                    onFocus={() => moroccanSearch && setShowMoroccanDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowMoroccanDropdown(false), 200)}
+                    className="w-full bg-dark-200 border border-dark-300 text-white rounded-lg pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500 min-h-[44px]"
+                  />
+                </div>
+                {/* Search Results Dropdown */}
+                {showMoroccanDropdown && filteredMoroccanStocks.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-dark-200 border border-dark-300 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
+                    {filteredMoroccanStocks.map(([symbol, name]) => (
+                      <div
+                        key={symbol}
+                        onMouseDown={(e) => {
+                          e.preventDefault()
+                          setSelectedSymbol({
+                            symbol,
+                            tvSymbol: `CSEMA:${symbol}`,
+                            name,
+                            pip: 0.01
+                          })
+                          setMoroccanSearch('')
+                          setShowMoroccanDropdown(false)
+                        }}
+                        className="w-full px-4 py-2 text-left hover:bg-dark-300 flex items-center justify-between cursor-pointer"
+                      >
+                        <span className="text-white font-medium">{symbol}</span>
+                        <span className="text-gray-400 text-xs truncate ml-2">{name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Row 2: Price display + Account Info */}

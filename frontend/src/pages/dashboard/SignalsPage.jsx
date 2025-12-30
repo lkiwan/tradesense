@@ -4,11 +4,100 @@ import { useTranslation } from 'react-i18next'
 import {
   Brain, Zap, TrendingUp, TrendingDown, Clock, Target, AlertCircle,
   CheckCircle, XCircle, Filter, RefreshCw, BarChart3, Activity,
-  ArrowLeft, Loader2, ChevronRight, Award, Percent, DollarSign
+  ArrowLeft, Loader2, ChevronRight, Award, Percent, DollarSign, Search
 } from 'lucide-react'
 import { signalsAPI } from '../../services/api'
 
-const SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'MSFT', 'AMZN', 'META', 'BTC-USD', 'ETH-USD', 'SOL-USD', 'IAM', 'ATW']
+// US & Crypto symbols
+const US_CRYPTO_SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'BTC-USD', 'ETH-USD']
+
+// Default 8 Moroccan stocks to display
+const DEFAULT_MOROCCAN = ['IAM', 'ATW', 'BCP', 'CIH', 'BOA', 'HPS', 'MNG', 'LBV']
+
+// All 80 Moroccan stocks for search
+const ALL_MOROCCAN_STOCKS = {
+  'IAM': 'Maroc Telecom',
+  'ATW': 'Attijariwafa Bank',
+  'BCP': 'Banque Centrale Populaire',
+  'CIH': 'CIH Bank',
+  'BOA': 'Bank of Africa',
+  'HPS': 'Hightech Payment Systems',
+  'MNG': 'Managem',
+  'LBV': 'Label Vie',
+  'TQM': 'Taqa Morocco',
+  'MSA': 'Marsa Maroc',
+  'CDM': 'Crédit du Maroc',
+  'CMA': 'Ciments du Maroc',
+  'CSR': 'Cosumar',
+  'LHM': 'Lesieur Cristal',
+  'WAA': 'Wafa Assurance',
+  'SAH': 'Saham Assurance',
+  'AGM': 'Agma',
+  'AFM': 'Afma',
+  'ATL': 'Atlanta',
+  'SID': 'Sonasid',
+  'SMI': 'SMI',
+  'CMT': 'CMT',
+  'GAZ': 'Afriquia Gaz',
+  'TMA': 'Total Maroc',
+  'ADH': 'Addoha',
+  'RDS': 'Résidences Dar Saada',
+  'ALM': 'Alliances',
+  'DLM': 'Delattre Levivier',
+  'STR': 'Stroc Industrie',
+  'SNP': 'SNEP',
+  'SRM': 'SRMM',
+  'NEJ': 'Nexans',
+  'NKL': 'Ennakl',
+  'M2M': 'M2M Group',
+  'IBC': 'IB Maroc',
+  'HPS': 'HPS',
+  'DYT': 'Delta Holding',
+  'CTM': 'CTM',
+  'COL': 'Colorado',
+  'JET': 'Jet Contractors',
+  'ARD': 'Aradei Capital',
+  'IMO': 'Immorente',
+  'BAL': 'Balima',
+  'MUT': 'Mutandis',
+  'FBR': 'Fenie Brossette',
+  'ADI': 'Adi',
+  'CFG': 'CFG Bank',
+  'BCI': 'BMCI',
+  'SBM': 'Société de Bourse',
+  'OUL': 'Oulmès',
+  'MOX': 'Maghreb Oxygène',
+  'GTM': 'GTM',
+  'TGC': 'Tgcc',
+  'SAM': 'Sanlam',
+  'PRO': 'Promopharm',
+  'SOT': 'Sotemi',
+  'MDP': 'Med Paper',
+  'CAP': 'Cartier Saada',
+  'DIS': 'Disway',
+  'EQD': 'Eqdom',
+  'MAB': 'Maroc Leasing',
+  'MLE': 'Maghrebail',
+  'SLF': 'Salafin',
+  'DHO': 'Dari Couspate',
+  'ZDJ': 'Zellidja',
+  'AKT': 'Auto Nejma',
+  'VCN': 'Involys',
+  'CMG': 'Comptoir Métallurgique',
+  'DRI': 'Dari Couspate',
+  'LES': 'Lesieur',
+  'MIC': 'Microdata',
+  'S2M': 'S2M',
+  'REB': 'Rebab',
+  'INV': 'Involys',
+  'DWY': 'Disway',
+  'RIS': 'Risma',
+  'CRS': 'Carsud',
+  'UMR': 'Unimer',
+  'ATH': 'Auto Hall'
+}
+
+const SYMBOLS = [...US_CRYPTO_SYMBOLS, ...DEFAULT_MOROCCAN]
 
 const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
 
@@ -27,6 +116,15 @@ const SignalsPage = () => {
   const [loadingAnalysis, setLoadingAnalysis] = useState(false)
   const [nextRefresh, setNextRefresh] = useState(AUTO_REFRESH_INTERVAL / 1000) // countdown in seconds
   const [lastUpdated, setLastUpdated] = useState(new Date())
+  const [moroccanSearch, setMoroccanSearch] = useState('')
+  const [showMoroccanDropdown, setShowMoroccanDropdown] = useState(false)
+
+  // Filter Moroccan stocks based on search
+  const filteredMoroccanStocks = Object.entries(ALL_MOROCCAN_STOCKS).filter(([symbol, name]) => {
+    if (!moroccanSearch) return false
+    const search = moroccanSearch.toLowerCase()
+    return symbol.toLowerCase().includes(search) || name.toLowerCase().includes(search)
+  }).slice(0, 8) // Limit to 8 results
 
   // Initial data fetch
   useEffect(() => {
@@ -269,20 +367,102 @@ const SignalsPage = () => {
               <BarChart3 className="w-4 h-4 text-primary-400" />
               {t('signals.quickAnalysis')}
             </h3>
-            <div className="flex flex-wrap gap-2 mb-4">
-              {SYMBOLS.map(symbol => (
-                <button
-                  key={symbol}
-                  onClick={() => fetchSymbolAnalysis(symbol)}
-                  className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    selectedSymbol === symbol
-                      ? 'bg-primary-500 text-white'
-                      : 'bg-dark-200/50 text-gray-400 hover:text-white hover:bg-dark-200'
-                  }`}
-                >
-                  {symbol}
-                </button>
-              ))}
+
+            {/* US & Crypto Symbols */}
+            <div className="mb-3">
+              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">US & Crypto</p>
+              <div className="flex flex-wrap gap-2">
+                {US_CRYPTO_SYMBOLS.map(symbol => (
+                  <button
+                    key={symbol}
+                    onClick={() => fetchSymbolAnalysis(symbol)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      selectedSymbol === symbol
+                        ? 'bg-primary-500 text-white'
+                        : 'bg-dark-200/50 text-gray-400 hover:text-white hover:bg-dark-200'
+                    }`}
+                  >
+                    {symbol}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Moroccan Stocks */}
+            <div className="mb-4">
+              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-2">
+                🇲🇦 Actions Marocaines
+                <span className="text-primary-400">({Object.keys(ALL_MOROCCAN_STOCKS).length} total)</span>
+              </p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                {DEFAULT_MOROCCAN.map(symbol => (
+                  <button
+                    key={symbol}
+                    onClick={() => fetchSymbolAnalysis(symbol)}
+                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      selectedSymbol === symbol
+                        ? 'bg-green-500 text-white'
+                        : 'bg-green-500/10 text-green-400 hover:text-white hover:bg-green-500/30 border border-green-500/30'
+                    }`}
+                    title={ALL_MOROCCAN_STOCKS[symbol]}
+                  >
+                    {symbol}
+                  </button>
+                ))}
+              </div>
+
+              {/* Search Bar for All Moroccan Stocks */}
+              <div className="relative">
+                <div className="flex items-center gap-2 bg-dark-200/50 rounded-lg px-3 py-2 border border-white/5 focus-within:border-green-500/50">
+                  <Search className="w-4 h-4 text-gray-500" />
+                  <input
+                    type="text"
+                    value={moroccanSearch}
+                    onChange={(e) => {
+                      setMoroccanSearch(e.target.value)
+                      setShowMoroccanDropdown(e.target.value.length > 0)
+                    }}
+                    onFocus={() => moroccanSearch && setShowMoroccanDropdown(true)}
+                    onBlur={() => setTimeout(() => setShowMoroccanDropdown(false), 200)}
+                    placeholder="Rechercher une action marocaine (ex: Maroc Telecom, BCP...)"
+                    className="flex-1 bg-transparent text-white placeholder-gray-500 text-sm outline-none"
+                  />
+                  {moroccanSearch && (
+                    <button
+                      onClick={() => {
+                        setMoroccanSearch('')
+                        setShowMoroccanDropdown(false)
+                      }}
+                      className="text-gray-500 hover:text-white"
+                    >
+                      ×
+                    </button>
+                  )}
+                </div>
+
+                {/* Dropdown Results */}
+                {showMoroccanDropdown && filteredMoroccanStocks.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-dark-100 border border-white/10 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
+                    {filteredMoroccanStocks.map(([symbol, name]) => (
+                      <button
+                        key={symbol}
+                        onClick={() => {
+                          fetchSymbolAnalysis(symbol)
+                          setMoroccanSearch('')
+                          setShowMoroccanDropdown(false)
+                        }}
+                        className="w-full px-4 py-2.5 text-left hover:bg-green-500/10 flex items-center justify-between group transition-colors"
+                      >
+                        <div>
+                          <span className="font-medium text-green-400">{symbol}</span>
+                          <span className="text-gray-400 ml-2 text-sm">{name}</span>
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-green-400" />
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             {loadingAnalysis && (

@@ -8,7 +8,8 @@ from services.yfinance_service import (
     get_current_price,
     get_stock_info,
     get_historical_data,
-    get_multiple_prices
+    get_multiple_prices,
+    get_live_price_data
 )
 from services.market_scraper import get_moroccan_stocks  # Legacy import for backward compatibility
 from services.market.moroccan_provider import get_moroccan_provider, MOROCCAN_STOCKS
@@ -119,7 +120,26 @@ def get_price(symbol):
         logger.debug(f"Cache hit for price: {symbol}")
         return jsonify(cached_data), 200
 
-    # Check if Moroccan stock - use enhanced provider
+    # Try live prices from background updater FIRST (includes Moroccan from Casablanca Bourse)
+    live_data = get_live_price_data(symbol)
+    if live_data:
+        result = {
+            'symbol': symbol,
+            'name': MOROCCAN_STOCKS.get(symbol, {}).get('name', symbol) if symbol in SUPPORTED_MOROCCAN else symbol,
+            'price': live_data.get('price'),
+            'change': 0,
+            'change_percent': live_data.get('change_percent', 0),
+            'volume': 0,
+            'currency': 'MAD' if symbol in SUPPORTED_MOROCCAN else 'USD',
+            'market': 'MOROCCO' if symbol in SUPPORTED_MOROCCAN else 'US',
+            'source': 'casablanca_bourse' if symbol in SUPPORTED_MOROCCAN else 'live',
+            'timestamp': datetime.now().isoformat()
+        }
+        CacheService.set(cache_key, result, timeout=15)
+        logger.info(f"Live price for {symbol}: {result['price']}")
+        return jsonify(result), 200
+
+    # Fallback: Check if Moroccan stock - use enhanced provider (mock data)
     if symbol in SUPPORTED_MOROCCAN:
         price_data = moroccan_provider.get_price(symbol)
         if price_data:
@@ -298,6 +318,8 @@ def get_signal(symbol):
 @market_data_bp.route('/signals', methods=['GET'])
 def get_all_signals():
     """Get AI signals for multiple symbols (cached for 30 seconds)"""
+    from services.yfinance_service import get_live_price_data
+
     symbols = request.args.get('symbols', '')
 
     if not symbols:
@@ -319,20 +341,29 @@ def get_all_signals():
 
     for symbol in symbols_list:
         try:
-            if symbol in SUPPORTED_MOROCCAN:
+            price = None
+            change_percent = 0
+            name = symbol
+
+            # Try live prices from background updater FIRST (fast, includes Moroccan stocks)
+            live_data = get_live_price_data(symbol)
+            if live_data:
+                price = live_data.get('price')
+                change_percent = live_data.get('change_percent', 0)
+                logger.info(f"Using live price for {symbol}: ${price}")
+
+            # Fallback to moroccan_provider for Moroccan stocks if no live price
+            if price is None and symbol in SUPPORTED_MOROCCAN:
                 price_data = moroccan_provider.get_price(symbol)
-                if not price_data:
-                    continue
-                price = price_data['price']
-                change_percent = price_data.get('change_percent', 0)
-                name = price_data.get('name', symbol)
-            else:
-                price = get_current_price(symbol)
-                if price is None:
-                    continue
-                info = get_stock_info(symbol)
-                change_percent = info.get('change_percent', 0)
-                name = info.get('name', symbol)
+                if price_data:
+                    price = price_data['price']
+                    change_percent = price_data.get('change_percent', 0)
+                    name = price_data.get('name', symbol)
+
+            # Skip symbols without live prices (don't fallback to slow yfinance)
+            if price is None:
+                logger.debug(f"Skipping {symbol} - no live price available")
+                continue
 
             signal = get_ai_signal(symbol, price, change_percent)
             signals.append({

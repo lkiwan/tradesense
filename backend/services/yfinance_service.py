@@ -11,18 +11,24 @@ from functools import lru_cache
 from datetime import datetime, timedelta
 import threading
 import logging
+import urllib3
+
+# Suppress SSL warnings for verify=False requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 logger = logging.getLogger(__name__)
 
-# Finnhub API configuration
-FINNHUB_API_KEY = os.environ.get('FINNHUB_API_KEY', '')
+# Finnhub API configuration - loaded dynamically to get env var after Flask init
 FINNHUB_BASE_URL = "https://finnhub.io/api/v1"
 
-# Check if eventlet is being used and get tpool for native thread execution
+def get_finnhub_api_key():
+    """Get Finnhub API key from environment"""
+    return os.environ.get('FINNHUB_API_KEY', '')
+
+# Check if eventlet is being used
 try:
     import eventlet
     from eventlet import tpool
-    eventlet.monkey_patch(thread=False)  # Ensure threading works properly
     USE_TPOOL = True
 except ImportError:
     USE_TPOOL = False
@@ -34,7 +40,7 @@ _executor = ThreadPoolExecutor(max_workers=5)
 # Cache for prices (simple in-memory cache)
 _price_cache = {}
 _cache_lock = threading.Lock()
-CACHE_DURATION = 3  # seconds (fast updates for real-time feel)
+CACHE_DURATION = 60  # seconds - increased to avoid Yahoo Finance rate limiting (429 errors)
 PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
 
 # Finnhub symbol mapping (convert our symbols to Finnhub format)
@@ -69,7 +75,8 @@ FINNHUB_SYMBOLS = {
 
 def _fetch_price_from_finnhub(symbol: str) -> float | None:
     """Fetch price from Finnhub API as fallback"""
-    if not FINNHUB_API_KEY:
+    api_key = get_finnhub_api_key()
+    if not api_key:
         logger.warning("Finnhub API key not configured")
         return None
 
@@ -80,7 +87,7 @@ def _fetch_price_from_finnhub(symbol: str) -> float | None:
         url = f"{FINNHUB_BASE_URL}/quote"
         params = {
             'symbol': finnhub_symbol,
-            'token': FINNHUB_API_KEY
+            'token': api_key
         }
         response = requests.get(url, params=params, timeout=5)
 
@@ -101,31 +108,290 @@ def _fetch_price_from_finnhub(symbol: str) -> float | None:
     return None
 
 
-# Fallback prices when both yfinance and Finnhub fail
-FALLBACK_PRICES = {
-    'BTCUSD': 95000.00,
-    'BTC-USD': 95000.00,
-    'ETHUSD': 3400.00,
-    'ETH-USD': 3400.00,
-    'EURUSD': 1.04,
-    'EURUSD=X': 1.04,
-    'GBPUSD': 1.25,
-    'GBPUSD=X': 1.25,
-    'USDJPY': 157.0,
-    'USDJPY=X': 157.0,
-    'XAUUSD': 2650.00,
-    'GC=F': 2650.00,
-    'XAGUSD': 30.00,
-    'SI=F': 30.00,
-    'AAPL': 250.00,
-    'TSLA': 450.00,
-    'NVDA': 140.00,
-    'GOOGL': 195.00,
-    'MSFT': 430.00,
-    'US30': 43000.00,
-    'US500': 6000.00,
-    'NAS100': 21500.00,
-}
+# Dynamic prices - fetched from free APIs every 15 seconds
+_live_prices = {}
+_live_prices_lock = threading.Lock()
+_price_updater_running = False
+
+def _fetch_crypto_prices():
+    """Fetch crypto prices from CoinGecko API"""
+    try:
+        url = "https://api.coingecko.com/api/v3/simple/price"
+        params = {
+            "ids": "bitcoin,ethereum,solana,ripple,cardano,dogecoin",
+            "vs_currencies": "usd",
+            "include_24hr_change": "true"
+        }
+        # Use short timeout and verify=False to work with eventlet
+        resp = requests.get(url, params=params, timeout=(3, 5), verify=False)
+        if resp.status_code == 200:
+            data = resp.json()
+            prices = {}
+            mapping = {
+                'bitcoin': ['BTC-USD', 'BTCUSD'],
+                'ethereum': ['ETH-USD', 'ETHUSD'],
+                'solana': ['SOL-USD', 'SOLUSD'],
+                'ripple': ['XRP-USD', 'XRPUSD'],
+                'cardano': ['ADA-USD', 'ADAUSD'],
+                'dogecoin': ['DOGE-USD', 'DOGEUSD']
+            }
+            for coin, symbols in mapping.items():
+                if coin in data:
+                    price = data[coin].get('usd')
+                    change = data[coin].get('usd_24h_change', 0)
+                    if price:
+                        for sym in symbols:
+                            prices[sym] = {'price': price, 'change_percent': change}
+            logger.info(f"CoinGecko raw response: {list(data.keys())}")
+            logger.info(f"CoinGecko prices stored: {list(prices.keys())}")
+            return prices
+        else:
+            logger.warning(f"CoinGecko returned status {resp.status_code}")
+    except Exception as e:
+        logger.warning(f"CoinGecko fetch error: {e}")
+    return {}
+
+def _fetch_stock_prices_finnhub():
+    """Fetch US stock prices from Finnhub (free tier)"""
+    api_key = get_finnhub_api_key()
+    if not api_key:
+        return {}
+
+    prices = {}
+    symbols = ['AAPL', 'TSLA', 'NVDA', 'GOOGL', 'MSFT']
+
+    for symbol in symbols:
+        try:
+            url = f"https://finnhub.io/api/v1/quote?symbol={symbol}&token={api_key}"
+            resp = requests.get(url, timeout=5, verify=False)
+            if resp.status_code == 200:
+                data = resp.json()
+                current = data.get('c', 0)
+                prev_close = data.get('pc', 0)
+                if current > 0:
+                    change_pct = ((current - prev_close) / prev_close * 100) if prev_close > 0 else 0
+                    prices[symbol] = {'price': current, 'change_percent': round(change_pct, 2)}
+        except Exception as e:
+            logger.debug(f"Finnhub error for {symbol}: {e}")
+    return prices
+
+def _fetch_stock_prices_yahoo_batch():
+    """Fetch US stock prices from Yahoo Finance using fast batch method"""
+    prices = {}
+    symbols = ['AAPL', 'TSLA', 'NVDA', 'GOOGL', 'MSFT', 'AMZN', 'META']
+
+    try:
+        # Use Yahoo Finance v7 API for batch quotes
+        symbols_str = ','.join(symbols)
+        url = f"https://query1.finance.yahoo.com/v7/finance/quote?symbols={symbols_str}"
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'application/json'
+        }
+        resp = requests.get(url, headers=headers, timeout=(3, 8), verify=False)
+
+        if resp.status_code == 200:
+            data = resp.json()
+            results = data.get('quoteResponse', {}).get('result', [])
+            for quote in results:
+                symbol = quote.get('symbol')
+                price = quote.get('regularMarketPrice')
+                change_pct = quote.get('regularMarketChangePercent', 0)
+                if symbol and price:
+                    prices[symbol] = {'price': price, 'change_percent': round(change_pct, 2)}
+            if prices:
+                logger.info(f"Yahoo batch: {len(prices)} US stocks fetched")
+    except Exception as e:
+        logger.debug(f"Yahoo batch fetch error: {e}")
+
+    return prices
+
+def _extract_span_values(html_row):
+    """Extract values from <span dir="ltr">VALUE</span> tags without regex (eventlet-safe)"""
+    values = []
+    search_str = '<span dir="ltr">'
+    end_str = '</span>'
+    pos = 0
+    while True:
+        start = html_row.find(search_str, pos)
+        if start == -1:
+            break
+        start += len(search_str)
+        end = html_row.find(end_str, start)
+        if end == -1:
+            break
+        values.append(html_row[start:end])
+        pos = end + len(end_str)
+    return values
+
+def _fetch_moroccan_prices():
+    """Fetch ALL Moroccan stock prices from official Casablanca Bourse"""
+    url = "https://www.casablanca-bourse.com/fr/live-market/marche-actions-groupement"
+    prices = {}
+
+    try:
+        resp = requests.get(url, timeout=(5, 15), verify=False,
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'})
+
+        if resp.status_code == 200:
+            html = resp.text
+
+            # Find all stock symbols dynamically from the page
+            symbols = []
+            search_str = 'instruments/'
+            pos = 0
+            while True:
+                idx = html.find(search_str, pos)
+                if idx == -1:
+                    break
+                start = idx + len(search_str)
+                end = html.find('"', start)
+                if end > start:
+                    symbol = html[start:end]
+                    if symbol and symbol not in symbols and len(symbol) <= 10:
+                        symbols.append(symbol)
+                pos = end + 1
+
+            # Extract price data for each symbol
+            for symbol in symbols:
+                idx = html.find(f'instruments/{symbol}"')
+                if idx > 0:
+                    start = html.rfind('<tr', 0, idx)
+                    end = html.find('</tr>', idx) + 5
+                    row = html[start:end]
+
+                    # Extract numbers without regex (eventlet-safe)
+                    numbers = _extract_span_values(row)
+                    if len(numbers) >= 2:
+                        try:
+                            # numbers[0] = current price, numbers[1] = prev close
+                            price = float(numbers[0].replace(' ', '').replace(',', '.'))
+                            prev_close = float(numbers[1].replace(' ', '').replace(',', '.'))
+                            change_pct = ((price - prev_close) / prev_close * 100) if prev_close else 0
+
+                            prices[symbol] = {
+                                'price': price,
+                                'change_percent': round(change_pct, 2)
+                            }
+                        except (ValueError, IndexError):
+                            continue
+
+            if prices:
+                logger.info(f"Casablanca Bourse: {len(prices)} Moroccan stocks")
+    except Exception as e:
+        logger.warning(f"Casablanca Bourse fetch error: {e}")
+
+    return prices
+
+def _update_live_prices():
+    """Update all live prices from various sources"""
+    global _live_prices
+
+    new_prices = {}
+    logger.info("Fetching live prices...")
+
+    # Fetch crypto prices from CoinGecko (main source - fast and reliable)
+    try:
+        crypto = _fetch_crypto_prices()
+        new_prices.update(crypto)
+        if crypto:
+            logger.info(f"CoinGecko: {len(crypto)} crypto prices")
+    except Exception as e:
+        logger.error(f"Crypto fetch error: {e}")
+
+    # Update the global prices dict immediately after crypto
+    with _live_prices_lock:
+        _live_prices.update(new_prices)
+        total_prices = len(_live_prices)
+
+    if new_prices:
+        btc = new_prices.get('BTC-USD', {}).get('price', 'N/A')
+        logger.info(f"Live prices updated: {len(new_prices)} symbols, BTC=${btc}")
+
+    # Fetch Moroccan stocks from Casablanca Bourse (PRIORITY - fast and reliable)
+    try:
+        logger.info("Fetching Moroccan stock prices...")
+        moroccan = _fetch_moroccan_prices()
+        if moroccan:
+            with _live_prices_lock:
+                _live_prices.update(moroccan)
+            logger.info(f"Moroccan: {len(moroccan)} stock prices added")
+        else:
+            logger.warning("Moroccan fetch returned empty/None")
+    except Exception as e:
+        logger.warning(f"Moroccan fetch error: {e}")
+
+    # Try to fetch stock prices in background (optional, may timeout)
+    try:
+        if get_finnhub_api_key():
+            stocks = _fetch_stock_prices_finnhub()
+            if stocks:
+                with _live_prices_lock:
+                    _live_prices.update(stocks)
+                logger.info(f"Finnhub: {len(stocks)} stock prices added")
+    except Exception as e:
+        logger.debug(f"Finnhub error: {e}")
+
+def _price_updater_thread():
+    """Background thread to update prices every 15 seconds"""
+    global _price_updater_running
+
+    # Use eventlet.sleep for green thread compatibility
+    try:
+        import eventlet
+        sleep_func = eventlet.sleep
+    except ImportError:
+        import time
+        sleep_func = time.sleep
+
+    # Initial short delay to allow Flask to start
+    sleep_func(3)
+
+    while _price_updater_running:
+        try:
+            _update_live_prices()
+        except Exception as e:
+            logger.error(f"Price updater error: {e}")
+
+        # Wait 15 seconds before next update
+        sleep_func(15)
+
+def start_price_updater():
+    """Start the background price updater"""
+    global _price_updater_running
+    if not _price_updater_running:
+        _price_updater_running = True
+        # Use eventlet.spawn_n for fire-and-forget green thread
+        try:
+            import eventlet
+            eventlet.spawn_n(_price_updater_thread)
+            logger.info("Price updater started with eventlet.spawn_n (15s interval)")
+        except ImportError:
+            # Fallback to threading if eventlet not available
+            thread = threading.Thread(target=_price_updater_thread, daemon=True)
+            thread.start()
+            logger.info("Price updater started with threading (15s interval)")
+
+def stop_price_updater():
+    """Stop the background price updater"""
+    global _price_updater_running
+    _price_updater_running = False
+
+def get_fallback_price(symbol: str) -> float | None:
+    """Get live price for a symbol from the price updater"""
+    with _live_prices_lock:
+        data = _live_prices.get(symbol) or _live_prices.get(symbol.upper())
+        if data:
+            return data.get('price') if isinstance(data, dict) else data
+    return None
+
+def get_live_price_data(symbol: str) -> dict | None:
+    """Get full price data (price + change) for a symbol"""
+    with _live_prices_lock:
+        return _live_prices.get(symbol) or _live_prices.get(symbol.upper())
+
+# Note: Call start_price_updater() from app.py after Flask is initialized
+# Don't auto-start here to avoid blocking during eventlet monkey patching
 
 
 def normalize_symbol(symbol: str) -> str:
@@ -281,11 +547,11 @@ def get_current_price(symbol: str) -> float | None:
         logger.info(f"Trying Finnhub for {original_symbol}...")
         price = _fetch_price_from_finnhub(original_symbol)
 
-    # Use static fallback price if both yfinance and Finnhub failed
+    # Use dynamic fallback price if both yfinance and Finnhub failed
     if price is None:
-        fallback = FALLBACK_PRICES.get(original_symbol) or FALLBACK_PRICES.get(normalized)
+        fallback = get_fallback_price(original_symbol) or get_fallback_price(normalized)
         if fallback:
-            logger.warning(f"Using static fallback price for {original_symbol}: {fallback}")
+            logger.warning(f"Using fallback price for {original_symbol}: {fallback}")
             price = fallback
 
     if price is not None:

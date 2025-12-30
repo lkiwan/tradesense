@@ -3,7 +3,21 @@ import { useTranslation } from 'react-i18next'
 import { tradesAPI, marketAPI } from '../services/api'
 import { useSocket } from '../context/SocketContext'
 import { showErrorToast, showSuccessToast } from '../utils/errorHandler'
-import { TrendingUp, TrendingDown, Loader2, Wifi, WifiOff } from 'lucide-react'
+import { TrendingUp, TrendingDown, Loader2, Wifi, WifiOff, Search } from 'lucide-react'
+
+// All Moroccan stocks for search
+const ALL_MOROCCAN = {
+  'IAM': 'Maroc Telecom', 'ATW': 'Attijariwafa Bank', 'BCP': 'Banque Centrale Populaire',
+  'CIH': 'CIH Bank', 'BOA': 'Bank of Africa', 'HPS': 'HPS', 'MNG': 'Managem',
+  'LBV': 'Label Vie', 'TQM': 'Taqa Morocco', 'MSA': 'Marsa Maroc', 'CDM': 'Crédit du Maroc',
+  'CMA': 'Ciments du Maroc', 'CSR': 'Cosumar', 'LHM': 'Lesieur Cristal', 'WAA': 'Wafa Assurance',
+  'SAH': 'Saham Assurance', 'SID': 'Sonasid', 'SMI': 'SMI', 'GAZ': 'Afriquia Gaz',
+  'TMA': 'Total Maroc', 'ADH': 'Addoha', 'RDS': 'Résidences Dar Saada', 'ALM': 'Alliances',
+  'CFG': 'CFG Bank', 'BCI': 'BMCI', 'OUL': 'Oulmès', 'CTM': 'CTM', 'DYT': 'Delta Holding',
+  'NEJ': 'Nexans', 'M2M': 'M2M Group', 'ARD': 'Aradei Capital', 'IMO': 'Immorente',
+  'FBR': 'Fenie Brossette', 'STR': 'Stroc Industrie', 'PRO': 'Promopharm', 'EQD': 'Eqdom',
+  'MAB': 'Maroc Leasing', 'SLF': 'Salafin', 'RIS': 'Risma', 'ATH': 'Auto Hall'
+}
 
 // Format price based on asset type
 const formatPrice = (price, symbol) => {
@@ -75,17 +89,28 @@ const TradeForm = ({ challenge, onTradeComplete }) => {
       { value: 'AVAX-USD', label: 'Avalanche (AVAX)' },
       { value: 'LTC-USD', label: 'Litecoin (LTC)' }
     ],
-    'Morocco': [
+    'Morocco 🇲🇦': [
       { value: 'IAM', label: 'Maroc Telecom (IAM)' },
       { value: 'ATW', label: 'Attijariwafa Bank (ATW)' },
       { value: 'BCP', label: 'Banque Centrale Pop (BCP)' },
       { value: 'CIH', label: 'CIH Bank (CIH)' },
-      { value: 'TAQA', label: 'Taqa Morocco (TAQA)' },
+      { value: 'BOA', label: 'Bank of Africa (BOA)' },
       { value: 'MNG', label: 'Managem (MNG)' },
       { value: 'LBV', label: 'Label Vie (LBV)' },
       { value: 'HPS', label: 'HPS (HPS)' }
     ]
   }
+
+  // State for Moroccan search
+  const [moroccanSearch, setMoroccanSearch] = useState('')
+  const [showMoroccanDropdown, setShowMoroccanDropdown] = useState(false)
+
+  // Filter Moroccan stocks based on search
+  const filteredMoroccan = Object.entries(ALL_MOROCCAN).filter(([sym, name]) => {
+    if (!moroccanSearch) return false
+    const search = moroccanSearch.toLowerCase()
+    return sym.toLowerCase().includes(search) || name.toLowerCase().includes(search)
+  }).slice(0, 6)
 
   const fetchPrice = async (sym) => {
     try {
@@ -104,9 +129,10 @@ const TradeForm = ({ challenge, onTradeComplete }) => {
         'BTC-USD': 45230.00, 'ETH-USD': 2480.00, 'XRP-USD': 0.52,
         'SOL-USD': 98.50, 'ADA-USD': 0.45, 'DOGE-USD': 0.085,
         'DOT-USD': 7.25, 'LINK-USD': 14.50, 'AVAX-USD': 35.80, 'LTC-USD': 72.50,
-        // Morocco (in MAD)
-        'IAM': 118.50, 'ATW': 485.00, 'BCP': 268.00, 'CIH': 385.00,
-        'TAQA': 1250.00, 'MNG': 1850.00, 'LBV': 4200.00, 'HPS': 6500.00
+        // Morocco (in MAD) - Real prices from Casablanca Bourse
+        'IAM': 107.90, 'ATW': 718.00, 'BCP': 277.00, 'CIH': 415.00,
+        'BOA': 212.00, 'MNG': 6350.00, 'LBV': 4450.00, 'HPS': 550.00,
+        'TQM': 1250.00, 'MSA': 380.00, 'CDM': 650.00, 'CSR': 205.00
       }
       setManualPrice(mockPrices[sym] || 100)
     } finally {
@@ -210,6 +236,47 @@ const TradeForm = ({ challenge, onTradeComplete }) => {
             </optgroup>
           ))}
         </select>
+
+        {/* Search for more Moroccan stocks */}
+        <div className="relative mt-2">
+          <div className="flex items-center gap-2 bg-gray-50 dark:bg-dark-200 rounded-lg px-3 py-2 border border-gray-200 dark:border-gray-700 focus-within:border-green-500">
+            <Search className="w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              value={moroccanSearch}
+              onChange={(e) => {
+                setMoroccanSearch(e.target.value)
+                setShowMoroccanDropdown(e.target.value.length > 0)
+              }}
+              onFocus={() => moroccanSearch && setShowMoroccanDropdown(true)}
+              onBlur={() => setTimeout(() => setShowMoroccanDropdown(false), 200)}
+              placeholder="🇲🇦 Rechercher action marocaine..."
+              className="flex-1 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 text-sm outline-none"
+            />
+          </div>
+
+          {/* Dropdown Results */}
+          {showMoroccanDropdown && filteredMoroccan.length > 0 && (
+            <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-dark-100 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xl z-50 max-h-48 overflow-y-auto">
+              {filteredMoroccan.map(([sym, name]) => (
+                <button
+                  key={sym}
+                  type="button"
+                  onClick={() => {
+                    setSymbol(sym)
+                    setMoroccanSearch('')
+                    setShowMoroccanDropdown(false)
+                    setManualPrice(null)
+                  }}
+                  className="w-full px-4 py-2.5 text-left hover:bg-green-50 dark:hover:bg-green-500/10 flex items-center gap-2 transition-colors"
+                >
+                  <span className="font-medium text-green-600 dark:text-green-400">{sym}</span>
+                  <span className="text-gray-500 dark:text-gray-400 text-sm">{name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Current Price */}
