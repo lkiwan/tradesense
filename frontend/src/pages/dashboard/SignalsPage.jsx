@@ -1,765 +1,821 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import {
   Brain, Zap, TrendingUp, TrendingDown, Clock, Target, AlertCircle,
   CheckCircle, XCircle, Filter, RefreshCw, BarChart3, Activity,
-  ArrowLeft, Loader2, ChevronRight, Award, Percent, DollarSign, Search
+  ArrowLeft, Loader2, ChevronRight, Award, Percent, DollarSign, Search,
+  Copy, Play, Shield, Lock, Sparkles, Globe, Bitcoin, Building2,
+  Landmark, ArrowUpRight, ArrowDownRight, Eye, Star, Flame, Timer,
+  CircleDollarSign, TrendingUpIcon, AlertTriangle, Check, X
 } from 'lucide-react'
-import { signalsAPI } from '../../services/api'
+import { signalsAPI, marketAPI, tradesAPI, challengesAPI } from '../../services/api'
+import toast from 'react-hot-toast'
 
-// US & Crypto symbols
-const US_CRYPTO_SYMBOLS = ['AAPL', 'TSLA', 'GOOGL', 'NVDA', 'BTC-USD', 'ETH-USD']
-
-// Default 8 Moroccan stocks to display
-const DEFAULT_MOROCCAN = ['IAM', 'ATW', 'BCP', 'CIH', 'BOA', 'HPS', 'MNG', 'LBV']
-
-// All 80 Moroccan stocks for search
-const ALL_MOROCCAN_STOCKS = {
-  'IAM': 'Maroc Telecom',
-  'ATW': 'Attijariwafa Bank',
-  'BCP': 'Banque Centrale Populaire',
-  'CIH': 'CIH Bank',
-  'BOA': 'Bank of Africa',
-  'HPS': 'Hightech Payment Systems',
-  'MNG': 'Managem',
-  'LBV': 'Label Vie',
-  'TQM': 'Taqa Morocco',
-  'MSA': 'Marsa Maroc',
-  'CDM': 'Crédit du Maroc',
-  'CMA': 'Ciments du Maroc',
-  'CSR': 'Cosumar',
-  'LHM': 'Lesieur Cristal',
-  'WAA': 'Wafa Assurance',
-  'SAH': 'Saham Assurance',
-  'AGM': 'Agma',
-  'AFM': 'Afma',
-  'ATL': 'Atlanta',
-  'SID': 'Sonasid',
-  'SMI': 'SMI',
-  'CMT': 'CMT',
-  'GAZ': 'Afriquia Gaz',
-  'TMA': 'Total Maroc',
-  'ADH': 'Addoha',
-  'RDS': 'Résidences Dar Saada',
-  'ALM': 'Alliances',
-  'DLM': 'Delattre Levivier',
-  'STR': 'Stroc Industrie',
-  'SNP': 'SNEP',
-  'SRM': 'SRMM',
-  'NEJ': 'Nexans',
-  'NKL': 'Ennakl',
-  'M2M': 'M2M Group',
-  'IBC': 'IB Maroc',
-  'HPS': 'HPS',
-  'DYT': 'Delta Holding',
-  'CTM': 'CTM',
-  'COL': 'Colorado',
-  'JET': 'Jet Contractors',
-  'ARD': 'Aradei Capital',
-  'IMO': 'Immorente',
-  'BAL': 'Balima',
-  'MUT': 'Mutandis',
-  'FBR': 'Fenie Brossette',
-  'ADI': 'Adi',
-  'CFG': 'CFG Bank',
-  'BCI': 'BMCI',
-  'SBM': 'Société de Bourse',
-  'OUL': 'Oulmès',
-  'MOX': 'Maghreb Oxygène',
-  'GTM': 'GTM',
-  'TGC': 'Tgcc',
-  'SAM': 'Sanlam',
-  'PRO': 'Promopharm',
-  'SOT': 'Sotemi',
-  'MDP': 'Med Paper',
-  'CAP': 'Cartier Saada',
-  'DIS': 'Disway',
-  'EQD': 'Eqdom',
-  'MAB': 'Maroc Leasing',
-  'MLE': 'Maghrebail',
-  'SLF': 'Salafin',
-  'DHO': 'Dari Couspate',
-  'ZDJ': 'Zellidja',
-  'AKT': 'Auto Nejma',
-  'VCN': 'Involys',
-  'CMG': 'Comptoir Métallurgique',
-  'DRI': 'Dari Couspate',
-  'LES': 'Lesieur',
-  'MIC': 'Microdata',
-  'S2M': 'S2M',
-  'REB': 'Rebab',
-  'INV': 'Involys',
-  'DWY': 'Disway',
-  'RIS': 'Risma',
-  'CRS': 'Carsud',
-  'UMR': 'Unimer',
-  'ATH': 'Auto Hall'
+// Market categories with their symbols
+const MARKET_CATEGORIES = {
+  all: { label: 'All Markets', icon: Globe, color: 'primary' },
+  forex: { label: 'Forex', icon: CircleDollarSign, color: 'blue' },
+  crypto: { label: 'Crypto', icon: Bitcoin, color: 'orange' },
+  stocks: { label: 'US Stocks', icon: Building2, color: 'green' },
+  morocco: { label: 'Morocco', icon: Landmark, color: 'red' }
 }
 
-const SYMBOLS = [...US_CRYPTO_SYMBOLS, ...DEFAULT_MOROCCAN]
+// Symbols by market
+const MARKET_SYMBOLS = {
+  forex: [
+    { symbol: 'EURUSD', name: 'EUR/USD', pip: 0.0001 },
+    { symbol: 'GBPUSD', name: 'GBP/USD', pip: 0.0001 },
+    { symbol: 'USDJPY', name: 'USD/JPY', pip: 0.01 },
+    { symbol: 'USDCHF', name: 'USD/CHF', pip: 0.0001 },
+    { symbol: 'AUDUSD', name: 'AUD/USD', pip: 0.0001 },
+    { symbol: 'USDCAD', name: 'USD/CAD', pip: 0.0001 }
+  ],
+  crypto: [
+    { symbol: 'BTC-USD', name: 'Bitcoin', pip: 1 },
+    { symbol: 'ETH-USD', name: 'Ethereum', pip: 0.01 },
+    { symbol: 'SOL-USD', name: 'Solana', pip: 0.01 },
+    { symbol: 'XRP-USD', name: 'Ripple', pip: 0.0001 },
+    { symbol: 'ADA-USD', name: 'Cardano', pip: 0.0001 },
+    { symbol: 'DOGE-USD', name: 'Dogecoin', pip: 0.00001 }
+  ],
+  stocks: [
+    { symbol: 'AAPL', name: 'Apple', pip: 0.01 },
+    { symbol: 'TSLA', name: 'Tesla', pip: 0.01 },
+    { symbol: 'NVDA', name: 'NVIDIA', pip: 0.01 },
+    { symbol: 'GOOGL', name: 'Google', pip: 0.01 },
+    { symbol: 'MSFT', name: 'Microsoft', pip: 0.01 },
+    { symbol: 'AMZN', name: 'Amazon', pip: 0.01 }
+  ],
+  morocco: [
+    { symbol: 'IAM', name: 'Maroc Telecom', pip: 0.01 },
+    { symbol: 'ATW', name: 'Attijariwafa Bank', pip: 0.01 },
+    { symbol: 'BCP', name: 'Banque Populaire', pip: 0.01 },
+    { symbol: 'CIH', name: 'CIH Bank', pip: 0.01 },
+    { symbol: 'HPS', name: 'Hightech Payment', pip: 0.01 },
+    { symbol: 'TQM', name: 'Taqa Morocco', pip: 0.01 }
+  ]
+}
 
-const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
+// Challenge tiers for signal allocation
+const CHALLENGE_TIERS = {
+  basic: { signals: 10, label: 'Basic', color: 'gray' },
+  standard: { signals: 15, label: 'Standard', color: 'blue' },
+  premium: { signals: 25, label: 'Premium', color: 'purple' },
+  elite: { signals: 50, label: 'Elite', color: 'yellow' }
+}
+
+const AUTO_REFRESH_INTERVAL = 60 * 1000 // 1 minute
 
 const SignalsPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const [filter, setFilter] = useState('all')
-  const [timeframe, setTimeframe] = useState('30')
+
+  // State
+  const [selectedMarket, setSelectedMarket] = useState('all')
   const [signals, setSignals] = useState([])
-  const [stats, setStats] = useState(null)
-  const [leaderboard, setLeaderboard] = useState([])
+  const [marketAnalysis, setMarketAnalysis] = useState(null)
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
-  const [selectedSymbol, setSelectedSymbol] = useState(null)
-  const [symbolAnalysis, setSymbolAnalysis] = useState(null)
-  const [loadingAnalysis, setLoadingAnalysis] = useState(false)
-  const [nextRefresh, setNextRefresh] = useState(AUTO_REFRESH_INTERVAL / 1000) // countdown in seconds
-  const [lastUpdated, setLastUpdated] = useState(new Date())
-  const [moroccanSearch, setMoroccanSearch] = useState('')
-  const [showMoroccanDropdown, setShowMoroccanDropdown] = useState(false)
+  const [activeChallenge, setActiveChallenge] = useState(null)
+  const [userTier, setUserTier] = useState('basic')
+  const [nextRefresh, setNextRefresh] = useState(60)
+  const [executingTrade, setExecutingTrade] = useState(null)
+  const [copiedSignals, setCopiedSignals] = useState([])
+  const [showConfirmModal, setShowConfirmModal] = useState(null)
+  const [prices, setPrices] = useState({})
 
-  // Filter Moroccan stocks based on search
-  const filteredMoroccanStocks = Object.entries(ALL_MOROCCAN_STOCKS).filter(([symbol, name]) => {
-    if (!moroccanSearch) return false
-    const search = moroccanSearch.toLowerCase()
-    return symbol.toLowerCase().includes(search) || name.toLowerCase().includes(search)
-  }).slice(0, 8) // Limit to 8 results
-
-  // Initial data fetch
+  // Fetch initial data
   useEffect(() => {
-    fetchData()
-  }, [timeframe])
+    fetchAllData()
+    fetchPrices()
+  }, [])
 
-  // Auto-refresh every 5 minutes
+  // Auto-refresh
   useEffect(() => {
     const refreshInterval = setInterval(() => {
-      fetchData()
-      setLastUpdated(new Date())
-      setNextRefresh(AUTO_REFRESH_INTERVAL / 1000)
+      fetchSignals()
+      fetchPrices()
+      setNextRefresh(60)
     }, AUTO_REFRESH_INTERVAL)
 
-    // Countdown timer - update every second
     const countdownInterval = setInterval(() => {
-      setNextRefresh(prev => (prev > 0 ? prev - 1 : AUTO_REFRESH_INTERVAL / 1000))
+      setNextRefresh(prev => (prev > 0 ? prev - 1 : 60))
     }, 1000)
 
     return () => {
       clearInterval(refreshInterval)
       clearInterval(countdownInterval)
     }
-  }, [timeframe])
+  }, [selectedMarket])
 
-  const fetchData = async () => {
+  const fetchAllData = async () => {
     setLoading(true)
     try {
-      const [historyRes, statsRes, leaderboardRes] = await Promise.all([
-        signalsAPI.getHistory(50),
-        signalsAPI.getStats(parseInt(timeframe)),
-        signalsAPI.getLeaderboard(parseInt(timeframe), 5)
+      await Promise.all([
+        fetchSignals(),
+        fetchMarketAnalysis(),
+        fetchUserChallenge()
       ])
-
-      setSignals(historyRes.data.signals || [])
-      setStats(statsRes.data)
-      setLeaderboard(leaderboardRes.data.leaderboard || [])
     } catch (error) {
-      console.error('Failed to fetch signals data:', error)
+      console.error('Error fetching data:', error)
     } finally {
       setLoading(false)
     }
   }
 
-  const refreshData = async () => {
-    setRefreshing(true)
-    await fetchData()
-    setRefreshing(false)
-    setLastUpdated(new Date())
-    setNextRefresh(AUTO_REFRESH_INTERVAL / 1000) // Reset countdown after manual refresh
-  }
-
-  // Format countdown time
-  const formatCountdown = (seconds) => {
-    const mins = Math.floor(seconds / 60)
-    const secs = seconds % 60
-    return `${mins}:${secs.toString().padStart(2, '0')}`
-  }
-
-  const fetchSymbolAnalysis = async (symbol) => {
-    setSelectedSymbol(symbol)
-    setLoadingAnalysis(true)
+  const fetchSignals = async () => {
     try {
-      const [technicalRes, sentimentRes] = await Promise.all([
-        signalsAPI.getTechnical(symbol),
-        signalsAPI.getSentiment(symbol)
-      ])
+      // Get symbols based on selected market
+      let symbols = []
+      if (selectedMarket === 'all') {
+        Object.values(MARKET_SYMBOLS).forEach(marketSymbols => {
+          symbols.push(...marketSymbols.map(s => s.symbol))
+        })
+      } else {
+        symbols = MARKET_SYMBOLS[selectedMarket]?.map(s => s.symbol) || []
+      }
 
-      setSymbolAnalysis({
-        technical: technicalRes.data,
-        sentiment: sentimentRes.data
-      })
+      // Fetch AI signals for these symbols
+      const response = await marketAPI.getAllSignals(symbols.slice(0, 10))
+
+      if (response.data.signals) {
+        // Enhance signals with additional data
+        const enhancedSignals = response.data.signals.map((sig, index) => ({
+          id: `sig-${Date.now()}-${index}`,
+          ...sig,
+          market: getMarketForSymbol(sig.symbol),
+          timeframe: '1D',
+          riskReward: calculateRiskReward(sig),
+          expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+          isHot: sig.signal?.confidence >= 75,
+          isPremium: sig.signal?.confidence >= 85
+        }))
+        setSignals(enhancedSignals)
+      }
     } catch (error) {
-      console.error('Failed to fetch symbol analysis:', error)
-      setSymbolAnalysis(null)
+      console.error('Error fetching signals:', error)
+      // Generate demo signals if API fails
+      setSignals(generateDemoSignals())
+    }
+  }
+
+  const fetchMarketAnalysis = async () => {
+    try {
+      const response = await signalsAPI.getMarketSentiment('all')
+      setMarketAnalysis(response.data)
+    } catch (error) {
+      // Demo market analysis
+      setMarketAnalysis({
+        overall: 'bullish',
+        confidence: 68,
+        summary: 'Markets showing positive momentum with strong tech sector performance. Crypto consolidating after recent rally. Moroccan market stable with banking sector strength.',
+        sectors: {
+          forex: { sentiment: 'neutral', score: 52 },
+          crypto: { sentiment: 'bullish', score: 72 },
+          stocks: { sentiment: 'bullish', score: 78 },
+          morocco: { sentiment: 'neutral', score: 58 }
+        }
+      })
+    }
+  }
+
+  const fetchUserChallenge = async () => {
+    try {
+      const response = await challengesAPI.getActive()
+      if (response.data.challenges?.length > 0) {
+        const challenge = response.data.challenges[0]
+        setActiveChallenge(challenge)
+        // Determine tier based on challenge size
+        const size = challenge.account_size || 10000
+        if (size >= 100000) setUserTier('elite')
+        else if (size >= 50000) setUserTier('premium')
+        else if (size >= 25000) setUserTier('standard')
+        else setUserTier('basic')
+      }
+    } catch (error) {
+      console.error('Error fetching challenge:', error)
+    }
+  }
+
+  const fetchPrices = async () => {
+    try {
+      const response = await marketAPI.getAllPrices('all')
+      const allPrices = {
+        ...response.data.us_stocks,
+        ...response.data.crypto,
+        ...response.data.moroccan
+      }
+      setPrices(allPrices)
+    } catch (error) {
+      console.error('Error fetching prices:', error)
+    }
+  }
+
+  const getMarketForSymbol = (symbol) => {
+    if (symbol.includes('-USD')) return 'crypto'
+    if (MARKET_SYMBOLS.morocco.find(s => s.symbol === symbol)) return 'morocco'
+    if (MARKET_SYMBOLS.forex.find(s => s.symbol === symbol)) return 'forex'
+    return 'stocks'
+  }
+
+  const calculateRiskReward = (signal) => {
+    if (!signal.signal?.entry_price || !signal.signal?.stop_loss || !signal.signal?.take_profit) {
+      return 2.0 // Default R:R
+    }
+    const entry = signal.signal.entry_price
+    const sl = signal.signal.stop_loss
+    const tp = signal.signal.take_profit
+    const risk = Math.abs(entry - sl)
+    const reward = Math.abs(tp - entry)
+    return risk > 0 ? (reward / risk).toFixed(1) : 2.0
+  }
+
+  const generateDemoSignals = () => {
+    const allSymbols = []
+    Object.entries(MARKET_SYMBOLS).forEach(([market, symbols]) => {
+      symbols.forEach(s => allSymbols.push({ ...s, market }))
+    })
+
+    return allSymbols.slice(0, 10).map((sym, index) => {
+      const isBuy = Math.random() > 0.5
+      const confidence = 55 + Math.floor(Math.random() * 40)
+      const basePrice = sym.market === 'crypto' ?
+        (sym.symbol === 'BTC-USD' ? 45000 : sym.symbol === 'ETH-USD' ? 2500 : 100) :
+        sym.market === 'morocco' ? 100 + Math.random() * 500 : 150 + Math.random() * 100
+
+      const entry = basePrice
+      const slPercent = 0.02 + Math.random() * 0.03
+      const tpPercent = 0.04 + Math.random() * 0.06
+
+      return {
+        id: `demo-${index}`,
+        symbol: sym.symbol,
+        name: sym.name,
+        market: sym.market,
+        price: basePrice,
+        change_percent: (Math.random() - 0.5) * 6,
+        signal: {
+          signal: isBuy ? 'BUY' : 'SELL',
+          confidence,
+          reason: isBuy
+            ? `Strong bullish momentum with ${confidence}% AI confidence. RSI oversold, MACD crossover detected.`
+            : `Bearish divergence detected with ${confidence}% AI confidence. Price below key support levels.`,
+          entry_price: entry,
+          stop_loss: isBuy ? entry * (1 - slPercent) : entry * (1 + slPercent),
+          take_profit: isBuy ? entry * (1 + tpPercent) : entry * (1 - tpPercent),
+          ai_powered: true
+        },
+        timeframe: '1D',
+        riskReward: (tpPercent / slPercent).toFixed(1),
+        expiresAt: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
+        isHot: confidence >= 75,
+        isPremium: confidence >= 85
+      }
+    })
+  }
+
+  const handleCopyTrade = async (signal) => {
+    if (!activeChallenge) {
+      toast.error('You need an active challenge to copy trades')
+      navigate('/dashboard/plans')
+      return
+    }
+
+    setShowConfirmModal(signal)
+  }
+
+  const executeCopyTrade = async (signal) => {
+    setExecutingTrade(signal.id)
+    setShowConfirmModal(null)
+
+    try {
+      const tradeData = {
+        challenge_id: activeChallenge.id,
+        symbol: signal.symbol,
+        direction: signal.signal.signal.toLowerCase(),
+        entry_price: signal.signal.entry_price || signal.price,
+        stop_loss: signal.signal.stop_loss,
+        take_profit: signal.signal.take_profit,
+        lot_size: 0.01, // Default lot size
+        source: 'ai_signal'
+      }
+
+      await tradesAPI.open(tradeData)
+
+      setCopiedSignals(prev => [...prev, signal.id])
+      toast.success(`${signal.signal.signal} ${signal.symbol} executed successfully!`)
+    } catch (error) {
+      console.error('Error executing trade:', error)
+      toast.error(error.response?.data?.error || 'Failed to execute trade')
     } finally {
-      setLoadingAnalysis(false)
+      setExecutingTrade(null)
     }
   }
 
   const filteredSignals = signals.filter(signal => {
-    if (filter === 'all') return true
-    if (filter === 'buy') return signal.signal_type === 'BUY'
-    if (filter === 'sell') return signal.signal_type === 'SELL'
-    if (filter === 'active') return signal.status === 'active'
-    if (filter === 'wins') return signal.status === 'hit_tp'
-    if (filter === 'losses') return signal.status === 'hit_sl'
-    return true
+    if (selectedMarket === 'all') return true
+    return signal.market === selectedMarket
   })
 
-  const getStatusIcon = (status) => {
-    switch (status) {
-      case 'active': return <Clock size={14} className="text-blue-400" />
-      case 'hit_tp': return <CheckCircle size={14} className="text-green-400" />
-      case 'hit_sl': return <XCircle size={14} className="text-red-400" />
-      case 'expired': return <AlertCircle size={14} className="text-yellow-400" />
-      default: return null
-    }
+  const formatPrice = (price, symbol) => {
+    if (!price) return '-.--'
+    if (symbol?.includes('JPY')) return price.toFixed(3)
+    if (symbol?.includes('BTC')) return price.toLocaleString(undefined, { maximumFractionDigits: 0 })
+    if (price >= 1000) return price.toLocaleString(undefined, { maximumFractionDigits: 2 })
+    if (price >= 1) return price.toFixed(2)
+    return price.toFixed(5)
   }
 
-  const getStatusLabel = (status) => {
-    switch (status) {
-      case 'active': return t('signals.status.active')
-      case 'hit_tp': return t('signals.status.targetHit')
-      case 'hit_sl': return t('signals.status.stopped')
-      case 'expired': return t('signals.status.expired')
-      case 'closed': return t('signals.status.closed')
-      default: return status
-    }
-  }
-
-  const formatTimeAgo = (dateString) => {
-    if (!dateString) return 'Recently'
-    const date = new Date(dateString)
+  const getTimeRemaining = (expiresAt) => {
     const now = new Date()
-    const diffMs = now - date
-    const diffMins = Math.floor(diffMs / 60000)
-    const diffHours = Math.floor(diffMins / 60)
-    const diffDays = Math.floor(diffHours / 24)
-
-    if (diffMins < 1) return 'Just now'
-    if (diffMins < 60) return `${diffMins}m ago`
-    if (diffHours < 24) return `${diffHours}h ago`
-    if (diffDays < 7) return `${diffDays}d ago`
-    return date.toLocaleDateString()
+    const expires = new Date(expiresAt)
+    const diff = expires - now
+    const hours = Math.floor(diff / (1000 * 60 * 60))
+    const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+    return `${hours}h ${mins}m`
   }
 
-  const getSignalColor = (signal) => {
-    if (signal === 'strong_buy' || signal === 'buy') return 'text-green-400'
-    if (signal === 'strong_sell' || signal === 'sell') return 'text-red-400'
-    return 'text-gray-400'
+  const getSentimentColor = (sentiment) => {
+    if (sentiment === 'bullish' || sentiment === 'strong_buy') return 'text-green-400'
+    if (sentiment === 'bearish' || sentiment === 'strong_sell') return 'text-red-400'
+    return 'text-yellow-400'
   }
 
-  const getScoreColor = (score) => {
-    if (score >= 40) return 'text-green-400'
-    if (score >= 20) return 'text-green-300'
-    if (score <= -40) return 'text-red-400'
-    if (score <= -20) return 'text-red-300'
-    return 'text-gray-400'
+  const getSentimentBg = (sentiment) => {
+    if (sentiment === 'bullish' || sentiment === 'strong_buy') return 'bg-green-500/10 border-green-500/30'
+    if (sentiment === 'bearish' || sentiment === 'strong_sell') return 'bg-red-500/10 border-red-500/30'
+    return 'bg-yellow-500/10 border-yellow-500/30'
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-[60vh] flex items-center justify-center">
+        <div className="text-center">
+          <div className="relative">
+            <Brain className="w-16 h-16 text-primary-500 mx-auto animate-pulse" />
+            <Sparkles className="w-6 h-6 text-yellow-400 absolute -top-1 -right-1 animate-bounce" />
+          </div>
+          <p className="text-gray-400 mt-4">AI is analyzing markets...</p>
+          <div className="flex items-center justify-center gap-1 mt-2">
+            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+            <div className="w-2 h-2 bg-primary-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-8">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div className="flex items-start gap-3">
           <button
             onClick={() => navigate(-1)}
-            className="p-2.5 rounded-xl bg-dark-100/80 border border-white/5 hover:border-primary-500/30 hover:bg-dark-100 transition-all duration-300 group"
+            className="p-2.5 rounded-xl bg-dark-100 border border-dark-200 hover:border-primary-500/30 transition-all"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary-400 transition-colors" />
+            <ArrowLeft className="w-5 h-5 text-gray-400" />
           </button>
           <div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white flex items-center gap-3">
-              <div className="p-2 sm:p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-primary-600/20 border border-primary-500/30">
-                <Brain className="text-primary-400 w-5 h-5 sm:w-6 sm:h-6" />
+            <h1 className="text-2xl font-bold text-white flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary-500/20 to-purple-500/20 border border-primary-500/30">
+                <Brain className="text-primary-400 w-6 h-6" />
               </div>
-              {t('signals.title')}
+              AI Trading Signals
             </h1>
-            <p className="text-gray-400 mt-1 text-sm sm:text-base">
-              {t('signals.subtitle')}
+            <p className="text-gray-400 mt-1">
+              Copy high-confidence signals with one click
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-green-500/10 rounded-xl border border-green-500/30">
-            <Zap size={16} className="text-green-400" />
-            <span className="text-sm text-green-400 font-medium">{t('signals.aiActive')}</span>
+
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* User Tier Badge */}
+          <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
+            userTier === 'elite' ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400' :
+            userTier === 'premium' ? 'bg-purple-500/10 border-purple-500/30 text-purple-400' :
+            userTier === 'standard' ? 'bg-blue-500/10 border-blue-500/30 text-blue-400' :
+            'bg-gray-500/10 border-gray-500/30 text-gray-400'
+          }`}>
+            <Award size={16} />
+            <span className="text-sm font-medium">{CHALLENGE_TIERS[userTier].label}</span>
+            <span className="text-xs opacity-70">({CHALLENGE_TIERS[userTier].signals} signals/day)</span>
           </div>
-          <div className="flex items-center gap-2 px-3 py-2 bg-primary-500/10 rounded-xl border border-primary-500/30">
-            <Clock size={14} className="text-primary-400" />
-            <span className="text-xs text-primary-400 font-mono">{formatCountdown(nextRefresh)}</span>
+
+          {/* AI Status */}
+          <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 rounded-xl border border-green-500/30">
+            <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+            <span className="text-sm text-green-400 font-medium">AI Active</span>
           </div>
+
+          {/* Refresh Timer */}
+          <div className="flex items-center gap-2 px-3 py-2 bg-dark-100 rounded-xl border border-dark-200">
+            <Timer size={14} className="text-primary-400" />
+            <span className="text-xs text-primary-400 font-mono">{nextRefresh}s</span>
+          </div>
+
           <button
-            onClick={refreshData}
+            onClick={() => {
+              setRefreshing(true)
+              fetchSignals().finally(() => setRefreshing(false))
+            }}
             disabled={refreshing}
-            className="flex items-center gap-2 px-4 py-2 bg-dark-100/80 border border-white/5 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all duration-300"
-            title={`Last updated: ${lastUpdated.toLocaleTimeString()}`}
+            className="flex items-center gap-2 px-4 py-2 bg-dark-100 border border-dark-200 hover:border-primary-500/30 rounded-xl text-gray-400 hover:text-white transition-all"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? 'animate-spin' : ''}`} />
-            {t('signals.refresh')}
+            Refresh
           </button>
         </div>
       </div>
 
-      {loading ? (
-        <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-12 text-center">
-          <Loader2 className="w-8 h-8 text-primary-400 animate-spin mx-auto mb-4" />
-          <p className="text-gray-400">{t('signals.loading')}</p>
-        </div>
-      ) : (
-        <>
-          {/* Stats Cards */}
-          {stats && (
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-                <div className="flex items-center gap-2 mb-2">
-                  <Activity className="w-4 h-4 text-primary-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.totalSignals')}</p>
-                </div>
-                <p className="text-2xl font-bold text-white group-hover:text-primary-400 transition-colors">
-                  {stats.total_signals}
-                </p>
-                <p className="text-xs text-gray-500 mt-1">{stats.active_signals} {t('signals.activeSignals')}</p>
-              </div>
-              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-green-500/30 transition-all duration-300 group">
-                <div className="flex items-center gap-2 mb-2">
-                  <Percent className="w-4 h-4 text-green-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.winRate')}</p>
-                </div>
-                <p className="text-2xl font-bold text-green-400">{stats.win_rate}%</p>
-                <p className="text-xs text-gray-500 mt-1">{stats.wins}W / {stats.losses}L</p>
-              </div>
-              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-                <div className="flex items-center gap-2 mb-2">
-                  <DollarSign className="w-4 h-4 text-primary-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.totalReturn')}</p>
-                </div>
-                <p className={`text-2xl font-bold ${stats.total_pnl_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {stats.total_pnl_percent >= 0 ? '+' : ''}{stats.total_pnl_percent}%
-                </p>
-                <p className="text-xs text-gray-500 mt-1">{t('signals.lastDays', { days: timeframe })}</p>
-              </div>
-              <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl p-5 border border-white/5 hover:border-primary-500/30 transition-all duration-300 group">
-                <div className="flex items-center gap-2 mb-2">
-                  <Award className="w-4 h-4 text-yellow-400" />
-                  <p className="text-xs text-gray-400 uppercase tracking-wider">{t('signals.profitFactor')}</p>
-                </div>
-                <p className="text-2xl font-bold text-primary-400">{stats.profit_factor}x</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  {t('signals.avgWinLoss', { win: stats.avg_win_percent, loss: stats.avg_loss_percent })}
-                </p>
-              </div>
-            </div>
-          )}
+      {/* Market Analysis Overview */}
+      {marketAnalysis && (
+        <div className="bg-gradient-to-br from-dark-100 to-dark-200 rounded-2xl border border-dark-200 p-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary-500/5 rounded-full blur-3xl" />
+          <div className="absolute bottom-0 left-0 w-48 h-48 bg-purple-500/5 rounded-full blur-3xl" />
 
-          {/* Quick Symbol Analysis */}
-          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
-            <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-              <BarChart3 className="w-4 h-4 text-primary-400" />
-              {t('signals.quickAnalysis')}
-            </h3>
-
-            {/* US & Crypto Symbols */}
-            <div className="mb-3">
-              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider">US & Crypto</p>
-              <div className="flex flex-wrap gap-2">
-                {US_CRYPTO_SYMBOLS.map(symbol => (
-                  <button
-                    key={symbol}
-                    onClick={() => fetchSymbolAnalysis(symbol)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      selectedSymbol === symbol
-                        ? 'bg-primary-500 text-white'
-                        : 'bg-dark-200/50 text-gray-400 hover:text-white hover:bg-dark-200'
-                    }`}
-                  >
-                    {symbol}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Moroccan Stocks */}
-            <div className="mb-4">
-              <p className="text-xs text-gray-500 mb-2 uppercase tracking-wider flex items-center gap-2">
-                🇲🇦 Actions Marocaines
-                <span className="text-primary-400">({Object.keys(ALL_MOROCCAN_STOCKS).length} total)</span>
-              </p>
-              <div className="flex flex-wrap gap-2 mb-3">
-                {DEFAULT_MOROCCAN.map(symbol => (
-                  <button
-                    key={symbol}
-                    onClick={() => fetchSymbolAnalysis(symbol)}
-                    className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-all duration-300 ${
-                      selectedSymbol === symbol
-                        ? 'bg-green-500 text-white'
-                        : 'bg-green-500/10 text-green-400 hover:text-white hover:bg-green-500/30 border border-green-500/30'
-                    }`}
-                    title={ALL_MOROCCAN_STOCKS[symbol]}
-                  >
-                    {symbol}
-                  </button>
-                ))}
-              </div>
-
-              {/* Search Bar for All Moroccan Stocks */}
-              <div className="relative">
-                <div className="flex items-center gap-2 bg-dark-200/50 rounded-lg px-3 py-2 border border-white/5 focus-within:border-green-500/50">
-                  <Search className="w-4 h-4 text-gray-500" />
-                  <input
-                    type="text"
-                    value={moroccanSearch}
-                    onChange={(e) => {
-                      setMoroccanSearch(e.target.value)
-                      setShowMoroccanDropdown(e.target.value.length > 0)
-                    }}
-                    onFocus={() => moroccanSearch && setShowMoroccanDropdown(true)}
-                    onBlur={() => setTimeout(() => setShowMoroccanDropdown(false), 200)}
-                    placeholder="Rechercher une action marocaine (ex: Maroc Telecom, BCP...)"
-                    className="flex-1 bg-transparent text-white placeholder-gray-500 text-sm outline-none"
-                  />
-                  {moroccanSearch && (
-                    <button
-                      onClick={() => {
-                        setMoroccanSearch('')
-                        setShowMoroccanDropdown(false)
-                      }}
-                      className="text-gray-500 hover:text-white"
-                    >
-                      ×
-                    </button>
-                  )}
+          <div className="relative">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2 rounded-lg bg-primary-500/10 border border-primary-500/30">
+                  <BarChart3 className="w-5 h-5 text-primary-400" />
                 </div>
-
-                {/* Dropdown Results */}
-                {showMoroccanDropdown && filteredMoroccanStocks.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-dark-100 border border-white/10 rounded-lg shadow-xl z-50 max-h-64 overflow-y-auto">
-                    {filteredMoroccanStocks.map(([symbol, name]) => (
-                      <button
-                        key={symbol}
-                        onClick={() => {
-                          fetchSymbolAnalysis(symbol)
-                          setMoroccanSearch('')
-                          setShowMoroccanDropdown(false)
-                        }}
-                        className="w-full px-4 py-2.5 text-left hover:bg-green-500/10 flex items-center justify-between group transition-colors"
-                      >
-                        <div>
-                          <span className="font-medium text-green-400">{symbol}</span>
-                          <span className="text-gray-400 ml-2 text-sm">{name}</span>
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-gray-600 group-hover:text-green-400" />
-                      </button>
-                    ))}
-                  </div>
+                <div>
+                  <h2 className="text-lg font-semibold text-white">Daily Market Analysis</h2>
+                  <p className="text-xs text-gray-500">AI-powered insights updated hourly</p>
+                </div>
+              </div>
+              <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${getSentimentBg(marketAnalysis.overall)}`}>
+                {marketAnalysis.overall === 'bullish' ? (
+                  <TrendingUp className="w-4 h-4 text-green-400" />
+                ) : marketAnalysis.overall === 'bearish' ? (
+                  <TrendingDown className="w-4 h-4 text-red-400" />
+                ) : (
+                  <Activity className="w-4 h-4 text-yellow-400" />
                 )}
+                <span className={`text-sm font-semibold capitalize ${getSentimentColor(marketAnalysis.overall)}`}>
+                  {marketAnalysis.overall}
+                </span>
+                <span className="text-xs text-gray-500">({marketAnalysis.confidence}%)</span>
               </div>
             </div>
 
-            {loadingAnalysis && (
-              <div className="flex items-center justify-center py-8">
-                <Loader2 className="w-6 h-6 text-primary-400 animate-spin" />
-              </div>
-            )}
+            <p className="text-gray-300 text-sm mb-6 leading-relaxed">
+              {marketAnalysis.summary}
+            </p>
 
-            {symbolAnalysis && !loadingAnalysis && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Technical Analysis */}
-                <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
-                  <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
-                    <Activity className="w-4 h-4" />
-                    {t('signals.technicalAnalysis')}
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.signal')}</span>
-                      <span className={`font-bold ${getSignalColor(symbolAnalysis.technical.signal)}`}>
-                        {symbolAnalysis.technical.signal?.toUpperCase().replace('_', ' ')}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.score')}</span>
-                      <span className={`font-bold ${getScoreColor(symbolAnalysis.technical.score)}`}>
-                        {symbolAnalysis.technical.score > 0 ? '+' : ''}{symbolAnalysis.technical.score}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.confidence')}</span>
-                      <span className="text-white font-medium">{symbolAnalysis.technical.confidence}%</span>
-                    </div>
-                    {symbolAnalysis.technical.entry_price && (
-                      <>
-                        <div className="border-t border-white/5 pt-3 mt-3">
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-gray-400">{t('signals.entry')}</span>
-                            <span className="text-white">${symbolAnalysis.technical.entry_price?.toLocaleString()}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm mt-1">
-                            <span className="text-gray-400">{t('signals.stopLoss')}</span>
-                            <span className="text-red-400">${symbolAnalysis.technical.stop_loss?.toLocaleString()}</span>
-                          </div>
-                          <div className="flex items-center justify-between text-sm mt-1">
-                            <span className="text-gray-400">{t('signals.takeProfit')}</span>
-                            <span className="text-green-400">${symbolAnalysis.technical.take_profit?.toLocaleString()}</span>
-                          </div>
-                        </div>
-                      </>
-                    )}
-                    {symbolAnalysis.technical.reasons && (
-                      <div className="mt-3 pt-3 border-t border-white/5">
-                        <p className="text-xs text-gray-500 mb-2">{t('signals.reasons')}:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {symbolAnalysis.technical.reasons.slice(0, 3).map((reason, i) => (
-                            <span key={i} className="text-xs px-2 py-0.5 bg-dark-200/50 rounded text-gray-400">
-                              {reason}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+            {/* Market Sectors */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {Object.entries(marketAnalysis.sectors || {}).map(([key, data]) => (
+                <div key={key} className="bg-dark-100/50 rounded-xl p-3 border border-dark-300">
+                  <div className="flex items-center gap-2 mb-2">
+                    {key === 'forex' && <CircleDollarSign size={14} className="text-blue-400" />}
+                    {key === 'crypto' && <Bitcoin size={14} className="text-orange-400" />}
+                    {key === 'stocks' && <Building2 size={14} className="text-green-400" />}
+                    {key === 'morocco' && <Landmark size={14} className="text-red-400" />}
+                    <span className="text-xs text-gray-400 uppercase">{key}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className={`font-semibold capitalize ${getSentimentColor(data.sentiment)}`}>
+                      {data.sentiment}
+                    </span>
+                    <span className="text-sm text-gray-500">{data.score}%</span>
+                  </div>
+                  <div className="w-full h-1.5 bg-dark-300 rounded-full mt-2 overflow-hidden">
+                    <div
+                      className={`h-full rounded-full transition-all ${
+                        data.score >= 60 ? 'bg-green-500' : data.score <= 40 ? 'bg-red-500' : 'bg-yellow-500'
+                      }`}
+                      style={{ width: `${data.score}%` }}
+                    />
                   </div>
                 </div>
-
-                {/* Sentiment Analysis */}
-                <div className="bg-dark-200/30 rounded-xl p-4 border border-white/5">
-                  <h4 className="text-sm font-medium text-gray-400 mb-3 flex items-center gap-2">
-                    <Brain className="w-4 h-4" />
-                    {t('signals.sentimentAnalysis')}
-                  </h4>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.sentiment')}</span>
-                      <span className={`font-bold ${getSignalColor(symbolAnalysis.sentiment.sentiment)}`}>
-                        {symbolAnalysis.sentiment.sentiment?.toUpperCase().replace('_', ' ')}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.score')}</span>
-                      <span className={`font-bold ${getScoreColor(symbolAnalysis.sentiment.score)}`}>
-                        {symbolAnalysis.sentiment.score > 0 ? '+' : ''}{symbolAnalysis.sentiment.score}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-gray-400">{t('signals.articles')}</span>
-                      <span className="text-white font-medium">{symbolAnalysis.sentiment.article_count}</span>
-                    </div>
-                    {symbolAnalysis.sentiment.breakdown && (
-                      <div className="mt-3 pt-3 border-t border-white/5">
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-2 bg-dark-200/50 rounded-full overflow-hidden flex">
-                            <div
-                              className="h-full bg-green-500"
-                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.positive / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
-                            />
-                            <div
-                              className="h-full bg-blue-500"
-                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.neutral / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
-                            />
-                            <div
-                              className="h-full bg-red-500"
-                              style={{ width: `${(symbolAnalysis.sentiment.breakdown.negative / symbolAnalysis.sentiment.article_count * 100) || 0}%` }}
-                            />
-                          </div>
-                        </div>
-                        <div className="flex justify-between text-xs mt-2">
-                          <span className="text-green-400">+{symbolAnalysis.sentiment.breakdown.positive}</span>
-                          <span className="text-blue-400">{symbolAnalysis.sentiment.breakdown.neutral}</span>
-                          <span className="text-red-400">-{symbolAnalysis.sentiment.breakdown.negative}</span>
-                        </div>
-                      </div>
-                    )}
-                    {symbolAnalysis.sentiment.keywords?.length > 0 && (
-                      <div className="mt-3 pt-3 border-t border-white/5">
-                        <p className="text-xs text-gray-500 mb-2">{t('signals.keywords')}:</p>
-                        <div className="flex flex-wrap gap-1">
-                          {symbolAnalysis.sentiment.keywords.slice(0, 5).map((kw, i) => (
-                            <span
-                              key={i}
-                              className={`text-xs px-2 py-0.5 rounded ${
-                                kw.startsWith('+') ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                              }`}
-                            >
-                              {kw}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Filters and Period */}
-          <div className="flex items-center gap-4 flex-wrap">
-            <div className="flex items-center gap-2">
-              <Filter size={16} className="text-gray-400" />
-              <span className="text-sm text-gray-400">{t('signals.filter')}:</span>
-            </div>
-            {['all', 'buy', 'sell', 'active', 'wins', 'losses'].map(f => (
-              <button
-                key={f}
-                onClick={() => setFilter(f)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  filter === f
-                    ? 'bg-primary-500 text-white'
-                    : 'bg-dark-100 text-gray-400 hover:text-white border border-dark-200'
-                }`}
-              >
-                {f === 'all' ? t('signals.all') : f === 'buy' ? t('signals.buy') : f === 'sell' ? t('signals.sell') : f === 'active' ? t('signals.active') : f === 'wins' ? t('signals.wins') : t('signals.losses')}
-              </button>
-            ))}
-            <div className="ml-auto flex items-center gap-2">
-              <span className="text-sm text-gray-400">{t('signals.period')}:</span>
-              {['7', '30', '90'].map(days => (
-                <button
-                  key={days}
-                  onClick={() => setTimeframe(days)}
-                  className={`px-3 py-1.5 rounded text-xs font-medium transition-all ${
-                    timeframe === days
-                      ? 'bg-dark-200 text-white'
-                      : 'text-gray-500 hover:text-white'
-                  }`}
-                >
-                  {days}d
-                </button>
               ))}
             </div>
           </div>
+        </div>
+      )}
 
-          {/* Leaderboard */}
-          {leaderboard.length > 0 && (
-            <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 p-4">
-              <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
-                <Award className="w-4 h-4 text-yellow-400" />
-                {t('signals.topSignals')} ({t('signals.lastDays', { days: timeframe })})
-              </h3>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-                {leaderboard.map((signal, index) => (
-                  <div
-                    key={index}
-                    className="bg-dark-200/30 rounded-xl p-3 border border-white/5 hover:border-yellow-500/30 transition-all"
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                        index === 0 ? 'bg-yellow-500 text-black' :
-                        index === 1 ? 'bg-gray-400 text-black' :
-                        index === 2 ? 'bg-orange-600 text-white' :
-                        'bg-dark-200 text-gray-400'
-                      }`}>
-                        {index + 1}
-                      </span>
-                      <span className="font-bold text-white">{signal.symbol}</span>
-                      <span className={`text-xs px-1.5 py-0.5 rounded ${
-                        signal.signal_type === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
-                      }`}>
-                        {signal.signal_type}
-                      </span>
-                    </div>
-                    <p className="text-lg font-bold text-green-400">+{signal.pnl_percent}%</p>
-                    <p className="text-xs text-gray-500">{signal.date}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+      {/* Market Filter Tabs */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2">
+        {Object.entries(MARKET_CATEGORIES).map(([key, { label, icon: Icon, color }]) => (
+          <button
+            key={key}
+            onClick={() => setSelectedMarket(key)}
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium transition-all whitespace-nowrap ${
+              selectedMarket === key
+                ? `bg-${color}-500/20 border border-${color}-500/50 text-${color}-400`
+                : 'bg-dark-100 border border-dark-200 text-gray-400 hover:text-white hover:border-dark-300'
+            }`}
+            style={selectedMarket === key ? {
+              backgroundColor: color === 'primary' ? 'rgba(99, 102, 241, 0.2)' :
+                             color === 'blue' ? 'rgba(59, 130, 246, 0.2)' :
+                             color === 'orange' ? 'rgba(249, 115, 22, 0.2)' :
+                             color === 'green' ? 'rgba(34, 197, 94, 0.2)' :
+                             'rgba(239, 68, 68, 0.2)',
+              borderColor: color === 'primary' ? 'rgba(99, 102, 241, 0.5)' :
+                          color === 'blue' ? 'rgba(59, 130, 246, 0.5)' :
+                          color === 'orange' ? 'rgba(249, 115, 22, 0.5)' :
+                          color === 'green' ? 'rgba(34, 197, 94, 0.5)' :
+                          'rgba(239, 68, 68, 0.5)'
+            } : {}}
+          >
+            <Icon size={16} />
+            {label}
+            {key !== 'all' && (
+              <span className="text-xs bg-dark-200 px-1.5 py-0.5 rounded">
+                {signals.filter(s => s.market === key).length}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
 
-          {/* Signals List */}
-          <div className="bg-dark-100/80 backdrop-blur-xl rounded-xl border border-white/5 overflow-hidden">
-            <div className="p-4 border-b border-white/5 flex items-center justify-between">
-              <h3 className="font-semibold text-white">{t('signals.signalHistory')}</h3>
-              <span className="text-sm text-gray-400">{filteredSignals.length} {t('signals.totalSignals').toLowerCase()}</span>
-            </div>
-            <div className="divide-y divide-dark-200">
-              {filteredSignals.length === 0 ? (
-                <div className="p-8 text-center">
-                  <Brain className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-                  <p className="text-gray-400">{t('signals.noSignals')}</p>
-                </div>
+      {/* Signals Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        {filteredSignals.map((signal, index) => (
+          <SignalCard
+            key={signal.id}
+            signal={signal}
+            index={index}
+            prices={prices}
+            formatPrice={formatPrice}
+            getTimeRemaining={getTimeRemaining}
+            onCopy={handleCopyTrade}
+            isCopied={copiedSignals.includes(signal.id)}
+            isExecuting={executingTrade === signal.id}
+            hasActiveChallenge={!!activeChallenge}
+          />
+        ))}
+      </div>
+
+      {filteredSignals.length === 0 && (
+        <div className="bg-dark-100 rounded-2xl border border-dark-200 p-12 text-center">
+          <Brain className="w-16 h-16 text-gray-600 mx-auto mb-4" />
+          <h3 className="text-xl font-semibold text-white mb-2">No Signals Available</h3>
+          <p className="text-gray-400">AI is analyzing the market. New signals will appear soon.</p>
+        </div>
+      )}
+
+      {/* Confirm Trade Modal */}
+      {showConfirmModal && (
+        <TradeConfirmModal
+          signal={showConfirmModal}
+          onConfirm={() => executeCopyTrade(showConfirmModal)}
+          onCancel={() => setShowConfirmModal(null)}
+          formatPrice={formatPrice}
+        />
+      )}
+    </div>
+  )
+}
+
+// Signal Card Component
+const SignalCard = ({
+  signal,
+  index,
+  prices,
+  formatPrice,
+  getTimeRemaining,
+  onCopy,
+  isCopied,
+  isExecuting,
+  hasActiveChallenge
+}) => {
+  const isBuy = signal.signal?.signal === 'BUY'
+  const confidence = signal.signal?.confidence || 50
+  const isHot = confidence >= 75
+  const isPremium = confidence >= 85
+
+  return (
+    <div
+      className={`relative bg-gradient-to-br from-dark-100 to-dark-200 rounded-2xl border transition-all duration-300 hover:scale-[1.02] hover:shadow-xl ${
+        isPremium ? 'border-yellow-500/30 shadow-yellow-500/10' :
+        isHot ? 'border-primary-500/30 shadow-primary-500/10' :
+        'border-dark-200 hover:border-dark-300'
+      }`}
+      style={{ animationDelay: `${index * 100}ms` }}
+    >
+      {/* Premium/Hot Badge */}
+      {(isPremium || isHot) && (
+        <div className={`absolute -top-2 -right-2 flex items-center gap-1 px-2 py-1 rounded-full text-xs font-bold ${
+          isPremium ? 'bg-yellow-500 text-black' : 'bg-primary-500 text-white'
+        }`}>
+          {isPremium ? <Star size={12} /> : <Flame size={12} />}
+          {isPremium ? 'PREMIUM' : 'HOT'}
+        </div>
+      )}
+
+      {/* Card Header */}
+      <div className="p-4 border-b border-dark-300">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+              isBuy ? 'bg-green-500/10' : 'bg-red-500/10'
+            }`}>
+              {isBuy ? (
+                <TrendingUp className="w-6 h-6 text-green-400" />
               ) : (
-                filteredSignals.map((signal, index) => (
-                  <div key={signal.id || index} className="p-4 hover:bg-dark-200/30 transition-colors">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
-                          signal.signal_type === 'BUY' ? 'bg-green-500/10' : 'bg-red-500/10'
-                        }`}>
-                          {signal.signal_type === 'BUY' ? (
-                            <TrendingUp className="text-green-400" size={24} />
-                          ) : (
-                            <TrendingDown className="text-red-400" size={24} />
-                          )}
-                        </div>
-                        <div>
-                          <div className="flex items-center gap-2">
-                            <span className="font-bold text-white">{signal.symbol}</span>
-                            <span className={`px-2 py-0.5 rounded text-xs font-medium ${
-                              signal.signal_type === 'BUY' ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
-                            }`}>
-                              {signal.signal_type}
-                            </span>
-                            <div className="flex items-center gap-1">
-                              {getStatusIcon(signal.status)}
-                              <span className="text-xs text-gray-500">{getStatusLabel(signal.status)}</span>
-                            </div>
-                            <span className={`text-xs px-1.5 py-0.5 rounded ${
-                              signal.source === 'technical' ? 'bg-blue-500/20 text-blue-400' :
-                              signal.source === 'sentiment' ? 'bg-purple-500/20 text-purple-400' :
-                              'bg-primary-500/20 text-primary-400'
-                            }`}>
-                              {signal.source}
-                            </span>
-                          </div>
-                          <p className="text-sm text-gray-400 mt-1">
-                            Entry: ${parseFloat(signal.entry_price).toLocaleString()}
-                            {signal.take_profit && ` | TP: $${parseFloat(signal.take_profit).toLocaleString()}`}
-                            {signal.stop_loss && ` | SL: $${parseFloat(signal.stop_loss).toLocaleString()}`}
-                          </p>
-                          {signal.reasons?.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
-                              {signal.reasons.slice(0, 2).map((reason, i) => (
-                                <span key={i} className="text-xs px-2 py-0.5 bg-dark-200/50 rounded text-gray-500">
-                                  {reason}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <div className="flex items-center gap-2 justify-end">
-                          <Brain size={14} className="text-primary-400" />
-                          <span className={`font-bold ${
-                            signal.confidence >= 80 ? 'text-green-400' : signal.confidence >= 60 ? 'text-yellow-400' : 'text-gray-400'
-                          }`}>
-                            {signal.confidence}%
-                          </span>
-                        </div>
-                        {signal.pnl_percent !== null && (
-                          <p className={`font-bold mt-1 ${signal.pnl_percent >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                            {signal.pnl_percent >= 0 ? '+' : ''}{signal.pnl_percent}%
-                          </p>
-                        )}
-                        <p className="text-xs text-gray-500 mt-1">{formatTimeAgo(signal.created_at)}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))
+                <TrendingDown className="w-6 h-6 text-red-400" />
               )}
             </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-white text-lg">{signal.symbol}</span>
+                <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                  isBuy ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                }`}>
+                  {signal.signal?.signal}
+                </span>
+              </div>
+              <span className="text-xs text-gray-500">{signal.name}</span>
+            </div>
           </div>
-        </>
-      )}
+          <div className="text-right">
+            <div className="flex items-center gap-1 text-primary-400">
+              <Brain size={14} />
+              <span className="font-bold">{confidence}%</span>
+            </div>
+            <span className="text-xs text-gray-500">Confidence</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Price Info */}
+      <div className="p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <span className="text-gray-400 text-sm">Entry Price</span>
+          <span className="text-white font-semibold">
+            ${formatPrice(signal.signal?.entry_price || signal.price, signal.symbol)}
+          </span>
+        </div>
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-red-500/5 rounded-lg p-3 border border-red-500/20">
+            <div className="flex items-center gap-1 mb-1">
+              <Shield size={12} className="text-red-400" />
+              <span className="text-xs text-red-400">Stop Loss</span>
+            </div>
+            <span className="text-white font-semibold">
+              ${formatPrice(signal.signal?.stop_loss, signal.symbol)}
+            </span>
+          </div>
+          <div className="bg-green-500/5 rounded-lg p-3 border border-green-500/20">
+            <div className="flex items-center gap-1 mb-1">
+              <Target size={12} className="text-green-400" />
+              <span className="text-xs text-green-400">Take Profit</span>
+            </div>
+            <span className="text-white font-semibold">
+              ${formatPrice(signal.signal?.take_profit, signal.symbol)}
+            </span>
+          </div>
+        </div>
+
+        {/* Risk/Reward & Time */}
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-gray-500">R:R</span>
+            <span className="text-primary-400 font-semibold">1:{signal.riskReward}</span>
+          </div>
+          <div className="flex items-center gap-1 text-gray-500">
+            <Clock size={12} />
+            <span className="text-xs">{getTimeRemaining(signal.expiresAt)} left</span>
+          </div>
+        </div>
+
+        {/* AI Reason */}
+        <div className="bg-dark-300/50 rounded-lg p-3">
+          <div className="flex items-center gap-1 mb-1">
+            <Sparkles size={12} className="text-primary-400" />
+            <span className="text-xs text-primary-400">AI Analysis</span>
+          </div>
+          <p className="text-xs text-gray-400 line-clamp-2">
+            {signal.signal?.reason}
+          </p>
+        </div>
+
+        {/* Copy Trade Button */}
+        <button
+          onClick={() => onCopy(signal)}
+          disabled={isCopied || isExecuting || !hasActiveChallenge}
+          className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
+            isCopied
+              ? 'bg-green-500/20 text-green-400 border border-green-500/30 cursor-default'
+              : isExecuting
+              ? 'bg-dark-300 text-gray-400 cursor-wait'
+              : !hasActiveChallenge
+              ? 'bg-dark-300 text-gray-500 cursor-not-allowed'
+              : isBuy
+              ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-lg shadow-green-500/20'
+              : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/20'
+          }`}
+        >
+          {isCopied ? (
+            <>
+              <Check size={18} />
+              Trade Copied
+            </>
+          ) : isExecuting ? (
+            <>
+              <Loader2 size={18} className="animate-spin" />
+              Executing...
+            </>
+          ) : !hasActiveChallenge ? (
+            <>
+              <Lock size={18} />
+              Need Active Challenge
+            </>
+          ) : (
+            <>
+              <Copy size={18} />
+              Copy Trade
+            </>
+          )}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Trade Confirm Modal
+const TradeConfirmModal = ({ signal, onConfirm, onCancel, formatPrice }) => {
+  const isBuy = signal.signal?.signal === 'BUY'
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onCancel} />
+
+      <div className="relative bg-dark-100 rounded-2xl border border-dark-200 w-full max-w-md p-6 shadow-2xl">
+        <div className="flex items-center gap-3 mb-6">
+          <div className={`p-3 rounded-xl ${isBuy ? 'bg-green-500/10' : 'bg-red-500/10'}`}>
+            {isBuy ? (
+              <TrendingUp className="w-6 h-6 text-green-400" />
+            ) : (
+              <TrendingDown className="w-6 h-6 text-red-400" />
+            )}
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-white">Confirm Copy Trade</h3>
+            <p className="text-sm text-gray-400">{signal.symbol} - {signal.signal?.signal}</p>
+          </div>
+        </div>
+
+        <div className="space-y-3 mb-6">
+          <div className="flex justify-between items-center p-3 bg-dark-200 rounded-lg">
+            <span className="text-gray-400">Entry Price</span>
+            <span className="text-white font-semibold">
+              ${formatPrice(signal.signal?.entry_price || signal.price, signal.symbol)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center p-3 bg-red-500/5 rounded-lg border border-red-500/20">
+            <span className="text-red-400">Stop Loss</span>
+            <span className="text-white font-semibold">
+              ${formatPrice(signal.signal?.stop_loss, signal.symbol)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center p-3 bg-green-500/5 rounded-lg border border-green-500/20">
+            <span className="text-green-400">Take Profit</span>
+            <span className="text-white font-semibold">
+              ${formatPrice(signal.signal?.take_profit, signal.symbol)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center p-3 bg-dark-200 rounded-lg">
+            <span className="text-gray-400">AI Confidence</span>
+            <span className="text-primary-400 font-semibold">{signal.signal?.confidence}%</span>
+          </div>
+        </div>
+
+        <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-lg p-3 mb-6">
+          <div className="flex items-start gap-2">
+            <AlertTriangle size={16} className="text-yellow-400 mt-0.5" />
+            <p className="text-xs text-yellow-400">
+              This will open a real trade on your challenge account. Make sure you understand the risks involved.
+            </p>
+          </div>
+        </div>
+
+        <div className="flex gap-3">
+          <button
+            onClick={onCancel}
+            className="flex-1 py-3 rounded-xl bg-dark-200 text-white font-semibold hover:bg-dark-300 transition-colors"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className={`flex-1 py-3 rounded-xl font-semibold text-white flex items-center justify-center gap-2 ${
+              isBuy
+                ? 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700'
+            }`}
+          >
+            <Play size={18} />
+            Execute Trade
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

@@ -291,7 +291,13 @@
       "Bash(venvScriptsactivate)",
       "Bash(\"venv\\\\Scripts\\\\python.exe\" app.py)",
       "Bash(npx vite build:*)",
-      "Bash(node:*)"
+      "Bash(node:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:tradesense-f7kcipl3n-lkiwans-projects.vercel.app)",
+      "WebFetch(domain:tradesense-mu.vercel.app)",
+      "Bash(more:*)",
+      "Bash(npm run)",
+      "Bash(venvScriptspython app.py)"
     ]
   }
 }
