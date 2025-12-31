@@ -67,6 +67,36 @@ const CHALLENGE_TIERS = {
 
 const AUTO_REFRESH_INTERVAL = 60 * 1000 // 1 minute
 
+// Helper to get today's date key for localStorage
+const getTodayKey = () => new Date().toISOString().split('T')[0]
+
+// Get daily trades from localStorage
+const getDailyTrades = () => {
+  try {
+    const stored = localStorage.getItem('dailySignalTrades')
+    if (stored) {
+      const data = JSON.parse(stored)
+      // Reset if it's a new day
+      if (data.date !== getTodayKey()) {
+        return { date: getTodayKey(), count: 0, trades: [] }
+      }
+      return data
+    }
+  } catch (e) {
+    console.error('Error reading daily trades:', e)
+  }
+  return { date: getTodayKey(), count: 0, trades: [] }
+}
+
+// Save daily trades to localStorage
+const saveDailyTrades = (data) => {
+  try {
+    localStorage.setItem('dailySignalTrades', JSON.stringify(data))
+  } catch (e) {
+    console.error('Error saving daily trades:', e)
+  }
+}
+
 const SignalsPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
@@ -84,6 +114,7 @@ const SignalsPage = () => {
   const [copiedSignals, setCopiedSignals] = useState([])
   const [showConfirmModal, setShowConfirmModal] = useState(null)
   const [prices, setPrices] = useState({})
+  const [dailyTrades, setDailyTrades] = useState(getDailyTrades())
 
   // Fetch initial data
   useEffect(() => {
@@ -275,10 +306,23 @@ const SignalsPage = () => {
     })
   }
 
+  // Get remaining trades for today based on tier
+  const getRemainingTrades = () => {
+    const maxTrades = CHALLENGE_TIERS[userTier]?.signals || 10
+    return Math.max(0, maxTrades - dailyTrades.count)
+  }
+
   const handleCopyTrade = async (signal) => {
     if (!activeChallenge) {
       toast.error('You need an active challenge to copy trades')
-      navigate('/dashboard/plans')
+      navigate('/plans')
+      return
+    }
+
+    // Check daily limit
+    const remaining = getRemainingTrades()
+    if (remaining <= 0) {
+      toast.error(`Daily limit reached! You've used all ${CHALLENGE_TIERS[userTier].signals} signals for today.`)
       return
     }
 
@@ -289,28 +333,49 @@ const SignalsPage = () => {
     setExecutingTrade(signal.id)
     setShowConfirmModal(null)
 
-    try {
-      const tradeData = {
-        challenge_id: activeChallenge.id,
-        symbol: signal.symbol,
-        direction: signal.signal.signal.toLowerCase(),
-        entry_price: signal.signal.entry_price || signal.price,
-        stop_loss: signal.signal.stop_loss,
-        take_profit: signal.signal.take_profit,
-        lot_size: 0.01, // Default lot size
-        source: 'ai_signal'
-      }
-
-      await tradesAPI.open(tradeData)
-
-      setCopiedSignals(prev => [...prev, signal.id])
-      toast.success(`${signal.signal.signal} ${signal.symbol} executed successfully!`)
-    } catch (error) {
-      console.error('Error executing trade:', error)
-      toast.error(error.response?.data?.error || 'Failed to execute trade')
-    } finally {
+    // Check limit again before executing
+    const remaining = getRemainingTrades()
+    if (remaining <= 0) {
+      toast.error('Daily signal limit reached!')
       setExecutingTrade(null)
+      return
     }
+
+    // Update daily trades count
+    const newDailyTrades = {
+      date: getTodayKey(),
+      count: dailyTrades.count + 1,
+      trades: [...dailyTrades.trades, {
+        signalId: signal.id,
+        symbol: signal.symbol,
+        direction: signal.signal.signal,
+        timestamp: new Date().toISOString()
+      }]
+    }
+    setDailyTrades(newDailyTrades)
+    saveDailyTrades(newDailyTrades)
+
+    // Mark as copied
+    setCopiedSignals(prev => [...prev, signal.id])
+
+    // Navigate to trading page with signal parameters
+    const signalParams = new URLSearchParams({
+      symbol: signal.symbol,
+      direction: signal.signal.signal.toLowerCase(),
+      entry: signal.signal.entry_price || signal.price,
+      sl: signal.signal.stop_loss,
+      tp: signal.signal.take_profit,
+      confidence: signal.signal.confidence,
+      source: 'ai_signal'
+    })
+
+    toast.success(`Opening ${signal.signal.signal} ${signal.symbol} in Trading...`)
+
+    // Small delay for visual feedback
+    setTimeout(() => {
+      navigate(`/trading?${signalParams.toString()}`)
+      setExecutingTrade(null)
+    }, 500)
   }
 
   const filteredSignals = signals.filter(signal => {
@@ -392,7 +457,7 @@ const SignalsPage = () => {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          {/* User Tier Badge */}
+          {/* User Tier Badge with Remaining Trades */}
           <div className={`flex items-center gap-2 px-4 py-2 rounded-xl border ${
             userTier === 'elite' ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-400' :
             userTier === 'premium' ? 'bg-purple-500/10 border-purple-500/30 text-purple-400' :
@@ -401,7 +466,12 @@ const SignalsPage = () => {
           }`}>
             <Award size={16} />
             <span className="text-sm font-medium">{CHALLENGE_TIERS[userTier].label}</span>
-            <span className="text-xs opacity-70">({CHALLENGE_TIERS[userTier].signals} signals/day)</span>
+            <div className="flex items-center gap-1">
+              <span className={`text-sm font-bold ${getRemainingTrades() > 0 ? 'text-green-400' : 'text-red-400'}`}>
+                {getRemainingTrades()}
+              </span>
+              <span className="text-xs opacity-70">/ {CHALLENGE_TIERS[userTier].signals} left</span>
+            </div>
           </div>
 
           {/* AI Status */}
@@ -547,6 +617,7 @@ const SignalsPage = () => {
             isCopied={copiedSignals.includes(signal.id)}
             isExecuting={executingTrade === signal.id}
             hasActiveChallenge={!!activeChallenge}
+            remainingTrades={getRemainingTrades()}
           />
         ))}
       </div>
@@ -582,12 +653,14 @@ const SignalCard = ({
   onCopy,
   isCopied,
   isExecuting,
-  hasActiveChallenge
+  hasActiveChallenge,
+  remainingTrades
 }) => {
   const isBuy = signal.signal?.signal === 'BUY'
   const confidence = signal.signal?.confidence || 50
   const isHot = confidence >= 75
   const isPremium = confidence >= 85
+  const limitReached = remainingTrades <= 0
 
   return (
     <div
@@ -699,7 +772,7 @@ const SignalCard = ({
         {/* Copy Trade Button */}
         <button
           onClick={() => onCopy(signal)}
-          disabled={isCopied || isExecuting || !hasActiveChallenge}
+          disabled={isCopied || isExecuting || !hasActiveChallenge || limitReached}
           className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all ${
             isCopied
               ? 'bg-green-500/20 text-green-400 border border-green-500/30 cursor-default'
@@ -707,6 +780,8 @@ const SignalCard = ({
               ? 'bg-dark-300 text-gray-400 cursor-wait'
               : !hasActiveChallenge
               ? 'bg-dark-300 text-gray-500 cursor-not-allowed'
+              : limitReached
+              ? 'bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 cursor-not-allowed'
               : isBuy
               ? 'bg-gradient-to-r from-green-500 to-green-600 text-white hover:from-green-600 hover:to-green-700 shadow-lg shadow-green-500/20'
               : 'bg-gradient-to-r from-red-500 to-red-600 text-white hover:from-red-600 hover:to-red-700 shadow-lg shadow-red-500/20'
@@ -720,16 +795,21 @@ const SignalCard = ({
           ) : isExecuting ? (
             <>
               <Loader2 size={18} className="animate-spin" />
-              Executing...
+              Opening Trade...
             </>
           ) : !hasActiveChallenge ? (
             <>
               <Lock size={18} />
               Need Active Challenge
             </>
+          ) : limitReached ? (
+            <>
+              <AlertTriangle size={18} />
+              Daily Limit Reached
+            </>
           ) : (
             <>
-              <Copy size={18} />
+              <Play size={18} />
               Copy Trade
             </>
           )}

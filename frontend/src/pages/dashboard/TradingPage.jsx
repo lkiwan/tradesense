@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useSearchParams } from 'react-router-dom'
 import { useChallenge } from '../../context/ChallengeContext'
 import { tradesAPI, challengesAPI, marketAPI } from '../../services/api'
 import { showErrorToast, showSuccessToast } from '../../utils/errorHandler'
@@ -93,6 +94,7 @@ const SYMBOL_CATEGORIES = {
 const TradingPage = () => {
   const { t } = useTranslation()
   const { challenge, refetch, updateBalance } = useChallenge()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   // Symbol & Category state
   const [selectedCategory, setSelectedCategory] = useState('forex')
@@ -125,6 +127,9 @@ const TradingPage = () => {
   const [moroccanSearch, setMoroccanSearch] = useState('')
   const [showMoroccanDropdown, setShowMoroccanDropdown] = useState(false)
 
+  // AI Signal state (from URL params)
+  const [signalBanner, setSignalBanner] = useState(null)
+
   // Filter Moroccan stocks based on search
   const filteredMoroccanStocks = useMemo(() => {
     if (!moroccanSearch) return []
@@ -135,6 +140,71 @@ const TradingPage = () => {
       )
       .slice(0, 8)
   }, [moroccanSearch])
+
+  // Handle AI Signal parameters from URL
+  useEffect(() => {
+    const symbol = searchParams.get('symbol')
+    const direction = searchParams.get('direction')
+    const sl = searchParams.get('sl')
+    const tp = searchParams.get('tp')
+    const confidence = searchParams.get('confidence')
+    const source = searchParams.get('source')
+
+    if (symbol && source === 'ai_signal') {
+      // Find the symbol in our categories
+      let foundSymbol = null
+      let foundCategory = null
+
+      // Normalize symbol for comparison (handle BTC-USD vs BTCUSD)
+      const normalizedSymbol = symbol.replace('-', '')
+
+      for (const [category, symbols] of Object.entries(SYMBOL_CATEGORIES)) {
+        const found = symbols.find(s =>
+          s.symbol === symbol ||
+          s.symbol === normalizedSymbol ||
+          s.symbol.replace('-', '') === normalizedSymbol
+        )
+        if (found) {
+          foundSymbol = found
+          foundCategory = category
+          break
+        }
+      }
+
+      if (foundSymbol) {
+        // Set the symbol and category
+        setSelectedCategory(foundCategory)
+        setSelectedSymbol(foundSymbol)
+
+        // Set trade direction
+        if (direction === 'buy' || direction === 'sell') {
+          setTradeType(direction)
+        }
+
+        // Set SL and TP - use price mode
+        if (sl) {
+          setStopLoss(parseFloat(sl).toFixed(5))
+          setUsePrice(true)
+        }
+        if (tp) {
+          setTakeProfit(parseFloat(tp).toFixed(5))
+          setUsePrice(true)
+        }
+
+        // Show AI signal banner
+        setSignalBanner({
+          symbol: symbol,
+          direction: direction?.toUpperCase(),
+          confidence: confidence,
+          sl: sl,
+          tp: tp
+        })
+
+        // Clear URL params after processing
+        setSearchParams({})
+      }
+    }
+  }, [searchParams])
 
   // Fetch data
   useEffect(() => {
@@ -326,6 +396,48 @@ const TradingPage = () => {
 
   return (
     <div className="flex flex-col gap-3 sm:gap-4 pb-8 px-2 sm:px-0">
+      {/* AI Signal Banner */}
+      {signalBanner && (
+        <div className="relative overflow-hidden bg-gradient-to-r from-primary-500/20 via-purple-500/20 to-pink-500/20 backdrop-blur-xl rounded-xl sm:rounded-2xl p-4 border border-primary-500/30 shadow-lg">
+          <div className="absolute inset-0 bg-gradient-to-r from-primary-500/5 to-purple-500/5 animate-pulse" />
+          <div className="relative flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${
+                signalBanner.direction === 'BUY' ? 'bg-green-500/20' : 'bg-red-500/20'
+              }`}>
+                {signalBanner.direction === 'BUY' ? (
+                  <TrendingUp className="w-6 h-6 text-green-400" />
+                ) : (
+                  <TrendingDown className="w-6 h-6 text-red-400" />
+                )}
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-white font-bold text-lg">AI Signal: {signalBanner.symbol}</span>
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                    signalBanner.direction === 'BUY' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                  }`}>
+                    {signalBanner.direction}
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-xs font-bold bg-primary-500/20 text-primary-400">
+                    {signalBanner.confidence}% Confidence
+                  </span>
+                </div>
+                <p className="text-sm text-gray-400">
+                  Trade pre-filled with AI recommendations. Review and execute when ready.
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setSignalBanner(null)}
+              className="absolute top-2 right-2 sm:relative sm:top-0 sm:right-0 p-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Top Bar - Symbol Selection & Account Info */}
       <div className="relative overflow-hidden flex flex-col gap-3 bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-white/5 shadow-lg">
         {/* Row 1: Category tabs + Symbol selector */}
