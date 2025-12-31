@@ -34,6 +34,7 @@ const CATEGORY_NAV_ITEMS = {
   ],
   trading: [
     { path: '/trading', icon: LineChart, labelKey: 'sidebar.items.trading', badge: 'PRO', badgeColor: 'bg-primary-500' },
+    { path: '/signals', icon: Brain, labelKey: 'sidebar.items.aiSignals', badge: 'AI', badgeColor: 'bg-gradient-to-r from-purple-500 to-pink-500' },
     { path: '/quick-trading', icon: MousePointer2, labelKey: 'sidebar.items.quickTrading', badge: 'NEW', badgeColor: 'bg-green-500' },
     { path: '/trade-journal', icon: BookOpen, labelKey: 'sidebar.items.tradeJournal', badge: 'NEW', badgeColor: 'bg-orange-500' },
     { path: '/charts-markets', icon: BarChart2, labelKey: 'sidebar.items.chartsMarkets', badge: 'NEW', badgeColor: 'bg-indigo-500' },
@@ -67,6 +68,7 @@ const PATH_TO_CATEGORY = {
   '/sessions': 'dashboard',
   '/kyc': 'dashboard',
   '/trading': 'trading',
+  '/signals': 'trading',
   '/quick-trading': 'trading',
   '/trade-journal': 'trading',
   '/charts-markets': 'trading',
