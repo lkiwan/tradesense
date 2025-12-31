@@ -55,22 +55,26 @@ def _configure_gemini():
         return True
 
     # Try to get API key from database settings first
-    api_key = Settings.get_setting('gemini_api_key')
+    try:
+        api_key = Settings.get_setting('gemini_api_key')
+    except Exception:
+        api_key = None
 
     # Fallback to environment variable
     if not api_key:
         api_key = os.getenv('GEMINI_API_KEY')
 
     if not api_key:
-        print("Warning: Gemini API key not configured")
+        print("Warning: Gemini API key not configured for signals")
         return False
 
     try:
         genai.configure(api_key=api_key)
         _gemini_configured = True
+        print(f"Gemini signals configured with key ending in ...{api_key[-4:]}")
         return True
     except Exception as e:
-        print(f"Error configuring Gemini: {e}")
+        print(f"Error configuring Gemini for signals: {e}")
         return False
 
 
@@ -103,7 +107,8 @@ def get_ai_signal(symbol: str, current_price: float, change_percent: float,
         return signal
 
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        # Use the latest Gemini model (same as ai_chat.py)
+        model = genai.GenerativeModel('gemini-2.5-flash')
 
         # Build context
         context = f"""
@@ -248,7 +253,7 @@ def get_market_analysis(symbols: list) -> dict:
         }
 
     try:
-        model = genai.GenerativeModel('gemini-pro')
+        model = genai.GenerativeModel('gemini-2.5-flash')
 
         prompt = f"""
         Provide a brief market analysis for these assets: {', '.join(symbols)}
