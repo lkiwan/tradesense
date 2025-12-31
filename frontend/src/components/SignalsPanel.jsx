@@ -45,8 +45,16 @@ const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) =
   const fetchSignals = async () => {
     try {
       setRefreshing(true)
+      console.log('Fetching signals for:', symbols)
       const response = await marketAPI.getAllSignals(symbols)
-      setSignals(response.data.signals || [])
+      console.log('Signals response:', response.data)
+      const fetchedSignals = response.data.signals || []
+      if (fetchedSignals.length === 0) {
+        console.warn('No signals returned from API, using mock data')
+        setSignals(generateMockSignals())
+      } else {
+        setSignals(fetchedSignals)
+      }
     } catch (error) {
       console.error('Error fetching signals:', error)
       // Use mock signals for demo
