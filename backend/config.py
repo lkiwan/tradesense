@@ -125,7 +125,7 @@ class Config:
     CACHE_KEY_PREFIX = 'tradesense_'
 
     # Rate Limiting Configuration
-    RATELIMIT_ENABLED = True  # Set to False to disable all rate limiting
+    RATELIMIT_ENABLED = os.getenv('RATELIMIT_ENABLED', 'true').lower() != 'false'
     RATELIMIT_STORAGE_URL = os.getenv('REDIS_URL', 'memory://')
     RATELIMIT_STRATEGY = 'fixed-window'
     RATELIMIT_DEFAULT = '100/minute'

@@ -1,4 +1,5 @@
 import logging
+import os
 import secrets
 from datetime import datetime, timedelta
 from flask import request, jsonify, current_app
@@ -109,8 +110,16 @@ def login():
         return jsonify({'error': 'Server error during login'}), 500
 
     # Check if CAPTCHA is required due to failed attempts
+    # Skip CAPTCHA in development mode or when rate limiting is disabled
+    is_development = (
+        os.getenv('FLASK_ENV') == 'development' or
+        os.getenv('FLASK_DEBUG') == '1' or
+        os.getenv('RATELIMIT_ENABLED', 'true').lower() == 'false'
+    )
     failed_attempts = RateLimitTracker.get_failed_attempts(ip_address)
-    if RateLimitTracker.requires_captcha(ip_address):
+
+    # Only check CAPTCHA in production mode
+    if not is_development and RateLimitTracker.requires_captcha(ip_address):
         # Check for CAPTCHA token in request
         captcha_token = data.get('captcha_token')
         if not captcha_token:
