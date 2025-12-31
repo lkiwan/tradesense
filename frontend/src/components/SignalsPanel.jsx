@@ -6,17 +6,31 @@ import { Skeleton } from './ui/Skeleton'
 
 const AUTO_REFRESH_INTERVAL = 5 * 60 * 1000 // 5 minutes in milliseconds
 
-const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) => {
+// Supported symbols for AI signals (backend has price data for these)
+const SUPPORTED_SIGNAL_SYMBOLS = [
+  'AAPL', 'TSLA', 'NVDA', 'GOOGL', 'MSFT',  // US Stocks
+  'BTC-USD', 'ETH-USD', 'SOL-USD',           // Crypto
+  'IAM', 'ATW', 'BCP'                        // Moroccan
+]
+
+const SignalsPanel = ({ symbols: propSymbols }) => {
   const { t } = useTranslation()
   const [signals, setSignals] = useState([])
   const [loading, setLoading] = useState(true)
   const [refreshing, setRefreshing] = useState(false)
   const [nextRefresh, setNextRefresh] = useState(AUTO_REFRESH_INTERVAL / 1000) // countdown in seconds
 
+  // Use supported symbols, filtering prop symbols to only include supported ones
+  // If no valid symbols from props, use defaults
+  const symbols = propSymbols?.length > 0
+    ? propSymbols.filter(s => SUPPORTED_SIGNAL_SYMBOLS.includes(s))
+    : []
+  const effectiveSymbols = symbols.length > 0 ? symbols : SUPPORTED_SIGNAL_SYMBOLS.slice(0, 5)
+
   // Initial fetch
   useEffect(() => {
     fetchSignals()
-  }, [symbols])
+  }, [effectiveSymbols.join(',')])
 
   // Auto-refresh every 5 minutes with countdown
   useEffect(() => {
@@ -45,8 +59,8 @@ const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) =
   const fetchSignals = async () => {
     try {
       setRefreshing(true)
-      console.log('Fetching signals for:', symbols)
-      const response = await marketAPI.getAllSignals(symbols)
+      console.log('Fetching signals for:', effectiveSymbols)
+      const response = await marketAPI.getAllSignals(effectiveSymbols)
       console.log('Signals response:', response.data)
       const fetchedSignals = response.data.signals || []
       if (fetchedSignals.length === 0) {
@@ -66,7 +80,7 @@ const SignalsPanel = ({ symbols = ['AAPL', 'TSLA', 'BTC-USD', 'IAM', 'ATW'] }) =
   }
 
   const generateMockSignals = () => {
-    return symbols.map(symbol => {
+    return effectiveSymbols.map(symbol => {
       const signalTypes = ['BUY', 'SELL', 'HOLD']
       const signal = signalTypes[Math.floor(Math.random() * 3)]
       const confidence = 50 + Math.floor(Math.random() * 45)
