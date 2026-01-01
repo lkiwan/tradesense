@@ -107,8 +107,8 @@ def get_ai_signal(symbol: str, current_price: float, change_percent: float,
         return signal
 
     try:
-        # Use the latest Gemini model (same as ai_chat.py)
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        # Use Gemini 2.0 Flash Lite for higher free tier limits
+        model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
         # Build context
         context = f"""
@@ -253,7 +253,7 @@ def get_market_analysis(symbols: list) -> dict:
         }
 
     try:
-        model = genai.GenerativeModel('gemini-2.5-flash')
+        model = genai.GenerativeModel('gemini-2.0-flash-lite')
 
         prompt = f"""
         Provide a brief market analysis for these assets: {', '.join(symbols)}

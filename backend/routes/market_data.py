@@ -322,6 +322,7 @@ def get_all_signals():
     from services.yfinance_service import get_live_price_data
 
     symbols = request.args.get('symbols', '')
+    force_refresh = request.args.get('force_refresh', 'false').lower() == 'true'
 
     if not symbols:
         # Default to top symbols including more Moroccan stocks
@@ -332,11 +333,12 @@ def get_all_signals():
     # Create cache key from sorted symbols
     cache_key = f"signals:{','.join(sorted(symbols_list))}"
 
-    # Try cache first
-    cached_data = CacheService.get(cache_key)
-    if cached_data:
-        logger.debug(f"Cache hit for signals: {cache_key}")
-        return jsonify(cached_data), 200
+    # Try cache first (skip if force_refresh)
+    if not force_refresh:
+        cached_data = CacheService.get(cache_key)
+        if cached_data:
+            logger.debug(f"Cache hit for signals: {cache_key}")
+            return jsonify(cached_data), 200
 
     signals = []
 
@@ -366,7 +368,7 @@ def get_all_signals():
                 logger.debug(f"Skipping {symbol} - no live price available")
                 continue
 
-            signal = get_ai_signal(symbol, price, change_percent)
+            signal = get_ai_signal(symbol, price, change_percent, force_refresh=force_refresh)
             signals.append({
                 'symbol': symbol,
                 'name': name,
