@@ -114,13 +114,18 @@ const ProfileCompletionBanner = () => {
               {/* CTA Buttons */}
               <div className="space-y-3">
                 <button
-                  onClick={() => navigate('/profile/default')}
+                  type="button"
+                  onClick={() => {
+                    console.log('Navigating to profile...')
+                    navigate('/profile/default')
+                  }}
                   className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {t('profile.completeNow', 'Complete Profile Now')}
                   <ArrowRight size={18} />
                 </button>
                 <button
+                  type="button"
                   onClick={() => setDismissed(true)}
                   className="w-full py-3 bg-dark-200 hover:bg-dark-300 text-gray-400 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
                 >
