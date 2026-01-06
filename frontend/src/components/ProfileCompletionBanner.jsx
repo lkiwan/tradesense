@@ -1,15 +1,23 @@
-import { useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
-import { User, ArrowRight, AlertCircle, Shield, CheckCircle } from 'lucide-react'
+import { User, ArrowRight, AlertCircle, Shield, CheckCircle, X } from 'lucide-react'
 
 const ProfileCompletionBanner = () => {
   const { t } = useTranslation()
   const { user } = useAuth()
   const navigate = useNavigate()
+  const location = useLocation()
+  const [dismissed, setDismissed] = useState(false)
 
-  // Don't show if profile is complete
-  if (!user || user.profile_complete) {
+  // Don't show if profile is complete or dismissed
+  if (!user || user.profile_complete || dismissed) {
+    return null
+  }
+
+  // Don't block on profile page itself
+  if (location.pathname.includes('/profile')) {
     return null
   }
 
@@ -103,14 +111,23 @@ const ProfileCompletionBanner = () => {
                 </div>
               )}
 
-              {/* CTA Button */}
-              <button
-                onClick={() => navigate('/profile/default')}
-                className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
-              >
-                {t('profile.completeNow', 'Complete Profile Now')}
-                <ArrowRight size={18} />
-              </button>
+              {/* CTA Buttons */}
+              <div className="space-y-3">
+                <button
+                  onClick={() => navigate('/profile/default')}
+                  className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  {t('profile.completeNow', 'Complete Profile Now')}
+                  <ArrowRight size={18} />
+                </button>
+                <button
+                  onClick={() => setDismissed(true)}
+                  className="w-full py-3 bg-dark-200 hover:bg-dark-300 text-gray-400 hover:text-white rounded-xl font-medium transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  <X size={16} />
+                  {t('common.later', 'Later')}
+                </button>
+              </div>
             </div>
           </div>
         </div>
