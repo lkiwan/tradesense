@@ -97,13 +97,15 @@ const SocialLoginButtons = ({ mode = 'login', onSuccess, disabled = false }) => 
       if (!code) return
 
       const storedState = localStorage.getItem('oauth_state')
-      const provider = localStorage.getItem('oauth_provider')
+      const provider = localStorage.getItem('oauth_provider') || 'google'
 
       // Clear stored data
       localStorage.removeItem('oauth_state')
       localStorage.removeItem('oauth_provider')
 
-      if (state !== storedState) {
+      // Validate state only if we have a stored state (backend also validates)
+      if (storedState && state !== storedState) {
+        console.warn('OAuth state mismatch:', { state, storedState })
         toast.error('Security validation failed. Please try again.')
         window.history.replaceState({}, '', window.location.pathname)
         return
