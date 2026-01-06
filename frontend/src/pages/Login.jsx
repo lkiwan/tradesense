@@ -322,27 +322,6 @@ const Login = () => {
           {/* Social Login Buttons */}
           <SocialLoginButtons mode="login" disabled={loading || isLimited} />
 
-          {/* Demo Account Divider */}
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-white/10" />
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-dark-200 text-gray-500 rounded-full">{t('auth.login.demo')}</span>
-            </div>
-          </div>
-
-          {/* Demo Account */}
-          <button
-            onClick={() => {
-              setEmail('admin@tradesense.com')
-              setPassword('admin123')
-            }}
-            className="w-full py-4 bg-dark-300/50 hover:bg-dark-300 text-gray-300 rounded-xl font-medium transition-all duration-300 border border-white/5 hover:border-white/10"
-          >
-            {t('auth.login.useDemoAccount')}
-          </button>
-
           {/* Register Link */}
           <p className="mt-8 text-center text-gray-400">
             {t('auth.login.noAccount')}{' '}
