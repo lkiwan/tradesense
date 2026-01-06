@@ -772,6 +772,11 @@ const PlansPage = () => {
                       {t('profile.country', 'Country')}
                     </span>
                   )}
+                  {!user?.gender && (
+                    <span className="px-3 py-1 bg-yellow-500/10 text-yellow-400 text-sm rounded-full border border-yellow-500/20">
+                      {t('profile.gender', 'Gender')}
+                    </span>
+                  )}
                 </div>
               </div>
 

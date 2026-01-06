@@ -313,6 +313,22 @@ def update_current_user():
     if 'country' in data:
         user.country = data['country']
 
+    if 'gender' in data:
+        user.gender = data['gender']
+
+    if 'date_of_birth' in data:
+        from datetime import datetime
+        if data['date_of_birth']:
+            user.date_of_birth = datetime.strptime(data['date_of_birth'], '%Y-%m-%d').date()
+        else:
+            user.date_of_birth = None
+
+    if 'city' in data:
+        user.city = data['city']
+
+    if 'address' in data:
+        user.address = data['address']
+
     db.session.commit()
 
     return jsonify({

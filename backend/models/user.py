@@ -37,6 +37,10 @@ class User(db.Model):
     full_name = db.Column(db.String(100), nullable=True)
     phone = db.Column(db.String(30), nullable=True)  # Increased for international formats
     country = db.Column(db.String(50), nullable=True)
+    gender = db.Column(db.String(10), nullable=True)  # male, female, other
+    date_of_birth = db.Column(db.Date, nullable=True)
+    city = db.Column(db.String(100), nullable=True)
+    address = db.Column(db.String(255), nullable=True)
 
     # Login attempt tracking
     failed_login_attempts = db.Column(db.Integer, default=0)
@@ -65,7 +69,7 @@ class User(db.Model):
     @property
     def profile_complete(self):
         """Check if user has completed their profile"""
-        return bool(self.full_name and self.phone and self.country)
+        return bool(self.full_name and self.phone and self.country and self.gender)
 
     def to_dict(self):
         """Convert user to dictionary"""
@@ -84,6 +88,10 @@ class User(db.Model):
             'full_name': self.full_name,
             'phone': self.phone,
             'country': self.country,
+            'gender': self.gender,
+            'date_of_birth': self.date_of_birth.isoformat() if self.date_of_birth else None,
+            'city': self.city,
+            'address': self.address,
             'profile_complete': self.profile_complete
         }
 

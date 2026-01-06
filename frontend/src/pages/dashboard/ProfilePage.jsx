@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { User, Mail, Phone, MapPin, Edit2, Camera, Shield, Award, CheckCircle, AlertCircle, Loader2 } from 'lucide-react'
+import { User, Mail, Phone, MapPin, Edit2, Camera, Shield, Award, CheckCircle, AlertCircle, Loader2, Calendar, Home, Users } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import api from '../../services/api'
 import toast from 'react-hot-toast'
@@ -16,7 +16,11 @@ const ProfilePage = () => {
     username: '',
     full_name: '',
     phone: '',
-    country: ''
+    country: '',
+    gender: '',
+    date_of_birth: '',
+    city: '',
+    address: ''
   })
 
   // Initialize form data when user loads
@@ -26,7 +30,11 @@ const ProfilePage = () => {
         username: user.username || '',
         full_name: user.full_name || '',
         phone: user.phone || '',
-        country: user.country || ''
+        country: user.country || '',
+        gender: user.gender || '',
+        date_of_birth: user.date_of_birth || '',
+        city: user.city || '',
+        address: user.address || ''
       })
     }
   }, [user])
@@ -65,14 +73,18 @@ const ProfilePage = () => {
         username: user.username || '',
         full_name: user.full_name || '',
         phone: user.phone || '',
-        country: user.country || ''
+        country: user.country || '',
+        gender: user.gender || '',
+        date_of_birth: user.date_of_birth || '',
+        city: user.city || '',
+        address: user.address || ''
       })
     }
     setIsEditing(false)
   }
 
   // Calculate profile completion
-  const requiredFields = ['full_name', 'phone', 'country']
+  const requiredFields = ['full_name', 'phone', 'country', 'gender']
   const completedFields = requiredFields.filter(field => user?.[field])
   const completionPercent = Math.round((completedFields.length / requiredFields.length) * 100)
   const isProfileComplete = completionPercent === 100
@@ -297,6 +309,91 @@ const ProfilePage = () => {
                   className={`w-full bg-dark-200/50 border rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px] ${
                     !user?.country && !isEditing ? 'border-yellow-500/30' : 'border-white/5'
                   }`}
+                />
+              </div>
+            </div>
+
+            {/* Gender - Required */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2 flex items-center gap-2">
+                {t('profile.gender', 'Gender')}
+                <span className="text-red-400">*</span>
+                {!user?.gender && (
+                  <span className="text-xs text-yellow-400 bg-yellow-500/10 px-2 py-0.5 rounded">
+                    {t('profile.required', 'Required')}
+                  </span>
+                )}
+              </label>
+              <div className="relative group">
+                <Users className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <select
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className={`w-full bg-dark-200/50 border rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px] appearance-none cursor-pointer ${
+                    !user?.gender && !isEditing ? 'border-yellow-500/30' : 'border-white/5'
+                  } ${!formData.gender ? 'text-gray-500' : ''}`}
+                >
+                  <option value="">{t('profile.selectGender', 'Select gender')}</option>
+                  <option value="male">{t('profile.male', 'Male')}</option>
+                  <option value="female">{t('profile.female', 'Female')}</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Date of Birth - Optional */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                {t('profile.dateOfBirth', 'Date of Birth')}
+              </label>
+              <div className="relative group">
+                <Calendar className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <input
+                  type="date"
+                  name="date_of_birth"
+                  value={formData.date_of_birth}
+                  onChange={handleChange}
+                  disabled={!isEditing}
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
+                />
+              </div>
+            </div>
+
+            {/* City - Optional */}
+            <div>
+              <label className="block text-sm text-gray-400 mb-2">
+                {t('profile.city', 'City')}
+              </label>
+              <div className="relative group">
+                <Home className="absolute left-3 md:left-4 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <input
+                  type="text"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  placeholder={t('profile.cityPlaceholder', 'Casablanca')}
+                  disabled={!isEditing}
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 min-h-[48px]"
+                />
+              </div>
+            </div>
+
+            {/* Address - Optional */}
+            <div className="md:col-span-2">
+              <label className="block text-sm text-gray-400 mb-2">
+                {t('profile.address', 'Address')}
+              </label>
+              <div className="relative group">
+                <Home className="absolute left-3 md:left-4 top-4 text-gray-500 group-focus-within:text-primary-400 transition-colors" size={18} />
+                <textarea
+                  name="address"
+                  value={formData.address}
+                  onChange={handleChange}
+                  placeholder={t('profile.addressPlaceholder', 'Enter your full address')}
+                  disabled={!isEditing}
+                  rows={2}
+                  className="w-full bg-dark-200/50 border border-white/5 rounded-xl px-10 md:px-12 py-3 md:py-3.5 text-white text-sm md:text-base placeholder-gray-500 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500/50 transition-all duration-300 resize-none"
                 />
               </div>
             </div>
