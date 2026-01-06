@@ -9,6 +9,8 @@ from functools import wraps
 from models import db, User, UserStatus, AdminNotification
 from datetime import datetime, timedelta
 import logging
+from services.push_notification_service import PushNotificationService
+from services.email_service import EmailService
 
 logger = logging.getLogger(__name__)
 
@@ -111,10 +113,31 @@ def execute_bulk_action():
                         created_by=current_user_id
                     )
                     db.session.add(notification)
+                    # Actually send push notification
+                    PushNotificationService.send_to_user(
+                        user_id=user.id,
+                        notification_type='system_announcement',
+                        title=params.get('title', 'Notification'),
+                        body=params.get('message', ''),
+                        save_log=True
+                    )
                     affected_count += 1
 
                 elif action == 'send_email':
-                    # Queue email (implement email sending logic)
+                    # Send email notification
+                    email_html = f"""
+                    <html>
+                    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background: #3B82F6; padding: 30px; text-align: center;">
+                            <h1 style="color: white; margin: 0;">{params.get('title', 'Notification')}</h1>
+                        </div>
+                        <div style="padding: 30px;">
+                            <p>{params.get('message', '')}</p>
+                        </div>
+                    </body>
+                    </html>
+                    """
+                    EmailService.send(user.email, params.get('title', 'TradeSense Notification'), email_html)
                     affected_count += 1
 
             except Exception as e:
@@ -523,15 +546,63 @@ def send_notification():
 
         db.session.commit()
 
-        # TODO: Implement actual push notification / email sending logic
-        # For now, just record in database
+        # Actually send notifications
+        push_sent = 0
+        email_sent = 0
 
-        logger.info(f"Notification sent to {notifications_created} users by admin {current_user_id}")
+        for user in users:
+            try:
+                # Send push notification
+                if notification_type in ['push', 'both']:
+                    result = PushNotificationService.send_to_user(
+                        user_id=user.id,
+                        notification_type='system_announcement' if category == 'general' else category,
+                        title=title,
+                        body=message,
+                        data={
+                            'category': category,
+                            'priority': priority,
+                            'action_url': action_url
+                        },
+                        save_log=True
+                    )
+                    if result.get('sent'):
+                        push_sent += 1
+
+                # Send email notification
+                if notification_type in ['email', 'both']:
+                    # Build email HTML
+                    email_html = f"""
+                    <html>
+                    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                        <div style="background: linear-gradient(135deg, #3B82F6, #8B5CF6); padding: 30px; text-align: center;">
+                            <h1 style="color: white; margin: 0;">{title}</h1>
+                        </div>
+                        <div style="padding: 30px;">
+                            <p>{message}</p>
+                            {'<p><a href="' + action_url + '" style="background: #3B82F6; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block;">Learn More</a></p>' if action_url else ''}
+                            <p style="color: #6B7280; font-size: 12px; margin-top: 30px;">
+                                You received this message from TradeSense admin team.
+                            </p>
+                        </div>
+                    </body>
+                    </html>
+                    """
+                    if EmailService.send(user.email, title, email_html):
+                        email_sent += 1
+
+            except Exception as e:
+                logger.warning(f"Error sending notification to user {user.id}: {e}")
+                continue
+
+        logger.info(f"Notification sent to {notifications_created} users (push: {push_sent}, email: {email_sent}) by admin {current_user_id}")
 
         return jsonify({
             'success': True,
-            'message': f'Notification sent to {notifications_created} users',
-            'recipients': notifications_created
+            'message': f'Notification sent to {notifications_created} users (push: {push_sent}, email: {email_sent})',
+            'recipients': notifications_created,
+            'push_sent': push_sent,
+            'email_sent': email_sent
         })
 
     except Exception as e:

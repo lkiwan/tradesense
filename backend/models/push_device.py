@@ -174,6 +174,11 @@ class NotificationPreference(db.Model):
         if not self.push_enabled:
             return False
 
+        # Check quiet hours (skip for security alerts - always send those)
+        if self.quiet_hours_enabled and notification_type != NotificationType.SECURITY_ALERT.value:
+            if self._is_quiet_hours():
+                return False
+
         type_map = {
             NotificationType.TRADE_EXECUTED.value: self.trade_executed,
             NotificationType.TRADE_CLOSED.value: self.trade_closed,
@@ -194,6 +199,25 @@ class NotificationPreference(db.Model):
         }
 
         return type_map.get(notification_type, True)
+
+    def _is_quiet_hours(self):
+        """Check if current time is within quiet hours"""
+        try:
+            import pytz
+            tz = pytz.timezone(self.timezone or 'UTC')
+            now = datetime.now(tz)
+            current_hour = now.hour
+
+            start = self.quiet_hours_start or 22
+            end = self.quiet_hours_end or 8
+
+            # Handle overnight quiet hours (e.g., 22:00 - 08:00)
+            if start > end:
+                return current_hour >= start or current_hour < end
+            else:
+                return start <= current_hour < end
+        except Exception:
+            return False
 
 
 class NotificationLog(db.Model):
