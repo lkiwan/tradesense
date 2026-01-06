@@ -5,10 +5,12 @@ import {
   Target, TrendingDown, Calendar, Clock, RefreshCw,
   Flame, Award, ArrowRight, Info, ChevronDown,
   Cpu, Brain, Zap, Shield, BarChart3, TrendingUp,
-  Sparkles, Crown, Rocket, Star, CheckCircle2
+  Sparkles, Crown, Rocket, Star, CheckCircle2, User, AlertCircle
 } from 'lucide-react'
 import { challengeModelsAPI } from '../../services/api'
 import { useChallenge } from '../../context/ChallengeContext'
+import { useAuth } from '../../context/AuthContext'
+import toast from 'react-hot-toast'
 
 // AI Tiers Configuration (static styling, names/descriptions from translations)
 const AI_TIERS_CONFIG = {
@@ -147,11 +149,13 @@ const PlansPage = () => {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const { hasActiveChallenge, challenge } = useChallenge()
+  const { user } = useAuth()
   const [models, setModels] = useState([])
   const [selectedModel, setSelectedModel] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showNumbers, setShowNumbers] = useState(true)
   const [expandedCard, setExpandedCard] = useState(null) // For mobile expandable cards
+  const [showProfileModal, setShowProfileModal] = useState(false)
 
   useEffect(() => {
     fetchModels()
@@ -175,6 +179,11 @@ const PlansPage = () => {
   }
 
   const handleSelect = (size) => {
+    // Check if profile is complete before allowing purchase
+    if (!user?.profile_complete) {
+      setShowProfileModal(true)
+      return
+    }
     navigate(`/challenge-checkout?model=${selectedModel.id}&size=${size.id}`)
   }
 
@@ -722,6 +731,72 @@ const PlansPage = () => {
             </div>
           </div>
         </section>
+      )}
+
+      {/* Profile Completion Modal */}
+      {showProfileModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-dark-100 rounded-2xl border border-white/10 p-6 max-w-md w-full shadow-2xl">
+            <div className="text-center">
+              {/* Icon */}
+              <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary-500/20 to-purple-500/20 rounded-full flex items-center justify-center">
+                <User size={32} className="text-primary-400" />
+              </div>
+
+              {/* Title */}
+              <h3 className="text-xl font-bold text-white mb-2">
+                {t('plans.profileRequired.title', 'Complete Your Profile')}
+              </h3>
+
+              {/* Description */}
+              <p className="text-gray-400 mb-6">
+                {t('plans.profileRequired.description', 'Please complete your profile information before purchasing a challenge. This helps us verify your identity and process payments securely.')}
+              </p>
+
+              {/* Missing fields */}
+              <div className="bg-dark-200/50 rounded-lg p-4 mb-6">
+                <p className="text-sm text-gray-500 mb-2">{t('profile.missing', 'Missing')}:</p>
+                <div className="flex flex-wrap justify-center gap-2">
+                  {!user?.full_name && (
+                    <span className="px-3 py-1 bg-yellow-500/10 text-yellow-400 text-sm rounded-full border border-yellow-500/20">
+                      {t('profile.fullName', 'Full Name')}
+                    </span>
+                  )}
+                  {!user?.phone && (
+                    <span className="px-3 py-1 bg-yellow-500/10 text-yellow-400 text-sm rounded-full border border-yellow-500/20">
+                      {t('profile.phone', 'Phone')}
+                    </span>
+                  )}
+                  {!user?.country && (
+                    <span className="px-3 py-1 bg-yellow-500/10 text-yellow-400 text-sm rounded-full border border-yellow-500/20">
+                      {t('profile.country', 'Country')}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex flex-col sm:flex-row gap-3">
+                <button
+                  onClick={() => setShowProfileModal(false)}
+                  className="flex-1 px-4 py-3 bg-dark-200 hover:bg-dark-300 text-gray-300 rounded-xl font-medium transition-all"
+                >
+                  {t('common.cancel', 'Cancel')}
+                </button>
+                <button
+                  onClick={() => {
+                    setShowProfileModal(false)
+                    navigate('/profile/default')
+                  }}
+                  className="flex-1 px-4 py-3 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-medium transition-all flex items-center justify-center gap-2"
+                >
+                  <User size={18} />
+                  {t('profile.complete', 'Complete Profile')}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

@@ -1922,6 +1922,10 @@
       "securePayment": "Secure payment",
       "fullRefund": "100% Refund",
       "instantActivation": "Instant activation"
+    },
+    "profileRequired": {
+      "title": "Complete Your Profile",
+      "description": "Please complete your profile information before purchasing a challenge. This helps us verify your identity and process payments securely."
     }
   },
   "transactions": {

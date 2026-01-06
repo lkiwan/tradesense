@@ -1923,6 +1923,10 @@
       "securePayment": "Paiement sécurisé",
       "fullRefund": "Remboursement 100%",
       "instantActivation": "Activation instantanée"
+    },
+    "profileRequired": {
+      "title": "Complétez Votre Profil",
+      "description": "Veuillez compléter vos informations de profil avant d'acheter un challenge. Cela nous aide à vérifier votre identité et à traiter les paiements en toute sécurité."
     }
   },
   "transactions": {
