@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { User, ArrowRight, AlertCircle, Shield, CheckCircle, X } from 'lucide-react'
@@ -7,7 +7,6 @@ import { User, ArrowRight, AlertCircle, Shield, CheckCircle, X } from 'lucide-re
 const ProfileCompletionBanner = () => {
   const { t } = useTranslation()
   const { user } = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
   const [dismissed, setDismissed] = useState(false)
 
@@ -113,17 +112,13 @@ const ProfileCompletionBanner = () => {
 
               {/* CTA Buttons */}
               <div className="space-y-3">
-                <button
-                  type="button"
-                  onClick={() => {
-                    console.log('Navigating to profile...')
-                    navigate('/profile/default')
-                  }}
+                <Link
+                  to="/profile/default"
                   className="w-full py-4 bg-gradient-to-r from-primary-500 to-primary-600 hover:from-primary-600 hover:to-primary-700 text-white rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-primary-500/25 hover:shadow-xl hover:shadow-primary-500/30 hover:scale-[1.02] active:scale-[0.98]"
                 >
                   {t('profile.completeNow', 'Complete Profile Now')}
                   <ArrowRight size={18} />
-                </button>
+                </Link>
                 <button
                   type="button"
                   onClick={() => setDismissed(true)}
