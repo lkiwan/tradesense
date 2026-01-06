@@ -527,24 +527,23 @@ def send_notification():
             # All users
             users = User.query.filter(User.role == 'user').all()
 
-        # Create notification records
-        notifications_created = 0
-        for user in users:
-            notification = AdminNotification(
-                user_id=user.id,
-                title=title,
-                message=message,
-                notification_type=notification_type,
-                category=category,
-                priority=priority,
-                action_url=action_url,
-                scheduled_at=datetime.fromisoformat(scheduled_at) if scheduled_at else None,
-                created_by=current_user_id
-            )
-            db.session.add(notification)
-            notifications_created += 1
-
+        # Create single notification record for all target users
+        user_ids = [user.id for user in users]
+        notification = AdminNotification(
+            sent_by=current_user_id,
+            target_type=target_type,
+            title=title,
+            message=message,
+            notification_type=notification_type,
+            channel=notification_type,  # 'push', 'email', or 'both'
+            action_url=action_url,
+            scheduled_at=datetime.fromisoformat(scheduled_at) if scheduled_at else None
+        )
+        notification.set_target_user_ids(user_ids)
+        db.session.add(notification)
         db.session.commit()
+
+        notifications_created = len(users)
 
         # Actually send notifications
         push_sent = 0
