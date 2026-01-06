@@ -604,9 +604,9 @@ function App() {
               </ProtectedRoute>
             } />
 
-            {/* Profile */}
+            {/* Profile - accessible without challenge so users can complete their profile */}
             <Route path="/profile/default" element={
-              <ProtectedRoute requiresChallenge redirectTo="/plans">
+              <ProtectedRoute>
                 <DashboardLayout>
                   <ProfilePage />
                 </DashboardLayout>
