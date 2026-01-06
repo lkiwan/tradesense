@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth } from '../context/AuthContext'
 import { useChallenge } from '../context/ChallengeContext'
 import EmailVerificationBanner from './EmailVerificationBanner'
+import ProfileCompletionBanner from './ProfileCompletionBanner'
 import { NotificationBell } from './notifications'
 import {
   LayoutDashboard, Calculator, Receipt, Wallet, Gift, Trophy,
@@ -441,6 +442,9 @@ const DashboardLayout = ({ children }) => {
         <main className="flex-1 transition-all duration-300 lg:ml-16 mt-12 lg:mt-0 overflow-x-hidden max-w-[100vw] lg:max-w-[calc(100vw-64px)]">
           {/* Email Verification Banner */}
           <EmailVerificationBanner />
+
+          {/* Profile Completion Banner */}
+          <ProfileCompletionBanner />
 
           {/* Page Content */}
           <div className="p-4 lg:p-8 overflow-x-hidden w-full">

@@ -33,6 +33,15 @@ class User(db.Model):
     referral_code = db.Column(db.String(20), unique=True, nullable=True, index=True)
     referred_by_code = db.Column(db.String(20), nullable=True, index=True)
 
+    # Profile completion fields
+    full_name = db.Column(db.String(100), nullable=True)
+    phone = db.Column(db.String(20), nullable=True)
+    country = db.Column(db.String(50), nullable=True)
+
+    # Login attempt tracking
+    failed_login_attempts = db.Column(db.Integer, default=0)
+    locked_until = db.Column(db.DateTime, nullable=True)
+
     # Relationships with cascade delete for PostgreSQL
     challenges = db.relationship('UserChallenge', backref='user', lazy=True,
                                  cascade='all, delete-orphan')
@@ -53,6 +62,11 @@ class User(db.Model):
             self.password_hash.encode('utf-8')
         )
 
+    @property
+    def profile_complete(self):
+        """Check if user has completed their profile"""
+        return bool(self.full_name and self.phone and self.country)
+
     def to_dict(self):
         """Convert user to dictionary"""
         return {
@@ -66,7 +80,11 @@ class User(db.Model):
             'email_verified_at': self.email_verified_at.isoformat() if self.email_verified_at else None,
             'referral_code': self.referral_code,
             'referred_by_code': self.referred_by_code,
-            'created_at': self.created_at.isoformat() if self.created_at else None
+            'created_at': self.created_at.isoformat() if self.created_at else None,
+            'full_name': self.full_name,
+            'phone': self.phone,
+            'country': self.country,
+            'profile_complete': self.profile_complete
         }
 
     def __repr__(self):

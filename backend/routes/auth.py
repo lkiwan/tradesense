@@ -303,6 +303,16 @@ def update_current_user():
     if 'password' in data:
         user.set_password(data['password'])
 
+    # Profile completion fields
+    if 'full_name' in data:
+        user.full_name = data['full_name']
+
+    if 'phone' in data:
+        user.phone = data['phone']
+
+    if 'country' in data:
+        user.country = data['country']
+
     db.session.commit()
 
     return jsonify({
