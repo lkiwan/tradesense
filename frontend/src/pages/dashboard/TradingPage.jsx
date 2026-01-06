@@ -206,16 +206,54 @@ const TradingPage = () => {
     }
   }, [searchParams])
 
-  // Fetch data
+  // Fetch positions - wrapped in useCallback for stability
+  const fetchPositions = useCallback(async () => {
+    if (!challenge?.id) return
+    try {
+      const response = await tradesAPI.getAll(challenge.id)
+      const open = (response.data.trades || []).filter(t => t.status === 'open')
+      setOpenPositions(open)
+    } catch (error) {
+      console.error('Failed to fetch positions:', error)
+    }
+  }, [challenge?.id])
+
+  // Fetch PnL - wrapped in useCallback for stability
+  const fetchPnL = useCallback(async () => {
+    if (!challenge?.id) return
+    try {
+      const response = await tradesAPI.getOpenPnL()
+      setOpenPnL(response.data)
+    } catch (error) {
+      console.error('Failed to fetch PnL:', error)
+    }
+  }, [challenge?.id])
+
+  // Fetch data on mount and periodically
   useEffect(() => {
     if (challenge?.id) {
       fetchPositions()
-      fetchPnL() // Fetch immediately
-      // Update PnL every 3 seconds for real-time feel
-      const interval = setInterval(fetchPnL, 3000)
+      fetchPnL()
+      // Update both positions and PnL every 3 seconds for real-time feel
+      const interval = setInterval(() => {
+        fetchPositions()
+        fetchPnL()
+      }, 3000)
       return () => clearInterval(interval)
     }
-  }, [challenge?.id])
+  }, [challenge?.id, fetchPositions, fetchPnL])
+
+  // Refetch when page becomes visible (user navigates back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && challenge?.id) {
+        fetchPositions()
+        fetchPnL()
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange)
+  }, [challenge?.id, fetchPositions, fetchPnL])
 
   // Fetch real price when symbol changes
   const fetchCurrentPrice = async (showLoading = false) => {
@@ -275,25 +313,6 @@ const TradingPage = () => {
       }
     }
   }, [riskPercent, slPips, challenge])
-
-  const fetchPositions = async () => {
-    try {
-      const response = await tradesAPI.getAll(challenge.id)
-      const open = (response.data.trades || []).filter(t => t.status === 'open')
-      setOpenPositions(open)
-    } catch (error) {
-      console.error('Failed to fetch positions:', error)
-    }
-  }
-
-  const fetchPnL = async () => {
-    try {
-      const response = await tradesAPI.getOpenPnL()
-      setOpenPnL(response.data)
-    } catch (error) {
-      console.error('Failed to fetch PnL:', error)
-    }
-  }
 
   const executeTrade = async () => {
     if (!challenge?.id) {
