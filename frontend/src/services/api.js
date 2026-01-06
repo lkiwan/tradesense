@@ -314,8 +314,8 @@ export const subscriptionsAPI = {
     }),
 
   // Confirm trial after PayPal approval
-  confirmTrial: (token) =>
-    api.post('/subscriptions/trial/confirm', { token }),
+  confirmTrial: (subscriptionId) =>
+    api.post('/subscriptions/trial/confirm', { subscription_id: subscriptionId }),
 
   // Cancel trial before it ends
   cancelTrial: () =>

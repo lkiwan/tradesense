@@ -23,19 +23,23 @@ const TrialConfirm = () => {
       return
     }
 
-    const token = searchParams.get('token')
-    if (!token) {
-      setStatus('error')
-      setError('Token PayPal manquant')
+    // PayPal Subscriptions API returns subscription_id in the URL
+    const subscriptionId = searchParams.get('subscription_id')
+    // Also check for ba_token (some PayPal flows use this)
+    const baToken = searchParams.get('ba_token')
+
+    if (!subscriptionId && !baToken) {
+      // Try to confirm without params - backend will use stored subscription_id
+      confirmTrial(null)
       return
     }
 
-    confirmTrial(token)
+    confirmTrial(subscriptionId || baToken)
   }, [isAuthenticated, searchParams])
 
-  const confirmTrial = async (token) => {
+  const confirmTrial = async (subscriptionId) => {
     try {
-      const response = await subscriptionsAPI.confirmTrial(token)
+      const response = await subscriptionsAPI.confirmTrial(subscriptionId)
       setTrialData(response.data)
       setStatus('success')
       toast.success('Essai gratuit active avec succes!')

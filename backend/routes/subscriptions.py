@@ -2,7 +2,7 @@
 Subscription Routes for Auto-Charge Trial System
 
 Handles:
-- Trial signup with plan selection and PayPal billing agreement
+- Trial signup with plan selection and PayPal subscription
 - PayPal return/confirmation after approval
 - Trial cancellation
 - Trial status checking
@@ -15,10 +15,11 @@ from datetime import datetime, timedelta
 
 from . import subscriptions_bp
 from models import db, Subscription, UserChallenge, Payment, User
-from services.payment_gateway import (
-    create_billing_agreement_token,
-    execute_billing_agreement,
-    cancel_billing_agreement
+from services.paypal_subscriptions import (
+    create_trial_subscription,
+    verify_subscription_approved,
+    cancel_subscription,
+    is_paypal_configured
 )
 from services.email_service import send_trial_started_email
 
@@ -111,34 +112,44 @@ def start_trial_with_payment():
             'message': 'You have already used your free trial. Please purchase a challenge directly.'
         }), 400
 
-    # Create PayPal billing agreement
-    agreement_result = create_billing_agreement_token(
+    # Check if PayPal is configured
+    if not is_paypal_configured():
+        return jsonify({
+            'error': 'PayPal is not configured',
+            'message': 'Please contact support or use another payment method'
+        }), 503
+
+    # Create PayPal subscription with trial
+    subscription_result = create_trial_subscription(
         plan_type=selected_plan,
         plan_name=plan['name'],
         plan_price=plan['price'],
         return_url=return_url,
-        cancel_url=cancel_url
+        cancel_url=cancel_url,
+        user_id=current_user_id
     )
 
-    if not agreement_result:
+    if not subscription_result:
         return jsonify({
-            'error': 'Failed to create PayPal billing agreement',
+            'error': 'Failed to create PayPal subscription',
             'message': 'Please try again or contact support'
         }), 500
 
-    # Create pending subscription record
+    # Create pending subscription record with PayPal subscription ID
     subscription = Subscription(
         user_id=current_user_id,
         selected_plan=selected_plan,
-        status='pending'  # Will become 'trial' after PayPal approval
+        status='pending',  # Will become 'trial' after PayPal approval
+        paypal_agreement_id=subscription_result['subscription_id']  # Store PayPal subscription ID
     )
     db.session.add(subscription)
     db.session.commit()
 
     return jsonify({
         'message': 'Redirect to PayPal for authorization',
-        'approval_url': agreement_result['approval_url'],
+        'approval_url': subscription_result['approval_url'],
         'subscription_id': subscription.id,
+        'paypal_subscription_id': subscription_result['subscription_id'],
         'selected_plan': selected_plan,
         'plan_price': plan['price']
     }), 201
@@ -148,18 +159,18 @@ def start_trial_with_payment():
 @jwt_required()
 def confirm_trial_agreement():
     """
-    Confirm billing agreement after PayPal approval.
+    Confirm subscription after PayPal approval.
     Called when user returns from PayPal.
 
     This endpoint:
-    1. Executes the billing agreement
+    1. Verifies the subscription was approved
     2. Activates the 7-day trial
     3. Creates trial challenge with $5,000 balance
     4. Sends confirmation email
 
     Request body:
     {
-        "token": "EC-xxx"  # PayPal approval token from return URL
+        "subscription_id": "I-xxx"  # PayPal subscription ID from return URL
     }
 
     Returns:
@@ -171,10 +182,6 @@ def confirm_trial_agreement():
     """
     current_user_id = int(get_jwt_identity())
     data = request.get_json()
-
-    token = data.get('token')
-    if not token:
-        return jsonify({'error': 'PayPal token required'}), 400
 
     # Find pending subscription for this user
     subscription = Subscription.query.filter_by(
@@ -188,12 +195,17 @@ def confirm_trial_agreement():
             'message': 'Please start the trial process again'
         }), 404
 
-    # Execute the billing agreement
-    agreement_result = execute_billing_agreement(token)
+    # Get PayPal subscription ID from request or from stored record
+    paypal_subscription_id = data.get('subscription_id') or subscription.paypal_agreement_id
+    if not paypal_subscription_id:
+        return jsonify({'error': 'PayPal subscription_id required'}), 400
 
-    if not agreement_result:
+    # Verify the subscription was approved
+    subscription_details = verify_subscription_approved(paypal_subscription_id)
+
+    if not subscription_details:
         return jsonify({
-            'error': 'Failed to execute PayPal billing agreement',
+            'error': 'PayPal subscription not approved',
             'message': 'PayPal authorization may have expired. Please try again.'
         }), 400
 
@@ -201,10 +213,10 @@ def confirm_trial_agreement():
     plans = current_app.config['PLANS']
     plan = plans[subscription.selected_plan]
 
-    # Update subscription with agreement details
-    subscription.paypal_agreement_id = agreement_result['agreement_id']
-    subscription.paypal_payer_id = agreement_result.get('payer_id')
-    subscription.paypal_payer_email = agreement_result.get('payer_email')
+    # Update subscription with PayPal details
+    subscription.paypal_agreement_id = subscription_details['subscription_id']
+    subscription.paypal_payer_id = subscription_details.get('payer_id')
+    subscription.paypal_payer_email = subscription_details.get('payer_email')
     subscription.activate_trial(trial_days=7)
 
     # Create trial challenge
@@ -232,7 +244,7 @@ def confirm_trial_agreement():
         status='completed',
         transaction_id=f'trial_{subscription.id}',
         is_trial_conversion=False,
-        paypal_agreement_id=agreement_result['agreement_id']
+        paypal_agreement_id=subscription_details['subscription_id']
     )
     payment.complete_payment(f'trial_{subscription.id}')
     db.session.add(payment)
@@ -262,7 +274,7 @@ def confirm_trial_agreement():
         'trial_expires_at': subscription.trial_expires_at.isoformat(),
         'selected_plan': subscription.selected_plan,
         'plan_price': plan['price'],
-        'payer_email': agreement_result.get('payer_email')
+        'payer_email': subscription_details.get('payer_email')
     }), 200
 
 
@@ -293,14 +305,14 @@ def cancel_trial():
             'message': 'You do not have an active trial to cancel'
         }), 404
 
-    # Cancel PayPal billing agreement
+    # Cancel PayPal subscription
     if subscription.paypal_agreement_id:
-        cancel_success = cancel_billing_agreement(
-            agreement_id=subscription.paypal_agreement_id,
+        cancel_success = cancel_subscription(
+            subscription_id=subscription.paypal_agreement_id,
             reason="User cancelled trial before completion"
         )
         if not cancel_success:
-            print(f"Warning: Failed to cancel PayPal agreement {subscription.paypal_agreement_id}")
+            print(f"Warning: Failed to cancel PayPal subscription {subscription.paypal_agreement_id}")
             # Continue anyway - we'll mark as cancelled locally
 
     # Update subscription status
