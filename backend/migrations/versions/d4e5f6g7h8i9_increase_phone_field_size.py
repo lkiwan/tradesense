@@ -7,6 +7,7 @@ Create Date: 2025-01-06 16:00:00.000000
 """
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import inspect
 
 
 # revision identifiers, used by Alembic.
@@ -16,17 +17,27 @@ branch_labels = None
 depends_on = None
 
 
+def column_exists(table_name, column_name):
+    """Check if a column exists in a table."""
+    bind = op.get_bind()
+    inspector = inspect(bind)
+    columns = [col['name'] for col in inspector.get_columns(table_name)]
+    return column_name in columns
+
+
 def upgrade():
     # Increase phone column size to accommodate international phone formats
-    op.alter_column('users', 'phone',
-                    existing_type=sa.String(20),
-                    type_=sa.String(30),
-                    existing_nullable=True)
+    if column_exists('users', 'phone'):
+        op.alter_column('users', 'phone',
+                        existing_type=sa.String(20),
+                        type_=sa.String(30),
+                        existing_nullable=True)
 
 
 def downgrade():
     # Revert phone column size
-    op.alter_column('users', 'phone',
-                    existing_type=sa.String(30),
-                    type_=sa.String(20),
-                    existing_nullable=True)
+    if column_exists('users', 'phone'):
+        op.alter_column('users', 'phone',
+                        existing_type=sa.String(30),
+                        type_=sa.String(20),
+                        existing_nullable=True)
