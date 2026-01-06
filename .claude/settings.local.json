@@ -297,7 +297,14 @@
       "WebFetch(domain:tradesense-mu.vercel.app)",
       "Bash(more:*)",
       "Bash(npm run)",
-      "Bash(venvScriptspython app.py)"
+      "Bash(venvScriptspython app.py)",
+      "Bash(timeout /t 10 /nobreak)",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NzIxMjM4NywianRpIjoiNjhkYzBkZjQtNWFjZC00NGVhLTkzMTUtMWZlNTVmZjZhMjAwIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjEiLCJuYmYiOjE3NjcyMTIzODcsImNzcmYiOiI5MmFhZjIwNy01YzMxLTQ2NTAtODcyMi1mZjkzMzg1MDRjZmMiLCJleHAiOjE3NjcyOTg3ODd9.Ej6sXmuu4qd0aFEtndKAM0r2ZfJ1PHRryMBmPy4lyhY\")",
+      "Bash(set:*)",
+      "Bash(psql:*)",
+      "Bash(\"C:\\\\Program Files\\\\PostgreSQL\\\\17\\\\bin\\\\psql.exe\" -U postgres -d tradesense -c \"UPDATE users SET failed_login_attempts = 0 WHERE role = ''superadmin''; SELECT id, username, email, role FROM users WHERE role = ''superadmin'' LIMIT 1;\")",
+      "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NzcxMTc1OCwianRpIjoiYjIxN2FhZjYtNDhmZi00ZGE4LWFkYmMtZWRkMGRlODg4OTU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIxIiwibmJmIjoxNzY3NzExNzU4LCJjc3JmIjoiNmJlZDUxM2UtN2U1Ni00NGEyLThkOTQtMTFiYjIwM2VjYmRmIiwiZXhwIjoxNzY3Nzk4MTU4fQ.4vHmfVbTxfocJzN880loTJ3b4hWfajr4vgj17gV8O4k\")",
+      "Bash(git restore:*)"
     ]
   }
 }

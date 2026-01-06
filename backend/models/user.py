@@ -35,7 +35,7 @@ class User(db.Model):
 
     # Profile completion fields
     full_name = db.Column(db.String(100), nullable=True)
-    phone = db.Column(db.String(20), nullable=True)
+    phone = db.Column(db.String(30), nullable=True)  # Increased for international formats
     country = db.Column(db.String(50), nullable=True)
 
     # Login attempt tracking
