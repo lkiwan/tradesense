@@ -83,11 +83,11 @@ const SYMBOL_CATEGORIES = {
     { symbol: 'UKOIL', tvSymbol: 'TVC:UKOIL', name: 'Brent Oil', pip: 0.01 }
   ],
   crypto: [
-    { symbol: 'BTCUSD', tvSymbol: 'BINANCE:BTCUSDT', name: 'Bitcoin', pip: 0.01 },
-    { symbol: 'ETHUSD', tvSymbol: 'BINANCE:ETHUSDT', name: 'Ethereum', pip: 0.01 },
-    { symbol: 'XRPUSD', tvSymbol: 'BINANCE:XRPUSDT', name: 'Ripple', pip: 0.0001 },
-    { symbol: 'SOLUSD', tvSymbol: 'BINANCE:SOLUSDT', name: 'Solana', pip: 0.01 },
-    { symbol: 'BNBUSD', tvSymbol: 'BINANCE:BNBUSDT', name: 'BNB', pip: 0.01 }
+    { symbol: 'BTCUSD', tvSymbol: 'BINANCE:BTCUSDT', name: 'Bitcoin', pip: 10 },
+    { symbol: 'ETHUSD', tvSymbol: 'BINANCE:ETHUSDT', name: 'Ethereum', pip: 0.5 },
+    { symbol: 'XRPUSD', tvSymbol: 'BINANCE:XRPUSDT', name: 'Ripple', pip: 0.0005 },
+    { symbol: 'SOLUSD', tvSymbol: 'BINANCE:SOLUSDT', name: 'Solana', pip: 0.05 },
+    { symbol: 'BNBUSD', tvSymbol: 'BINANCE:BNBUSDT', name: 'BNB', pip: 0.2 }
   ]
 }
 
@@ -708,7 +708,7 @@ const TradingPage = () => {
                   </div>
                 )}
 
-                <table className="w-full min-w-[500px]">
+                <table className="w-full min-w-[600px]">
                   <thead className="bg-dark-200/30">
                     <tr className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">
                       <th className="px-2 sm:px-4 py-2 text-left">{t('trading.symbol')}</th>
@@ -716,6 +716,7 @@ const TradingPage = () => {
                       <th className="px-2 sm:px-4 py-2 text-center">{t('trading.size')}</th>
                       <th className="px-2 sm:px-4 py-2 text-right">{t('trading.entry')}</th>
                       <th className="px-2 sm:px-4 py-2 text-right">{t('trading.current')}</th>
+                      <th className="px-2 sm:px-4 py-2 text-center">SL / TP %</th>
                       <th className="px-2 sm:px-4 py-2 text-right">{t('trading.pnl')}</th>
                       <th className="px-2 sm:px-4 py-2 text-center">{t('trading.action')}</th>
                     </tr>
@@ -728,6 +729,44 @@ const TradingPage = () => {
                       const entryPrice = parseFloat(pos.entry_price)
                       const priceAvailable = pnlInfo?.price_available !== false
                       const formatPrice = (p) => p >= 100 ? p.toFixed(2) : p.toFixed(4)
+
+                      // Calculate SL/TP percentage progress
+                      const sl = parseFloat(pos.stop_loss) || 0
+                      const tp = parseFloat(pos.take_profit) || 0
+                      let tpProgress = 0
+                      let slProgress = 0
+
+                      if (tp && entryPrice && currentPriceVal) {
+                        // For BUY: progress = (current - entry) / (tp - entry) * 100
+                        // For SELL: progress = (entry - current) / (entry - tp) * 100
+                        if (pos.trade_type === 'buy') {
+                          const tpDistance = tp - entryPrice
+                          if (tpDistance !== 0) {
+                            tpProgress = Math.min(100, Math.max(0, ((currentPriceVal - entryPrice) / tpDistance) * 100))
+                          }
+                        } else {
+                          const tpDistance = entryPrice - tp
+                          if (tpDistance !== 0) {
+                            tpProgress = Math.min(100, Math.max(0, ((entryPrice - currentPriceVal) / tpDistance) * 100))
+                          }
+                        }
+                      }
+
+                      if (sl && entryPrice && currentPriceVal) {
+                        // For BUY: SL progress = how close to SL (negative direction)
+                        // For SELL: SL progress = how close to SL (positive direction)
+                        if (pos.trade_type === 'buy') {
+                          const slDistance = entryPrice - sl
+                          if (slDistance !== 0) {
+                            slProgress = Math.min(100, Math.max(0, ((entryPrice - currentPriceVal) / slDistance) * 100))
+                          }
+                        } else {
+                          const slDistance = sl - entryPrice
+                          if (slDistance !== 0) {
+                            slProgress = Math.min(100, Math.max(0, ((currentPriceVal - entryPrice) / slDistance) * 100))
+                          }
+                        }
+                      }
 
                       return (
                         <tr key={pos.id} className="hover:bg-dark-200/20 transition-colors">
@@ -750,6 +789,45 @@ const TradingPage = () => {
                           <td className="px-2 sm:px-4 py-2 sm:py-3 text-right text-gray-300 text-[11px] sm:text-sm">{formatPrice(entryPrice)}</td>
                           <td className={`px-2 sm:px-4 py-2 sm:py-3 text-right font-medium text-[11px] sm:text-sm ${priceAvailable ? 'text-white' : 'text-yellow-500'}`}>
                             {formatPrice(currentPriceVal)}
+                          </td>
+                          {/* SL/TP Progress Column */}
+                          <td className="px-2 sm:px-4 py-2 sm:py-3">
+                            {(sl || tp) ? (
+                              <div className="flex flex-col gap-1 min-w-[80px]">
+                                {/* TP Progress Bar */}
+                                {tp > 0 && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[8px] text-green-400 w-4">TP</span>
+                                    <div className="flex-1 h-2 bg-dark-300 rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-gradient-to-r from-green-500 to-green-400 transition-all duration-300"
+                                        style={{ width: `${Math.min(100, tpProgress)}%` }}
+                                      />
+                                    </div>
+                                    <span className={`text-[9px] font-bold w-8 text-right ${tpProgress >= 100 ? 'text-green-400' : 'text-gray-400'}`}>
+                                      {tpProgress.toFixed(0)}%
+                                    </span>
+                                  </div>
+                                )}
+                                {/* SL Progress Bar */}
+                                {sl > 0 && (
+                                  <div className="flex items-center gap-1">
+                                    <span className="text-[8px] text-red-400 w-4">SL</span>
+                                    <div className="flex-1 h-2 bg-dark-300 rounded-full overflow-hidden">
+                                      <div
+                                        className="h-full bg-gradient-to-r from-red-500 to-red-400 transition-all duration-300"
+                                        style={{ width: `${Math.min(100, slProgress)}%` }}
+                                      />
+                                    </div>
+                                    <span className={`text-[9px] font-bold w-8 text-right ${slProgress >= 100 ? 'text-red-400' : 'text-gray-400'}`}>
+                                      {slProgress.toFixed(0)}%
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            ) : (
+                              <span className="text-gray-600 text-[10px]">—</span>
+                            )}
                           </td>
                           <td className={`px-2 sm:px-4 py-2 sm:py-3 text-right font-semibold text-[11px] sm:text-sm ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
                             {pnl >= 0 ? '+' : ''}${pnl.toFixed(0)}
