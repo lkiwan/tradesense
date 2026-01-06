@@ -60,7 +60,7 @@ const ProfileCompletionBanner = () => {
           )}
 
           <button
-            onClick={() => navigate('/dashboard/profile')}
+            onClick={() => navigate('/profile/default')}
             className="flex items-center gap-1 text-sm font-medium bg-white/20 hover:bg-white/30 px-3 py-1.5 rounded-lg transition-all"
           >
             {t('profile.complete', 'Complete Profile')}
