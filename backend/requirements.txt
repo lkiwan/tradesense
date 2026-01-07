@@ -12,7 +12,7 @@ Flask-Migrate==4.1.0
 
 # Password Hashing
 Werkzeug==3.0.1
-bcrypt==4.1.2
+bcrypt==5.0.0
 
 # Market Data
 yfinance==0.2.33
