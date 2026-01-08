@@ -189,6 +189,41 @@ def _fetch_crypto_prices():
         logger.warning(f"CoinGecko fetch error: {e}")
     return {}
 
+def _fetch_forex_prices_finnhub():
+    """Fetch forex prices from Finnhub (free tier)"""
+    api_key = get_finnhub_api_key()
+    if not api_key:
+        return {}
+
+    prices = {}
+    # Forex pairs with their Finnhub symbols
+    forex_mapping = {
+        'EURUSD': 'OANDA:EUR_USD',
+        'GBPUSD': 'OANDA:GBP_USD',
+        'USDJPY': 'OANDA:USD_JPY',
+        'USDCHF': 'OANDA:USD_CHF',
+        'AUDUSD': 'OANDA:AUD_USD',
+        'USDCAD': 'OANDA:USD_CAD',
+        'NZDUSD': 'OANDA:NZD_USD',
+        'EURGBP': 'OANDA:EUR_GBP',
+    }
+
+    for our_symbol, finnhub_symbol in forex_mapping.items():
+        try:
+            url = f"https://finnhub.io/api/v1/quote?symbol={finnhub_symbol}&token={api_key}"
+            resp = requests.get(url, timeout=3, verify=False)
+            if resp.status_code == 200:
+                data = resp.json()
+                current = data.get('c', 0)
+                if current > 0:
+                    prices[our_symbol] = {'price': current, 'change_percent': 0}
+        except Exception as e:
+            logger.debug(f"Finnhub forex error for {our_symbol}: {e}")
+
+    if prices:
+        logger.info(f"Finnhub forex: {len(prices)} prices fetched")
+    return prices
+
 def _fetch_stock_prices_finnhub():
     """Fetch US stock prices from Finnhub (free tier)"""
     api_key = get_finnhub_api_key()
@@ -359,6 +394,17 @@ def _update_live_prices():
     except Exception as e:
         logger.warning(f"Moroccan fetch error: {e}")
 
+    # Fetch forex prices from Finnhub
+    try:
+        if get_finnhub_api_key():
+            forex = _fetch_forex_prices_finnhub()
+            if forex:
+                with _live_prices_lock:
+                    _live_prices.update(forex)
+                logger.info(f"Finnhub: {len(forex)} forex prices added")
+    except Exception as e:
+        logger.debug(f"Finnhub forex error: {e}")
+
     # Try to fetch stock prices in background (optional, may timeout)
     try:
         if get_finnhub_api_key():
@@ -368,7 +414,7 @@ def _update_live_prices():
                     _live_prices.update(stocks)
                 logger.info(f"Finnhub: {len(stocks)} stock prices added")
     except Exception as e:
-        logger.debug(f"Finnhub error: {e}")
+        logger.debug(f"Finnhub stock error: {e}")
 
 def _price_updater_thread():
     """Background thread to update prices every 3 seconds"""
