@@ -3,7 +3,7 @@
 > Complete task list for upgrading the admin dashboard with professional, detailed functionality.
 > SuperAdmin will have complete control over every aspect of the platform.
 
----
+--- 
 
 ## Table of Contents
 

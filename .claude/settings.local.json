@@ -304,7 +304,9 @@
       "Bash(psql:*)",
       "Bash(\"C:\\\\Program Files\\\\PostgreSQL\\\\17\\\\bin\\\\psql.exe\" -U postgres -d tradesense -c \"UPDATE users SET failed_login_attempts = 0 WHERE role = ''superadmin''; SELECT id, username, email, role FROM users WHERE role = ''superadmin'' LIMIT 1;\")",
       "Bash(TOKEN=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc2NzcxMTc1OCwianRpIjoiYjIxN2FhZjYtNDhmZi00ZGE4LWFkYmMtZWRkMGRlODg4OTU4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6IjIxIiwibmJmIjoxNzY3NzExNzU4LCJjc3JmIjoiNmJlZDUxM2UtN2U1Ni00NGEyLThkOTQtMTFiYjIwM2VjYmRmIiwiZXhwIjoxNzY3Nzk4MTU4fQ.4vHmfVbTxfocJzN880loTJ3b4hWfajr4vgj17gV8O4k\")",
-      "Bash(git restore:*)"
+      "Bash(git restore:*)",
+      "Bash(git push)",
+      "Bash(nslookup:*)"
     ]
   }
 }

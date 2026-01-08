@@ -40,8 +40,8 @@ _executor = ThreadPoolExecutor(max_workers=5)
 # Cache for prices (simple in-memory cache)
 _price_cache = {}
 _cache_lock = threading.Lock()
-CACHE_DURATION = 5  # seconds - reduced for real-time crypto updates (CoinGecko handles rate limiting)
-PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
+CACHE_DURATION = 10  # seconds - balance between real-time and API load
+PRICE_FETCH_TIMEOUT = 3  # seconds - reduced timeout to prevent blocking
 
 # Finnhub symbol mapping (convert our symbols to Finnhub format)
 FINNHUB_SYMBOLS = {

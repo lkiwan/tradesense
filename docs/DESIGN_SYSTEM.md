@@ -24,6 +24,7 @@ TradeSense is a proprietary trading firm platform with a futuristic, tech-forwar
 | Border | `#334155` | Borders, dividers (dark-100) |
 
 ### Semantic Colors
+
 | Color | Hex | Usage |
 |-------|-----|-------|
 | Success | `#22c55e` | Positive states, profits |
