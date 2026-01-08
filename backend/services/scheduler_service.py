@@ -296,7 +296,7 @@ def check_stop_loss_take_profit():
 
     with _app.app_context():
         from models import db, Trade, UserChallenge
-        from services.yfinance_service import get_current_price
+        from services.yfinance_service import get_current_price, get_fallback_price
         from services.challenge_engine import ChallengeEngine
 
         # Get all open trades with SL or TP set
@@ -322,8 +322,12 @@ def check_stop_loss_take_profit():
         engine = ChallengeEngine()
 
         for symbol, trades in symbol_trades.items():
-            current_price = get_current_price(symbol)
+            # Try live price first (fastest), then fall back to get_current_price
+            current_price = get_fallback_price(symbol)
             if current_price is None:
+                current_price = get_current_price(symbol)
+            if current_price is None:
+                logger.warning(f"SL/TP Monitor: Could not get price for {symbol}, skipping")
                 continue
 
             for trade in trades:
