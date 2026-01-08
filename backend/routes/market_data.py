@@ -121,7 +121,14 @@ def get_price(symbol):
         return jsonify(cached_data), 200
 
     # Try live prices from background updater FIRST (includes Moroccan from Casablanca Bourse)
+    # Also try alternate symbol formats (BTC-USD vs BTCUSD)
     live_data = get_live_price_data(symbol)
+    if not live_data and '-' in symbol:
+        live_data = get_live_price_data(symbol.replace('-', ''))
+    if not live_data and '-' not in symbol:
+        # Try adding -USD suffix for crypto
+        if symbol in ['BTCUSD', 'ETHUSD', 'SOLUSD', 'XRPUSD', 'ADAUSD', 'DOGEUSD', 'BNBUSD']:
+            live_data = get_live_price_data(symbol[:-3] + '-USD')
     if live_data:
         result = {
             'symbol': symbol,
