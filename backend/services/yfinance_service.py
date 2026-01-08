@@ -113,8 +113,55 @@ _live_prices = {}
 _live_prices_lock = threading.Lock()
 _price_updater_running = False
 
+def _fetch_crypto_prices_binance():
+    """Fetch crypto prices from Binance API (same source as TradingView)"""
+    try:
+        # Binance symbols mapping
+        binance_symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'BNBUSDT']
+        symbols_param = '["' + '","'.join(binance_symbols) + '"]'
+
+        url = f"https://api.binance.com/api/v3/ticker/price?symbols={symbols_param}"
+        resp = requests.get(url, timeout=(2, 5), verify=False)
+
+        if resp.status_code == 200:
+            data = resp.json()
+            prices = {}
+
+            # Map Binance symbols to our format
+            mapping = {
+                'BTCUSDT': ['BTC-USD', 'BTCUSD'],
+                'ETHUSDT': ['ETH-USD', 'ETHUSD'],
+                'SOLUSDT': ['SOL-USD', 'SOLUSD'],
+                'XRPUSDT': ['XRP-USD', 'XRPUSD'],
+                'ADAUSDT': ['ADA-USD', 'ADAUSD'],
+                'DOGEUSDT': ['DOGE-USD', 'DOGEUSD'],
+                'BNBUSDT': ['BNB-USD', 'BNBUSD']
+            }
+
+            for item in data:
+                binance_sym = item.get('symbol')
+                price = float(item.get('price', 0))
+                if binance_sym in mapping and price > 0:
+                    for sym in mapping[binance_sym]:
+                        prices[sym] = {'price': price, 'change_percent': 0}
+
+            if prices:
+                logger.info(f"Binance: {len(prices)} crypto prices fetched")
+                return prices
+        else:
+            logger.warning(f"Binance returned status {resp.status_code}")
+    except Exception as e:
+        logger.warning(f"Binance fetch error: {e}")
+    return {}
+
 def _fetch_crypto_prices():
-    """Fetch crypto prices from CoinGecko API"""
+    """Fetch crypto prices - Binance first (real-time), CoinGecko fallback"""
+    # Try Binance first (same source as TradingView)
+    prices = _fetch_crypto_prices_binance()
+    if prices:
+        return prices
+
+    # Fallback to CoinGecko
     try:
         url = "https://api.coingecko.com/api/v3/simple/price"
         params = {
@@ -122,7 +169,6 @@ def _fetch_crypto_prices():
             "vs_currencies": "usd",
             "include_24hr_change": "true"
         }
-        # Use short timeout and verify=False to work with eventlet
         resp = requests.get(url, params=params, timeout=(3, 5), verify=False)
         if resp.status_code == 200:
             data = resp.json()
@@ -142,8 +188,7 @@ def _fetch_crypto_prices():
                     if price:
                         for sym in symbols:
                             prices[sym] = {'price': price, 'change_percent': change}
-            logger.info(f"CoinGecko raw response: {list(data.keys())}")
-            logger.info(f"CoinGecko prices stored: {list(prices.keys())}")
+            logger.info(f"CoinGecko fallback: {len(prices)} prices")
             return prices
         else:
             logger.warning(f"CoinGecko returned status {resp.status_code}")
