@@ -115,44 +115,37 @@ _price_updater_running = False
 
 def _fetch_crypto_prices_binance():
     """Fetch crypto prices from Binance API (same source as TradingView)"""
-    try:
-        # Binance symbols mapping
-        binance_symbols = ['BTCUSDT', 'ETHUSDT', 'SOLUSDT', 'XRPUSDT', 'ADAUSDT', 'DOGEUSDT', 'BNBUSDT']
-        symbols_param = '["' + '","'.join(binance_symbols) + '"]'
+    prices = {}
 
-        url = f"https://api.binance.com/api/v3/ticker/price?symbols={symbols_param}"
-        resp = requests.get(url, timeout=(2, 5), verify=False)
+    # Map Binance symbols to our format
+    symbol_mapping = {
+        'BTCUSDT': ['BTC-USD', 'BTCUSD'],
+        'ETHUSDT': ['ETH-USD', 'ETHUSD'],
+        'SOLUSDT': ['SOL-USD', 'SOLUSD'],
+        'XRPUSDT': ['XRP-USD', 'XRPUSD'],
+        'ADAUSDT': ['ADA-USD', 'ADAUSD'],
+        'DOGEUSDT': ['DOGE-USD', 'DOGEUSD'],
+        'BNBUSDT': ['BNB-USD', 'BNBUSD']
+    }
 
-        if resp.status_code == 200:
-            data = resp.json()
-            prices = {}
+    for binance_sym, our_symbols in symbol_mapping.items():
+        try:
+            url = f"https://api.binance.com/api/v3/ticker/price?symbol={binance_sym}"
+            resp = requests.get(url, timeout=(2, 3), verify=False)
 
-            # Map Binance symbols to our format
-            mapping = {
-                'BTCUSDT': ['BTC-USD', 'BTCUSD'],
-                'ETHUSDT': ['ETH-USD', 'ETHUSD'],
-                'SOLUSDT': ['SOL-USD', 'SOLUSD'],
-                'XRPUSDT': ['XRP-USD', 'XRPUSD'],
-                'ADAUSDT': ['ADA-USD', 'ADAUSD'],
-                'DOGEUSDT': ['DOGE-USD', 'DOGEUSD'],
-                'BNBUSDT': ['BNB-USD', 'BNBUSD']
-            }
-
-            for item in data:
-                binance_sym = item.get('symbol')
-                price = float(item.get('price', 0))
-                if binance_sym in mapping and price > 0:
-                    for sym in mapping[binance_sym]:
+            if resp.status_code == 200:
+                data = resp.json()
+                price = float(data.get('price', 0))
+                if price > 0:
+                    for sym in our_symbols:
                         prices[sym] = {'price': price, 'change_percent': 0}
+        except Exception as e:
+            logger.debug(f"Binance {binance_sym} error: {e}")
+            continue
 
-            if prices:
-                logger.info(f"Binance: {len(prices)} crypto prices fetched")
-                return prices
-        else:
-            logger.warning(f"Binance returned status {resp.status_code}")
-    except Exception as e:
-        logger.warning(f"Binance fetch error: {e}")
-    return {}
+    if prices:
+        logger.info(f"Binance: {len(prices)} crypto prices fetched")
+    return prices
 
 def _fetch_crypto_prices():
     """Fetch crypto prices - Binance first (real-time), CoinGecko fallback"""
