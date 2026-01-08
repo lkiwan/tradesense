@@ -475,6 +475,13 @@ def get_fallback_price(symbol: str) -> float | None:
     """Get live price for a symbol from the price updater"""
     with _live_prices_lock:
         data = _live_prices.get(symbol) or _live_prices.get(symbol.upper())
+        # Try alternate format (BTC-USD vs BTCUSD)
+        if not data and '-' in symbol:
+            alt = symbol.replace('-', '')
+            data = _live_prices.get(alt) or _live_prices.get(alt.upper())
+        if not data and '-' not in symbol and symbol.endswith('USD'):
+            alt = symbol[:-3] + '-USD'
+            data = _live_prices.get(alt) or _live_prices.get(alt.upper())
         if data:
             return data.get('price') if isinstance(data, dict) else data
     return None
@@ -482,7 +489,15 @@ def get_fallback_price(symbol: str) -> float | None:
 def get_live_price_data(symbol: str) -> dict | None:
     """Get full price data (price + change) for a symbol"""
     with _live_prices_lock:
-        return _live_prices.get(symbol) or _live_prices.get(symbol.upper())
+        data = _live_prices.get(symbol) or _live_prices.get(symbol.upper())
+        # Try alternate format (BTC-USD vs BTCUSD)
+        if not data and '-' in symbol:
+            alt = symbol.replace('-', '')
+            data = _live_prices.get(alt) or _live_prices.get(alt.upper())
+        if not data and '-' not in symbol and symbol.endswith('USD'):
+            alt = symbol[:-3] + '-USD'
+            data = _live_prices.get(alt) or _live_prices.get(alt.upper())
+        return data
 
 # Note: Call start_price_updater() from app.py after Flask is initialized
 # Don't auto-start here to avoid blocking during eventlet monkey patching
