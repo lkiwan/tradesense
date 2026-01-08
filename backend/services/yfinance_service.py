@@ -40,7 +40,7 @@ _executor = ThreadPoolExecutor(max_workers=5)
 # Cache for prices (simple in-memory cache)
 _price_cache = {}
 _cache_lock = threading.Lock()
-CACHE_DURATION = 60  # seconds - increased to avoid Yahoo Finance rate limiting (429 errors)
+CACHE_DURATION = 5  # seconds - reduced for real-time crypto updates (CoinGecko handles rate limiting)
 PRICE_FETCH_TIMEOUT = 10  # seconds - timeout for yfinance API calls
 
 # Finnhub symbol mapping (convert our symbols to Finnhub format)
@@ -333,7 +333,7 @@ def _update_live_prices():
         logger.debug(f"Finnhub error: {e}")
 
 def _price_updater_thread():
-    """Background thread to update prices every 15 seconds"""
+    """Background thread to update prices every 3 seconds"""
     global _price_updater_running
 
     # Use eventlet.sleep for green thread compatibility
@@ -344,8 +344,8 @@ def _price_updater_thread():
         import time
         sleep_func = time.sleep
 
-    # Wait 15 seconds for first iteration (initial fetch already done in start_price_updater)
-    sleep_func(15)
+    # Wait 3 seconds for first iteration (initial fetch already done in start_price_updater)
+    sleep_func(3)
 
     while _price_updater_running:
         try:
@@ -353,8 +353,8 @@ def _price_updater_thread():
         except Exception as e:
             logger.error(f"Price updater error: {e}")
 
-        # Wait 15 seconds before next update
-        sleep_func(15)
+        # Wait 3 seconds before next update
+        sleep_func(3)
 
 def start_price_updater():
     """Start the background price updater"""
@@ -375,12 +375,12 @@ def start_price_updater():
         try:
             import eventlet
             eventlet.spawn_n(_price_updater_thread)
-            logger.info("Price updater started with eventlet.spawn_n (15s interval)")
+            logger.info("Price updater started with eventlet.spawn_n (3s interval)")
         except ImportError:
             # Fallback to threading if eventlet not available
             thread = threading.Thread(target=_price_updater_thread, daemon=True)
             thread.start()
-            logger.info("Price updater started with threading (15s interval)")
+            logger.info("Price updater started with threading (3s interval)")
 
 def stop_price_updater():
     """Stop the background price updater"""

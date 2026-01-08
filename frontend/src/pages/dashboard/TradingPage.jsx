@@ -234,11 +234,11 @@ const TradingPage = () => {
     if (challenge?.id) {
       fetchPositions()
       fetchPnL()
-      // Update both positions and PnL every 3 seconds for real-time feel
+      // Update both positions and PnL every 1 second for real-time crypto updates
       const interval = setInterval(() => {
         fetchPositions()
         fetchPnL()
-      }, 3000)
+      }, 1000)
       return () => clearInterval(interval)
     }
   }, [challenge?.id, fetchPositions, fetchPnL])
@@ -278,7 +278,7 @@ const TradingPage = () => {
   // Fetch price when symbol changes and periodically update
   useEffect(() => {
     fetchCurrentPrice(true) // Fetch immediately with loading
-    const priceInterval = setInterval(() => fetchCurrentPrice(false), 5000) // Update every 5 seconds
+    const priceInterval = setInterval(() => fetchCurrentPrice(false), 1000) // Update every 1 second for real-time
     return () => clearInterval(priceInterval)
   }, [selectedSymbol])
 

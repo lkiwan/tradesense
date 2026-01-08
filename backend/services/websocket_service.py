@@ -236,5 +236,5 @@ class PriceUpdater:
             time.sleep(self.interval)
 
 
-# Global price updater instance (3 seconds for real-time feel)
-price_updater = PriceUpdater(interval=3)
+# Global price updater instance (1 second for real-time crypto updates)
+price_updater = PriceUpdater(interval=1)

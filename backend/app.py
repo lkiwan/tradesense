@@ -215,6 +215,11 @@ def create_app(config_name=None):
             'rate_limiting': 'enabled'
         }), 200
 
+    # Simple health check for cron job pings (keep Render alive)
+    @app.route('/health')
+    def health_ping():
+        return jsonify({'status': 'ok'}), 200
+
     # Root endpoint
     @app.route('/')
     def index():
