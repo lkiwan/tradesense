@@ -577,6 +577,21 @@ def get_current_price(symbol: str) -> float | None:
                 logger.debug(f"Cache hit for {original_symbol}")
                 return cached_data['price']
 
+    # For crypto, try live prices FIRST (from Binance background updater)
+    crypto_symbols = ['BTCUSD', 'ETHUSD', 'SOLUSD', 'XRPUSD', 'ADAUSD', 'DOGEUSD', 'BNBUSD',
+                      'BTC-USD', 'ETH-USD', 'SOL-USD', 'XRP-USD', 'ADA-USD', 'DOGE-USD', 'BNB-USD']
+    if original_symbol in crypto_symbols or normalized in crypto_symbols:
+        live_price = get_fallback_price(original_symbol) or get_fallback_price(normalized)
+        if live_price:
+            logger.info(f"Using Binance live price for {original_symbol}: {live_price}")
+            # Update cache
+            with _cache_lock:
+                _price_cache[original_symbol] = {
+                    'price': float(live_price),
+                    'timestamp': datetime.now()
+                }
+            return float(live_price)
+
     # Fetch price with timeout using ThreadPoolExecutor
     price = None
     try:
