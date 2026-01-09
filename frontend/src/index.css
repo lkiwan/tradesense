@@ -880,75 +880,105 @@ select.input option {
 }
 
 /* ============================================
-   MOROCCAN MARKET BUBBLES
+   MOROCCAN MARKET BUBBLES - SMOOTH PARTICLE EXPLOSION
    ============================================ */
 
-/* Floating bubble animation */
-@keyframes bubble-float {
+/* Bubble wrapper */
+.bubble-wrapper {
+  position: absolute;
+  z-index: 1;
+}
+
+/* Main bubble floating animation */
+@keyframes bubble-gentle-float {
   0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  25% {
-    transform: translate(10px, -15px) scale(1.05);
+    transform: translateY(0) scale(1);
   }
   50% {
-    transform: translate(-5px, -25px) scale(0.95);
-  }
-  75% {
-    transform: translate(15px, -10px) scale(1.02);
+    transform: translateY(-12px) scale(1.02);
   }
 }
 
-.market-bubble {
-  animation: bubble-float 8s ease-in-out infinite;
-  transition: opacity 0.5s ease-out, transform 0.3s ease;
+.bubble-main {
+  animation: bubble-gentle-float 4s ease-in-out infinite;
+  transition: all 0.15s ease-out;
 }
 
-.market-bubble:hover {
-  z-index: 10;
+.bubble-main:hover {
+  transform: scale(1.08);
 }
 
-/* Hidden state for bubbles */
-.bubble-hidden {
-  opacity: 0 !important;
-  transform: scale(0.5) !important;
+/* Particle pieces - hidden by default */
+.particle-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  opacity: 0;
   pointer-events: none;
 }
 
-/* Bubble pop animation on disappear */
-@keyframes bubble-pop {
+/* Explosion animation for particles */
+@keyframes particle-explode {
   0% {
+    transform: translate(-50%, -50%) scale(1);
     opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.5;
-    transform: scale(1.2);
   }
   100% {
+    transform:
+      translate(
+        calc(-50% + cos(calc(var(--i) * 60deg)) * 80px),
+        calc(-50% + sin(calc(var(--i) * 60deg)) * 80px)
+      )
+      scale(0);
     opacity: 0;
-    transform: scale(0);
   }
 }
 
-/* Bubble appear animation */
-@keyframes bubble-appear {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
+/* Particle directions using CSS custom property */
+.particle-piece:nth-child(2) { --angle: 0deg; }
+.particle-piece:nth-child(3) { --angle: 60deg; }
+.particle-piece:nth-child(4) { --angle: 120deg; }
+.particle-piece:nth-child(5) { --angle: 180deg; }
+.particle-piece:nth-child(6) { --angle: 240deg; }
+.particle-piece:nth-child(7) { --angle: 300deg; }
+
+@keyframes fly-out-0 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + 70px), calc(-50% + 0px)) scale(0); opacity: 0; } }
+@keyframes fly-out-1 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + 35px), calc(-50% - 60px)) scale(0); opacity: 0; } }
+@keyframes fly-out-2 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% - 35px), calc(-50% - 60px)) scale(0); opacity: 0; } }
+@keyframes fly-out-3 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% - 70px), calc(-50% + 0px)) scale(0); opacity: 0; } }
+@keyframes fly-out-4 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% - 35px), calc(-50% + 60px)) scale(0); opacity: 0; } }
+@keyframes fly-out-5 { 0% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(calc(-50% + 35px), calc(-50% + 60px)) scale(0); opacity: 0; } }
+
+/* When exploding */
+.bubble-wrapper.exploding .bubble-main {
+  animation: bubble-shrink 0.2s ease-out forwards;
 }
 
-.market-bubble:not(.bubble-hidden) {
-  animation: bubble-float 8s ease-in-out infinite, bubble-appear 0.5s ease-out;
+@keyframes bubble-shrink {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+.bubble-wrapper.exploding .particle-piece:nth-child(2) { animation: fly-out-0 0.4s ease-out forwards; }
+.bubble-wrapper.exploding .particle-piece:nth-child(3) { animation: fly-out-1 0.4s ease-out 0.02s forwards; }
+.bubble-wrapper.exploding .particle-piece:nth-child(4) { animation: fly-out-2 0.4s ease-out 0.04s forwards; }
+.bubble-wrapper.exploding .particle-piece:nth-child(5) { animation: fly-out-3 0.4s ease-out 0.06s forwards; }
+.bubble-wrapper.exploding .particle-piece:nth-child(6) { animation: fly-out-4 0.4s ease-out 0.08s forwards; }
+.bubble-wrapper.exploding .particle-piece:nth-child(7) { animation: fly-out-5 0.4s ease-out 0.1s forwards; }
+
+/* Reappear animation */
+.bubble-wrapper:not(.exploding) .bubble-main {
+  animation: bubble-gentle-float 4s ease-in-out infinite, bubble-reappear 0.5s ease-out;
+}
+
+@keyframes bubble-reappear {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 /* Background Noise Texture */

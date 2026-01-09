@@ -720,49 +720,48 @@ const LandingPage = () => {
             {/* Right Content - Interactive Moroccan Market Bubbles */}
             <div className="hidden lg:flex relative h-full items-center justify-center min-h-[400px]">
               {[
-                { symbol: 'IAM', change: '+2.4%', isUp: true, x: 15, y: 10, delay: 0 },
-                { symbol: 'ATW', change: '-1.2%', isUp: false, x: 75, y: 18, delay: 0.5 },
-                { symbol: 'BCP', change: '+0.8%', isUp: true, x: 42, y: 5, delay: 1 },
-                { symbol: 'BOA', change: '+1.5%', isUp: true, x: 5, y: 48, delay: 1.5 },
-                { symbol: 'CIH', change: '-0.6%', isUp: false, x: 85, y: 52, delay: 2 },
-                { symbol: 'HPS', change: '+3.2%', isUp: true, x: 58, y: 72, delay: 2.5 },
-                { symbol: 'TQM', change: '-0.9%', isUp: false, x: 22, y: 82, delay: 3 },
-                { symbol: 'LBV', change: '+1.1%', isUp: true, x: 45, y: 38, delay: 0.8 },
-                { symbol: 'MASI', change: '+0.5%', isUp: true, x: 80, y: 80, delay: 1.2 },
-              ].map((bubble) => (
+                { symbol: 'IAM', change: '+2.4%', isUp: true, x: 10, y: 8 },
+                { symbol: 'ATW', change: '-1.2%', isUp: false, x: 70, y: 12 },
+                { symbol: 'BCP', change: '+0.8%', isUp: true, x: 38, y: 2 },
+                { symbol: 'BOA', change: '+1.5%', isUp: true, x: 2, y: 42 },
+                { symbol: 'CIH', change: '-0.6%', isUp: false, x: 80, y: 48 },
+                { symbol: 'HPS', change: '+3.2%', isUp: true, x: 52, y: 68 },
+                { symbol: 'TQM', change: '-0.9%', isUp: false, x: 18, y: 75 },
+                { symbol: 'LBV', change: '+1.1%', isUp: true, x: 40, y: 32 },
+                { symbol: 'MASI', change: '+0.5%', isUp: true, x: 75, y: 75 },
+              ].map((bubble, idx) => (
                 <div
                   key={bubble.symbol}
-                  className="absolute market-bubble cursor-pointer"
-                  style={{
-                    left: `${bubble.x}%`,
-                    top: `${bubble.y}%`,
-                    animationDelay: `${bubble.delay}s`,
-                  }}
+                  className="absolute bubble-wrapper"
+                  style={{ left: `${bubble.x}%`, top: `${bubble.y}%` }}
                   onMouseEnter={(e) => {
-                    const el = e.currentTarget
-                    el.classList.add('bubble-hidden')
-                    setTimeout(() => {
-                      el.classList.remove('bubble-hidden')
-                    }, 5000)
+                    const wrapper = e.currentTarget
+                    wrapper.classList.add('exploding')
+                    setTimeout(() => wrapper.classList.remove('exploding'), 5000)
                   }}
                 >
+                  {/* Main Bubble */}
                   <div
-                    className={`relative flex flex-col items-center justify-center rounded-full backdrop-blur-md border-2 transition-all duration-300 hover:scale-110 ${
+                    className={`bubble-main flex flex-col items-center justify-center rounded-full backdrop-blur-sm border cursor-pointer ${
                       bubble.isUp
-                        ? 'bg-green-500/10 border-green-500/60'
-                        : 'bg-red-500/10 border-red-500/60'
+                        ? 'bg-green-500/20 border-green-400/40 shadow-[0_0_20px_rgba(34,197,94,0.35)]'
+                        : 'bg-red-500/20 border-red-400/40 shadow-[0_0_20px_rgba(239,68,68,0.35)]'
                     }`}
-                    style={{ width: '70px', height: '70px' }}
+                    style={{ width: '64px', height: '64px', animationDelay: `${idx * 0.2}s` }}
                   >
-                    {/* Glow effect */}
-                    <div className={`absolute inset-0 rounded-full blur-xl -z-10 ${
-                      bubble.isUp ? 'bg-green-500/30' : 'bg-red-500/30'
-                    }`} />
-                    <span className="text-white font-bold text-sm tracking-wide">{bubble.symbol}</span>
-                    <span className={`text-xs font-bold ${bubble.isUp ? 'text-green-400' : 'text-red-400'}`}>
+                    <span className="text-white font-semibold text-[11px] tracking-wide">{bubble.symbol}</span>
+                    <span className={`text-[9px] font-bold ${bubble.isUp ? 'text-green-400' : 'text-red-400'}`}>
                       {bubble.change}
                     </span>
                   </div>
+                  {/* Particles */}
+                  {[...Array(6)].map((_, i) => (
+                    <span
+                      key={i}
+                      className={`particle-piece ${bubble.isUp ? 'bg-green-400' : 'bg-red-400'}`}
+                      style={{ '--i': i }}
+                    />
+                  ))}
                 </div>
               ))}
             </div>
