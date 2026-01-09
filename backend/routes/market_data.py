@@ -108,20 +108,82 @@ SUPPORTED_INTERNATIONAL = SUPPORTED_US_STOCKS + SUPPORTED_CRYPTO
 SUPPORTED_MOROCCAN = list(MOROCCAN_STOCKS.keys())
 
 
+def _fetch_crypto_price_direct(symbol: str) -> float | None:
+    """Fetch crypto price directly from Kraken/Coinbase (bypasses background updater)"""
+    import requests
+    symbol_upper = symbol.upper().replace('-', '')
+
+    # Kraken symbols
+    kraken_map = {
+        'BTCUSD': 'XXBTZUSD', 'ETHUSD': 'XETHZUSD', 'SOLUSD': 'SOLUSD',
+        'XRPUSD': 'XXRPZUSD', 'ADAUSD': 'ADAUSD', 'DOGEUSD': 'XDGUSD',
+    }
+
+    # Try Kraken first
+    kraken_sym = kraken_map.get(symbol_upper)
+    if kraken_sym:
+        try:
+            url = f"https://api.kraken.com/0/public/Ticker?pair={kraken_sym}"
+            resp = requests.get(url, timeout=3)
+            if resp.status_code == 200:
+                data = resp.json()
+                if not data.get('error'):
+                    for pair_data in data.get('result', {}).values():
+                        price = float(pair_data.get('c', [0])[0])
+                        if price > 0:
+                            logger.info(f"Kraken direct price for {symbol}: {price}")
+                            return price
+        except Exception as e:
+            logger.debug(f"Kraken direct fetch failed: {e}")
+
+    # Try Coinbase
+    coinbase_sym = symbol.upper().replace('USD', '-USD') if not '-' in symbol else symbol.upper()
+    try:
+        url = f"https://api.coinbase.com/v2/prices/{coinbase_sym}/spot"
+        resp = requests.get(url, timeout=3)
+        if resp.status_code == 200:
+            data = resp.json()
+            price = float(data.get('data', {}).get('amount', 0))
+            if price > 0:
+                logger.info(f"Coinbase direct price for {symbol}: {price}")
+                return price
+    except Exception as e:
+        logger.debug(f"Coinbase direct fetch failed: {e}")
+
+    return None
+
+
 @market_data_bp.route('/price/<symbol>', methods=['GET'])
 def get_price(symbol):
     """Get current price for a symbol (cached for 30 seconds)"""
     symbol = symbol.upper()
     cache_key = CacheService.market_key(symbol)
 
-    # Try cache first
+    # Short cache (5 seconds) for real-time feel
     cached_data = CacheService.get(cache_key)
     if cached_data:
         logger.debug(f"Cache hit for price: {symbol}")
         return jsonify(cached_data), 200
 
-    # Try live prices from background updater FIRST (includes Moroccan from Casablanca Bourse)
-    # Also try alternate symbol formats (BTC-USD vs BTCUSD)
+    # For crypto, try direct Kraken/Coinbase fetch FIRST (most reliable)
+    crypto_symbols = ['BTC-USD', 'BTCUSD', 'ETH-USD', 'ETHUSD', 'SOL-USD', 'SOLUSD',
+                      'XRP-USD', 'XRPUSD', 'ADA-USD', 'ADAUSD', 'DOGE-USD', 'DOGEUSD']
+    if symbol in crypto_symbols or symbol.replace('-', '') in [s.replace('-', '') for s in crypto_symbols]:
+        direct_price = _fetch_crypto_price_direct(symbol)
+        if direct_price:
+            result = {
+                'symbol': symbol,
+                'price': direct_price,
+                'change': 0,
+                'change_percent': 0,
+                'market': 'CRYPTO',
+                'source': 'kraken_coinbase',
+                'timestamp': datetime.now().isoformat()
+            }
+            CacheService.set(cache_key, result, timeout=5)  # Short cache for crypto
+            return jsonify(result), 200
+
+    # Try live prices from background updater (includes Moroccan from Casablanca Bourse)
     live_data = get_live_price_data(symbol)
     if not live_data and '-' in symbol:
         live_data = get_live_price_data(symbol.replace('-', ''))
