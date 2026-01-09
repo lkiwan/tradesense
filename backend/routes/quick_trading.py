@@ -287,9 +287,8 @@ def close_all_positions():
         return jsonify({'error': 'No active challenge found'}), 400
 
     try:
-        # Get all open trades
+        # Get all open trades (Trade model only has challenge_id, not user_id)
         query = Trade.query.filter_by(
-            user_id=user_id,
             challenge_id=challenge.id,
             status='open'
         )
@@ -305,32 +304,39 @@ def close_all_positions():
 
         closed_count = 0
         total_profit = Decimal('0')
+        errors = []
 
         for trade in open_trades:
-            # Get closing price (in production, from market data)
-            close_price = data.get('close_price', trade.entry_price)
-            close_price = Decimal(str(close_price))
+            try:
+                # Get current market price for proper closing
+                from services.yfinance_service import get_current_price
+                current_price = get_current_price(trade.symbol)
 
-            # Calculate P/L
-            if trade.trade_type == 'buy':
-                profit = (close_price - trade.entry_price) * trade.lot_size * 100000
-            else:
-                profit = (trade.entry_price - close_price) * trade.lot_size * 100000
+                if current_price is None:
+                    # Fallback to entry price if market price unavailable
+                    current_price = float(trade.entry_price)
+                    errors.append(f"Price unavailable for {trade.symbol}, using entry price")
 
-            trade.exit_price = close_price
-            trade.profit_loss = profit
-            trade.status = 'closed'
-            trade.closed_at = datetime.utcnow()
+                # Use the Trade model's close_trade method for consistent PnL calculation
+                pnl = trade.close_trade(current_price)
+                total_profit += Decimal(str(pnl))
+                closed_count += 1
+            except Exception as e:
+                errors.append(f"Failed to close {trade.symbol}: {str(e)}")
 
-            total_profit += profit
-            closed_count += 1
+        # Update challenge balance
+        challenge.current_balance = challenge.current_balance + total_profit
+        if challenge.current_balance > challenge.highest_balance:
+            challenge.highest_balance = challenge.current_balance
 
         db.session.commit()
 
         return jsonify({
             'message': f'Closed {closed_count} positions',
             'closed_count': closed_count,
-            'total_profit': float(total_profit)
+            'total_profit': float(total_profit),
+            'new_balance': float(challenge.current_balance),
+            'errors': errors if errors else None
         })
 
     except Exception as e:
