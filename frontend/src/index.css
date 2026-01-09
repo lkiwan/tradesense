@@ -628,6 +628,56 @@ select.input option {
   animation: wave 0.8s ease-in-out infinite;
 }
 
+/* Ocean Wave Animation for SVG paths */
+@keyframes ocean-wave {
+  0% {
+    d: path("M0,100 C320,150 420,50 720,100 C1020,150 1120,50 1440,100 V200 H0 Z");
+  }
+  50% {
+    d: path("M0,120 C320,70 420,150 720,80 C1020,30 1120,130 1440,90 V200 H0 Z");
+  }
+  100% {
+    d: path("M0,100 C320,150 420,50 720,100 C1020,150 1120,50 1440,100 V200 H0 Z");
+  }
+}
+
+/* Horizontal wave movement */
+@keyframes wave-flow {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(-25px) translateY(10px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+@keyframes wave-flow-reverse {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  50% {
+    transform: translateX(25px) translateY(-10px);
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+  }
+}
+
+.animate-wave-flow {
+  animation: wave-flow 8s ease-in-out infinite;
+}
+
+.animate-wave-flow-reverse {
+  animation: wave-flow-reverse 6s ease-in-out infinite;
+}
+
+.animate-wave-flow-slow {
+  animation: wave-flow 12s ease-in-out infinite;
+}
+
 /* Background Noise Texture */
 .noise-bg {
   position: relative;
