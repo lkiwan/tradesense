@@ -620,6 +620,80 @@ const TradingPage = () => {
 
       {/* Main Content */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4">
+        {/* Trading Panel - Shows FIRST on mobile, LAST on desktop */}
+        <div className="order-first lg:order-last space-y-3 sm:space-y-4 lg:hidden">
+          {/* Mobile Trading Panel */}
+          <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl border border-white/5 p-3 shadow-lg">
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              <button
+                onClick={() => setTradeType('buy')}
+                className={`py-3 rounded-lg font-bold text-sm transition-all ${
+                  tradeType === 'buy'
+                    ? 'bg-green-500 text-white shadow-lg shadow-green-500/25'
+                    : 'bg-dark-200 text-gray-400'
+                }`}
+              >
+                <TrendingUp size={16} className="inline mr-1" />
+                {t('trading.buy')}
+              </button>
+              <button
+                onClick={() => setTradeType('sell')}
+                className={`py-3 rounded-lg font-bold text-sm transition-all ${
+                  tradeType === 'sell'
+                    ? 'bg-red-500 text-white shadow-lg shadow-red-500/25'
+                    : 'bg-dark-200 text-gray-400'
+                }`}
+              >
+                <TrendingDown size={16} className="inline mr-1" />
+                {t('trading.sell')}
+              </button>
+            </div>
+
+            {/* Lot Size - Mobile */}
+            <div className="flex gap-2 mb-3">
+              <input
+                type="number"
+                value={lotSize}
+                onChange={(e) => setLotSize(parseFloat(e.target.value) || 0.01)}
+                step="0.01"
+                min="0.01"
+                className="flex-1 bg-dark-200 border border-dark-300 rounded-lg px-3 py-2 text-white text-sm"
+                placeholder="Lot"
+              />
+              {[0.1, 0.5, 1].map(lot => (
+                <button
+                  key={lot}
+                  onClick={() => setLotSize(lot)}
+                  className={`px-3 py-2 text-xs rounded-lg ${
+                    lotSize === lot ? 'bg-primary-500 text-white' : 'bg-dark-200 text-gray-400'
+                  }`}
+                >
+                  {lot}
+                </button>
+              ))}
+            </div>
+
+            {/* Execute Button - Mobile */}
+            <button
+              onClick={executeTrade}
+              disabled={executing || !challenge || priceLoading || currentPrice.bid === 0}
+              className={`w-full py-4 rounded-xl font-bold text-base transition-all flex items-center justify-center gap-2 ${
+                tradeType === 'buy'
+                  ? 'bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg shadow-green-500/25'
+                  : 'bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg shadow-red-500/25'
+              } disabled:opacity-50 disabled:cursor-not-allowed`}
+            >
+              {executing ? (
+                <><RefreshCw size={18} className="animate-spin" /> {t('trading.executing')}</>
+              ) : priceLoading || currentPrice.bid === 0 ? (
+                <><RefreshCw size={18} className="animate-spin" /> {t('trading.loadingPrice')}</>
+              ) : (
+                <><Play size={18} /> {tradeType === 'buy' ? t('trading.buy') : t('trading.sell')} @ {(tradeType === 'buy' ? currentPrice.ask : currentPrice.bid).toFixed(2)}</>
+              )}
+            </button>
+          </div>
+        </div>
+
         {/* Chart & Positions Area */}
         <div className="lg:col-span-3 flex flex-col gap-3 sm:gap-4">
           {/* Chart */}
@@ -708,7 +782,47 @@ const TradingPage = () => {
                   </div>
                 )}
 
-                <table className="w-full min-w-[600px]">
+                {/* Mobile Card View */}
+                <div className="sm:hidden p-2 space-y-2">
+                  {openPositions.map(pos => {
+                    const pnlInfo = openPnL?.trades?.find(t => t.trade_id === pos.id)
+                    const pnl = pnlInfo?.unrealized_pnl || 0
+                    const currentPriceVal = pnlInfo?.current_price || pos.entry_price
+                    const formatPrice = (p) => p >= 100 ? p.toFixed(2) : p.toFixed(4)
+
+                    return (
+                      <div key={pos.id} className="bg-dark-200/50 rounded-lg p-3">
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center gap-2">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              pos.trade_type === 'buy' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'
+                            }`}>
+                              {pos.trade_type.toUpperCase()}
+                            </span>
+                            <span className="text-white font-medium text-sm">{pos.symbol}</span>
+                          </div>
+                          <span className={`font-bold text-sm ${pnl >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                            {pnl >= 0 ? '+' : ''}${pnl.toFixed(0)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between text-xs text-gray-400 mb-2">
+                          <span>Size: {pos.quantity}</span>
+                          <span>Entry: {formatPrice(pos.entry_price)}</span>
+                          <span>Now: {formatPrice(currentPriceVal)}</span>
+                        </div>
+                        <button
+                          onClick={() => closeTrade(pos.id)}
+                          className="w-full py-2 bg-red-500/20 hover:bg-red-500 text-red-400 hover:text-white text-xs font-medium rounded-lg transition-all"
+                        >
+                          {t('trading.close')}
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+
+                {/* Desktop Table View */}
+                <table className="w-full min-w-[600px] hidden sm:table">
                   <thead className="bg-dark-200/30">
                     <tr className="text-[9px] sm:text-xs text-gray-400 uppercase tracking-wider">
                       <th className="px-2 sm:px-4 py-2 text-left">{t('trading.symbol')}</th>
@@ -856,8 +970,8 @@ const TradingPage = () => {
           </div>
         </div>
 
-        {/* Trading Panel & Signals */}
-        <div className="space-y-3 sm:space-y-4">
+        {/* Trading Panel & Signals - Hidden on mobile (shown above) */}
+        <div className="hidden lg:block space-y-3 sm:space-y-4">
           {/* Trade Type Selector */}
           <div className="relative overflow-hidden bg-gradient-to-br from-dark-100/80 to-dark-200/80 backdrop-blur-xl rounded-xl sm:rounded-2xl border border-white/5 p-3 sm:p-4 shadow-lg">
             <div className="grid grid-cols-2 gap-2 mb-3 sm:mb-4">
