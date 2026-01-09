@@ -10,6 +10,7 @@ import Footer from './components/Footer'
 import DashboardLayout from './components/DashboardLayout'
 import ErrorBoundary from './components/common/ErrorBoundary'
 import ScrollToTop from './components/ScrollToTop'
+import GlobalAIAssistant from './components/GlobalAIAssistant'
 
 // Pages
 import LandingPage from './pages/LandingPage'
@@ -1232,6 +1233,9 @@ function App() {
             }
           }}
         />
+
+        {/* Global AI Assistant - Available on all pages */}
+        <GlobalAIAssistant />
         </div>
       </div>
     </ErrorBoundary>

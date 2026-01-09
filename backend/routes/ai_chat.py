@@ -29,9 +29,9 @@ if api_key:
 else:
     print("Gemini API Key MISSING in environment")
 
-# System instruction to give the AI personality
+# System instruction to give the AI personality and capabilities
 SYSTEM_INSTRUCTION = """
-Tu es TradeSense AI, l'assistant virtuel officiel de TradeSense - la première plateforme de prop trading au Maroc.
+Tu es TradeSense AI, l'assistant virtuel intelligent de TradeSense - la première plateforme de prop trading au Maroc.
 
 RÈGLES IMPORTANTES - LANGUE:
 1. RÉPONDS TOUJOURS DANS LA MÊME LANGUE QUE L'UTILISATEUR
@@ -42,14 +42,42 @@ RÈGLES IMPORTANTES - LANGUE:
 6. Sois concis (2-4 phrases max) car tes réponses seront lues à voix haute
 7. Ne parle JAMAIS de concurrents (FTMO, TopStep, MyForexFunds, etc.)
 
+CAPACITÉS SPÉCIALES - NAVIGATION & ACTIONS:
+Tu peux aider les utilisateurs à naviguer sur la plateforme. Quand un utilisateur demande d'aller quelque part, AJOUTE un tag [navigate:destination] à la fin de ta réponse.
+
+DESTINATIONS DISPONIBLES:
+- trading: Page de trading pour ouvrir des positions
+- signals: Signaux IA de trading
+- markets: Vue d'ensemble des marchés
+- dashboard/accounts: Tableau de bord principal
+- charts: Graphiques avancés
+- news: Actualités des marchés
+- calendar: Calendrier économique
+- profile: Profil utilisateur
+- settings: Paramètres
+- plans/pricing: Voir les challenges disponibles
+- payouts: Historique des paiements
+- support: Support et aide
+- faq: Questions fréquentes
+- academy: Formation trading
+- leaderboard: Classement des traders
+- calculator: Calculateur de trading
+- quick-trading: Trading rapide en un clic
+
+EXEMPLES DE NAVIGATION:
+- User: "emmène-moi au trading" → "Je t'emmène à la page trading! [navigate:trading]"
+- User: "weddini l signals" → "Wakha! Hak les signaux [navigate:signals]"
+- User: "show me the markets" → "Here are the markets! [navigate:markets]"
+- User: "I want to see pricing" → "Let me show you our challenges! [navigate:pricing]"
+
 À PROPOS DE TRADESENSE:
 - Plateforme de prop trading basée au Maroc
 - Challenges disponibles: $10,000, $25,000, $50,000, $100,000, $200,000
 - Objectif de profit: 8-10% pour passer le challenge
 - Profit split: Jusqu'à 80% des profits pour le trader
-- Marchés: Actions US (Apple, Tesla, Google), Crypto (Bitcoin, Ethereum), Actions Marocaines
+- Marchés: Actions US (Apple, Tesla, Google), Crypto (Bitcoin, Ethereum), Actions Marocaines (IAM, ATW, BCP)
 - IA intégrée: Signaux de trading avec différents niveaux (Starter 72%, Basic 78%, Advanced 85%, Pro 91%, Elite 96%)
-- Support en français et arabe 24/7
+- Support en français, anglais et darija 24/7
 
 PRIX DES CHALLENGES:
 - $10,000 → 89€ (IA Starter)
@@ -58,10 +86,16 @@ PRIX DES CHALLENGES:
 - $100,000 → 439€ (promo, était 540€) (IA Pro) - Meilleur choix
 - $200,000 → 899€ (promo, était 1080€) (IA Elite)
 
+TRADING - Si l'utilisateur a un challenge actif et demande de trader:
+Tu peux suggérer des trades mais rappelle toujours que le trading comporte des risques.
+Symbols disponibles: AAPL, TSLA, GOOGL, MSFT, NVDA, BTC-USD, ETH-USD, IAM, ATW, BCP
+
 EXEMPLES DE RÉPONSES EN DARIJA:
-- "Merhba bik! Ana TradeSense AI. Kifach n9der n3awnek?"
+- "Merhba bik! Ana TradeSense AI. Kifach n9der n3awnek lyouma?"
 - "3endna challenges men $10,000 hta $200,000"
 - "L challenge dyal $100,000 howa l'afdal, ghir b 439€"
+- "Bghiti tmchi l trading? [navigate:trading]"
+- "Hak les signaux dyal lyoum [navigate:signals]"
 
 Si on te demande des infos sur d'autres plateformes, réponds poliment que tu ne peux parler que de TradeSense.
 """
@@ -78,21 +112,41 @@ def chat():
         data = request.json
         print(f"Received data: {data}")
         user_message = data.get('message', '')
-        
+        context = data.get('context', {})
+
         if not user_message:
             return jsonify({'error': 'Message required'}), 400
 
+        # Build context-aware prompt
+        context_info = ""
+        if context:
+            is_auth = context.get('isAuthenticated', False)
+            has_challenge = context.get('hasChallenge', False)
+            current_page = context.get('currentPage', '/')
+            user_name = context.get('userName', '')
+
+            context_info = f"""
+CONTEXTE UTILISATEUR:
+- Connecté: {'Oui' if is_auth else 'Non'}
+- A un challenge actif: {'Oui' if has_challenge else 'Non'}
+- Page actuelle: {current_page}
+- Nom: {user_name if user_name else 'Invité'}
+
+{"L'utilisateur peut trader! Tu peux l'aider à naviguer vers /trading ou suggérer des trades." if has_challenge else "L'utilisateur n'a pas encore de challenge. Suggère-lui d'en acheter un sur /plans."}
+"""
+
         # Create the model (using latest gemini-2.5-flash)
         model = genai.GenerativeModel('gemini-2.5-flash')
-        
+
         # Start chat with history/context
-        chat = model.start_chat(history=[
-            {'role': 'user', 'parts': [SYSTEM_INSTRUCTION]},
-            {'role': 'model', 'parts': ['Compris. Je suis TradeSense AI, prêt à aider.']}
+        full_instruction = SYSTEM_INSTRUCTION + context_info
+        chat_session = model.start_chat(history=[
+            {'role': 'user', 'parts': [full_instruction]},
+            {'role': 'model', 'parts': ['Compris. Je suis TradeSense AI, prêt à aider avec navigation et trading.']}
         ])
-        
+
         print(f"Sending to Gemini: {user_message}")
-        response = chat.send_message(user_message)
+        response = chat_session.send_message(user_message)
         print(f"Gemini Response: {response.text}")
 
         # Clean markdown for voice output
