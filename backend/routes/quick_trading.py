@@ -309,11 +309,21 @@ def close_all_positions():
         for trade in open_trades:
             try:
                 # Get current market price for proper closing
-                from services.yfinance_service import get_current_price
-                current_price = get_current_price(trade.symbol)
+                from services.yfinance_service import get_current_price, get_live_price_data
 
+                current_price = None
+
+                # Try live price data first (faster, from Binance/background updater)
+                live_data = get_live_price_data(trade.symbol)
+                if live_data:
+                    current_price = live_data.get('price')
+
+                # Fallback to yfinance if no live price
                 if current_price is None:
-                    # Fallback to entry price if market price unavailable
+                    current_price = get_current_price(trade.symbol)
+
+                # Final fallback to entry price if all else fails
+                if current_price is None:
                     current_price = float(trade.entry_price)
                     errors.append(f"Price unavailable for {trade.symbol}, using entry price")
 
