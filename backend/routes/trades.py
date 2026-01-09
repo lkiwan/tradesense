@@ -5,7 +5,7 @@ from decimal import Decimal
 from . import trades_bp
 from models import db, Trade, UserChallenge, User
 from services.challenge_engine import ChallengeEngine
-from services.yfinance_service import get_current_price
+from services.yfinance_service import get_current_price, get_live_price_data
 from middleware.rate_limiter import limiter
 from services.audit_service import AuditService
 
@@ -66,15 +66,26 @@ def open_trade():
     if not challenge:
         return jsonify({'error': 'No active challenge. Please purchase a plan first.'}), 404
 
-    # Get current price
+    # Get current price - try multiple sources
     symbol = data['symbol']
     logger.info(f"Fetching price for symbol: {symbol}")
-    current_price = get_current_price(symbol)
-    logger.info(f"Price result for {symbol}: {current_price}")
+
+    current_price = None
+
+    # Try live price data first (Binance/background updater - fastest)
+    live_data = get_live_price_data(symbol)
+    if live_data:
+        current_price = live_data.get('price')
+        logger.info(f"Live price for {symbol}: {current_price}")
+
+    # Fallback to yfinance if no live price
+    if current_price is None:
+        current_price = get_current_price(symbol)
+        logger.info(f"YFinance price for {symbol}: {current_price}")
 
     if current_price is None:
         logger.error(f"Failed to get price for symbol: {symbol}")
-        return jsonify({'error': f'Could not get price for {symbol}'}), 400
+        return jsonify({'error': f'Could not get price for {symbol}. Try again in a moment.'}), 400
 
     quantity = Decimal(str(data['quantity']))
     trade_value = quantity * Decimal(str(current_price))
