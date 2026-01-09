@@ -70,23 +70,67 @@ const Navbar = () => {
     }
   }, [isConnected, subscribeToPrices])
 
+  // Fetch crypto prices directly from CoinGecko (reliable fallback)
+  const fetchCryptoPrices = async () => {
+    try {
+      const response = await fetch(
+        'https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana,binancecoin&vs_currencies=usd&include_24hr_change=true'
+      )
+      if (response.ok) {
+        const data = await response.json()
+        const cryptoPrices = {}
+        if (data.bitcoin) {
+          cryptoPrices['BTC-USD'] = { price: data.bitcoin.usd, changePercent: data.bitcoin.usd_24h_change || 0 }
+        }
+        if (data.ethereum) {
+          cryptoPrices['ETH-USD'] = { price: data.ethereum.usd, changePercent: data.ethereum.usd_24h_change || 0 }
+        }
+        if (data.solana) {
+          cryptoPrices['SOL-USD'] = { price: data.solana.usd, changePercent: data.solana.usd_24h_change || 0 }
+        }
+        if (data.binancecoin) {
+          cryptoPrices['BNB-USD'] = { price: data.binancecoin.usd, changePercent: data.binancecoin.usd_24h_change || 0 }
+        }
+        return cryptoPrices
+      }
+    } catch (error) {
+      console.log('CoinGecko fetch error:', error)
+    }
+    return {}
+  }
+
   // Fetch prices from API as fallback
   useEffect(() => {
     const fetchPrices = async () => {
       try {
+        // Fetch from backend API
         const response = await marketAPI.getAllSignals(TICKER_SYMBOLS)
+        const prices = {}
         if (response.data?.signals) {
-          const prices = {}
           response.data.signals.forEach((item) => {
             prices[item.symbol] = {
               price: item.price,
               changePercent: item.change_percent || 0
             }
           })
-          setTickerPrices(prices)
         }
+
+        // Always fetch crypto prices directly (more reliable)
+        const cryptoPrices = await fetchCryptoPrices()
+
+        // Merge: crypto prices override backend if backend is missing them
+        setTickerPrices(prev => ({
+          ...prev,
+          ...prices,
+          ...cryptoPrices
+        }))
       } catch (error) {
         console.log('Ticker prices fetch error:', error)
+        // Still try to get crypto prices even if backend fails
+        const cryptoPrices = await fetchCryptoPrices()
+        if (Object.keys(cryptoPrices).length > 0) {
+          setTickerPrices(prev => ({ ...prev, ...cryptoPrices }))
+        }
       }
     }
     fetchPrices()
