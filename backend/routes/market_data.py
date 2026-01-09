@@ -335,33 +335,66 @@ def debug_prices():
         'api_tests': {}
     }
 
-    # Test Binance API directly
+    # Test Kraken API (works from US)
     try:
-        url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
-        resp = requests.get(url, timeout=5, verify=False)
+        url = "https://api.kraken.com/0/public/Ticker?pair=XXBTZUSD"
+        resp = requests.get(url, timeout=5)
         if resp.status_code == 200:
             data = resp.json()
-            results['api_tests']['binance'] = {
+            if not data.get('error'):
+                result = data.get('result', {})
+                for pair_key, pair_data in result.items():
+                    price = float(pair_data.get('c', [0])[0])
+                    results['api_tests']['kraken'] = {
+                        'success': True,
+                        'price': price,
+                        'status_code': resp.status_code
+                    }
+                    break
+            else:
+                results['api_tests']['kraken'] = {
+                    'success': False,
+                    'error': str(data.get('error'))
+                }
+        else:
+            results['api_tests']['kraken'] = {
+                'success': False,
+                'status_code': resp.status_code
+            }
+    except Exception as e:
+        results['api_tests']['kraken'] = {
+            'success': False,
+            'error': str(e)
+        }
+
+    # Test Coinbase API (works from US)
+    try:
+        url = "https://api.coinbase.com/v2/prices/BTC-USD/spot"
+        resp = requests.get(url, timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+            price = float(data.get('data', {}).get('amount', 0))
+            results['api_tests']['coinbase'] = {
                 'success': True,
-                'price': float(data.get('price', 0)),
+                'price': price,
                 'status_code': resp.status_code
             }
         else:
-            results['api_tests']['binance'] = {
+            results['api_tests']['coinbase'] = {
                 'success': False,
                 'status_code': resp.status_code,
                 'error': resp.text[:200]
             }
     except Exception as e:
-        results['api_tests']['binance'] = {
+        results['api_tests']['coinbase'] = {
             'success': False,
             'error': str(e)
         }
 
-    # Test CoinGecko API directly
+    # Test CoinGecko API (may be rate limited)
     try:
         url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
-        resp = requests.get(url, timeout=5, verify=False)
+        resp = requests.get(url, timeout=5)
         if resp.status_code == 200:
             data = resp.json()
             results['api_tests']['coingecko'] = {

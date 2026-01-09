@@ -113,48 +113,93 @@ _live_prices = {}
 _live_prices_lock = threading.Lock()
 _price_updater_running = False
 
-def _fetch_crypto_prices_binance():
-    """Fetch crypto prices from Binance API (same source as TradingView)"""
+def _fetch_crypto_prices_kraken():
+    """Fetch crypto prices from Kraken API (works from US servers, no geo-restrictions)"""
     prices = {}
 
-    # Map Binance symbols to our format
+    # Map Kraken symbols to our format
+    # Kraken uses XXBTZUSD for BTC, XETHZUSD for ETH, etc.
     symbol_mapping = {
-        'BTCUSDT': ['BTC-USD', 'BTCUSD'],
-        'ETHUSDT': ['ETH-USD', 'ETHUSD'],
-        'SOLUSDT': ['SOL-USD', 'SOLUSD'],
-        'XRPUSDT': ['XRP-USD', 'XRPUSD'],
-        'ADAUSDT': ['ADA-USD', 'ADAUSD'],
-        'DOGEUSDT': ['DOGE-USD', 'DOGEUSD'],
-        'BNBUSDT': ['BNB-USD', 'BNBUSD']
+        'XXBTZUSD': ['BTC-USD', 'BTCUSD'],
+        'XETHZUSD': ['ETH-USD', 'ETHUSD'],
+        'SOLUSD': ['SOL-USD', 'SOLUSD'],
+        'XXRPZUSD': ['XRP-USD', 'XRPUSD'],
+        'ADAUSD': ['ADA-USD', 'ADAUSD'],
+        'XDGUSD': ['DOGE-USD', 'DOGEUSD'],
     }
 
-    for binance_sym, our_symbols in symbol_mapping.items():
+    # Kraken allows batch requests
+    pairs = ','.join(symbol_mapping.keys())
+    try:
+        url = f"https://api.kraken.com/0/public/Ticker?pair={pairs}"
+        resp = requests.get(url, timeout=5)
+
+        if resp.status_code == 200:
+            data = resp.json()
+            if not data.get('error'):
+                result = data.get('result', {})
+                for kraken_sym, our_symbols in symbol_mapping.items():
+                    # Kraken may return different key format
+                    pair_data = result.get(kraken_sym) or result.get(kraken_sym.replace('X', '').replace('Z', ''))
+                    if pair_data:
+                        price = float(pair_data.get('c', [0])[0])  # 'c' = last trade closed
+                        if price > 0:
+                            for sym in our_symbols:
+                                prices[sym] = {'price': price, 'change_percent': 0}
+    except Exception as e:
+        logger.debug(f"Kraken batch error: {e}")
+
+    if prices:
+        logger.info(f"Kraken: {len(prices)} crypto prices fetched")
+    return prices
+
+
+def _fetch_crypto_prices_coinbase():
+    """Fetch crypto prices from Coinbase API (works from US servers)"""
+    prices = {}
+
+    symbol_mapping = {
+        'BTC-USD': ['BTC-USD', 'BTCUSD'],
+        'ETH-USD': ['ETH-USD', 'ETHUSD'],
+        'SOL-USD': ['SOL-USD', 'SOLUSD'],
+        'XRP-USD': ['XRP-USD', 'XRPUSD'],
+        'ADA-USD': ['ADA-USD', 'ADAUSD'],
+        'DOGE-USD': ['DOGE-USD', 'DOGEUSD'],
+    }
+
+    for coinbase_sym, our_symbols in symbol_mapping.items():
         try:
-            url = f"https://api.binance.com/api/v3/ticker/price?symbol={binance_sym}"
-            resp = requests.get(url, timeout=(2, 3), verify=False)
+            url = f"https://api.coinbase.com/v2/prices/{coinbase_sym}/spot"
+            resp = requests.get(url, timeout=3)
 
             if resp.status_code == 200:
                 data = resp.json()
-                price = float(data.get('price', 0))
+                price = float(data.get('data', {}).get('amount', 0))
                 if price > 0:
                     for sym in our_symbols:
                         prices[sym] = {'price': price, 'change_percent': 0}
         except Exception as e:
-            logger.debug(f"Binance {binance_sym} error: {e}")
+            logger.debug(f"Coinbase {coinbase_sym} error: {e}")
             continue
 
     if prices:
-        logger.info(f"Binance: {len(prices)} crypto prices fetched")
+        logger.info(f"Coinbase: {len(prices)} crypto prices fetched")
     return prices
 
+
 def _fetch_crypto_prices():
-    """Fetch crypto prices - Binance first (real-time), CoinGecko fallback"""
-    # Try Binance first (same source as TradingView)
-    prices = _fetch_crypto_prices_binance()
+    """Fetch crypto prices - Kraken first (works from US), then Coinbase, then CoinGecko"""
+    # Try Kraken first (works from US, no geo-restrictions)
+    prices = _fetch_crypto_prices_kraken()
     if prices:
         return prices
 
-    # Fallback to CoinGecko
+    # Try Coinbase (also works from US)
+    prices = _fetch_crypto_prices_coinbase()
+    if prices:
+        return prices
+
+    # Fallback to CoinGecko (may be rate limited)
     try:
         url = "https://api.coingecko.com/api/v3/simple/price"
         params = {
@@ -162,7 +207,7 @@ def _fetch_crypto_prices():
             "vs_currencies": "usd",
             "include_24hr_change": "true"
         }
-        resp = requests.get(url, params=params, timeout=(3, 5), verify=False)
+        resp = requests.get(url, params=params, timeout=5)
         if resp.status_code == 200:
             data = resp.json()
             prices = {}

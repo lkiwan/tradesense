@@ -18,39 +18,66 @@ logger = logging.getLogger(__name__)
 
 
 def _fetch_crypto_price_direct(symbol: str) -> float | None:
-    """Direct fetch crypto price - tries Binance first (fastest), then CoinGecko"""
+    """Direct fetch crypto price - tries Kraken first (works from US), then Coinbase, then CoinGecko"""
     symbol_upper = symbol.upper()
 
-    # Map symbols to Binance format
-    binance_map = {
-        'BTC-USD': 'BTCUSDT', 'BTCUSD': 'BTCUSDT', 'BTC': 'BTCUSDT',
-        'ETH-USD': 'ETHUSDT', 'ETHUSD': 'ETHUSDT', 'ETH': 'ETHUSDT',
-        'SOL-USD': 'SOLUSDT', 'SOLUSD': 'SOLUSDT', 'SOL': 'SOLUSDT',
-        'XRP-USD': 'XRPUSDT', 'XRPUSD': 'XRPUSDT', 'XRP': 'XRPUSDT',
-        'ADA-USD': 'ADAUSDT', 'ADAUSD': 'ADAUSDT', 'ADA': 'ADAUSDT',
-        'DOGE-USD': 'DOGEUSDT', 'DOGEUSD': 'DOGEUSDT', 'DOGE': 'DOGEUSDT',
-        'BNB-USD': 'BNBUSDT', 'BNBUSD': 'BNBUSDT', 'BNB': 'BNBUSDT',
+    # Map symbols to Kraken format (XXBTZUSD = BTC/USD)
+    kraken_map = {
+        'BTC-USD': 'XXBTZUSD', 'BTCUSD': 'XXBTZUSD', 'BTC': 'XXBTZUSD',
+        'ETH-USD': 'XETHZUSD', 'ETHUSD': 'XETHZUSD', 'ETH': 'XETHZUSD',
+        'SOL-USD': 'SOLUSD', 'SOLUSD': 'SOLUSD', 'SOL': 'SOLUSD',
+        'XRP-USD': 'XXRPZUSD', 'XRPUSD': 'XXRPZUSD', 'XRP': 'XXRPZUSD',
+        'ADA-USD': 'ADAUSD', 'ADAUSD': 'ADAUSD', 'ADA': 'ADAUSD',
+        'DOGE-USD': 'XDGUSD', 'DOGEUSD': 'XDGUSD', 'DOGE': 'XDGUSD',
     }
 
-    binance_symbol = binance_map.get(symbol_upper)
-
-    # Try Binance first (fastest and most reliable)
-    if binance_symbol:
+    # Try Kraken first (works from US, no geo-restrictions)
+    kraken_symbol = kraken_map.get(symbol_upper)
+    if kraken_symbol:
         try:
-            url = f"https://api.binance.com/api/v3/ticker/price?symbol={binance_symbol}"
-            resp = requests.get(url, timeout=3, verify=False)
+            url = f"https://api.kraken.com/0/public/Ticker?pair={kraken_symbol}"
+            resp = requests.get(url, timeout=5)
             if resp.status_code == 200:
                 data = resp.json()
-                price = float(data.get('price', 0))
+                if not data.get('error'):
+                    result = data.get('result', {})
+                    # Kraken returns data with the pair as key
+                    for pair_key, pair_data in result.items():
+                        price = float(pair_data.get('c', [0])[0])  # 'c' = last trade closed [price, lot volume]
+                        if price > 0:
+                            logger.info(f"Kraken price for {symbol}: {price}")
+                            return price
+            else:
+                logger.warning(f"Kraken API returned status {resp.status_code}")
+        except Exception as e:
+            logger.warning(f"Kraken fetch failed for {symbol}: {e}")
+
+    # Try Coinbase (also works from US)
+    coinbase_map = {
+        'BTC-USD': 'BTC-USD', 'BTCUSD': 'BTC-USD', 'BTC': 'BTC-USD',
+        'ETH-USD': 'ETH-USD', 'ETHUSD': 'ETH-USD', 'ETH': 'ETH-USD',
+        'SOL-USD': 'SOL-USD', 'SOLUSD': 'SOL-USD', 'SOL': 'SOL-USD',
+        'XRP-USD': 'XRP-USD', 'XRPUSD': 'XRP-USD', 'XRP': 'XRP-USD',
+        'ADA-USD': 'ADA-USD', 'ADAUSD': 'ADA-USD', 'ADA': 'ADA-USD',
+        'DOGE-USD': 'DOGE-USD', 'DOGEUSD': 'DOGE-USD', 'DOGE': 'DOGE-USD',
+    }
+    coinbase_symbol = coinbase_map.get(symbol_upper)
+    if coinbase_symbol:
+        try:
+            url = f"https://api.coinbase.com/v2/prices/{coinbase_symbol}/spot"
+            resp = requests.get(url, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                price = float(data.get('data', {}).get('amount', 0))
                 if price > 0:
-                    logger.info(f"Direct Binance price for {symbol}: {price}")
+                    logger.info(f"Coinbase price for {symbol}: {price}")
                     return price
             else:
-                logger.warning(f"Binance API returned status {resp.status_code} for {binance_symbol}")
+                logger.warning(f"Coinbase API returned status {resp.status_code}")
         except Exception as e:
-            logger.warning(f"Direct Binance fetch failed for {symbol}: {e}")
+            logger.warning(f"Coinbase fetch failed for {symbol}: {e}")
 
-    # Fallback to CoinGecko
+    # Fallback to CoinGecko (may be rate limited)
     coin_map = {
         'BTC-USD': 'bitcoin', 'BTCUSD': 'bitcoin', 'BTC': 'bitcoin',
         'ETH-USD': 'ethereum', 'ETHUSD': 'ethereum', 'ETH': 'ethereum',
@@ -58,28 +85,25 @@ def _fetch_crypto_price_direct(symbol: str) -> float | None:
         'XRP-USD': 'ripple', 'XRPUSD': 'ripple', 'XRP': 'ripple',
         'ADA-USD': 'cardano', 'ADAUSD': 'cardano', 'ADA': 'cardano',
         'DOGE-USD': 'dogecoin', 'DOGEUSD': 'dogecoin', 'DOGE': 'dogecoin',
-        'BNB-USD': 'binancecoin', 'BNBUSD': 'binancecoin', 'BNB': 'binancecoin',
     }
 
     coin_id = coin_map.get(symbol_upper)
-    if not coin_id:
-        logger.warning(f"No mapping found for symbol {symbol}")
-        return None
+    if coin_id:
+        try:
+            url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
+            resp = requests.get(url, timeout=5)
+            if resp.status_code == 200:
+                data = resp.json()
+                price = data.get(coin_id, {}).get('usd')
+                if price:
+                    logger.info(f"CoinGecko price for {symbol}: {price}")
+                    return float(price)
+            else:
+                logger.warning(f"CoinGecko API returned status {resp.status_code}")
+        except Exception as e:
+            logger.warning(f"CoinGecko fetch failed for {symbol}: {e}")
 
-    try:
-        url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
-        resp = requests.get(url, timeout=5, verify=False)
-        if resp.status_code == 200:
-            data = resp.json()
-            price = data.get(coin_id, {}).get('usd')
-            if price:
-                logger.info(f"Direct CoinGecko price for {symbol}: {price}")
-                return float(price)
-        else:
-            logger.warning(f"CoinGecko API returned status {resp.status_code} for {coin_id}")
-    except Exception as e:
-        logger.warning(f"Direct CoinGecko fetch failed for {symbol}: {e}")
-
+    logger.warning(f"No price found for {symbol} from any API")
     return None
 
 
