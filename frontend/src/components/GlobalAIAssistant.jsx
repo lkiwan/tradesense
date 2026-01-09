@@ -7,7 +7,7 @@ import { showSuccessToast, showErrorToast } from '../utils/errorHandler'
 import {
   MessageCircle, X, Send, Bot, User, Sparkles, Mic, MicOff,
   Volume2, VolumeX, ArrowRight, TrendingUp, TrendingDown, Loader2,
-  Navigation, ExternalLink, ChevronDown, Zap
+  Navigation, ExternalLink, ChevronDown, Zap, XCircle
 } from 'lucide-react'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
@@ -99,6 +99,7 @@ const GlobalAIAssistant = () => {
   const [isSpeaking, setIsSpeaking] = useState(false)
   const [soundEnabled, setSoundEnabled] = useState(true)
   const [pendingTrade, setPendingTrade] = useState(null)
+  const [pendingCloseAll, setPendingCloseAll] = useState(false)
 
   const messagesEndRef = useRef(null)
   const inputRef = useRef(null)
@@ -320,6 +321,45 @@ const GlobalAIAssistant = () => {
     }
   }
 
+  // Detect close all trades intent
+  const detectCloseAllIntent = (message) => {
+    const lowerMsg = message.toLowerCase()
+    const closeAllKeywords = [
+      'close all', 'fermer tout', 'fermer toutes', 'sed koulchi', 'sed kolchi',
+      'close everything', 'close all trades', 'close all positions',
+      'fermer toutes les positions', 'fermer tous les trades',
+      'sedd', 'sed les trades', 'sed all'
+    ]
+    return closeAllKeywords.some(kw => lowerMsg.includes(kw))
+  }
+
+  // Execute close all trades
+  const executeCloseAll = async () => {
+    if (!isAuthenticated) {
+      showErrorToast(null, 'You need to be logged in')
+      return false
+    }
+
+    if (!hasActiveChallenge) {
+      showErrorToast(null, 'You need an active challenge')
+      return false
+    }
+
+    try {
+      console.log('Closing all trades...')
+      const response = await tradesAPI.closeAll()
+      console.log('Close all response:', response)
+      const data = response.data
+      showSuccessToast(`Closed ${data.closed_count} positions! P/L: $${data.total_profit?.toFixed(2) || 0}`)
+      return { success: true, ...data }
+    } catch (error) {
+      console.error('Close all error:', error)
+      const errorMsg = error?.response?.data?.error || error?.message || 'Failed to close trades'
+      showErrorToast(null, errorMsg)
+      return { success: false, error: errorMsg }
+    }
+  }
+
   // Handle send message
   const handleSend = async (text = inputValue) => {
     if (!text.trim() || isLoading) return
@@ -352,6 +392,21 @@ const GlobalAIAssistant = () => {
         navigate(navIntent.path)
         setIsOpen(false)
       }, 1000)
+      return
+    }
+
+    // Check for close all trades intent
+    if (detectCloseAllIntent(text) && isAuthenticated && hasActiveChallenge) {
+      setPendingCloseAll(true)
+      const botResponse = {
+        id: Date.now() + 1,
+        type: 'bot',
+        text: `⚠️ Bghiti tsed GA3 les trades dyalk?\n\nHad l'action ghadi tsed toutes les positions li meftouhin.\n\nClick "Confirm Close All" ila mte2ked!`,
+        timestamp: new Date(),
+        pendingCloseAll: true
+      }
+      setMessages(prev => [...prev, botResponse])
+      setIsLoading(false)
       return
     }
 
@@ -478,6 +533,28 @@ const GlobalAIAssistant = () => {
     }
     setMessages(prev => [...prev, resultMessage])
     setPendingTrade(null)
+    setIsLoading(false)
+  }
+
+  // Handle close all confirmation
+  const handleConfirmCloseAll = async () => {
+    if (!pendingCloseAll) return
+
+    setIsLoading(true)
+
+    const result = await executeCloseAll()
+
+    const resultMessage = {
+      id: Date.now(),
+      type: 'bot',
+      text: result.success
+        ? `✅ Seddina ${result.closed_count} trades!\n\n💰 Total P/L: $${result.total_profit?.toFixed(2) || 0}\n💵 New Balance: $${result.new_balance?.toFixed(2) || 'N/A'}`
+        : `❌ Ma9dertch nsed les trades. ${result.error || 'Jreb mera khra.'}`,
+      timestamp: new Date(),
+      actions: result.success ? [{ type: 'navigate', path: '/trading', label: 'View Trading' }] : undefined
+    }
+    setMessages(prev => [...prev, resultMessage])
+    setPendingCloseAll(false)
     setIsLoading(false)
   }
 
@@ -643,6 +720,26 @@ const GlobalAIAssistant = () => {
                       </button>
                       <button
                         onClick={() => setPendingTrade(null)}
+                        className="px-4 py-2 bg-dark-100 text-gray-400 rounded-lg text-sm hover:bg-dark-200 transition-colors"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+
+                  {/* Close all confirmation */}
+                  {message.pendingCloseAll && (
+                    <div className="flex gap-2 mt-2">
+                      <button
+                        onClick={handleConfirmCloseAll}
+                        disabled={isLoading}
+                        className="flex items-center gap-1.5 px-4 py-2 bg-red-500 text-white rounded-lg text-sm font-medium hover:bg-red-600 transition-colors disabled:opacity-50"
+                      >
+                        {isLoading ? <Loader2 size={14} className="animate-spin" /> : <XCircle size={14} />}
+                        Confirm Close All
+                      </button>
+                      <button
+                        onClick={() => setPendingCloseAll(false)}
                         className="px-4 py-2 bg-dark-100 text-gray-400 rounded-lg text-sm hover:bg-dark-200 transition-colors"
                       >
                         Cancel

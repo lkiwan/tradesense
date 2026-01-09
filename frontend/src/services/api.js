@@ -183,6 +183,7 @@ export const tradesAPI = {
   getAll: (challengeId) => api.get('/api/trades', { params: { challenge_id: challengeId } }),
   open: (data) => api.post('/api/trades/open', data),
   close: (tradeId) => api.post(`/api/trades/${tradeId}/close`),
+  closeAll: () => api.post('/api/quick-trading/close-all'),
   getById: (id) => api.get(`/api/trades/${id}`),
   getOpenPnL: () => api.get('/api/trades/open/pnl')
 }
