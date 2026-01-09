@@ -13,6 +13,8 @@ import {
 import PaymentMarquee from '../components/PaymentMarquee'
 import TrustBadge from '../components/TrustBadge'
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+
 // Animated counter component
 const AnimatedCounter = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0)
@@ -457,7 +459,7 @@ const LandingPage = () => {
 
         try {
           // CALL BACKEND
-          const response = await fetch('http://localhost:5000/api/ai/chat', {
+          const response = await fetch(`${API_URL}/ai/chat`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -564,7 +566,7 @@ const LandingPage = () => {
     setIsProcessing(true)
 
     try {
-      const response = await fetch('http://localhost:5000/api/ai/chat', {
+      const response = await fetch(`${API_URL}/ai/chat`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
