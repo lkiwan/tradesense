@@ -281,21 +281,30 @@ const GlobalAIAssistant = () => {
 
   // Execute trade
   const executeTrade = async (trade) => {
-    if (!isAuthenticated || !hasActiveChallenge) {
-      showErrorToast(null, 'You need an active challenge to trade')
+    if (!isAuthenticated) {
+      showErrorToast(null, 'You need to be logged in to trade')
+      return false
+    }
+
+    if (!hasActiveChallenge) {
+      showErrorToast(null, 'You need an active challenge to trade. Go to Plans to get one!')
       return false
     }
 
     try {
-      await tradesAPI.open({
+      console.log('Executing trade:', trade)
+      const response = await tradesAPI.open({
         symbol: trade.symbol,
         trade_type: trade.tradeType,
         quantity: trade.quantity
       })
+      console.log('Trade response:', response)
       showSuccessToast(`Trade opened: ${trade.tradeType.toUpperCase()} ${trade.quantity} ${trade.symbol}`)
       return true
     } catch (error) {
-      showErrorToast(error, 'Failed to execute trade')
+      console.error('Trade execution error:', error)
+      const errorMsg = error?.response?.data?.error || error?.message || 'Failed to execute trade'
+      showErrorToast(null, errorMsg)
       return false
     }
   }
@@ -415,6 +424,36 @@ const GlobalAIAssistant = () => {
     if (!pendingTrade) return
 
     setIsLoading(true)
+
+    // Extra validation
+    if (!isAuthenticated) {
+      const resultMessage = {
+        id: Date.now(),
+        type: 'bot',
+        text: `Khassek t connecti bach t trader! 🔐 Click "Login" bach tdkhl.`,
+        timestamp: new Date(),
+        actions: [{ type: 'navigate', path: '/login', label: 'Login' }]
+      }
+      setMessages(prev => [...prev, resultMessage])
+      setPendingTrade(null)
+      setIsLoading(false)
+      return
+    }
+
+    if (!hasActiveChallenge) {
+      const resultMessage = {
+        id: Date.now(),
+        type: 'bot',
+        text: `Khassek challenge bach t trader! 📊 Chof les plans dyalna.`,
+        timestamp: new Date(),
+        actions: [{ type: 'navigate', path: '/plans', label: 'View Plans' }]
+      }
+      setMessages(prev => [...prev, resultMessage])
+      setPendingTrade(null)
+      setIsLoading(false)
+      return
+    }
+
     const success = await executeTrade(pendingTrade)
 
     const resultMessage = {
@@ -422,9 +461,9 @@ const GlobalAIAssistant = () => {
       type: 'bot',
       text: success
         ? `Trade executed! ✅ ${pendingTrade.tradeType.toUpperCase()} ${pendingTrade.quantity} ${pendingTrade.symbol}. Chof l trades dyalk f dashboard.`
-        : `Ma9dertch neftah l trade. 😕 Check l balance dyalk wla jreb mera khra.`,
+        : `Ma9dertch neftah l trade. 😕 Check l balance dyalk, wla l symbol, wla jreb mera khra. Open the console (F12) to see the error.`,
       timestamp: new Date(),
-      actions: success ? [{ type: 'navigate', path: '/trading', label: 'View Trades' }] : undefined
+      actions: success ? [{ type: 'navigate', path: '/trading', label: 'View Trades' }] : [{ type: 'navigate', path: '/accounts', label: 'Check Balance' }]
     }
     setMessages(prev => [...prev, resultMessage])
     setPendingTrade(null)
