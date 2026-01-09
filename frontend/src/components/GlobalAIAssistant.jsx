@@ -232,8 +232,8 @@ const GlobalAIAssistant = () => {
     const lowerMsg = message.toLowerCase()
 
     // Trade keywords
-    const buyKeywords = ['buy', 'acheter', 'chri', 'bghit nchri', 'long']
-    const sellKeywords = ['sell', 'vendre', 'bi3', 'bghit nbi3', 'short']
+    const buyKeywords = ['buy', 'acheter', 'chri', 'bghit nchri', 'long', 'achat']
+    const sellKeywords = ['sell', 'vendre', 'bi3', 'bghit nbi3', 'short', 'vente']
 
     let tradeType = null
     if (buyKeywords.some(kw => lowerMsg.includes(kw))) tradeType = 'buy'
@@ -241,41 +241,52 @@ const GlobalAIAssistant = () => {
 
     if (!tradeType) return null
 
-    // Find symbol
-    const symbols = [
-      'AAPL', 'TSLA', 'GOOGL', 'MSFT', 'AMZN', 'META', 'NVDA', 'NFLX',
-      'BTC', 'ETH', 'SOL', 'XRP', 'ADA', 'DOGE',
-      'IAM', 'ATW', 'BCP', 'CIH', 'HPS', 'MNG', 'LBV'
-    ]
-    const symbolNames = {
-      'apple': 'AAPL', 'tesla': 'TSLA', 'google': 'GOOGL', 'microsoft': 'MSFT',
-      'amazon': 'AMZN', 'meta': 'META', 'facebook': 'META', 'nvidia': 'NVDA',
-      'bitcoin': 'BTC-USD', 'ethereum': 'ETH-USD', 'solana': 'SOL-USD',
-      'maroc telecom': 'IAM', 'attijariwafa': 'ATW', 'banque populaire': 'BCP'
+    // Symbol mapping - all supported symbols with proper format
+    const symbolMap = {
+      // US Stocks (direct symbols)
+      'aapl': 'AAPL', 'apple': 'AAPL',
+      'tsla': 'TSLA', 'tesla': 'TSLA',
+      'googl': 'GOOGL', 'google': 'GOOGL',
+      'msft': 'MSFT', 'microsoft': 'MSFT',
+      'amzn': 'AMZN', 'amazon': 'AMZN',
+      'meta': 'META', 'facebook': 'META',
+      'nvda': 'NVDA', 'nvidia': 'NVDA',
+      'nflx': 'NFLX', 'netflix': 'NFLX',
+      'amd': 'AMD',
+      'jpm': 'JPM', 'jpmorgan': 'JPM',
+      // Crypto (must use -USD suffix for yfinance)
+      'btc': 'BTC-USD', 'bitcoin': 'BTC-USD', 'btc-usd': 'BTC-USD', 'btcusd': 'BTC-USD',
+      'eth': 'ETH-USD', 'ethereum': 'ETH-USD', 'eth-usd': 'ETH-USD', 'ethusd': 'ETH-USD',
+      'sol': 'SOL-USD', 'solana': 'SOL-USD', 'sol-usd': 'SOL-USD', 'solusd': 'SOL-USD',
+      'xrp': 'XRP-USD', 'ripple': 'XRP-USD', 'xrp-usd': 'XRP-USD', 'xrpusd': 'XRP-USD',
+      'ada': 'ADA-USD', 'cardano': 'ADA-USD', 'ada-usd': 'ADA-USD', 'adausd': 'ADA-USD',
+      'doge': 'DOGE-USD', 'dogecoin': 'DOGE-USD', 'doge-usd': 'DOGE-USD', 'dogeusd': 'DOGE-USD',
+      // Moroccan stocks
+      'iam': 'IAM', 'maroc telecom': 'IAM', 'maroctelecom': 'IAM',
+      'atw': 'ATW', 'attijariwafa': 'ATW', 'attijari': 'ATW',
+      'bcp': 'BCP', 'banque populaire': 'BCP',
+      'cih': 'CIH',
+      'hps': 'HPS',
+      'mng': 'MNG', 'managem': 'MNG',
+      'lbv': 'LBV', 'label vie': 'LBV'
     }
 
+    // Find symbol in message
     let symbol = null
-    for (const sym of symbols) {
-      if (lowerMsg.includes(sym.toLowerCase())) {
-        symbol = sym.includes('-') ? sym : (sym === 'BTC' || sym === 'ETH' || sym === 'SOL' || sym === 'XRP' || sym === 'ADA' || sym === 'DOGE' ? `${sym}-USD` : sym)
+    for (const [key, value] of Object.entries(symbolMap)) {
+      if (lowerMsg.includes(key)) {
+        symbol = value
         break
-      }
-    }
-    if (!symbol) {
-      for (const [name, sym] of Object.entries(symbolNames)) {
-        if (lowerMsg.includes(name)) {
-          symbol = sym
-          break
-        }
       }
     }
 
     if (!symbol) return null
 
-    // Try to find quantity
+    // Try to find quantity (default to 1)
     const qtyMatch = message.match(/(\d+(?:\.\d+)?)\s*(?:actions?|shares?|units?|coins?)?/i)
     const quantity = qtyMatch ? parseFloat(qtyMatch[1]) : 1
 
+    console.log('Detected trade intent:', { symbol, tradeType, quantity })
     return { symbol, tradeType, quantity }
   }
 
@@ -351,7 +362,7 @@ const GlobalAIAssistant = () => {
       const botResponse = {
         id: Date.now() + 1,
         type: 'bot',
-        text: `Bghiti t${tradeIntent.tradeType === 'buy' ? 'chri' : 'bi3'} ${tradeIntent.quantity} ${tradeIntent.symbol}? Click "Confirm" bach neftah l trade. 📈`,
+        text: `Bghiti t${tradeIntent.tradeType === 'buy' ? 'chri' : 'bi3'}?\n\n📊 Symbol: ${tradeIntent.symbol}\n💰 Quantity: ${tradeIntent.quantity}\n📈 Type: ${tradeIntent.tradeType.toUpperCase()}\n\nClick "Confirm" bach neftah l trade!`,
         timestamp: new Date(),
         pendingTrade: tradeIntent
       }
