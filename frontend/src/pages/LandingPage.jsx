@@ -717,6 +717,58 @@ const LandingPage = () => {
               </div>
             </div>
 
+            {/* Right Content - Interactive Moroccan Market Bubbles */}
+            <div className="hidden lg:flex relative h-full items-center justify-center min-h-[400px]">
+              {[
+                { symbol: 'IAM', color: 'from-green-500 to-green-600', x: 20, y: 15, size: 70, delay: 0 },
+                { symbol: 'ATW', color: 'from-blue-500 to-blue-600', x: 75, y: 25, size: 60, delay: 0.5 },
+                { symbol: 'BCP', color: 'from-purple-500 to-purple-600', x: 45, y: 10, size: 55, delay: 1 },
+                { symbol: 'BOA', color: 'from-orange-500 to-orange-600', x: 10, y: 55, size: 50, delay: 1.5 },
+                { symbol: 'CIH', color: 'from-cyan-500 to-cyan-600', x: 85, y: 60, size: 55, delay: 2 },
+                { symbol: 'HPS', color: 'from-pink-500 to-pink-600', x: 60, y: 70, size: 45, delay: 2.5 },
+                { symbol: 'TQM', color: 'from-yellow-500 to-yellow-600', x: 30, y: 80, size: 50, delay: 3 },
+                { symbol: 'LBV', color: 'from-red-500 to-red-600', x: 50, y: 45, size: 65, delay: 0.8 },
+                { symbol: 'MASI', color: 'from-emerald-500 to-emerald-600', x: 80, y: 85, size: 55, delay: 1.2 },
+              ].map((bubble, index) => (
+                <div
+                  key={bubble.symbol}
+                  className="absolute market-bubble cursor-pointer"
+                  style={{
+                    left: `${bubble.x}%`,
+                    top: `${bubble.y}%`,
+                    animationDelay: `${bubble.delay}s`,
+                  }}
+                  onClick={(e) => {
+                    const el = e.currentTarget
+                    el.classList.add('bubble-hidden')
+                    setTimeout(() => {
+                      el.classList.remove('bubble-hidden')
+                    }, 5000)
+                  }}
+                  onMouseEnter={(e) => {
+                    const el = e.currentTarget
+                    el.classList.add('bubble-hidden')
+                    setTimeout(() => {
+                      el.classList.remove('bubble-hidden')
+                    }, 5000)
+                  }}
+                >
+                  <div
+                    className={`relative flex items-center justify-center rounded-full bg-gradient-to-br ${bubble.color} shadow-lg backdrop-blur-sm border border-white/20 transition-all duration-300 hover:scale-110`}
+                    style={{
+                      width: `${bubble.size}px`,
+                      height: `${bubble.size}px`,
+                    }}
+                  >
+                    <span className="text-white font-bold text-xs sm:text-sm drop-shadow-lg">
+                      {bubble.symbol}
+                    </span>
+                    {/* Glow effect */}
+                    <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${bubble.color} opacity-50 blur-md -z-10`} />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
 

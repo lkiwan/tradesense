@@ -879,6 +879,78 @@ select.input option {
   animation: pulse-glow-blue 2s ease-in-out infinite;
 }
 
+/* ============================================
+   MOROCCAN MARKET BUBBLES
+   ============================================ */
+
+/* Floating bubble animation */
+@keyframes bubble-float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  25% {
+    transform: translate(10px, -15px) scale(1.05);
+  }
+  50% {
+    transform: translate(-5px, -25px) scale(0.95);
+  }
+  75% {
+    transform: translate(15px, -10px) scale(1.02);
+  }
+}
+
+.market-bubble {
+  animation: bubble-float 8s ease-in-out infinite;
+  transition: opacity 0.5s ease-out, transform 0.3s ease;
+}
+
+.market-bubble:hover {
+  z-index: 10;
+}
+
+/* Hidden state for bubbles */
+.bubble-hidden {
+  opacity: 0 !important;
+  transform: scale(0.5) !important;
+  pointer-events: none;
+}
+
+/* Bubble pop animation on disappear */
+@keyframes bubble-pop {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.5;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+}
+
+/* Bubble appear animation */
+@keyframes bubble-appear {
+  0% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.market-bubble:not(.bubble-hidden) {
+  animation: bubble-float 8s ease-in-out infinite, bubble-appear 0.5s ease-out;
+}
+
 /* Background Noise Texture */
 .noise-bg {
   position: relative;
