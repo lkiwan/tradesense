@@ -315,8 +315,9 @@ const GlobalAIAssistant = () => {
       return true
     } catch (error) {
       console.error('Trade execution error:', error)
+      console.error('Error response:', error?.response?.data)
       const errorMsg = error?.response?.data?.error || error?.message || 'Failed to execute trade'
-      showErrorToast(null, errorMsg)
+      showErrorToast(null, `${errorMsg} (Symbol: ${trade.symbol})`)
       return false
     }
   }
