@@ -1,5 +1,6 @@
 import logging
 import requests
+import urllib3
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from decimal import Decimal
@@ -10,12 +11,46 @@ from services.yfinance_service import get_current_price, get_live_price_data
 from middleware.rate_limiter import limiter
 from services.audit_service import AuditService
 
+# Suppress SSL warnings for verify=False requests
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+
 logger = logging.getLogger(__name__)
 
 
 def _fetch_crypto_price_direct(symbol: str) -> float | None:
-    """Direct fetch crypto price from CoinGecko - last resort fallback"""
-    # Map symbols to CoinGecko IDs
+    """Direct fetch crypto price - tries Binance first (fastest), then CoinGecko"""
+    symbol_upper = symbol.upper()
+
+    # Map symbols to Binance format
+    binance_map = {
+        'BTC-USD': 'BTCUSDT', 'BTCUSD': 'BTCUSDT', 'BTC': 'BTCUSDT',
+        'ETH-USD': 'ETHUSDT', 'ETHUSD': 'ETHUSDT', 'ETH': 'ETHUSDT',
+        'SOL-USD': 'SOLUSDT', 'SOLUSD': 'SOLUSDT', 'SOL': 'SOLUSDT',
+        'XRP-USD': 'XRPUSDT', 'XRPUSD': 'XRPUSDT', 'XRP': 'XRPUSDT',
+        'ADA-USD': 'ADAUSDT', 'ADAUSD': 'ADAUSDT', 'ADA': 'ADAUSDT',
+        'DOGE-USD': 'DOGEUSDT', 'DOGEUSD': 'DOGEUSDT', 'DOGE': 'DOGEUSDT',
+        'BNB-USD': 'BNBUSDT', 'BNBUSD': 'BNBUSDT', 'BNB': 'BNBUSDT',
+    }
+
+    binance_symbol = binance_map.get(symbol_upper)
+
+    # Try Binance first (fastest and most reliable)
+    if binance_symbol:
+        try:
+            url = f"https://api.binance.com/api/v3/ticker/price?symbol={binance_symbol}"
+            resp = requests.get(url, timeout=3, verify=False)
+            if resp.status_code == 200:
+                data = resp.json()
+                price = float(data.get('price', 0))
+                if price > 0:
+                    logger.info(f"Direct Binance price for {symbol}: {price}")
+                    return price
+            else:
+                logger.warning(f"Binance API returned status {resp.status_code} for {binance_symbol}")
+        except Exception as e:
+            logger.warning(f"Direct Binance fetch failed for {symbol}: {e}")
+
+    # Fallback to CoinGecko
     coin_map = {
         'BTC-USD': 'bitcoin', 'BTCUSD': 'bitcoin', 'BTC': 'bitcoin',
         'ETH-USD': 'ethereum', 'ETHUSD': 'ethereum', 'ETH': 'ethereum',
@@ -26,23 +61,44 @@ def _fetch_crypto_price_direct(symbol: str) -> float | None:
         'BNB-USD': 'binancecoin', 'BNBUSD': 'binancecoin', 'BNB': 'binancecoin',
     }
 
-    coin_id = coin_map.get(symbol.upper())
+    coin_id = coin_map.get(symbol_upper)
     if not coin_id:
+        logger.warning(f"No mapping found for symbol {symbol}")
         return None
 
     try:
         url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
-        resp = requests.get(url, timeout=5)
+        resp = requests.get(url, timeout=5, verify=False)
         if resp.status_code == 200:
             data = resp.json()
             price = data.get(coin_id, {}).get('usd')
             if price:
                 logger.info(f"Direct CoinGecko price for {symbol}: {price}")
                 return float(price)
+        else:
+            logger.warning(f"CoinGecko API returned status {resp.status_code} for {coin_id}")
     except Exception as e:
         logger.warning(f"Direct CoinGecko fetch failed for {symbol}: {e}")
 
     return None
+
+
+def _get_price_with_fallbacks(symbol: str) -> float | None:
+    """Get price using all available fallbacks (convenience function)"""
+    # Try live price data first (background updater)
+    live_data = get_live_price_data(symbol)
+    if live_data:
+        price = live_data.get('price')
+        if price:
+            return price
+
+    # Fallback to yfinance
+    price = get_current_price(symbol)
+    if price:
+        return price
+
+    # Last resort: Direct Binance/CoinGecko
+    return _fetch_crypto_price_direct(symbol)
 
 
 @trades_bp.route('', methods=['GET'])
@@ -101,31 +157,49 @@ def open_trade():
 
     # Get current price - try multiple sources
     symbol = data['symbol']
-    logger.info(f"Fetching price for symbol: {symbol}")
+    logger.info(f"=== PRICE FETCH START for {symbol} ===")
 
     current_price = None
+    price_source = None
 
     # Try live price data first (Binance/background updater - fastest)
+    logger.info(f"[1/3] Trying live price data for {symbol}...")
     live_data = get_live_price_data(symbol)
     if live_data:
         current_price = live_data.get('price')
-        logger.info(f"Live price for {symbol}: {current_price}")
+        if current_price:
+            price_source = "live_updater"
+            logger.info(f"[1/3] SUCCESS - Live price for {symbol}: {current_price}")
+        else:
+            logger.warning(f"[1/3] Live data exists but no price for {symbol}")
+    else:
+        logger.warning(f"[1/3] FAILED - No live data for {symbol}")
 
     # Fallback to yfinance if no live price
     if current_price is None:
+        logger.info(f"[2/3] Trying yfinance/get_current_price for {symbol}...")
         current_price = get_current_price(symbol)
         if current_price:
-            logger.info(f"YFinance price for {symbol}: {current_price}")
+            price_source = "yfinance"
+            logger.info(f"[2/3] SUCCESS - YFinance price for {symbol}: {current_price}")
+        else:
+            logger.warning(f"[2/3] FAILED - YFinance returned None for {symbol}")
 
-    # Last resort: Direct CoinGecko fetch for crypto
+    # Last resort: Direct Binance/CoinGecko fetch for crypto
     if current_price is None:
+        logger.info(f"[3/3] Trying direct API (Binance/CoinGecko) for {symbol}...")
         current_price = _fetch_crypto_price_direct(symbol)
         if current_price:
-            logger.info(f"Direct CoinGecko price for {symbol}: {current_price}")
+            price_source = "direct_api"
+            logger.info(f"[3/3] SUCCESS - Direct API price for {symbol}: {current_price}")
+        else:
+            logger.error(f"[3/3] FAILED - Direct API returned None for {symbol}")
 
     if current_price is None:
-        logger.error(f"Failed to get price for symbol: {symbol} from all sources")
+        logger.error(f"=== PRICE FETCH FAILED for {symbol} - ALL 3 SOURCES FAILED ===")
         return jsonify({'error': f'Could not get price for {symbol}. The market may be closed or the symbol is invalid.'}), 400
+
+    logger.info(f"=== PRICE FETCH SUCCESS for {symbol}: ${current_price} (source: {price_source}) ===")
 
     quantity = Decimal(str(data['quantity']))
     trade_value = quantity * Decimal(str(current_price))
@@ -193,10 +267,26 @@ def close_trade(trade_id):
     if trade.status != 'open':
         return jsonify({'error': 'Trade is already closed'}), 400
 
-    # Get current price
-    current_price = get_current_price(trade.symbol)
+    # Get current price - try multiple sources (same as open_trade)
+    symbol = trade.symbol
+    current_price = None
+
+    # Try live price data first
+    live_data = get_live_price_data(symbol)
+    if live_data:
+        current_price = live_data.get('price')
+
+    # Fallback to yfinance
     if current_price is None:
-        return jsonify({'error': f'Could not get price for {trade.symbol}'}), 400
+        current_price = get_current_price(symbol)
+
+    # Last resort: Direct Binance/CoinGecko
+    if current_price is None:
+        current_price = _fetch_crypto_price_direct(symbol)
+
+    if current_price is None:
+        logger.error(f"Failed to get price for {symbol} to close trade")
+        return jsonify({'error': f'Could not get price for {symbol}'}), 400
 
     # Close trade and calculate PnL
     pnl = trade.close_trade(current_price)
@@ -257,7 +347,7 @@ def get_trade(trade_id):
     response_data = {'trade': trade.to_dict()}
 
     if trade.status == 'open':
-        current_price = get_current_price(trade.symbol)
+        current_price = _get_price_with_fallbacks(trade.symbol)
         if current_price:
             # Calculate unrealized PnL
             if trade.trade_type == 'buy':
@@ -298,7 +388,7 @@ def get_open_trades_pnl():
     price_errors = []
 
     for trade in open_trades:
-        current_price = get_current_price(trade.symbol)
+        current_price = _get_price_with_fallbacks(trade.symbol)
         price_available = current_price is not None
 
         # IMPORTANT: Always include trade, use entry price as fallback
