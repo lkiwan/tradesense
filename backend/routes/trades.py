@@ -1,4 +1,5 @@
 import logging
+import requests
 from flask import request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from decimal import Decimal
@@ -10,6 +11,38 @@ from middleware.rate_limiter import limiter
 from services.audit_service import AuditService
 
 logger = logging.getLogger(__name__)
+
+
+def _fetch_crypto_price_direct(symbol: str) -> float | None:
+    """Direct fetch crypto price from CoinGecko - last resort fallback"""
+    # Map symbols to CoinGecko IDs
+    coin_map = {
+        'BTC-USD': 'bitcoin', 'BTCUSD': 'bitcoin', 'BTC': 'bitcoin',
+        'ETH-USD': 'ethereum', 'ETHUSD': 'ethereum', 'ETH': 'ethereum',
+        'SOL-USD': 'solana', 'SOLUSD': 'solana', 'SOL': 'solana',
+        'XRP-USD': 'ripple', 'XRPUSD': 'ripple', 'XRP': 'ripple',
+        'ADA-USD': 'cardano', 'ADAUSD': 'cardano', 'ADA': 'cardano',
+        'DOGE-USD': 'dogecoin', 'DOGEUSD': 'dogecoin', 'DOGE': 'dogecoin',
+        'BNB-USD': 'binancecoin', 'BNBUSD': 'binancecoin', 'BNB': 'binancecoin',
+    }
+
+    coin_id = coin_map.get(symbol.upper())
+    if not coin_id:
+        return None
+
+    try:
+        url = f"https://api.coingecko.com/api/v3/simple/price?ids={coin_id}&vs_currencies=usd"
+        resp = requests.get(url, timeout=5)
+        if resp.status_code == 200:
+            data = resp.json()
+            price = data.get(coin_id, {}).get('usd')
+            if price:
+                logger.info(f"Direct CoinGecko price for {symbol}: {price}")
+                return float(price)
+    except Exception as e:
+        logger.warning(f"Direct CoinGecko fetch failed for {symbol}: {e}")
+
+    return None
 
 
 @trades_bp.route('', methods=['GET'])
@@ -81,11 +114,18 @@ def open_trade():
     # Fallback to yfinance if no live price
     if current_price is None:
         current_price = get_current_price(symbol)
-        logger.info(f"YFinance price for {symbol}: {current_price}")
+        if current_price:
+            logger.info(f"YFinance price for {symbol}: {current_price}")
+
+    # Last resort: Direct CoinGecko fetch for crypto
+    if current_price is None:
+        current_price = _fetch_crypto_price_direct(symbol)
+        if current_price:
+            logger.info(f"Direct CoinGecko price for {symbol}: {current_price}")
 
     if current_price is None:
-        logger.error(f"Failed to get price for symbol: {symbol}")
-        return jsonify({'error': f'Could not get price for {symbol}. Try again in a moment.'}), 400
+        logger.error(f"Failed to get price for symbol: {symbol} from all sources")
+        return jsonify({'error': f'Could not get price for {symbol}. The market may be closed or the symbol is invalid.'}), 400
 
     quantity = Decimal(str(data['quantity']))
     trade_value = quantity * Decimal(str(current_price))
