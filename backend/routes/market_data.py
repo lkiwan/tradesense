@@ -320,6 +320,82 @@ def market_status():
     return jsonify(get_market_status()), 200
 
 
+@market_data_bp.route('/debug/prices', methods=['GET'])
+def debug_prices():
+    """Debug endpoint to test all price sources"""
+    import requests
+    from services.yfinance_service import _live_prices, _price_updater_running
+
+    results = {
+        'background_updater': {
+            'running': _price_updater_running,
+            'cached_symbols': list(_live_prices.keys())[:20],
+            'total_cached': len(_live_prices)
+        },
+        'api_tests': {}
+    }
+
+    # Test Binance API directly
+    try:
+        url = "https://api.binance.com/api/v3/ticker/price?symbol=BTCUSDT"
+        resp = requests.get(url, timeout=5, verify=False)
+        if resp.status_code == 200:
+            data = resp.json()
+            results['api_tests']['binance'] = {
+                'success': True,
+                'price': float(data.get('price', 0)),
+                'status_code': resp.status_code
+            }
+        else:
+            results['api_tests']['binance'] = {
+                'success': False,
+                'status_code': resp.status_code,
+                'error': resp.text[:200]
+            }
+    except Exception as e:
+        results['api_tests']['binance'] = {
+            'success': False,
+            'error': str(e)
+        }
+
+    # Test CoinGecko API directly
+    try:
+        url = "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+        resp = requests.get(url, timeout=5, verify=False)
+        if resp.status_code == 200:
+            data = resp.json()
+            results['api_tests']['coingecko'] = {
+                'success': True,
+                'price': data.get('bitcoin', {}).get('usd'),
+                'status_code': resp.status_code
+            }
+        else:
+            results['api_tests']['coingecko'] = {
+                'success': False,
+                'status_code': resp.status_code,
+                'error': resp.text[:200]
+            }
+    except Exception as e:
+        results['api_tests']['coingecko'] = {
+            'success': False,
+            'error': str(e)
+        }
+
+    # Check live prices for BTC
+    btc_live = get_live_price_data('BTC-USD')
+    results['live_btc'] = btc_live if btc_live else 'Not available'
+
+    # Test get_current_price
+    try:
+        from services.yfinance_service import get_current_price
+        btc_price = get_current_price('BTC-USD')
+        results['get_current_price_btc'] = btc_price if btc_price else 'Failed'
+    except Exception as e:
+        results['get_current_price_btc'] = f'Error: {str(e)}'
+
+    return jsonify(results), 200
+
+
 @market_data_bp.route('/signal/<symbol>', methods=['GET'])
 def get_signal(symbol):
     """Get AI trading signal for a symbol"""
